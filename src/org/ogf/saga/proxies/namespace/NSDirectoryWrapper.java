@@ -40,6 +40,7 @@ final class NSDirectoryWrapper implements NSDirectory {
     }
 
     public Object clone() throws CloneNotSupportedException {
+        // TODO: fix this!
         return proxy.clone();
     }
 
@@ -205,7 +206,7 @@ final class NSDirectoryWrapper implements NSDirectory {
     }
 
     public ObjectType getType() {
-        return proxy.getType();
+        return ObjectType.NSDIRECTORY;
     }
 
     public URL getURL() throws NotImplemented, IncorrectState, Timeout,

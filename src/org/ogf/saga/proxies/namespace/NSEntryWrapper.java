@@ -29,6 +29,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     }
 
     public Object clone() throws CloneNotSupportedException {
+        // TODO: fix this!
         return proxy.clone();
     }
 
@@ -118,7 +119,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     }
 
     public ObjectType getType() {
-        return proxy.getType();
+        return ObjectType.NSENTRY;
     }
 
     public URL getURL() throws NotImplemented, IncorrectState, Timeout,
