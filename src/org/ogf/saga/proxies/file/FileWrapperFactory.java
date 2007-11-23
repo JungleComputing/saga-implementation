@@ -27,9 +27,9 @@ public abstract class FileWrapperFactory extends FileFactory {
             AuthorizationFailed, PermissionDenied, BadParameter, AlreadyExists,
             DoesNotExist, Timeout, NoSuccess { 
         Object[] parameters = { session, name, flags };
-        Directory proxy = (Directory) getAdaptorProxy(
+        DirectoryInterface proxy = (DirectoryInterface) getAdaptorProxy(
                     "org.ogf.saga.spi.file.DirectorySpi",
-                    Directory.class, parameters);
+                    DirectoryInterface.class, parameters);
             return new DirectoryWrapper(proxy);
     }
 
@@ -38,9 +38,9 @@ public abstract class FileWrapperFactory extends FileFactory {
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
-        File proxy = (File) getAdaptorProxy(
-                "org.ogf.saga.spi.file.DirectorySpi",
-                File.class, parameters);
+        FileInterface proxy = (FileInterface) getAdaptorProxy(
+                "org.ogf.saga.spi.file.FileSpi",
+                FileInterface.class, parameters);
         return new FileWrapper(proxy);
     }
 

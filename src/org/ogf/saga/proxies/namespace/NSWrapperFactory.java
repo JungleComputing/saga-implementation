@@ -24,9 +24,9 @@ public abstract class NSWrapperFactory extends NSFactory {
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, DoesNotExist, AlreadyExists, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
-        NSDirectory proxy = (NSDirectory) getAdaptorProxy(
+        NSDirectoryInterface proxy = (NSDirectoryInterface) getAdaptorProxy(
                 "org.ogf.saga.spi.namespace.NSDirectorySpi",
-                NSDirectory.class, parameters);
+                NSDirectoryInterface.class, parameters);
         return new NSDirectoryWrapper(proxy);
     }
 
@@ -35,9 +35,9 @@ public abstract class NSWrapperFactory extends NSFactory {
             AuthorizationFailed, PermissionDenied, BadParameter, DoesNotExist,
             AlreadyExists, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
-        NSEntry proxy = (NSEntry) getAdaptorProxy(
+        NSEntryInterface proxy = (NSEntryInterface) getAdaptorProxy(
                 "org.ogf.saga.spi.namespace.NSEntrySpi",
-                NSEntry.class, parameters);
+                NSEntryInterface.class, parameters);
         return new NSEntryWrapper(proxy);
     }
     
