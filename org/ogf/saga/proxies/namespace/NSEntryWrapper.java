@@ -13,6 +13,8 @@ import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
+import org.ogf.saga.namespace.Flags;
+import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -20,11 +22,11 @@ import org.ogf.saga.task.TaskMode;
 /**
  * Wrapper class: wraps the NSEntry proxy.
  */
-final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
+public class NSEntryWrapper implements NSEntry {
     
-    private final org.ogf.saga.namespace.NSEntry proxy;
+    private NSEntryInterface proxy;
     
-    NSEntryWrapper(org.ogf.saga.namespace.NSEntry proxy) {
+    protected NSEntryWrapper(NSEntryInterface proxy) {
         this.proxy = proxy;
     }
 
@@ -34,7 +36,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     }
 
     public void close() throws NotImplemented, IncorrectState, NoSuccess {
-        proxy.close();
+        close(NO_WAIT);
     }
 
     public void close(float timeoutInSeconds) throws NotImplemented,
@@ -48,7 +50,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     }
 
     public Task close(TaskMode mode) throws NotImplemented {
-        return proxy.close(mode);
+        return close(mode, NO_WAIT);
     }
 
     public Task copy(TaskMode mode, URL target, int flags)
@@ -57,7 +59,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     }
 
     public Task copy(TaskMode mode, URL target) throws NotImplemented {
-        return proxy.copy(mode, target);
+        return copy(mode, target, Flags.NONE.getValue());
     }
 
     public void copy(URL target, int flags) throws NotImplemented,
@@ -71,7 +73,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess,
             IncorrectURL {
-        proxy.copy(target);
+        copy(target, Flags.NONE.getValue());
     }
 
     public URL getCWD() throws NotImplemented, IncorrectState, Timeout,
@@ -167,7 +169,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     }
 
     public Task link(TaskMode mode, URL target) throws NotImplemented {
-        return proxy.link(mode, target);
+        return link(mode, target, Flags.NONE.getValue());
     }
 
     public void link(URL target, int flags) throws NotImplemented,
@@ -180,7 +182,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     public void link(URL target) throws NotImplemented, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, AlreadyExists, Timeout, NoSuccess, IncorrectURL {
-        proxy.link(target);
+        link(target, Flags.NONE.getValue());
     }
 
     public Task move(TaskMode mode, URL target, int flags)
@@ -189,7 +191,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     }
 
     public Task move(TaskMode mode, URL target) throws NotImplemented {
-        return proxy.move(mode, target);
+        return move(mode, target, Flags.NONE.getValue());
     }
 
     public void move(URL target, int flags) throws NotImplemented,
@@ -203,7 +205,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess,
             IncorrectURL {
-        proxy.move(target);
+        move(target, Flags.NONE.getValue());
     }
 
     public void permissionsAllow(String id, int permissions, int flags)
@@ -274,7 +276,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     public void remove() throws NotImplemented, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess {
-        proxy.remove();
+        remove(Flags.NONE.getValue());
     }
 
     public void remove(int flags) throws NotImplemented, AuthenticationFailed,
@@ -288,7 +290,7 @@ final class NSEntryWrapper implements org.ogf.saga.namespace.NSEntry {
     }
 
     public Task remove(TaskMode mode) throws NotImplemented {
-        return proxy.remove(mode);
+        return remove(mode, Flags.NONE.getValue());
     }
 
 }

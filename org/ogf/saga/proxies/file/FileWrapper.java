@@ -4,15 +4,11 @@ import java.io.IOException;
 import java.util.List;
 
 import org.ogf.saga.ObjectType;
-import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
-import org.ogf.saga.error.AlreadyExists;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
 import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
@@ -20,153 +16,36 @@ import org.ogf.saga.error.Timeout;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
-import org.ogf.saga.session.Session;
+import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-class FileWrapper implements File {
+class FileWrapper extends NSEntryWrapper implements File {
     
-    private File proxy;
+    private FileInterface proxy;
     
-    FileWrapper(File proxy) {
+    FileWrapper(FileInterface proxy) {
+        super(proxy);
         this.proxy = proxy;
     }
-
+    public long getSize()
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+                    PermissionDenied, IncorrectState, Timeout, NoSuccess {
+        return proxy.getSize();
+    }
+    
+    public Task<Long> getSize(TaskMode mode)
+            throws NotImplemented {
+        return proxy.getSize(mode);
+    }
+    
     public Object clone() throws CloneNotSupportedException {
         // TODO: fix this
         return proxy.clone();
     }
 
-    public void close() throws NotImplemented, IncorrectState, NoSuccess {
-        proxy.close();
-    }
-
-    public void close(float timeoutInSeconds) throws NotImplemented, IncorrectState, NoSuccess {
-        proxy.close(timeoutInSeconds);
-    }
-
-    public Task close(TaskMode mode, float timeoutInSeconds) throws NotImplemented {
-        return proxy.close(mode, timeoutInSeconds);
-    }
-
-    public Task close(TaskMode mode) throws NotImplemented {
-        return proxy.close(mode);
-    }
-
-    public Task copy(TaskMode mode, URL target, int flags) throws NotImplemented {
-        return proxy.copy(mode, target, flags);
-    }
-
-    public Task copy(TaskMode mode, URL target) throws NotImplemented {
-        return proxy.copy(mode, target);
-    }
-
-    public void copy(URL target, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess, IncorrectURL {
-        proxy.copy(target, flags);
-    }
-
-    public void copy(URL target) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess, IncorrectURL {
-        proxy.copy(target);
-    }
-
-    public URL getCWD() throws NotImplemented, IncorrectState, Timeout, NoSuccess {
-        return proxy.getCWD();
-    }
-
-    public Task<URL> getCWD(TaskMode mode) throws NotImplemented {
-        return proxy.getCWD(mode);
-    }
-
-    public String getGroup() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
-        return proxy.getGroup();
-    }
-
-    public Task<String> getGroup(TaskMode mode) throws NotImplemented {
-        return proxy.getGroup(mode);
-    }
-
-    public String getId() {
-        return proxy.getId();
-    }
-
-    public URL getName() throws NotImplemented, IncorrectState, Timeout, NoSuccess {
-        return proxy.getName();
-    }
-
-    public Task<URL> getName(TaskMode mode) throws NotImplemented {
-        return proxy.getName(mode);
-    }
-
-    public String getOwner() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
-        return proxy.getOwner();
-    }
-
-    public Task<String> getOwner(TaskMode mode) throws NotImplemented {
-        return proxy.getOwner(mode);
-    }
-
-    public Session getSession() throws DoesNotExist {
-        return proxy.getSession();
-    }
-
-    public long getSize() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, Timeout, NoSuccess {
-        return proxy.getSize();
-    }
-
-    public Task<Long> getSize(TaskMode mode) throws NotImplemented {
-        return proxy.getSize(mode);
-    }
-
     public ObjectType getType() {
         return ObjectType.FILE;
-    }
-
-    public URL getURL() throws NotImplemented, IncorrectState, Timeout, NoSuccess {
-        return proxy.getURL();
-    }
-
-    public Task<URL> getURL(TaskMode mode) throws NotImplemented {
-        return proxy.getURL(mode);
-    }
-
-    public boolean isDir() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        return proxy.isDir();
-    }
-
-    public Task<Boolean> isDir(TaskMode mode) throws NotImplemented {
-        return proxy.isDir(mode);
-    }
-
-    public boolean isEntry() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        return proxy.isEntry();
-    }
-
-    public Task<Boolean> isEntry(TaskMode mode) throws NotImplemented {
-        return proxy.isEntry(mode);
-    }
-
-    public boolean isLink() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        return proxy.isLink();
-    }
-
-    public Task<Boolean> isLink(TaskMode mode) throws NotImplemented {
-        return proxy.isLink(mode);
-    }
-
-    public Task link(TaskMode mode, URL target, int flags) throws NotImplemented {
-        return proxy.link(mode, target, flags);
-    }
-
-    public Task link(TaskMode mode, URL target) throws NotImplemented {
-        return proxy.link(mode, target);
-    }
-
-    public void link(URL target, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, Timeout, NoSuccess, IncorrectURL {
-        proxy.link(target, flags);
-    }
-
-    public void link(URL target) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, Timeout, NoSuccess, IncorrectURL {
-        proxy.link(target);
     }
 
     public List<String> modesE() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, Timeout, NoSuccess {
@@ -177,64 +56,8 @@ class FileWrapper implements File {
         return proxy.modesE(mode);
     }
 
-    public Task move(TaskMode mode, URL target, int flags) throws NotImplemented {
-        return proxy.move(mode, target, flags);
-    }
-
-    public Task move(TaskMode mode, URL target) throws NotImplemented {
-        return proxy.move(mode, target);
-    }
-
-    public void move(URL target, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess, IncorrectURL {
-        proxy.move(target, flags);
-    }
-
-    public void move(URL target) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess, IncorrectURL {
-        proxy.move(target);
-    }
-
-    public void permissionsAllow(String id, int permissions, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, BadParameter, Timeout, NoSuccess {
-        proxy.permissionsAllow(id, permissions, flags);
-    }
-
-    public void permissionsAllow(String id, int permissions) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, Timeout, NoSuccess {
-        proxy.permissionsAllow(id, permissions);
-    }
-
-    public Task permissionsAllow(TaskMode mode, String id, int permissions, int flags) throws NotImplemented {
-        return proxy.permissionsAllow(mode, id, permissions, flags);
-    }
-
-    public Task permissionsAllow(TaskMode mode, String id, int permissions) throws NotImplemented {
-        return proxy.permissionsAllow(mode, id, permissions);
-    }
-
-    public boolean permissionsCheck(String id, int permissions) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, Timeout, NoSuccess {
-        return proxy.permissionsCheck(id, permissions);
-    }
-
-    public Task<Boolean> permissionsCheck(TaskMode mode, String id, int permissions) throws NotImplemented {
-        return proxy.permissionsCheck(mode, id, permissions);
-    }
-
-    public void permissionsDeny(String id, int permissions, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess {
-        proxy.permissionsDeny(id, permissions, flags);
-    }
-
-    public void permissionsDeny(String id, int permissions) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, Timeout, NoSuccess {
-        proxy.permissionsDeny(id, permissions);
-    }
-
-    public Task permissionsDeny(TaskMode mode, String id, int permissions, int flags) throws NotImplemented {
-        return proxy.permissionsDeny(mode, id, permissions, flags);
-    }
-
-    public Task permissionsDeny(TaskMode mode, String id, int permissions) throws NotImplemented {
-        return proxy.permissionsDeny(mode, id, permissions);
-    }
-
     public int read(Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
-        return proxy.read(buffer);
+        return read(buffer.getSize(), buffer);
     }
 
     public int read(int len, Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
@@ -257,14 +80,6 @@ class FileWrapper implements File {
         return proxy.readE(mode, emode, spec, buffer);
     }
 
-    public URL readLink() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        return proxy.readLink();
-    }
-
-    public Task<URL> readLink(TaskMode mode) throws NotImplemented {
-        return proxy.readLink(mode);
-    }
-
     public int readP(String pattern, Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
         return proxy.readP(pattern, buffer);
     }
@@ -279,22 +94,6 @@ class FileWrapper implements File {
 
     public Task readV(TaskMode mode, IOVec[] iovecs) throws NotImplemented {
         return proxy.readV(mode, iovecs);
-    }
-
-    public void remove() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        proxy.remove();
-    }
-
-    public void remove(int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        proxy.remove(flags);
-    }
-
-    public Task remove(TaskMode mode, int flags) throws NotImplemented {
-        return proxy.remove(mode, flags);
-    }
-
-    public Task remove(TaskMode mode) throws NotImplemented {
-        return proxy.remove(mode);
     }
 
     public long seek(long offset, SeekMode whence) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, Timeout, NoSuccess, IOException {
@@ -322,7 +121,7 @@ class FileWrapper implements File {
     }
 
     public int write(Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
-        return proxy.write(buffer);
+        return write(buffer.getSize(), buffer);
     }
 
     public int write(int len, Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
