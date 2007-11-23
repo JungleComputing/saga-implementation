@@ -25,7 +25,7 @@ public abstract class NSWrapperFactory extends NSFactory {
             BadParameter, DoesNotExist, AlreadyExists, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
         NSDirectory proxy = (NSDirectory) getAdaptorProxy(
-                "org.ogf.saga.spi.io.NSDirectoryCpi",
+                "org.ogf.saga.spi.namespace.NSDirectorySpi",
                 NSDirectory.class, parameters);
         return new NSDirectoryWrapper(proxy);
     }
@@ -36,7 +36,7 @@ public abstract class NSWrapperFactory extends NSFactory {
             AlreadyExists, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
         NSEntry proxy = (NSEntry) getAdaptorProxy(
-                "org.ogf.saga.spi.io.NSEntryCpi",
+                "org.ogf.saga.spi.namespace.NSEntrySpi",
                 NSEntry.class, parameters);
         return new NSEntryWrapper(proxy);
     }
