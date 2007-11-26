@@ -1,6 +1,5 @@
 package org.ogf.saga.proxies.namespace;
 
-import org.ogf.saga.SagaObject;
 import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExists;
 import org.ogf.saga.error.AuthenticationFailed;
@@ -21,7 +20,12 @@ import org.ogf.saga.task.TaskMode;
 /**
  * Part of the SAGA NSEntry interface that has to be implemented by the SPI's.
  */
-public interface NSEntryInterface extends Async, SagaObject, Permissions {  
+public interface NSEntryInterface extends Async, Permissions {  
+    
+    /**
+     * Returns a clone.
+     */    
+    public Object clone() throws CloneNotSupportedException;
     
     /**
      * Obtains the complete URL refering to the entry.

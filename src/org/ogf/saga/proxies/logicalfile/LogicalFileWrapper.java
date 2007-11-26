@@ -16,15 +16,18 @@ import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.logicalfile.LogicalFile;
+import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 
-final class LogicalFileWrapper implements LogicalFile {
+final class LogicalFileWrapper extends NSEntryWrapper implements LogicalFile {
     
-    private LogicalFile proxy;
+    private LogicalFileInterface proxy;
     
-    LogicalFileWrapper(LogicalFile proxy) {
+    LogicalFileWrapper(Session session, LogicalFileInterface proxy) {
+        super(session, proxy);
         this.proxy = proxy;
     }
 
@@ -37,40 +40,9 @@ final class LogicalFileWrapper implements LogicalFile {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        // TODO: fix this!
-        return proxy.clone();
-    }
-
-    public void close() throws NotImplemented, IncorrectState, NoSuccess {
-        proxy.close();
-    }
-
-    public void close(float timeoutInSeconds) throws NotImplemented, IncorrectState, NoSuccess {
-        proxy.close(timeoutInSeconds);
-    }
-
-    public Task close(TaskMode mode, float timeoutInSeconds) throws NotImplemented {
-        return proxy.close(mode, timeoutInSeconds);
-    }
-
-    public Task close(TaskMode mode) throws NotImplemented {
-        return proxy.close(mode);
-    }
-
-    public Task copy(TaskMode mode, URL target, int flags) throws NotImplemented {
-        return proxy.copy(mode, target, flags);
-    }
-
-    public Task copy(TaskMode mode, URL target) throws NotImplemented {
-        return proxy.copy(mode, target);
-    }
-
-    public void copy(URL target, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess, IncorrectURL {
-        proxy.copy(target, flags);
-    }
-
-    public void copy(URL target) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess, IncorrectURL {
-        proxy.copy(target);
+        LogicalFileWrapper clone = (LogicalFileWrapper) super.clone();
+        clone.proxy = (LogicalFileInterface) proxy.clone();
+        return clone();
     }
 
     public String[] findAttributes(String... patterns) throws NotImplemented, BadParameter, AuthenticationFailed, AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
@@ -89,56 +61,8 @@ final class LogicalFileWrapper implements LogicalFile {
         return proxy.getAttribute(mode, key);
     }
 
-    public URL getCWD() throws NotImplemented, IncorrectState, Timeout, NoSuccess {
-        return proxy.getCWD();
-    }
-
-    public Task<URL> getCWD(TaskMode mode) throws NotImplemented {
-        return proxy.getCWD(mode);
-    }
-
-    public String getGroup() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
-        return proxy.getGroup();
-    }
-
-    public Task<String> getGroup(TaskMode mode) throws NotImplemented {
-        return proxy.getGroup(mode);
-    }
-
-    public String getId() {
-        return proxy.getId();
-    }
-
-    public URL getName() throws NotImplemented, IncorrectState, Timeout, NoSuccess {
-        return proxy.getName();
-    }
-
-    public Task<URL> getName(TaskMode mode) throws NotImplemented {
-        return proxy.getName(mode);
-    }
-
-    public String getOwner() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
-        return proxy.getOwner();
-    }
-
-    public Task<String> getOwner(TaskMode mode) throws NotImplemented {
-        return proxy.getOwner(mode);
-    }
-
-    public Session getSession() throws DoesNotExist {
-        return proxy.getSession();
-    }
-
     public ObjectType getType() {
         return ObjectType.LOGICALFILE;
-    }
-
-    public URL getURL() throws NotImplemented, IncorrectState, Timeout, NoSuccess {
-        return proxy.getURL();
-    }
-
-    public Task<URL> getURL(TaskMode mode) throws NotImplemented {
-        return proxy.getURL(mode);
     }
 
     public String[] getVectorAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, DoesNotExist, Timeout, NoSuccess {
@@ -147,30 +71,6 @@ final class LogicalFileWrapper implements LogicalFile {
 
     public Task<String[]> getVectorAttribute(TaskMode mode, String key) throws NotImplemented {
         return proxy.getVectorAttribute(mode, key);
-    }
-
-    public boolean isDir() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        return proxy.isDir();
-    }
-
-    public Task<Boolean> isDir(TaskMode mode) throws NotImplemented {
-        return proxy.isDir(mode);
-    }
-
-    public boolean isEntry() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        return proxy.isEntry();
-    }
-
-    public Task<Boolean> isEntry(TaskMode mode) throws NotImplemented {
-        return proxy.isEntry(mode);
-    }
-
-    public boolean isLink() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        return proxy.isLink();
-    }
-
-    public Task<Boolean> isLink(TaskMode mode) throws NotImplemented {
-        return proxy.isLink(mode);
     }
 
     public boolean isReadOnlyAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, DoesNotExist, Timeout, NoSuccess {
@@ -205,22 +105,6 @@ final class LogicalFileWrapper implements LogicalFile {
         return proxy.isWritableAttribute(mode, key);
     }
 
-    public Task link(TaskMode mode, URL target, int flags) throws NotImplemented {
-        return proxy.link(mode, target, flags);
-    }
-
-    public Task link(TaskMode mode, URL target) throws NotImplemented {
-        return proxy.link(mode, target);
-    }
-
-    public void link(URL target, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, Timeout, NoSuccess, IncorrectURL {
-        proxy.link(target, flags);
-    }
-
-    public void link(URL target) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, Timeout, NoSuccess, IncorrectURL {
-        proxy.link(target);
-    }
-
     public String[] listAttributes() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
         return proxy.listAttributes();
     }
@@ -235,86 +119,6 @@ final class LogicalFileWrapper implements LogicalFile {
 
     public Task<List<URL>> listLocations(TaskMode mode) throws NotImplemented {
         return proxy.listLocations(mode);
-    }
-
-    public Task move(TaskMode mode, URL target, int flags) throws NotImplemented {
-        return proxy.move(mode, target, flags);
-    }
-
-    public Task move(TaskMode mode, URL target) throws NotImplemented {
-        return proxy.move(mode, target);
-    }
-
-    public void move(URL target, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess, IncorrectURL {
-        proxy.move(target, flags);
-    }
-
-    public void move(URL target) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess, IncorrectURL {
-        proxy.move(target);
-    }
-
-    public void permissionsAllow(String id, int permissions, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, BadParameter, Timeout, NoSuccess {
-        proxy.permissionsAllow(id, permissions, flags);
-    }
-
-    public void permissionsAllow(String id, int permissions) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, Timeout, NoSuccess {
-        proxy.permissionsAllow(id, permissions);
-    }
-
-    public Task permissionsAllow(TaskMode mode, String id, int permissions, int flags) throws NotImplemented {
-        return proxy.permissionsAllow(mode, id, permissions, flags);
-    }
-
-    public Task permissionsAllow(TaskMode mode, String id, int permissions) throws NotImplemented {
-        return proxy.permissionsAllow(mode, id, permissions);
-    }
-
-    public boolean permissionsCheck(String id, int permissions) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, Timeout, NoSuccess {
-        return proxy.permissionsCheck(id, permissions);
-    }
-
-    public Task<Boolean> permissionsCheck(TaskMode mode, String id, int permissions) throws NotImplemented {
-        return proxy.permissionsCheck(mode, id, permissions);
-    }
-
-    public void permissionsDeny(String id, int permissions, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess {
-        proxy.permissionsDeny(id, permissions, flags);
-    }
-
-    public void permissionsDeny(String id, int permissions) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, Timeout, NoSuccess {
-        proxy.permissionsDeny(id, permissions);
-    }
-
-    public Task permissionsDeny(TaskMode mode, String id, int permissions, int flags) throws NotImplemented {
-        return proxy.permissionsDeny(mode, id, permissions, flags);
-    }
-
-    public Task permissionsDeny(TaskMode mode, String id, int permissions) throws NotImplemented {
-        return proxy.permissionsDeny(mode, id, permissions);
-    }
-
-    public URL readLink() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        return proxy.readLink();
-    }
-
-    public Task<URL> readLink(TaskMode mode) throws NotImplemented {
-        return proxy.readLink(mode);
-    }
-
-    public void remove() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        proxy.remove();
-    }
-
-    public void remove(int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
-        proxy.remove(flags);
-    }
-
-    public Task remove(TaskMode mode, int flags) throws NotImplemented {
-        return proxy.remove(mode, flags);
-    }
-
-    public Task remove(TaskMode mode) throws NotImplemented {
-        return proxy.remove(mode);
     }
 
     public void removeAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, DoesNotExist, Timeout, NoSuccess {
@@ -338,7 +142,7 @@ final class LogicalFileWrapper implements LogicalFile {
     }
 
     public Task replicate(TaskMode mode, URL name) throws NotImplemented {
-        return proxy.replicate(mode, name);
+        return replicate(mode, name, Flags.NONE.getValue());
     }
 
     public void replicate(URL name, int flags) throws NotImplemented, IncorrectURL, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
@@ -346,7 +150,7 @@ final class LogicalFileWrapper implements LogicalFile {
     }
 
     public void replicate(URL name) throws NotImplemented, IncorrectURL, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
-        proxy.replicate(name);
+        replicate(name, Flags.NONE.getValue());
     }
 
     public void setAttribute(String key, String value) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, BadParameter, DoesNotExist, Timeout, NoSuccess {
@@ -372,5 +176,4 @@ final class LogicalFileWrapper implements LogicalFile {
     public void updateLocation(URL nameOld, URL nameNew) throws NotImplemented, IncorrectURL, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
         proxy.updateLocation(nameOld, nameNew);
     }
-
 }

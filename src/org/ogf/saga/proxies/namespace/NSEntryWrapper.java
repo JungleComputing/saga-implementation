@@ -13,6 +13,7 @@ import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
+import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
@@ -22,17 +23,19 @@ import org.ogf.saga.task.TaskMode;
 /**
  * Wrapper class: wraps the NSEntry proxy.
  */
-public class NSEntryWrapper implements NSEntry {
+public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     
     private NSEntryInterface proxy;
     
-    protected NSEntryWrapper(NSEntryInterface proxy) {
+    protected NSEntryWrapper(Session session, NSEntryInterface proxy) {
+        super(session);
         this.proxy = proxy;
     }
 
     public Object clone() throws CloneNotSupportedException {
-        // TODO: fix this!
-        return proxy.clone();
+        NSEntryWrapper clone = (NSEntryWrapper) super.clone();
+        clone.proxy = (NSEntryInterface) proxy.clone();
+        return clone();
     }
 
     public void close() throws NotImplemented, IncorrectState, NoSuccess {
@@ -94,10 +97,6 @@ public class NSEntryWrapper implements NSEntry {
         return proxy.getGroup(mode);
     }
 
-    public String getId() {
-        return proxy.getId();
-    }
-
     public URL getName() throws NotImplemented, IncorrectState, Timeout,
             NoSuccess {
         return proxy.getName();
@@ -114,10 +113,6 @@ public class NSEntryWrapper implements NSEntry {
 
     public Task<String> getOwner(TaskMode mode) throws NotImplemented {
         return proxy.getOwner(mode);
-    }
-
-    public Session getSession() throws DoesNotExist {
-        return proxy.getSession();
     }
 
     public ObjectType getType() {

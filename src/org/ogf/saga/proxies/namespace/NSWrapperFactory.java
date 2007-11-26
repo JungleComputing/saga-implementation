@@ -27,7 +27,7 @@ public abstract class NSWrapperFactory extends NSFactory {
         NSDirectoryInterface proxy = (NSDirectoryInterface) getAdaptorProxy(
                 "org.ogf.saga.spi.namespace.NSDirectorySpi",
                 NSDirectoryInterface.class, parameters);
-        return new NSDirectoryWrapper(proxy);
+        return new NSDirectoryWrapper(session, proxy);
     }
 
     protected NSEntry doCreateNSEntry(Session session, URL name, int flags)
@@ -38,15 +38,15 @@ public abstract class NSWrapperFactory extends NSFactory {
         NSEntryInterface proxy = (NSEntryInterface) getAdaptorProxy(
                 "org.ogf.saga.spi.namespace.NSEntrySpi",
                 NSEntryInterface.class, parameters);
-        return new NSEntryWrapper(proxy);
+        return new NSEntryWrapper(session, proxy);
     }
     
-    protected static Object getAdaptorProxy(String cpiClassName,
+    protected static Object getAdaptorProxy(String spiClassName,
             Class<?> interfaceClass, Object[] parameters) {
 
         try {
             return SAGAEngine.createAdaptorProxy(
-                    cpiClassName, interfaceClass, parameters);
+                    spiClassName, interfaceClass, parameters);
         } catch (Exception e) {
             throw new Error(e);
         }

@@ -17,6 +17,7 @@ import org.ogf.saga.file.File;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
+import org.ogf.saga.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -24,8 +25,8 @@ class FileWrapper extends NSEntryWrapper implements File {
     
     private FileInterface proxy;
     
-    FileWrapper(FileInterface proxy) {
-        super(proxy);
+    FileWrapper(Session session, FileInterface proxy) {
+        super(session, proxy);
         this.proxy = proxy;
     }
     public long getSize()
@@ -40,8 +41,9 @@ class FileWrapper extends NSEntryWrapper implements File {
     }
     
     public Object clone() throws CloneNotSupportedException {
-        // TODO: fix this
-        return proxy.clone();
+        FileWrapper f = (FileWrapper) super.clone();
+        f.proxy = (FileInterface) proxy.clone();
+        return f;
     }
 
     public ObjectType getType() {
