@@ -18,6 +18,7 @@ import org.ogf.saga.error.Timeout;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
+import org.ogf.saga.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -25,8 +26,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     
     private NSDirectoryInterface proxy;
     
-    protected NSDirectoryWrapper(NSDirectoryInterface proxy) {
-        super(proxy);
+    protected NSDirectoryWrapper(Session session, NSDirectoryInterface proxy) {
+        super(session, proxy);
         this.proxy = proxy;
     }
 
@@ -41,8 +42,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        // TODO: fix this!
-        return proxy.clone();
+        NSDirectoryWrapper clone = (NSDirectoryWrapper) super.clone();
+        clone.proxy = (NSDirectoryInterface) proxy.clone();
+        return clone();
     }
 
     public Task copy(TaskMode mode, URL target, int flags)

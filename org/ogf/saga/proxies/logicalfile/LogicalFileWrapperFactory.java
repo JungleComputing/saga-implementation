@@ -25,10 +25,10 @@ public abstract class LogicalFileWrapperFactory extends LogicalFileFactory {
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, DoesNotExist, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
-        LogicalDirectory proxy = (LogicalDirectory) getAdaptorProxy(
+        LogicalDirectoryInterface proxy = (LogicalDirectoryInterface) getAdaptorProxy(
                     "org.ogf.saga.spi.logicalfile.LogicalDirectorySpi",
-                    LogicalDirectory.class, parameters);
-            return new LogicalDirectoryWrapper(proxy);
+                    LogicalDirectoryInterface.class, parameters);
+            return new LogicalDirectoryWrapper(session, proxy);
     }
 
     protected LogicalFile doCreateLogicalFile(Session session, URL name,
@@ -37,18 +37,18 @@ public abstract class LogicalFileWrapperFactory extends LogicalFileFactory {
             BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
             NoSuccess {
         Object[] parameters = { session, name, flags };
-        LogicalFile proxy = (LogicalFile) getAdaptorProxy(
+        LogicalFileInterface proxy = (LogicalFileInterface) getAdaptorProxy(
                     "org.ogf.saga.spi.logicalfile.LogicalFileSpi",
-                    LogicalFile.class, parameters);
-            return new LogicalFileWrapper(proxy);
+                    LogicalFileInterface.class, parameters);
+            return new LogicalFileWrapper(session, proxy);
     }
     
-    protected static Object getAdaptorProxy(String cpiClassName,
+    protected static Object getAdaptorProxy(String spiClassName,
             Class<?> interfaceClass, Object[] parameters) {
 
         try {
             return SAGAEngine.createAdaptorProxy(
-                    cpiClassName, interfaceClass, parameters);
+                    spiClassName, interfaceClass, parameters);
         } catch (Exception e) {
             throw new Error(e);
         }

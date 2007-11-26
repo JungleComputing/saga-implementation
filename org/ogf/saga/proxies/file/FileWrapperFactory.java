@@ -30,7 +30,7 @@ public abstract class FileWrapperFactory extends FileFactory {
         DirectoryInterface proxy = (DirectoryInterface) getAdaptorProxy(
                     "org.ogf.saga.spi.file.DirectorySpi",
                     DirectoryInterface.class, parameters);
-            return new DirectoryWrapper(proxy);
+            return new DirectoryWrapper(session, proxy);
     }
 
     protected File doCreateFile(Session session, URL name, int flags)
@@ -41,7 +41,7 @@ public abstract class FileWrapperFactory extends FileFactory {
         FileInterface proxy = (FileInterface) getAdaptorProxy(
                 "org.ogf.saga.spi.file.FileSpi",
                 FileInterface.class, parameters);
-        return new FileWrapper(proxy);
+        return new FileWrapper(session, proxy);
     }
 
     protected FileInputStream doCreateFileInputStream(Session session, URL name)
