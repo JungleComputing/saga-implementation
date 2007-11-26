@@ -7,18 +7,18 @@ import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.impl.SagaObjectBase;
 
-final class BufferWrapper extends SagaObjectBase implements org.ogf.saga.buffer.Buffer {
+final class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer {
 
     protected byte[] buf;
     protected boolean implementationManaged;
     protected int size;
     protected boolean closed = false;
 
-    BufferWrapper() throws NotImplemented, BadParameter {
+    Buffer() throws NotImplemented, BadParameter {
         this(-1);
     }
 
-    BufferWrapper(int size) throws NotImplemented, BadParameter {
+    Buffer(int size) throws NotImplemented, BadParameter {
         super(null);
         try {
             setSize(size);
@@ -27,7 +27,7 @@ final class BufferWrapper extends SagaObjectBase implements org.ogf.saga.buffer.
         }
     }
 
-    BufferWrapper(byte[] buf) throws BadParameter, NotImplemented {
+    Buffer(byte[] buf) throws BadParameter, NotImplemented {
         super(null);
         try {
             setData(buf);
@@ -91,16 +91,14 @@ final class BufferWrapper extends SagaObjectBase implements org.ogf.saga.buffer.
         setSize(-1);
     }
 
-    @Override
     public Object clone() throws CloneNotSupportedException {
-        BufferWrapper b = (BufferWrapper) super.clone();
+        Buffer b = (Buffer) super.clone();
         if (buf != null) {
             b.buf = buf.clone();
         }
         return b;
     }
 
-    @Override
     public ObjectType getType() {
         return ObjectType.BUFFER;
     }
