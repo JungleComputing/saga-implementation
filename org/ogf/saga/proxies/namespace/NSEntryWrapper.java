@@ -17,6 +17,7 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.spi.namespace.NSEntryInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 

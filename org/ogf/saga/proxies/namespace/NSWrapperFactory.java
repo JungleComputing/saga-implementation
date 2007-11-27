@@ -16,6 +16,8 @@ import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.spi.namespace.NSDirectoryInterface;
+import org.ogf.saga.spi.namespace.NSEntryInterface;
 
 public abstract class NSWrapperFactory extends NSFactory {
 

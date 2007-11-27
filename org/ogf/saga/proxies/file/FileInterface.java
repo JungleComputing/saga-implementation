@@ -14,7 +14,7 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
-import org.ogf.saga.proxies.namespace.NSEntryInterface;
+import org.ogf.saga.spi.namespace.NSEntryInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
