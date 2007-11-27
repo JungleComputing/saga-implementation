@@ -144,7 +144,7 @@ public class PatternConverter {
         throw new Error("Unmatched {");
     }
 
-    protected PatternConverter(String wildcard) throws BadParameter {
+    public PatternConverter(String wildcard) throws BadParameter {
         this.wildcard = wildcard;
         this.wildcardLen = wildcard.length();
         try {

@@ -1,4 +1,4 @@
-package org.ogf.saga.proxies.namespace;
+package org.ogf.saga.spi.namespace;
 
 import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExists;

@@ -16,7 +16,7 @@ import org.ogf.saga.file.Directory;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.file.FileOutputStream;
-import org.ogf.saga.proxies.namespace.NSDirectoryInterface;
+import org.ogf.saga.spi.namespace.NSDirectoryInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 

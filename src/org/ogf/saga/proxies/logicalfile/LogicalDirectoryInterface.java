@@ -17,7 +17,7 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.logicalfile.LogicalDirectory;
 import org.ogf.saga.logicalfile.LogicalFile;
-import org.ogf.saga.proxies.namespace.NSDirectoryInterface;
+import org.ogf.saga.spi.namespace.NSDirectoryInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 

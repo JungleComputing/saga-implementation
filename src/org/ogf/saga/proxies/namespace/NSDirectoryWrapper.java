@@ -19,6 +19,7 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.spi.namespace.NSDirectoryInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 

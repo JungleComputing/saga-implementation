@@ -1,4 +1,4 @@
-package org.ogf.saga.proxies.namespace;
+package org.ogf.saga.spi.namespace;
 
 import java.util.List;
 
