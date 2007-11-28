@@ -1,4 +1,4 @@
-package org.ogf.saga.proxies.file;
+package org.ogf.saga.spi.file;
 
 import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExists;
@@ -29,7 +29,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @param flags mode for operation.
      * @return the size.
      */
-    public long getSize(URL name, int flags)
+    long getSize(URL name, int flags)
         throws NotImplemented, IncorrectURL, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, DoesNotExist, Timeout, NoSuccess;
@@ -40,7 +40,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @param name to be tested.
      * @return <code>true</code> if the name represents a non-directory entry.
      */
-    public boolean isFile(URL name)
+    boolean isFile(URL name)
         throws NotImplemented, IncorrectURL, DoesNotExist, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess;
@@ -58,7 +58,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @param flags defining the operation modus.
      * @return the opened directory instance.
      */
-    public Directory openDirectory(URL name, int flags)
+    Directory openDirectory(URL name, int flags)
         throws NotImplemented, IncorrectURL,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, AlreadyExists, DoesNotExist,
@@ -70,7 +70,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @param flags defining the operation modus.
      * @return the opened file instance.
      */
-    public File openFile(URL name, int flags)
+    File openFile(URL name, int flags)
         throws NotImplemented, IncorrectURL,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, AlreadyExists, DoesNotExist,
@@ -81,7 +81,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @param name file to open.
      * @return the input stream.
      */
-    public FileInputStream openFileInputStream(URL name)
+    FileInputStream openFileInputStream(URL name)
         throws NotImplemented, IncorrectURL,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, AlreadyExists, DoesNotExist,
@@ -93,7 +93,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @param append when set, the stream appends to the file.
      * @return the output stream.
      */
-    public FileOutputStream openFileOutputStream(URL name, boolean append)
+    FileOutputStream openFileOutputStream(URL name, boolean append)
         throws NotImplemented, IncorrectURL,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, AlreadyExists, DoesNotExist,
@@ -112,7 +112,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Long> getSize(TaskMode mode, URL name, int flags)
+    Task<Long> getSize(TaskMode mode, URL name, int flags)
         throws NotImplemented;
        
     /**
@@ -124,7 +124,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Boolean> isFile(TaskMode mode, URL name)
+    Task<Boolean> isFile(TaskMode mode, URL name)
         throws NotImplemented;
 
     /**
@@ -136,7 +136,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Directory> openDirectory(TaskMode mode, URL name,
+    Task<Directory> openDirectory(TaskMode mode, URL name,
             int flags)
         throws NotImplemented;
     
@@ -149,7 +149,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<File> openFile(TaskMode mode, URL name, int flags)
+    Task<File> openFile(TaskMode mode, URL name, int flags)
         throws NotImplemented;
        
     /**
@@ -160,7 +160,7 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<FileInputStream> openFileInputStream(TaskMode mode, URL name)
+    Task<FileInputStream> openFileInputStream(TaskMode mode, URL name)
         throws NotImplemented;
     
     /**
@@ -172,6 +172,6 @@ public interface DirectoryInterface extends NSDirectoryInterface {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<FileOutputStream> openFileOutputStream(TaskMode mode, URL name, boolean append)
+    Task<FileOutputStream> openFileOutputStream(TaskMode mode, URL name, boolean append)
         throws NotImplemented;    
 }

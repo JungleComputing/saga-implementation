@@ -1,15 +1,15 @@
-package org.ogf.saga.proxies.file;
+package org.ogf.saga.spi.file;
 
 import java.io.IOException;
-
-import org.ogf.saga.SagaObject;
 
 /**
  * Interface describing the methods in the SAGA FileOutputStream.
  * This interface is used to create a proxy. The SPI should
  * implement this interface.
  */
-public interface FileOutputStreamInterface extends SagaObject {
+public interface FileOutputStreamInterface {
+     
+    Object clone() throws CloneNotSupportedException;
     
     void write(int b) throws IOException;
     
@@ -19,6 +19,5 @@ public interface FileOutputStreamInterface extends SagaObject {
     
     void close() throws IOException;
     
-    void flush() throws IOException;
-    
+    void flush() throws IOException;   
 }
