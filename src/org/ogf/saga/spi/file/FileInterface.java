@@ -1,4 +1,4 @@
-package org.ogf.saga.proxies.file;
+package org.ogf.saga.spi.file;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +25,7 @@ public interface FileInterface extends NSEntryInterface  {
      * 
      * @return the size.
      */
-    public long getSize()
+    long getSize()
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, IncorrectState, Timeout, NoSuccess;
 
@@ -41,7 +41,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param buffer the buffer to read data into.
      * @return the number of bytes read.
      */
-    public int read(int len, Buffer buffer)
+    int read(int len, Buffer buffer)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess, IOException;
@@ -55,7 +55,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param buffer the buffer to write data from.
      * @return the number of bytes written.
      */
-    public int write(int len, Buffer buffer)
+    int write(int len, Buffer buffer)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess, IOException;
@@ -67,7 +67,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param whence determines from where the offset is relative.
      * @return the position after the seek.
      */
-    public long seek(long offset, SeekMode whence)
+    long seek(long offset, SeekMode whence)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, IncorrectState, Timeout, NoSuccess,
             IOException;
@@ -80,7 +80,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param iovecs array of IOVecs determining how much to read and where
      * to store it.
      */
-    public void readV(IOVec[] iovecs)
+    void readV(IOVec[] iovecs)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess, IOException;
@@ -91,7 +91,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param iovecs array of IOVecs determining how much to write and where
      * to obtain the data from.
      */
-    public void writeV(IOVec[] iovecs)
+    void writeV(IOVec[] iovecs)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess, IOException;
@@ -103,7 +103,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param pattern to determine size for.
      * @return the size.
      */
-    public int sizeP(String pattern)
+    int sizeP(String pattern)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess;
 
@@ -114,7 +114,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param buffer to store data into.
      * @return number of succesfully read bytes.
      */
-    public int readP(String pattern, Buffer buffer)
+    int readP(String pattern, Buffer buffer)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter, IncorrectState,
             Timeout, NoSuccess, IOException;
@@ -126,7 +126,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param buffer to be written.
      * @return number of succesfully written bytes.
      */
-    public int writeP(String pattern, Buffer buffer)
+    int writeP(String pattern, Buffer buffer)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter, IncorrectState,
             Timeout, NoSuccess, IOException;
@@ -138,7 +138,7 @@ public interface FileInterface extends NSEntryInterface  {
      * the server side.
      * @return list of available modes.
      */
-    public List<String> modesE()
+    List<String> modesE()
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, IncorrectState, Timeout, NoSuccess;
 
@@ -148,7 +148,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param spec to determine size for.
      * @return the size.
      */
-    public int sizeE(String emode, String spec)
+    int sizeE(String emode, String spec)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess;
 
@@ -160,7 +160,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param buffer to store the data read.
      * @return the number of successfully read bytes.
      */
-    public int readE(String emode, String spec, Buffer buffer)
+    int readE(String emode, String spec, Buffer buffer)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter, IncorrectState, Timeout,
             NoSuccess, IOException;
@@ -173,7 +173,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @param buffer data to write.
      * @return the number of successfully written bytes.
      */
-    public int writeE(String emode, String spec, Buffer buffer)
+    int writeE(String emode, String spec, Buffer buffer)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter, IncorrectState, Timeout,
             NoSuccess, IOException;
@@ -192,7 +192,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Long> getSize(TaskMode mode)
+    Task<Long> getSize(TaskMode mode)
         throws NotImplemented;
 
     // POSIX-like I/O
@@ -209,7 +209,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> read(TaskMode mode, int len, Buffer buffer)
+    Task<Integer> read(TaskMode mode, int len, Buffer buffer)
         throws NotImplemented;
 
     /**
@@ -223,7 +223,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> read(TaskMode mode, Buffer buffer)
+    Task<Integer> read(TaskMode mode, Buffer buffer)
         throws NotImplemented;
         
     /**
@@ -237,7 +237,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> write(TaskMode mode, int len, Buffer buffer)
+    Task<Integer> write(TaskMode mode, int len, Buffer buffer)
         throws NotImplemented;
     
     /**
@@ -250,7 +250,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> write(TaskMode mode, Buffer buffer)
+    Task<Integer> write(TaskMode mode, Buffer buffer)
         throws NotImplemented;
     
     /**
@@ -263,7 +263,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Long> seek(TaskMode mode, long offset, SeekMode whence)
+    Task<Long> seek(TaskMode mode, long offset, SeekMode whence)
         throws NotImplemented;
 
     // Scattered I/O
@@ -277,7 +277,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task readV(TaskMode mode, IOVec[] iovecs)
+    Task readV(TaskMode mode, IOVec[] iovecs)
         throws NotImplemented;
 
     /**
@@ -289,7 +289,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task writeV(TaskMode mode, IOVec[] iovecs)
+    Task writeV(TaskMode mode, IOVec[] iovecs)
         throws NotImplemented;
 
     // Pattern-based I/O
@@ -303,7 +303,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> sizeP(TaskMode mode, String pattern)
+    Task<Integer> sizeP(TaskMode mode, String pattern)
         throws NotImplemented;
 
     /**
@@ -327,7 +327,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
+    Task<Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
         throws NotImplemented; 
 
     // extended I/O
@@ -340,7 +340,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<List<String>> modesE(TaskMode mode)
+    Task<List<String>> modesE(TaskMode mode)
         throws NotImplemented;
 
     /**
@@ -353,7 +353,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> sizeE(TaskMode mode, String emode, String spec)
+    Task<Integer> sizeE(TaskMode mode, String emode, String spec)
         throws NotImplemented;
 
     /**
@@ -366,7 +366,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> readE(TaskMode mode, String emode, String spec,
+    Task<Integer> readE(TaskMode mode, String emode, String spec,
             Buffer buffer)
         throws NotImplemented;
 
@@ -380,7 +380,7 @@ public interface FileInterface extends NSEntryInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> writeE(TaskMode mode, String emode, String spec,
+    Task<Integer> writeE(TaskMode mode, String emode, String spec,
             Buffer buffer)
         throws NotImplemented;
 }

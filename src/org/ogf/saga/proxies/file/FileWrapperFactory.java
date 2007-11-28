@@ -19,6 +19,10 @@ import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.spi.file.DirectoryInterface;
+import org.ogf.saga.spi.file.FileInputStreamInterface;
+import org.ogf.saga.spi.file.FileInterface;
+import org.ogf.saga.spi.file.FileOutputStreamInterface;
 
 public abstract class FileWrapperFactory extends FileFactory {
 
@@ -53,7 +57,7 @@ public abstract class FileWrapperFactory extends FileFactory {
             getAdaptorProxy(
                 "org.ogf.saga.spi.file.FileInputStreamSpi",
                 FileInputStreamInterface.class, parameters);
-        return new FileInputStreamWrapper(proxy);
+        return new FileInputStreamWrapper(session, name, proxy);
     }
 
     protected FileOutputStream doCreateFileOutputStream(Session session,
@@ -66,7 +70,7 @@ public abstract class FileWrapperFactory extends FileFactory {
             getAdaptorProxy(
                 "org.ogf.saga.spi.file.FileOutputStreamSpi",
                 FileOutputStreamInterface.class, parameters);
-        return new FileOutputStreamWrapper(proxy);
+        return new FileOutputStreamWrapper(session, name, proxy);
     }
     
     protected static Object getAdaptorProxy(String cpiClassName,

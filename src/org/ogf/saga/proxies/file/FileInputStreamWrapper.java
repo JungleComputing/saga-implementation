@@ -3,16 +3,32 @@ package org.ogf.saga.proxies.file;
 import java.io.IOException;
 
 import org.ogf.saga.ObjectType;
+import org.ogf.saga.URL;
 import org.ogf.saga.error.DoesNotExist;
 import org.ogf.saga.file.FileInputStream;
+import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.spi.file.FileInputStreamInterface;
 
 class FileInputStreamWrapper extends FileInputStream {
     
-    private FileInputStreamInterface proxy;
+    private static class InputSagaObject extends SagaObjectBase {
+        
+        InputSagaObject(Session session) {
+            super(session);
+        }
+
+        public ObjectType getType() {
+            return ObjectType.FILEINPUTSTREAM;
+        }
+    }
     
-    FileInputStreamWrapper(FileInputStreamInterface proxy) {
+    private InputSagaObject sagaObject;
+    private FileInputStreamInterface proxy;
+       
+    FileInputStreamWrapper(Session session, URL name, FileInputStreamInterface proxy) {
         this.proxy = proxy;
+        sagaObject = new InputSagaObject(session);
     }
 
     public int available() throws IOException {
@@ -20,8 +36,10 @@ class FileInputStreamWrapper extends FileInputStream {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        // TODO: fix this!
-        return proxy.clone();
+        FileInputStreamWrapper clone = (FileInputStreamWrapper) super.clone();
+        clone.sagaObject = (InputSagaObject) sagaObject.clone();
+        clone.proxy = (FileInputStreamInterface) proxy.clone();
+        return clone;
     }
 
     public void close() throws IOException {
@@ -29,15 +47,15 @@ class FileInputStreamWrapper extends FileInputStream {
     }
 
     public String getId() {
-        return proxy.getId();
+        return sagaObject.getId();
     }
 
     public Session getSession() throws DoesNotExist {
-        return proxy.getSession();
+        return sagaObject.getSession();
     }
 
     public ObjectType getType() {
-        return ObjectType.FILEINPUTSTREAM;
+        return sagaObject.getType();
     }
 
     public void mark(int readLimit) {
