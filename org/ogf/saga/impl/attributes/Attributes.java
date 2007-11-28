@@ -55,6 +55,39 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
             this.value = "";
             this.vectorValue = new String[0];
         }
+        
+        public int hashCode() {
+            return name.hashCode();
+        }
+        
+        public boolean equals(Object o) {
+            if (o == null || ! (o instanceof AttributeInfo)) {
+                return false;
+            }
+            AttributeInfo info = (AttributeInfo) o;
+            if (! info.name.equals(name) || info.type != type) {
+                return false;
+            }
+            if (info.notImplemented != notImplemented
+                    || info.removable != removable
+                    || info.vector != vector
+                    || info.readOnly != readOnly) {
+                return false;
+            }
+
+            if (! vector) {
+                return info.value.equals(value);
+            }
+            if (info.vectorValue.length != vectorValue.length) {
+                return false;
+            }
+            for (int i = 0; i < vectorValue.length; i++) {
+                if (! info.vectorValue[i].equals(vectorValue[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     
     private HashMap<String, AttributeInfo> attributes;
@@ -75,6 +108,21 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         Attributes clone = (Attributes) super.clone();
         clone.attributes = new HashMap<String, AttributeInfo>(attributes);
         return clone;
+    }
+    
+    public int hashCode() {
+        return attributes.hashCode();
+    }
+    
+    public boolean equals(Object o) {
+        if (o == null || ! (o instanceof Attributes)) {
+            return false;
+        }
+        Attributes a = (Attributes) o;
+        if (a.autoAdd != autoAdd) {
+            return false;
+        }
+        return attributes.equals(a.attributes);
     }
     
     // Stores information about a specific attribute.

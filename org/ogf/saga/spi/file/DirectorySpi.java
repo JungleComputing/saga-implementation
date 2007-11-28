@@ -6,6 +6,7 @@ import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
 import org.ogf.saga.error.DoesNotExist;
+import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
@@ -13,10 +14,11 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.file.Directory;
 import org.ogf.saga.file.File;
+import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.namespace.Flags;
-import org.ogf.saga.session.Session;
+import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.spi.namespace.NSDirectorySpi;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -48,6 +50,14 @@ public abstract class DirectorySpi extends NSDirectorySpi implements
         return new org.ogf.saga.impl.task.Task<Boolean>(this, session, mode,
                 "isFile", new Class[] { URL.class }, arg1);
     }
+    
+    public Directory openDirectory(URL name, int flags)
+            throws NotImplemented, IncorrectURL, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, BadParameter,
+            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+        name = resolve(name);
+        return FileFactory.createDirectory(session, name, flags);
+    }
 
     public Task<Directory> openDirectory(TaskMode mode, URL name, int flags)
             throws NotImplemented {
@@ -55,6 +65,15 @@ public abstract class DirectorySpi extends NSDirectorySpi implements
                 "openDirectory", new Class[] { URL.class, Integer.TYPE }, name,
                 flags);
     }
+    
+    public File openFile(URL name, int flags)
+            throws NotImplemented, IncorrectURL, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, BadParameter,
+            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+        name = resolve(name);
+        return FileFactory.createFile(session, name, flags);
+    }
+
 
     public Task<File> openFile(TaskMode mode, URL name, int flags)
             throws NotImplemented {
@@ -62,6 +81,23 @@ public abstract class DirectorySpi extends NSDirectorySpi implements
                 "openFile", new Class[] { URL.class, Integer.TYPE }, name,
                 flags);
     }
+    
+    public FileInputStream openFileInputStream(URL name) throws NotImplemented,
+            IncorrectURL, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, BadParameter, IncorrectState, AlreadyExists,
+            DoesNotExist, Timeout, NoSuccess {
+        name = resolve(name);
+        return FileFactory.createFileInputStream(session, name);
+    }
+
+    public FileOutputStream openFileOutputStream(URL name, boolean append)
+            throws NotImplemented, IncorrectURL, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, BadParameter,
+            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+        name = resolve(name);
+        return FileFactory.createFileOutputStream(session, name, append);
+    }
+
 
     public Task<FileInputStream> openFileInputStream(TaskMode mode, URL name)
             throws NotImplemented {

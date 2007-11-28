@@ -59,17 +59,17 @@ public class Context extends SagaObjectBase
         try {
             if ("ftp".equals(type)) {
                 // Default is anonymous
-                attributes.setValue(Context.USERID, "anonymous");
-                attributes.setValue(Context.USERPASS, "anonymous@localhost");
+                setValue(Context.USERID, "anonymous");
+                setValue(Context.USERPASS, "anonymous@localhost");
             } else if ("ssh".equals(type) || "sftp".equals(type)) {
-                // attributes.setValue(Context.USERID, "");
-                // attributes.setValue(Context.USERPASS, "");
-                // attributes.setValue(Context.USERKEY, "");
+                // setValue(Context.USERID, "");
+                // setValue(Context.USERPASS, "");
+                // setValue(Context.USERKEY, "");
             } else if ("globus".equals(type) || "gridftp".equals(type)) {
                 // Default: taken from .globus dir in user home.
                 String home = System.getProperty("user.home");
-                attributes.setValue(Context.USERKEY, home + "/.globus/userkey.pem");
-                attributes.setValue(Context.USERCERT, home + "/.globus/usercert.pem");
+                setValue(Context.USERKEY, home + "/.globus/userkey.pem");
+                setValue(Context.USERCERT, home + "/.globus/usercert.pem");
                 // attributes.setValue(Context.USERPASS, "");
             } else if (!type.equals("")) {
                 throw new NoSuccess("Unrecognized TYPE attribute value: "
@@ -149,7 +149,7 @@ public class Context extends SagaObjectBase
         attributes.setVectorAttribute(key, values);
     }
 
-    String getValue(String key) {
+    public String getValue(String key) {
         return attributes.getValue(key);
     }
 

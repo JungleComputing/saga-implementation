@@ -16,7 +16,7 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.namespace.Flags;
-import org.ogf.saga.session.Session;
+import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.spi.namespace.NSEntrySpi;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;

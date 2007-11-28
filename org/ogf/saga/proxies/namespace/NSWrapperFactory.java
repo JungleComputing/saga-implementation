@@ -18,8 +18,10 @@ import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
 import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
+import org.ogf.saga.task.Task;
+import org.ogf.saga.task.TaskMode;
 
-public abstract class NSWrapperFactory extends NSFactory {
+public class NSWrapperFactory extends NSFactory {
 
     protected NSDirectory doCreateNSDirectory(Session session, URL name,
             int flags) throws NotImplemented, IncorrectURL,
@@ -52,6 +54,23 @@ public abstract class NSWrapperFactory extends NSFactory {
         } catch (Exception e) {
             throw new Error(e);
         }
+    }
+
+    protected Task<NSDirectory> doCreateNSDirectory(TaskMode mode,
+            Session session, URL name, int flags) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<NSDirectory>(this, session, mode,
+                "doCreateNSDirectory",
+                new Class[] { Session.class, URL.class, Integer.TYPE},
+                session, name, flags);
+    }
+
+    protected Task<NSEntry> doCreateNSEntry(TaskMode mode, Session session,
+            URL name, int flags) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<NSEntry>(this, session, mode,
+                "doCreateNSEntry",
+                new Class[] { Session.class, URL.class, Integer.TYPE},
+                session, name, flags);
+
     }
 
 }

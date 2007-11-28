@@ -211,21 +211,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      */
     Task<Integer> read(TaskMode mode, int len, Buffer buffer)
         throws NotImplemented;
-
-    /**
-     * Creates a task that reads up to the buffer's size bytes from the file
-     * into the buffer.
-     * The number returned by the task is the number of bytes read, or 0 at
-     * end-of-file.
-     * @param mode the task mode.
-     * @param buffer the buffer to read data into.
-     * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
-     *     method is not implemented.
-     */
-    Task<Integer> read(TaskMode mode, Buffer buffer)
-        throws NotImplemented;
-        
+      
     /**
      * Creates a task that writes up to <code>len</code> bytes from the buffer
      * to the file at the current file position.
@@ -239,20 +225,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      */
     Task<Integer> write(TaskMode mode, int len, Buffer buffer)
         throws NotImplemented;
-    
-    /**
-     * Creates a task that writes up to the buffer's size bytes from the buffer
-     * to the file at the current file position.
-     * The number returned by the task is the number of bytes written.
-     * @param mode the task mode.
-     * @param buffer the buffer to write data from.
-     * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
-     *     method is not implemented.
-     */
-    Task<Integer> write(TaskMode mode, Buffer buffer)
-        throws NotImplemented;
-    
+       
     /**
      * Creates a task that repositions the current file position as requested.
      * The number returned by the task is the new file position.

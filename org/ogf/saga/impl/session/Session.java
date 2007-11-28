@@ -39,7 +39,7 @@ public class Session extends SagaObjectBase
         }
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
-                session.addContext(context);
+                session.addContext((org.ogf.saga.impl.context.Context) context);
             } catch(Throwable e) {
                 // ignored
             }
@@ -103,7 +103,7 @@ public class Session extends SagaObjectBase
         }
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
-                session.removeContext(context);
+                session.removeContext((org.ogf.saga.impl.context.Context) context);
             } catch(Throwable e) {
                 // ignored
             }
