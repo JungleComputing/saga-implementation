@@ -18,15 +18,15 @@ import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.file.FileInterface;
+import org.ogf.saga.spi.file.FileSpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 class FileWrapper extends NSEntryWrapper implements File {
     
-    private FileInterface proxy;
+    private FileSpiInterface proxy;
     
-    FileWrapper(Session session, FileInterface proxy) {
+    FileWrapper(Session session, FileSpiInterface proxy) {
         super(session, proxy);
         this.proxy = proxy;
     }
@@ -43,7 +43,7 @@ class FileWrapper extends NSEntryWrapper implements File {
     
     public Object clone() throws CloneNotSupportedException {
         FileWrapper f = (FileWrapper) super.clone();
-        f.proxy = (FileInterface) proxy.clone();
+        f.proxy = (FileSpiInterface) proxy.clone();
         return f;
     }
 

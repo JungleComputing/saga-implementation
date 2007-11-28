@@ -17,7 +17,7 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.namespace.NSEntryInterface;
+import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -26,16 +26,16 @@ import org.ogf.saga.task.TaskMode;
  */
 public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     
-    private NSEntryInterface proxy;
+    private NSEntrySpiInterface proxy;
     
-    protected NSEntryWrapper(Session session, NSEntryInterface proxy) {
+    protected NSEntryWrapper(Session session, NSEntrySpiInterface proxy) {
         super(session);
         this.proxy = proxy;
     }
 
     public Object clone() throws CloneNotSupportedException {
         NSEntryWrapper clone = (NSEntryWrapper) super.clone();
-        clone.proxy = (NSEntryInterface) proxy.clone();
+        clone.proxy = (NSEntrySpiInterface) proxy.clone();
         return clone();
     }
 

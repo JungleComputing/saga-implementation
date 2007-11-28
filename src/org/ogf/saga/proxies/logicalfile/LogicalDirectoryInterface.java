@@ -17,12 +17,12 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.logicalfile.LogicalDirectory;
 import org.ogf.saga.logicalfile.LogicalFile;
-import org.ogf.saga.spi.namespace.NSDirectoryInterface;
+import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public interface LogicalDirectoryInterface extends AsyncAttributes,
-        NSDirectoryInterface {
+        NSDirectorySpiInterface {
     /**
      * Tests the name for being a logical file.
      * Is an alias for {@link NSDirectory#isEntry}.

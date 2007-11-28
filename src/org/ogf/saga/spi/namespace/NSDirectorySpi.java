@@ -27,7 +27,7 @@ import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public abstract class NSDirectorySpi extends NSEntrySpi implements
-        NSDirectoryInterface {
+        NSDirectorySpiInterface {
       
     protected static Logger logger = Logger.getLogger(NSDirectorySpi.class);
     

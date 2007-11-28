@@ -8,7 +8,7 @@ import org.ogf.saga.error.DoesNotExist;
 import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.file.FileOutputStreamInterface;
+import org.ogf.saga.spi.file.FileOutputStreamSpiInterface;
 
 class FileOutputStreamWrapper extends FileOutputStream {
   
@@ -26,9 +26,9 @@ class FileOutputStreamWrapper extends FileOutputStream {
     }
     
     private OutputSagaObject sagaObject;
-    private FileOutputStreamInterface proxy;
+    private FileOutputStreamSpiInterface proxy;
     
-    FileOutputStreamWrapper(Session session, URL name, FileOutputStreamInterface proxy) {
+    FileOutputStreamWrapper(Session session, URL name, FileOutputStreamSpiInterface proxy) {
         this.proxy = proxy;
         sagaObject = new OutputSagaObject(session);
     }
@@ -36,7 +36,7 @@ class FileOutputStreamWrapper extends FileOutputStream {
     public Object clone() throws CloneNotSupportedException {
         FileOutputStreamWrapper clone = (FileOutputStreamWrapper) super.clone();
         clone.sagaObject = (OutputSagaObject) sagaObject.clone();
-        clone.proxy = (FileOutputStreamInterface) proxy.clone();
+        clone.proxy = (FileOutputStreamSpiInterface) proxy.clone();
         return clone;
     }
 

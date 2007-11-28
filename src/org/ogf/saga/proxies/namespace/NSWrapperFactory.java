@@ -16,8 +16,8 @@ import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.namespace.NSDirectoryInterface;
-import org.ogf.saga.spi.namespace.NSEntryInterface;
+import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
+import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
 
 public abstract class NSWrapperFactory extends NSFactory {
 
@@ -26,9 +26,9 @@ public abstract class NSWrapperFactory extends NSFactory {
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, DoesNotExist, AlreadyExists, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
-        NSDirectoryInterface proxy = (NSDirectoryInterface) getAdaptorProxy(
+        NSDirectorySpiInterface proxy = (NSDirectorySpiInterface) getAdaptorProxy(
                 "org.ogf.saga.spi.namespace.NSDirectorySpi",
-                NSDirectoryInterface.class, parameters);
+                NSDirectorySpiInterface.class, parameters);
         return new NSDirectoryWrapper(session, proxy);
     }
 
@@ -37,9 +37,9 @@ public abstract class NSWrapperFactory extends NSFactory {
             AuthorizationFailed, PermissionDenied, BadParameter, DoesNotExist,
             AlreadyExists, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
-        NSEntryInterface proxy = (NSEntryInterface) getAdaptorProxy(
+        NSEntrySpiInterface proxy = (NSEntrySpiInterface) getAdaptorProxy(
                 "org.ogf.saga.spi.namespace.NSEntrySpi",
-                NSEntryInterface.class, parameters);
+                NSEntrySpiInterface.class, parameters);
         return new NSEntryWrapper(session, proxy);
     }
     

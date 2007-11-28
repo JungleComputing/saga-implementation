@@ -22,7 +22,7 @@ import org.ogf.saga.spi.namespace.NSEntrySpi;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class FileSpi extends NSEntrySpi implements FileInterface {
+public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
 
     protected int fileFlags;
 
