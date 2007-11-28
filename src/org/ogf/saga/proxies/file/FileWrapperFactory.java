@@ -18,13 +18,16 @@ import org.ogf.saga.file.File;
 import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.file.FileOutputStream;
+import org.ogf.saga.file.IOVec;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.file.DirectorySpiInterface;
 import org.ogf.saga.spi.file.FileInputStreamSpiInterface;
 import org.ogf.saga.spi.file.FileSpiInterface;
 import org.ogf.saga.spi.file.FileOutputStreamSpiInterface;
+import org.ogf.saga.task.Task;
+import org.ogf.saga.task.TaskMode;
 
-public abstract class FileWrapperFactory extends FileFactory {
+public class FileWrapperFactory extends FileFactory {
 
     protected Directory doCreateDirectory(Session session, URL name, int flags)
             throws NotImplemented, IncorrectURL, AuthenticationFailed,
@@ -82,5 +85,48 @@ public abstract class FileWrapperFactory extends FileFactory {
         } catch (Exception e) {
             throw new Error(e);
         }
+    }
+
+    @Override
+    protected Task<Directory> doCreateDirectory(TaskMode mode, Session session,
+            URL name, int flags) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<Directory>(this, session, mode,
+                "doCreateDirectory",
+                new Class[] { Session.class, URL.class, Integer.TYPE},
+                session, name, flags);
+    }
+
+    @Override
+    protected Task<File> doCreateFile(TaskMode mode, Session session, URL name,
+            int flags) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<File>(this, session, mode,
+                "doCreateFile",
+                new Class[] { Session.class, URL.class, Integer.TYPE},
+                session, name, flags);
+    }
+
+    @Override
+    protected Task<FileInputStream> doCreateFileInputStream(TaskMode mode,
+            Session session, URL name) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<FileInputStream>(this, session, mode,
+                "doCreateFileInputStream",
+                new Class[] { Session.class, URL.class},
+                session, name);
+    }
+
+    @Override
+    protected Task<FileOutputStream> doCreateFileOutputStream(TaskMode mode,
+            Session session, URL name, boolean append) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<FileOutputStream>(this, session, mode,
+                "doCreateFileOutputStream",
+                new Class[] { Session.class, URL.class, Boolean.TYPE},
+                session, name, append);
+    }
+
+    @Override
+    protected IOVec doCreateIOVec(byte[] data, int lenIn) throws BadParameter,
+            NoSuccess {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

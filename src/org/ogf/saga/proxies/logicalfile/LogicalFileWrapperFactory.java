@@ -19,8 +19,10 @@ import org.ogf.saga.logicalfile.LogicalFileFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
 import org.ogf.saga.spi.logicalfile.LogicalFileSpiInterface;
+import org.ogf.saga.task.Task;
+import org.ogf.saga.task.TaskMode;
 
-public abstract class LogicalFileWrapperFactory extends LogicalFileFactory {
+public class LogicalFileWrapperFactory extends LogicalFileFactory {
 
     protected LogicalDirectory doCreateLogicalDirectory(Session session,
             URL name, int flags) throws NotImplemented, IncorrectURL,
@@ -54,5 +56,23 @@ public abstract class LogicalFileWrapperFactory extends LogicalFileFactory {
         } catch (Exception e) {
             throw new Error(e);
         }
+    }
+
+    @Override
+    protected Task<LogicalDirectory> doCreateLogicalDirectory(TaskMode mode,
+            Session session, URL name, int flags) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<LogicalDirectory>(this, session, mode,
+                "doCreateLogicalDirectory",
+                new Class[] { Session.class, URL.class, Integer.TYPE},
+                session, name, flags);
+    }
+
+    @Override
+    protected Task<LogicalFile> doCreateLogicalFile(TaskMode mode,
+            Session session, URL name, int flags) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<LogicalFile>(this, session, mode,
+                "doCreateLogicalFile",
+                new Class[] { Session.class, URL.class, Integer.TYPE},
+                session, name, flags);
     }
 }

@@ -68,7 +68,7 @@ class FileWrapper extends NSEntryWrapper implements File {
     }
 
     public Task<Integer> read(TaskMode mode, Buffer buffer) throws NotImplemented {
-        return proxy.read(mode, buffer);
+        return read(mode, -1, buffer);
     }
 
     public Task<Integer> read(TaskMode mode, int len, Buffer buffer) throws NotImplemented {
@@ -132,7 +132,7 @@ class FileWrapper extends NSEntryWrapper implements File {
     }
 
     public Task<Integer> write(TaskMode mode, Buffer buffer) throws NotImplemented {
-        return proxy.write(mode, buffer);
+        return write(mode,-1, buffer);
     }
 
     public Task<Integer> write(TaskMode mode, int len, Buffer buffer) throws NotImplemented {

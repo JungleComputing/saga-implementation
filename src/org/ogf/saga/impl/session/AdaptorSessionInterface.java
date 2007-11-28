@@ -1,6 +1,6 @@
 package org.ogf.saga.impl.session;
 
-import org.ogf.saga.context.Context;
+import org.ogf.saga.impl.context.Context;
 import org.ogf.saga.error.DoesNotExist;
 import org.ogf.saga.error.NotImplemented;
 
