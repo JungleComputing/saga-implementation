@@ -17,6 +17,8 @@ import org.ogf.saga.logicalfile.LogicalDirectory;
 import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.logicalfile.LogicalFileFactory;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
+import org.ogf.saga.spi.logicalfile.LogicalFileSpiInterface;
 
 public abstract class LogicalFileWrapperFactory extends LogicalFileFactory {
 
@@ -25,9 +27,9 @@ public abstract class LogicalFileWrapperFactory extends LogicalFileFactory {
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, DoesNotExist, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
-        LogicalDirectoryInterface proxy = (LogicalDirectoryInterface) getAdaptorProxy(
+        LogicalDirectorySpiInterface proxy = (LogicalDirectorySpiInterface) getAdaptorProxy(
                     "org.ogf.saga.spi.logicalfile.LogicalDirectorySpi",
-                    LogicalDirectoryInterface.class, parameters);
+                    LogicalDirectorySpiInterface.class, parameters);
             return new LogicalDirectoryWrapper(session, proxy);
     }
 
@@ -37,9 +39,9 @@ public abstract class LogicalFileWrapperFactory extends LogicalFileFactory {
             BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
             NoSuccess {
         Object[] parameters = { session, name, flags };
-        LogicalFileInterface proxy = (LogicalFileInterface) getAdaptorProxy(
+        LogicalFileSpiInterface proxy = (LogicalFileSpiInterface) getAdaptorProxy(
                     "org.ogf.saga.spi.logicalfile.LogicalFileSpi",
-                    LogicalFileInterface.class, parameters);
+                    LogicalFileSpiInterface.class, parameters);
             return new LogicalFileWrapper(session, proxy);
     }
     

@@ -1,4 +1,4 @@
-package org.ogf.saga.proxies.logicalfile;
+package org.ogf.saga.spi.logicalfile;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface LogicalFileInterface extends NSEntrySpiInterface, AsyncAttributes  {
+public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttributes  {
 
     /**
      * Adds a replica location to the replica set.

@@ -28,7 +28,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
     public Object clone() throws CloneNotSupportedException;
     
     /**
-     * Obtains the complete URL refering to the entry.
+     * Obtains the complete URL referring to the entry.
      * @return the URL.
      */
     public URL getURL()
