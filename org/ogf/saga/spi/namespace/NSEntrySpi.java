@@ -19,7 +19,7 @@ import org.ogf.saga.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class NSEntrySpi implements NSEntryInterface {
+public abstract class NSEntrySpi implements NSEntrySpiInterface {
 
     private static Logger logger = Logger.getLogger(NSEntrySpi.class);
 

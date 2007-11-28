@@ -20,7 +20,7 @@ import org.ogf.saga.task.TaskMode;
 /**
  * Part of the SAGA NSEntry interface that has to be implemented by the SPI's.
  */
-public interface NSEntryInterface extends Async, Permissions {  
+public interface NSEntrySpiInterface extends Async, Permissions {  
     
     /**
      * Returns a clone.

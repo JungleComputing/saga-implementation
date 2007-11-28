@@ -20,15 +20,15 @@ import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.file.DirectoryInterface;
+import org.ogf.saga.spi.file.DirectorySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
-    private DirectoryInterface proxy;
+    private DirectorySpiInterface proxy;
     
-    DirectoryWrapper(Session session, DirectoryInterface proxy) {
+    DirectoryWrapper(Session session, DirectorySpiInterface proxy) {
         super(session, proxy);
         this.proxy = proxy;
     }
@@ -59,7 +59,7 @@ class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
     
     public Object clone() throws CloneNotSupportedException {
         DirectoryWrapper clone = (DirectoryWrapper) super.clone();
-        clone.proxy = (DirectoryInterface) proxy.clone();
+        clone.proxy = (DirectorySpiInterface) proxy.clone();
         return clone;
     }
 

@@ -19,7 +19,7 @@ import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface NSDirectoryInterface extends NSEntryInterface {
+public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
     /**
      * Changes the working directory.
      * @param dir the directory to change to.

@@ -22,7 +22,7 @@ import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public abstract class DirectorySpi extends NSDirectorySpi implements
-        DirectoryInterface {
+        DirectorySpiInterface {
     
     protected int directoryFlags;
 

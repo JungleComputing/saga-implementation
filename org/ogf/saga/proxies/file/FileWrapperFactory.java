@@ -19,10 +19,10 @@ import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.file.DirectoryInterface;
-import org.ogf.saga.spi.file.FileInputStreamInterface;
-import org.ogf.saga.spi.file.FileInterface;
-import org.ogf.saga.spi.file.FileOutputStreamInterface;
+import org.ogf.saga.spi.file.DirectorySpiInterface;
+import org.ogf.saga.spi.file.FileInputStreamSpiInterface;
+import org.ogf.saga.spi.file.FileSpiInterface;
+import org.ogf.saga.spi.file.FileOutputStreamSpiInterface;
 
 public abstract class FileWrapperFactory extends FileFactory {
 
@@ -31,9 +31,9 @@ public abstract class FileWrapperFactory extends FileFactory {
             AuthorizationFailed, PermissionDenied, BadParameter, AlreadyExists,
             DoesNotExist, Timeout, NoSuccess { 
         Object[] parameters = { session, name, flags };
-        DirectoryInterface proxy = (DirectoryInterface) getAdaptorProxy(
+        DirectorySpiInterface proxy = (DirectorySpiInterface) getAdaptorProxy(
                     "org.ogf.saga.spi.file.DirectorySpi",
-                    DirectoryInterface.class, parameters);
+                    DirectorySpiInterface.class, parameters);
             return new DirectoryWrapper(session, proxy);
     }
 
@@ -42,9 +42,9 @@ public abstract class FileWrapperFactory extends FileFactory {
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
-        FileInterface proxy = (FileInterface) getAdaptorProxy(
+        FileSpiInterface proxy = (FileSpiInterface) getAdaptorProxy(
                 "org.ogf.saga.spi.file.FileSpi",
-                FileInterface.class, parameters);
+                FileSpiInterface.class, parameters);
         return new FileWrapper(session, proxy);
     }
 
@@ -53,10 +53,10 @@ public abstract class FileWrapperFactory extends FileFactory {
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
         Object[] parameters = { session, name };
-        FileInputStreamInterface proxy = (FileInputStreamInterface)
+        FileInputStreamSpiInterface proxy = (FileInputStreamSpiInterface)
             getAdaptorProxy(
                 "org.ogf.saga.spi.file.FileInputStreamSpi",
-                FileInputStreamInterface.class, parameters);
+                FileInputStreamSpiInterface.class, parameters);
         return new FileInputStreamWrapper(session, name, proxy);
     }
 
@@ -66,10 +66,10 @@ public abstract class FileWrapperFactory extends FileFactory {
             BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
             NoSuccess {
         Object[] parameters = { session, name, append };
-        FileOutputStreamInterface proxy = (FileOutputStreamInterface)
+        FileOutputStreamSpiInterface proxy = (FileOutputStreamSpiInterface)
             getAdaptorProxy(
                 "org.ogf.saga.spi.file.FileOutputStreamSpi",
-                FileOutputStreamInterface.class, parameters);
+                FileOutputStreamSpiInterface.class, parameters);
         return new FileOutputStreamWrapper(session, name, proxy);
     }
     

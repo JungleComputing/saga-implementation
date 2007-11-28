@@ -7,7 +7,7 @@ import java.io.IOException;
  * This interface is used to create a proxy. The SPI should
  * implement this interface.
  */
-public interface FileInputStreamInterface {
+public interface FileInputStreamSpiInterface {
     
     Object clone() throws CloneNotSupportedException;
     
