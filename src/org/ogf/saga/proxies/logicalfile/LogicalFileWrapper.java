@@ -18,15 +18,16 @@ import org.ogf.saga.error.Timeout;
 import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.spi.logicalfile.LogicalFileSpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 
 final class LogicalFileWrapper extends NSEntryWrapper implements LogicalFile {
     
-    private LogicalFileInterface proxy;
+    private LogicalFileSpiInterface proxy;
     
-    LogicalFileWrapper(Session session, LogicalFileInterface proxy) {
+    LogicalFileWrapper(Session session, LogicalFileSpiInterface proxy) {
         super(session, proxy);
         this.proxy = proxy;
     }
@@ -41,7 +42,7 @@ final class LogicalFileWrapper extends NSEntryWrapper implements LogicalFile {
 
     public Object clone() throws CloneNotSupportedException {
         LogicalFileWrapper clone = (LogicalFileWrapper) super.clone();
-        clone.proxy = (LogicalFileInterface) proxy.clone();
+        clone.proxy = (LogicalFileSpiInterface) proxy.clone();
         return clone();
     }
 

@@ -1,4 +1,4 @@
-package org.ogf.saga.proxies.logicalfile;
+package org.ogf.saga.spi.logicalfile;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface LogicalDirectoryInterface extends AsyncAttributes,
+public interface LogicalDirectorySpiInterface extends AsyncAttributes,
         NSDirectorySpiInterface {
     /**
      * Tests the name for being a logical file.

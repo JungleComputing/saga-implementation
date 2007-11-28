@@ -20,21 +20,22 @@ import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 class LogicalDirectoryWrapper extends NSDirectoryWrapper implements LogicalDirectory {
     
-    private LogicalDirectoryInterface proxy;
+    private LogicalDirectorySpiInterface proxy;
     
-    LogicalDirectoryWrapper(Session session, LogicalDirectoryInterface proxy) {
+    LogicalDirectoryWrapper(Session session, LogicalDirectorySpiInterface proxy) {
         super(session, proxy);
         this.proxy = proxy;
     }
 
     public Object clone() throws CloneNotSupportedException {
         LogicalDirectoryWrapper clone = (LogicalDirectoryWrapper) super.clone();
-        clone.proxy = (LogicalDirectoryInterface) proxy.clone();
+        clone.proxy = (LogicalDirectorySpiInterface) proxy.clone();
         return clone();
     }
 
