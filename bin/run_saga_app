@@ -1,0 +1,30 @@
+#!/bin/sh
+
+if [ -z "$SAGA_HOME" ] ; then
+    echo SAGA_HOME variable not set, using $PWD
+    SAGA_HOME=$PWD
+fi
+
+# ---- do not touch anything below this line ----
+
+SAGA_LIB_LOCATION=$SAGA_HOME/lib
+GAT_LIB_LOCATION=$SAGA_LIB_LOCATION/JavaGAT
+GAT_ADAPTOR_LOCATION=$GAT_LIB_LOCATION/adaptors
+
+# Jar-files from library.
+SAGA_CLASSPATH=""
+add_to_saga_classpath () {
+    JARFILES=`cd "$1" && ls *.jar 2>/dev/null`
+    for i in ${JARFILES} ; do
+	if [ -z "$SAGA_CLASSPATH" ] ; then
+	    SAGA_CLASSPATH="$1/$i"
+	else
+	    SAGA_CLASSPATH="$SAGA_CLASSPATH:$1/$i"
+	fi
+    done
+}
+
+add_to_saga_classpath $GAT_LIB_LOCATION
+add_to_saga_classpath $SAGA_LIB_LOCATION
+
+java -cp "$CLASSPATH:$SAGA_CLASSPATH" -Dlog4j.configuration=file:$SAGA_HOME/log4j.properties -Dgat.adaptor.path=$GAT_ADAPTOR_LOCATION -Dsaga.factory=org.ogf.sagaImpl.javaGAT.bootstrap.MetaFactory "$@"
