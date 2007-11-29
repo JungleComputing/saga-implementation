@@ -35,8 +35,10 @@ public class FileWrapperFactory extends FileFactory {
             DoesNotExist, Timeout, NoSuccess { 
         Object[] parameters = { session, name, flags };
         DirectorySpiInterface proxy = (DirectorySpiInterface) getAdaptorProxy(
-                    "org.ogf.saga.spi.file.DirectorySpi",
-                    DirectorySpiInterface.class, parameters);
+                    DirectorySpiInterface.class,
+                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                        Integer.TYPE },
+                        parameters);
             return new DirectoryWrapper(session, proxy);
     }
 
@@ -46,8 +48,10 @@ public class FileWrapperFactory extends FileFactory {
             IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
         FileSpiInterface proxy = (FileSpiInterface) getAdaptorProxy(
-                "org.ogf.saga.spi.file.FileSpi",
-                FileSpiInterface.class, parameters);
+                FileSpiInterface.class,
+                new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    Integer.TYPE },
+                parameters);
         return new FileWrapper(session, proxy);
     }
 
@@ -58,8 +62,9 @@ public class FileWrapperFactory extends FileFactory {
         Object[] parameters = { session, name };
         FileInputStreamSpiInterface proxy = (FileInputStreamSpiInterface)
             getAdaptorProxy(
-                "org.ogf.saga.spi.file.FileInputStreamSpi",
-                FileInputStreamSpiInterface.class, parameters);
+                FileInputStreamSpiInterface.class,
+                new Class[] { URL.class, Integer.TYPE },
+                parameters);
         return new FileInputStreamWrapper(session, name, proxy);
     }
 
@@ -71,17 +76,18 @@ public class FileWrapperFactory extends FileFactory {
         Object[] parameters = { session, name, append };
         FileOutputStreamSpiInterface proxy = (FileOutputStreamSpiInterface)
             getAdaptorProxy(
-                "org.ogf.saga.spi.file.FileOutputStreamSpi",
-                FileOutputStreamSpiInterface.class, parameters);
+                FileOutputStreamSpiInterface.class,
+                new Class[] { URL.class, Integer.TYPE },
+                parameters);
         return new FileOutputStreamWrapper(session, name, proxy);
     }
     
-    protected static Object getAdaptorProxy(String cpiClassName,
-            Class<?> interfaceClass, Object[] parameters) {
+    protected static Object getAdaptorProxy(
+            Class<?> interfaceClass, Class<?>[] types, Object[] parameters) {
 
         try {
             return SAGAEngine.createAdaptorProxy(
-                    cpiClassName, interfaceClass, parameters);
+                    interfaceClass, types, parameters);
         } catch (Exception e) {
             throw new Error(e);
         }

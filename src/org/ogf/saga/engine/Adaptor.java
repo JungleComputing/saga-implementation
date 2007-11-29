@@ -36,16 +36,12 @@ class Adaptor {
      * @exception Throwable anything that the constructor throws, or an
      *     error indicating that no suitable constructor was found.
      */
-    Object instantiate(Object[] parameters)
+    Object instantiate(Class<?>[] types, Object[] parameters)
             throws Throwable {
-        Class<?>[] parameterTypes = new Class<?>[parameters.length];
-        for (int i = 0; i < parameters.length; i++) {
-            parameterTypes[i] = parameters[i].getClass();
-        }
         try {
             // TODO: this may be too strict. The parameters could be of
             // a subclass of the type specified in the constructor.
-            Constructor<?> ctor = adaptorClass.getConstructor(parameterTypes);
+            Constructor<?> ctor = adaptorClass.getConstructor(types);
 
             if (ctor == null) {
                 throw new Error("No correct contructor exists in adaptor"
@@ -86,8 +82,8 @@ class Adaptor {
                 shortSpiName = shortSpiName.substring(index+1);
             }
 
-            // clip of the "Spi"
-            shortSpiName = shortSpiName.substring(0, shortSpiName.length()-3);
+            // clip of the "SpiInterface"
+            shortSpiName = shortSpiName.substring(0, shortSpiName.length()-12);
         }
         return shortSpiName;
     }

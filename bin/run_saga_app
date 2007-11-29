@@ -5,10 +5,16 @@ if [ -z "$SAGA_HOME" ] ; then
     SAGA_HOME=$PWD
 fi
 
+if [ -z "$SAGA_ADAPTORS_HOME" ] ; then
+    echo SAGA_ADAPTORS_HOME variable not set, using $PWD
+    SAGA_ADAPTORS_HOME=$PWD
+fi
+
 # ---- do not touch anything below this line ----
 
 SAGA_LIB_LOCATION=$SAGA_HOME/lib
-GAT_LIB_LOCATION=$SAGA_LIB_LOCATION/JavaGAT
+GAT_LIB_LOCATION=$SAGA_ADAPTORS_HOME/lib/JavaGAT
+SAGA_ADAPTOR_LOCATION=$SAGA_ADAPTORS_HOME/lib:$GAT_LIB_LOCATION
 GAT_ADAPTOR_LOCATION=$GAT_LIB_LOCATION/adaptors
 
 # Jar-files from library.
@@ -24,7 +30,6 @@ add_to_saga_classpath () {
     done
 }
 
-add_to_saga_classpath $GAT_LIB_LOCATION
 add_to_saga_classpath $SAGA_LIB_LOCATION
 
-java -cp "$CLASSPATH:$SAGA_CLASSPATH" -Dlog4j.configuration=file:$SAGA_HOME/log4j.properties -Dgat.adaptor.path=$GAT_ADAPTOR_LOCATION -Dsaga.factory=org.ogf.sagaImpl.javaGAT.bootstrap.MetaFactory "$@"
+java -cp "$CLASSPATH:$SAGA_CLASSPATH" -Dlog4j.configuration=file:$SAGA_HOME/log4j.properties -Dsaga.adaptor.path=$SAGA_ADAPTOR_LOCATION -Dgat.adaptor.path=$GAT_ADAPTOR_LOCATION -Dsaga.factory=org.ogf.saga.impl.bootstrap.MetaFactory "$@"

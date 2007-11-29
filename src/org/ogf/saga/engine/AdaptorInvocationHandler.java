@@ -100,7 +100,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
     private Hashtable<String, Object> adaptorInstantiations
         = new Hashtable<String, Object>();
     
-    AdaptorInvocationHandler(AdaptorList adaptors, Object[] params) {
+    AdaptorInvocationHandler(AdaptorList adaptors, Class[] types, Object[] params) {
 
         if (adaptors.size() == 0) {
             throw new Error("no adaptors could be loaded for this object");
@@ -110,7 +110,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             String adaptorname = adaptor.getName();
 
             try {
-                Object object = initAdaptor(adaptor, params);
+                Object object = initAdaptor(adaptor, types, params);
                 this.adaptorInstantiations.put(adaptorname, object);
                 this.adaptors.put(adaptorname, adaptor);
                 adaptorSorter.add(adaptorname);
@@ -197,7 +197,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      *            The parameters for the Spi Constructor.
      * @return the instance.
      */
-    private Object initAdaptor(Adaptor adaptor, Object... parameters) {
+    private Object initAdaptor(Adaptor adaptor, Class<?>[] types, Object... parameters) {
         
         Object result;
 
@@ -208,7 +208,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
         
         try {
-            result = adaptor.instantiate(parameters);
+            result = adaptor.instantiate(types, parameters);
         } catch (Throwable t) {
             if (logger.isDebugEnabled()) {
                 logger.debug("initAdaptor: Couldn't create "
