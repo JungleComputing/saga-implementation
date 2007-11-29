@@ -29,8 +29,10 @@ public class NSWrapperFactory extends NSFactory {
             BadParameter, DoesNotExist, AlreadyExists, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
         NSDirectorySpiInterface proxy = (NSDirectorySpiInterface) getAdaptorProxy(
-                "org.ogf.saga.spi.namespace.NSDirectorySpi",
-                NSDirectorySpiInterface.class, parameters);
+                NSDirectorySpiInterface.class,
+                new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    Integer.TYPE },
+                parameters);
         return new NSDirectoryWrapper(session, proxy);
     }
 
@@ -40,17 +42,19 @@ public class NSWrapperFactory extends NSFactory {
             AlreadyExists, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
         NSEntrySpiInterface proxy = (NSEntrySpiInterface) getAdaptorProxy(
-                "org.ogf.saga.spi.namespace.NSEntrySpi",
-                NSEntrySpiInterface.class, parameters);
+                NSEntrySpiInterface.class,
+                new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    Integer.TYPE },
+                parameters);
         return new NSEntryWrapper(session, proxy);
     }
     
-    protected static Object getAdaptorProxy(String spiClassName,
-            Class<?> interfaceClass, Object[] parameters) {
+    protected static Object getAdaptorProxy(
+            Class<?> interfaceClass, Class[] types, Object[] parameters) {
 
         try {
             return SAGAEngine.createAdaptorProxy(
-                    spiClassName, interfaceClass, parameters);
+                    interfaceClass, types, parameters);
         } catch (Exception e) {
             throw new Error(e);
         }

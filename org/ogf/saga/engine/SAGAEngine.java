@@ -14,6 +14,14 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.apache.log4j.Logger;
+import org.ogf.saga.spi.file.DirectorySpiInterface;
+import org.ogf.saga.spi.file.FileInputStreamSpiInterface;
+import org.ogf.saga.spi.file.FileOutputStreamSpiInterface;
+import org.ogf.saga.spi.file.FileSpiInterface;
+import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
+import org.ogf.saga.spi.logicalfile.LogicalFileSpiInterface;
+import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
+import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
 
 /**
  * This class make the various SAGA adaptors available to SAGA.
@@ -263,29 +271,22 @@ public class SAGAEngine {
 
         Attributes attributes = manifest.getMainAttributes();
         
-        loadSpiClass(jarFile, manifest, attributes, "Blabla", null);
-
-        /*
-        loadSpiClass(jarFile, manifest, attributes, "Endpoint",
-                EndpointSpi.class);
-        loadSpiClass(jarFile, manifest, attributes, "AdvertService",
-                AdvertServiceSpi.class);
-        loadSpiClass(jarFile, manifest, attributes, "Monitorable",
-                MonitorableSpi.class);
-        loadSpiClass(jarFile, manifest, attributes, "SteeringManager",
-                SteeringManagerSpi.class);
-        loadSpiClass(jarFile, manifest, attributes, "File", FileSpi.class);
-        loadSpiClass(jarFile, manifest, attributes, "LogicalFile",
-                LogicalFileSpi.class);
-        loadSpiClass(jarFile, manifest, attributes, "RandomAccessFile",
-                RandomAccessFileSpi.class);
+        loadSpiClass(jarFile, manifest, attributes, "NSEntry",
+                NSEntrySpiInterface.class);
+        loadSpiClass(jarFile, manifest, attributes, "NSDirectory",
+                NSDirectorySpiInterface.class);
+        loadSpiClass(jarFile, manifest, attributes, "File",
+                FileSpiInterface.class);
         loadSpiClass(jarFile, manifest, attributes, "FileInputStream",
-                FileInputStreamSpi.class);
+                FileInputStreamSpiInterface.class);
         loadSpiClass(jarFile, manifest, attributes, "FileOutputStream",
-                FileOutputStreamSpi.class);
-        loadSpiClass(jarFile, manifest, attributes, "ResourceBroker",
-                ResourceBrokerSpi.class);
-        */
+                FileOutputStreamSpiInterface.class);
+        loadSpiClass(jarFile, manifest, attributes, "Directory",
+                DirectorySpiInterface.class);
+        loadSpiClass(jarFile, manifest, attributes, "LogicalFile",
+                LogicalFileSpiInterface.class);
+        loadSpiClass(jarFile, manifest, attributes, "LogicalDirectory",
+                LogicalDirectorySpiInterface.class);
     }
 
     /**
@@ -341,25 +342,18 @@ public class SAGAEngine {
         }
     }
 
-    public static Object createAdaptorProxy(String spiClassName,
-            Class<?> interfaceClass, Object[] tmpParams) {
-
-        Class<?> spiClass;
-        try {
-            spiClass = Class.forName(spiClassName);
-        } catch (ClassNotFoundException e) {
-            throw new Error(e);
-        }
+    public static Object createAdaptorProxy(
+            Class<?> interfaceClass, Class[] types, Object[] tmpParams) {
 
         SAGAEngine sagaEngine = SAGAEngine.getSAGAEngine();
 
-        AdaptorList adaptors = sagaEngine.getAdaptorList(spiClass);
+        AdaptorList adaptors = sagaEngine.getAdaptorList(interfaceClass);
         if (adaptors == null) {
             throw new Error("could not find any adaptors");
         }
 
         AdaptorInvocationHandler handler = new AdaptorInvocationHandler(
-                adaptors, tmpParams);
+                adaptors, types, tmpParams);
         Object proxy = Proxy.newProxyInstance(interfaceClass.getClassLoader(),
                 new Class[] { interfaceClass }, handler);
         return proxy;

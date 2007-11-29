@@ -30,8 +30,10 @@ public class LogicalFileWrapperFactory extends LogicalFileFactory {
             BadParameter, DoesNotExist, Timeout, NoSuccess {
         Object[] parameters = { session, name, flags };
         LogicalDirectorySpiInterface proxy = (LogicalDirectorySpiInterface) getAdaptorProxy(
-                    "org.ogf.saga.spi.logicalfile.LogicalDirectorySpi",
-                    LogicalDirectorySpiInterface.class, parameters);
+                    LogicalDirectorySpiInterface.class,
+                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                        Integer.TYPE },
+                    parameters);
             return new LogicalDirectoryWrapper(session, proxy);
     }
 
@@ -42,17 +44,19 @@ public class LogicalFileWrapperFactory extends LogicalFileFactory {
             NoSuccess {
         Object[] parameters = { session, name, flags };
         LogicalFileSpiInterface proxy = (LogicalFileSpiInterface) getAdaptorProxy(
-                    "org.ogf.saga.spi.logicalfile.LogicalFileSpi",
-                    LogicalFileSpiInterface.class, parameters);
+                    LogicalFileSpiInterface.class,
+                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                        Integer.TYPE }, 
+                    parameters);
             return new LogicalFileWrapper(session, proxy);
     }
     
-    protected static Object getAdaptorProxy(String spiClassName,
-            Class<?> interfaceClass, Object[] parameters) {
+    protected static Object getAdaptorProxy(
+            Class<?> interfaceClass, Class[] types, Object[] parameters) {
 
         try {
             return SAGAEngine.createAdaptorProxy(
-                    spiClassName, interfaceClass, parameters);
+                    interfaceClass, types, parameters);
         } catch (Exception e) {
             throw new Error(e);
         }
