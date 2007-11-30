@@ -8,6 +8,7 @@ import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
+import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.stream.Stream;
@@ -23,15 +24,15 @@ public class StreamWrapperFactory extends StreamFactory {
             throws NotImplemented, IncorrectURL, BadParameter,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             Timeout, NoSuccess {
-        // TODO Auto-generated method stub
-        return null;
+        return new StreamWrapper(session, name);
     }
 
     @Override
     protected Task<Stream> doCreateStream(TaskMode mode, Session session,
             URL name) throws NotImplemented {
-        // TODO Auto-generated method stub
-        return null;
+        return new org.ogf.saga.impl.task.Task<Stream>(this, session, mode,
+                "doCreateStream", new Class[] {Session.class, URL.class},
+                session, name);
     }
 
     @Override
@@ -39,8 +40,7 @@ public class StreamWrapperFactory extends StreamFactory {
             throws NotImplemented, IncorrectURL, BadParameter,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             Timeout, NoSuccess {
-        // TODO Auto-generated method stub
-        return null;
+        return new StreamServiceWrapper(session, name);
     }
 
     @Override
@@ -48,22 +48,32 @@ public class StreamWrapperFactory extends StreamFactory {
             throws NotImplemented, IncorrectURL, BadParameter,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             Timeout, NoSuccess {
-        // TODO Auto-generated method stub
-        return null;
+        URL name;
+        try {
+            name = new URL("");
+        } catch(Throwable e) {
+            throw new SagaError("Should not happen!", e);
+        }
+        return doCreateStreamService(session, name);
     }
 
     @Override
     protected Task<StreamService> doCreateStreamService(TaskMode mode,
             Session session, URL name) throws NotImplemented {
-        // TODO Auto-generated method stub
-        return null;
+        return new org.ogf.saga.impl.task.Task<StreamService>(this, session, mode,
+                "doCreateStreamService", new Class[] {Session.class, URL.class},
+                session, name);
     }
 
     @Override
     protected Task<StreamService> doCreateStreamService(TaskMode mode,
             Session session) throws NotImplemented {
-        // TODO Auto-generated method stub
-        return null;
+        URL name;
+        try {
+            name = new URL("");
+        } catch(Throwable e) {
+            throw new SagaError("Should not happen!", e);
+        }
+        return doCreateStreamService(mode, session, name);      
     }
-
 }

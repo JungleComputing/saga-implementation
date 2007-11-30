@@ -2,6 +2,7 @@ package org.ogf.saga.proxies.namespace;
 
 import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
+import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AlreadyExists;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
@@ -28,8 +29,21 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     
     private NSEntrySpiInterface proxy;
     
-    protected NSEntryWrapper(Session session, NSEntrySpiInterface proxy) {
+    protected NSEntryWrapper(Session session, URL name, int flags) {        
         super(session);
+        Object[] parameters = { session, name, flags };
+        proxy = (NSEntrySpiInterface) SAGAEngine.createAdaptorProxy(
+                NSEntrySpiInterface.class,
+                new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    Integer.TYPE },
+                parameters);
+    }
+    
+    protected NSEntryWrapper(Session session) {
+        super(session);
+    }
+    
+    protected void setProxy(NSEntrySpiInterface proxy) {
         this.proxy = proxy;
     }
 

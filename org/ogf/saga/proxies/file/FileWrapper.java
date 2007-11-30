@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.ogf.saga.ObjectType;
+import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
+import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
@@ -26,10 +28,17 @@ class FileWrapper extends NSEntryWrapper implements File {
     
     private FileSpiInterface proxy;
     
-    FileWrapper(Session session, FileSpiInterface proxy) {
-        super(session, proxy);
-        this.proxy = proxy;
+    FileWrapper(Session session, URL name, int flags) {
+        super(session);
+        Object[] parameters = { session, name, flags };
+        proxy = (FileSpiInterface) SAGAEngine.createAdaptorProxy(
+                FileSpiInterface.class,
+                new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    Integer.TYPE },
+                parameters);
+        super.setProxy(proxy);
     }
+    
     public long getSize()
             throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
                     PermissionDenied, IncorrectState, Timeout, NoSuccess {

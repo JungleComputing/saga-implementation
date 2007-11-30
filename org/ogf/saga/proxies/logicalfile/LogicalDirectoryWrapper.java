@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
+import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AlreadyExists;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
@@ -28,9 +29,15 @@ class LogicalDirectoryWrapper extends NSDirectoryWrapper implements LogicalDirec
     
     private LogicalDirectorySpiInterface proxy;
     
-    LogicalDirectoryWrapper(Session session, LogicalDirectorySpiInterface proxy) {
-        super(session, proxy);
-        this.proxy = proxy;
+    LogicalDirectoryWrapper(Session session, URL name, int flags) {
+        super(session);
+        Object[] parameters = { session, name, flags };
+        proxy = (LogicalDirectorySpiInterface) SAGAEngine.createAdaptorProxy(
+                LogicalDirectorySpiInterface.class,
+                new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    Integer.TYPE },
+                parameters);
+        super.setProxy(proxy);
     }
 
     public Object clone() throws CloneNotSupportedException {

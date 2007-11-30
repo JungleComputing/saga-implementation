@@ -1,7 +1,6 @@
 package org.ogf.saga.spi.stream;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.ogf.saga.URL;
 import org.ogf.saga.attributes.AsyncAttributes;
@@ -17,7 +16,7 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.monitoring.AsyncMonitorable;
 import org.ogf.saga.permissions.Permissions;
-import org.ogf.saga.stream.Activity;
+import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -69,7 +68,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @param timeoutInSeconds the timeout in seconds.
      * @return the activities that apply.
      */
-    public List<Activity> waitStream(float timeoutInSeconds, int what)
+    public int waitStream(int what, float timeoutInSeconds)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
                PermissionDenied, IncorrectState, NoSuccess;
 
@@ -93,7 +92,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      *     value, corresponding to negatives of the respective ERRNO error
      *     code.
      */
-    public int read(int len, Buffer buffer)
+    public int read(Buffer buffer, int len)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
                PermissionDenied, BadParameter, IncorrectState, Timeout,
                NoSuccess, IOException;
@@ -110,7 +109,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      *     value, corresponding to negatives of the respective ERRNO error
      *     code.
      */
-    public int write(int len, Buffer buffer)
+    public int write(Buffer buffer, int len)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
                PermissionDenied, BadParameter, IncorrectState, Timeout,
                NoSuccess, IOException;
@@ -170,8 +169,8 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<List<Activity>> waitStream(TaskMode mode,
-            float timeoutInSeconds, int what)
+    public Task<Integer> waitStream(TaskMode mode, int what,
+            float timeoutInSeconds)
         throws NotImplemented;
 
     /**
@@ -196,7 +195,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> read(TaskMode mode, int len, Buffer buffer)
+    public Task<Integer> read(TaskMode mode, Buffer buffer, int len)
         throws NotImplemented;
 
     /**
@@ -213,6 +212,6 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> write(TaskMode mode, int len, Buffer buffer)
+    public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
         throws NotImplemented;
 }

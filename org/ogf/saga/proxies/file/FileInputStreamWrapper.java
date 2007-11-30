@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
+import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.DoesNotExist;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.impl.SagaObjectBase;
@@ -26,8 +27,12 @@ class FileInputStreamWrapper extends FileInputStream {
     private InputSagaObject sagaObject;
     private FileInputStreamSpiInterface proxy;
        
-    FileInputStreamWrapper(Session session, URL name, FileInputStreamSpiInterface proxy) {
-        this.proxy = proxy;
+    FileInputStreamWrapper(Session session, URL name) {
+        Object[] parameters = { session, name };
+        proxy = (FileInputStreamSpiInterface) SAGAEngine.createAdaptorProxy(
+                FileInputStreamSpiInterface.class,
+                new Class[] { URL.class, Integer.TYPE },
+                parameters);
         sagaObject = new InputSagaObject(session);
     }
 
