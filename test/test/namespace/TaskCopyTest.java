@@ -57,10 +57,10 @@ public class TaskCopyTest implements Callback {
         // Create two copy tasks and a task container 
         Task task1 = dir.copy(TaskMode.TASK,
                 new URL("ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz"),
-                new URL("file:///LLgen.tar.gz"), Flags.OVERWRITE.getValue());
+                new URL("LLgen.tar.gz"), Flags.OVERWRITE.getValue());
         Task task2 = dir.copy(TaskMode.TASK,
                 new URL("http://www.cs.vu.nl/ibis/index.html"),
-                new URL("file:///index.html"), Flags.OVERWRITE.getValue());
+                new URL("index.html"), Flags.OVERWRITE.getValue());
         TaskContainer container = TaskFactory.createTaskContainer();
         
         // Install a callback detecting state changes in the tasks
