@@ -17,7 +17,7 @@ import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.monitoring.Callback;
-import org.ogf.saga.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.proxies.stream.StreamWrapper;
 import org.ogf.saga.stream.Activity;
 import org.ogf.saga.task.Task;
@@ -28,34 +28,34 @@ public abstract class StreamSpi implements StreamSpiInterface {
     protected Session session;
     protected URL url;
     protected StreamAttributes attributes;
-    protected StreamMetric streamState;
-    protected StreamMetric streamRead;
-    protected StreamMetric streamWrite;
-    protected StreamMetric streamException;
-    protected StreamMetric streamDropped;
+    protected Metric streamState;
+    protected Metric streamRead;
+    protected Metric streamWrite;
+    protected Metric streamException;
+    protected Metric streamDropped;
     
     public StreamSpi(StreamWrapper wrapper, Session session, URL url) throws NotImplemented,
             BadParameter {
         this.session = session;
         this.url = url;
         attributes = new StreamAttributes(session);
-        streamState = new StreamMetric(wrapper, session,
+        streamState = new Metric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_STATE,
                 "fires if the state of the stream changes, and has the literal value of the stream state enum",
                 "ReadOnly", "1", "Enum", "New");
-        streamRead = new StreamMetric(wrapper, session,
+        streamRead = new Metric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_READ,
                 "fires if a stream gets readable",
                 "ReadOnly", "1", "Trigger", "1");
-        streamWrite = new StreamMetric(wrapper, session,
+        streamWrite = new Metric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_WRITE,
                 "fires if a stream gets writable",
                 "ReadOnly", "1", "Trigger", "1");
-        streamException = new StreamMetric(wrapper, session,
+        streamException = new Metric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_EXCEPTION,
                 "fires if a stream has an error condition",
                 "ReadOnly", "1", "Trigger", "1");
-        streamDropped = new StreamMetric(wrapper, session,
+        streamDropped = new Metric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_DROPPED,
                 "fires if the stream gets dropped by the remote party",
                 "ReadOnly", "1", "Trigger", "1");
@@ -122,9 +122,9 @@ public abstract class StreamSpi implements StreamSpiInterface {
                 name, cb);
     }
 
-    public Task<Metric> getMetric(TaskMode mode, String name)
+    public Task<org.ogf.saga.monitoring.Metric> getMetric(TaskMode mode, String name)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Metric>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.monitoring.Metric>(this, session, mode,
                 "getMetric", new Class[] { String.class }, name);
     }
 

@@ -17,9 +17,8 @@ import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.monitoring.Callback;
-import org.ogf.saga.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
-import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.task.State;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.WaitMode;
@@ -31,7 +30,7 @@ public class TaskContainer extends SagaObjectBase implements
     private HashMap<Task, Integer> reverseMap = new HashMap<Task, Integer>();
     private HashMap<Task, Integer> callbackCookies = new HashMap<Task, Integer>();
     private int taskCount = 0;
-    private TaskContainerMetric taskContainerMetric;
+    private Metric taskContainerMetric;
     
     private class ContainerCallback implements Callback {
         
@@ -43,7 +42,8 @@ public class TaskContainer extends SagaObjectBase implements
         
         // callback from each task in the container.
         // Notifies any state change, and notifies the container itself as well.
-        public synchronized boolean cb(Monitorable mt, Metric metric, Context ctx)
+        public synchronized boolean cb(Monitorable mt,
+                org.ogf.saga.monitoring.Metric metric, Context ctx)
                 throws NotImplemented, AuthorizationFailed {
             Task t = (Task) mt;
             Integer cookie = reverseMap.get(t);
@@ -71,8 +71,10 @@ public class TaskContainer extends SagaObjectBase implements
         super(null);
         cb = new ContainerCallback(this);
         try {
-            taskContainerMetric = new TaskContainerMetric(
-                    SessionFactory.createSession(true), this);
+            taskContainerMetric = new Metric(
+                    this, null, TASKCONTAINER_STATE,
+                    "fires on state changes of any task in the container, and has the value of that task's cookie",
+                    "ReadOnly", "1", "Int", "" );
         } catch (Throwable e) {
             // Should not happen.
             throw new SagaError("Unexpected exception", e);
