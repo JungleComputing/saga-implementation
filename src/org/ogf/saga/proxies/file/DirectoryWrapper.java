@@ -2,6 +2,7 @@ package org.ogf.saga.proxies.file;
 
 import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
+import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AlreadyExists;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
@@ -28,9 +29,15 @@ class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
     private DirectorySpiInterface proxy;
     
-    DirectoryWrapper(Session session, DirectorySpiInterface proxy) {
-        super(session, proxy);
-        this.proxy = proxy;
+    DirectoryWrapper(Session session, URL name, int flags) {
+        super(session);
+        Object[] parameters = { session, name, flags };
+        proxy = (DirectorySpiInterface) SAGAEngine.createAdaptorProxy(
+                    DirectorySpiInterface.class,
+                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                        Integer.TYPE },
+                        parameters);        
+        super.setProxy(proxy);
     }
     
     public long getSize(URL name, int flags)

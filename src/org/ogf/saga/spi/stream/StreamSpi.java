@@ -18,6 +18,7 @@ import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
+import org.ogf.saga.proxies.stream.StreamWrapper;
 import org.ogf.saga.stream.Activity;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -33,27 +34,28 @@ public abstract class StreamSpi implements StreamSpiInterface {
     protected StreamMetric streamException;
     protected StreamMetric streamDropped;
     
-    public StreamSpi(Session session, URL url) throws NotImplemented, BadParameter {
+    public StreamSpi(StreamWrapper wrapper, Session session, URL url) throws NotImplemented,
+            BadParameter {
         this.session = session;
         this.url = url;
         attributes = new StreamAttributes(session);
-        streamState = new StreamMetric(this, session,
+        streamState = new StreamMetric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_STATE,
                 "fires if the state of the stream changes, and has the literal value of the stream state enum",
                 "ReadOnly", "1", "Enum", "New");
-        streamRead = new StreamMetric(this, session,
+        streamRead = new StreamMetric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_READ,
                 "fires if a stream gets readable",
                 "ReadOnly", "1", "Trigger", "1");
-        streamWrite = new StreamMetric(this, session,
+        streamWrite = new StreamMetric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_WRITE,
                 "fires if a stream gets writable",
                 "ReadOnly", "1", "Trigger", "1");
-        streamException = new StreamMetric(this, session,
+        streamException = new StreamMetric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_EXCEPTION,
                 "fires if a stream has an error condition",
                 "ReadOnly", "1", "Trigger", "1");
-        streamDropped = new StreamMetric(this, session,
+        streamDropped = new StreamMetric(wrapper, session,
                 org.ogf.saga.stream.Stream.STREAM_DROPPED,
                 "fires if the stream gets dropped by the remote party",
                 "ReadOnly", "1", "Trigger", "1");

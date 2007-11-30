@@ -59,8 +59,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
                 
         // lookup method of the task.
         try {
-            method = object.getClass().getDeclaredMethod(methodName, parameterTypes);
-            method.setAccessible(true);
+            method = object.getClass().getMethod(methodName, parameterTypes);
         } catch(Throwable e) {
             logger.error("Could not find method " + methodName, e);
             throw new SagaError("Internal error", e);

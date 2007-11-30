@@ -1,7 +1,6 @@
 package org.ogf.saga.proxies.file;
 
 import org.ogf.saga.URL;
-import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AlreadyExists;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
@@ -20,10 +19,6 @@ import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.file.DirectorySpiInterface;
-import org.ogf.saga.spi.file.FileInputStreamSpiInterface;
-import org.ogf.saga.spi.file.FileSpiInterface;
-import org.ogf.saga.spi.file.FileOutputStreamSpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -33,39 +28,22 @@ public class FileWrapperFactory extends FileFactory {
             throws NotImplemented, IncorrectURL, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter, AlreadyExists,
             DoesNotExist, Timeout, NoSuccess { 
-        Object[] parameters = { session, name, flags };
-        DirectorySpiInterface proxy = (DirectorySpiInterface) getAdaptorProxy(
-                    DirectorySpiInterface.class,
-                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
-                        Integer.TYPE },
-                        parameters);
-            return new DirectoryWrapper(session, proxy);
+            return new DirectoryWrapper(session, name, flags);
     }
 
     protected File doCreateFile(Session session, URL name, int flags)
             throws NotImplemented, IncorrectURL, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
-        Object[] parameters = { session, name, flags };
-        FileSpiInterface proxy = (FileSpiInterface) getAdaptorProxy(
-                FileSpiInterface.class,
-                new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
-                    Integer.TYPE },
-                parameters);
-        return new FileWrapper(session, proxy);
+        return new FileWrapper(session, name, flags);
     }
+   
 
     protected FileInputStream doCreateFileInputStream(Session session, URL name)
             throws NotImplemented, IncorrectURL, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
-        Object[] parameters = { session, name };
-        FileInputStreamSpiInterface proxy = (FileInputStreamSpiInterface)
-            getAdaptorProxy(
-                FileInputStreamSpiInterface.class,
-                new Class[] { URL.class, Integer.TYPE },
-                parameters);
-        return new FileInputStreamWrapper(session, name, proxy);
+        return new FileInputStreamWrapper(session, name);
     }
 
     protected FileOutputStream doCreateFileOutputStream(Session session,
@@ -73,26 +51,10 @@ public class FileWrapperFactory extends FileFactory {
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
             NoSuccess {
-        Object[] parameters = { session, name, append };
-        FileOutputStreamSpiInterface proxy = (FileOutputStreamSpiInterface)
-            getAdaptorProxy(
-                FileOutputStreamSpiInterface.class,
-                new Class[] { URL.class, Integer.TYPE },
-                parameters);
-        return new FileOutputStreamWrapper(session, name, proxy);
+
+        return new FileOutputStreamWrapper(session, name, append);
     }
     
-    protected static Object getAdaptorProxy(
-            Class<?> interfaceClass, Class<?>[] types, Object[] parameters) {
-
-        try {
-            return SAGAEngine.createAdaptorProxy(
-                    interfaceClass, types, parameters);
-        } catch (Exception e) {
-            throw new Error(e);
-        }
-    }
-
     @Override
     protected Task<Directory> doCreateDirectory(TaskMode mode, Session session,
             URL name, int flags) throws NotImplemented {
