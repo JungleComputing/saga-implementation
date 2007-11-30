@@ -27,7 +27,7 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.monitoring.Callback;
-import org.ogf.saga.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.task.State;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.session.Session;
@@ -43,7 +43,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
     private State state = State.NEW;
     private final Object object;
     private Throwable exception = null;
-    private TaskMetric metric;
+    private Metric metric;
     private E result = null;
     private Method method = null;
     private Object[] parameters = null;
@@ -67,13 +67,14 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
                      
         // Create the task metric.
         try {
-            metric = new TaskMetric(session, this);
+            metric = new Metric(this, session, TASK_STATE,
+                    "fires on task change, and has the literal value of the task state enum",
+                    "ReadOnly", "1", "Enum", "New");
         } catch(Throwable e) {
             // Should not happen.
             logger.error("Could not create metric", e);
             throw new SagaError("Unexpected exception", e);
         }
-        
         this.object = object;
         this.parameters = parameters;
         

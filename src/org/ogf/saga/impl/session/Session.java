@@ -29,6 +29,13 @@ public class Session extends SagaObjectBase
     public synchronized void putAdaptorSession(String name,
             AdaptorSessionInterface session) {
         adaptorSessions.put(name, session);
+        for (Context ctxt : contexts) {
+            try {
+                session.addContext((org.ogf.saga.impl.context.Context) ctxt);
+            } catch(Throwable e) {
+                // ignored
+            }
+        }
     }
 
     public synchronized void addContext(Context context) throws NotImplemented {

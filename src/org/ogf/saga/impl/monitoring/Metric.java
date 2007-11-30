@@ -30,7 +30,7 @@ public class Metric extends SagaObjectBase implements Attributes,
     protected static Logger logger = Logger.getLogger(Metric.class);
     
     private static ExecutorService executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-            10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+            5L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
     
     private int fireCount = 0;
     
@@ -132,11 +132,11 @@ public class Metric extends SagaObjectBase implements Attributes,
         return attributes.getValue(Metric.NAME);
     }
  
-    protected void setValue(String value) throws NotImplemented , BadParameter, IncorrectState, DoesNotExist {
+    public void setValue(String value) throws NotImplemented , BadParameter, IncorrectState, DoesNotExist {
         attributes.setValue(Metric.VALUE, value);   
     }
     
-    protected void setMode(String value) throws NotImplemented, BadParameter, DoesNotExist, IncorrectState {
+    public void setMode(String value) throws NotImplemented, BadParameter, DoesNotExist, IncorrectState {
         attributes.setValue(Metric.MODE, value);
     }
     
@@ -250,7 +250,7 @@ public class Metric extends SagaObjectBase implements Attributes,
         internalFire();
     }
     
-    protected void internalFire() {
+    public void internalFire() {
         ArrayList<CallbackHandler> cbhs;
         
         synchronized(this) {

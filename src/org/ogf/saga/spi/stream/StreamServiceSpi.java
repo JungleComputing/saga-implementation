@@ -12,7 +12,7 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.monitoring.Callback;
-import org.ogf.saga.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.proxies.stream.StreamServiceWrapper;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamService;
@@ -23,13 +23,13 @@ public abstract class StreamServiceSpi implements StreamServiceSpiInterface {
 
     protected Session session;
     protected URL url;
-    StreamMetric clientConnectMetric;
+    protected Metric clientConnectMetric;
     
     public StreamServiceSpi(StreamServiceWrapper wrapper, Session session, URL url)
             throws NotImplemented, BadParameter {
         this.session = session;
         this.url = url;
-        clientConnectMetric = new StreamMetric(wrapper, session,
+        clientConnectMetric = new Metric(wrapper, session,
                 StreamService.STREAMSERVER_CLIENTCONNECT,
                 "fires if a client connects", "ReadOnly", "1", "Trigger", "1");
     }
@@ -58,9 +58,9 @@ public abstract class StreamServiceSpi implements StreamServiceSpiInterface {
                 name, cb);
     }
 
-    public Task<Metric> getMetric(TaskMode mode, String name)
+    public Task<org.ogf.saga.monitoring.Metric> getMetric(TaskMode mode, String name)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Metric>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.monitoring.Metric>(this, session, mode,
                 "getMetric", new Class[] { String.class }, name);
     }
 
