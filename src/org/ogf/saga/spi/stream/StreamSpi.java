@@ -1,7 +1,5 @@
 package org.ogf.saga.spi.stream;
 
-import java.util.List;
-
 import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -15,11 +13,10 @@ import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
+import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.monitoring.Callback;
-import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.proxies.stream.StreamWrapper;
-import org.ogf.saga.stream.Activity;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -94,21 +91,21 @@ public abstract class StreamSpi implements StreamSpiInterface {
                 "getURL", new Class[] { });
     }
 
-    public Task<Integer> read(TaskMode mode, int len, Buffer buffer)
+    public Task<Integer> read(TaskMode mode, Buffer buffer, int len)
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(this, session, mode,
-                "read", new Class[] { Integer.TYPE, Buffer.class },
+                "read", new Class[] { Buffer.class, Integer.TYPE },
                 len, buffer);
     }
 
-    public Task<List<Activity>> waitStream(TaskMode mode,
-            float timeoutInSeconds, int what) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<List<Activity>>(this, session, mode,
-                "waitStream", new Class[] { Float.TYPE, Integer.TYPE },
+    public Task<Integer> waitStream(TaskMode mode, int what,
+            float timeoutInSeconds) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<Integer>(this, session, mode,
+                "waitStream", new Class[] { Integer.TYPE, Float.TYPE },
                 timeoutInSeconds, what);
     }
 
-    public Task<Integer> write(TaskMode mode, int len, Buffer buffer)
+    public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(this, session, mode,
                 "write", new Class[] { Integer.TYPE, Buffer.class },
