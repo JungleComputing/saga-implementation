@@ -22,6 +22,8 @@ import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
 import org.ogf.saga.spi.logicalfile.LogicalFileSpiInterface;
 import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
 import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
+import org.ogf.saga.spi.stream.StreamServiceSpiInterface;
+import org.ogf.saga.spi.stream.StreamSpiInterface;
 
 /**
  * This class make the various SAGA adaptors available to SAGA.
@@ -287,6 +289,10 @@ public class SAGAEngine {
                 LogicalFileSpiInterface.class);
         loadSpiClass(jarFile, manifest, attributes, "LogicalDirectory",
                 LogicalDirectorySpiInterface.class);
+        loadSpiClass(jarFile, manifest, attributes, "Stream",
+                StreamSpiInterface.class);
+        loadSpiClass(jarFile, manifest, attributes, "StreamService",
+                StreamServiceSpiInterface.class);
     }
 
     /**
