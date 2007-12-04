@@ -12,6 +12,7 @@ import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
 import org.ogf.saga.error.DoesNotExist;
 import org.ogf.saga.error.IncorrectState;
+import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
@@ -29,13 +30,44 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
     
     private StreamSpiInterface proxy;
 
-    public StreamWrapper(Session session, URL name) {
+    public StreamWrapper(Session session, URL name)
+            throws NotImplemented, IncorrectURL, BadParameter,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            Timeout, NoSuccess {
         super(session);
         Object[] parameters = { this, session, name };
-        proxy = (StreamSpiInterface) SAGAEngine.createAdaptorProxy(
-                StreamSpiInterface.class,
-                new Class[] { StreamWrapper.class, Session.class, URL.class },
-                parameters);
+        try {
+            proxy = (StreamSpiInterface) SAGAEngine.createAdaptorProxy(
+                    StreamSpiInterface.class,
+                    new Class[] { StreamWrapper.class, Session.class, URL.class },
+                    parameters);
+        } catch(org.ogf.saga.error.Exception e) {
+            if (e instanceof NotImplemented) {
+                throw (NotImplemented) e;
+            }
+            if (e instanceof IncorrectURL) {
+                throw (IncorrectURL) e;
+            }
+            if (e instanceof AuthenticationFailed) {
+                throw (AuthenticationFailed) e;
+            }
+            if (e instanceof AuthorizationFailed) {
+                throw (AuthorizationFailed) e;
+            }
+            if (e instanceof PermissionDenied) {
+                throw (PermissionDenied) e;
+            }
+            if (e instanceof BadParameter) {
+                throw (BadParameter) e;
+            }
+            if (e instanceof Timeout) {
+                throw (Timeout) e;
+            }
+            if (e instanceof NoSuccess) {
+                throw (NoSuccess) e;
+            }
+            throw new NoSuccess("Constructor failed", e);
+        }
     }
 
     public Object clone() throws CloneNotSupportedException {

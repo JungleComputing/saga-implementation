@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
+import org.ogf.saga.error.NoSuccess;
 
 /**
  * Takes care of method invocations.
@@ -100,14 +101,17 @@ public class AdaptorInvocationHandler implements InvocationHandler {
     private Hashtable<String, Object> adaptorInstantiations
         = new Hashtable<String, Object>();
     
-    AdaptorInvocationHandler(AdaptorList adaptors, Class[] types, Object[] params) {
+    AdaptorInvocationHandler(AdaptorList adaptors, Class[] types, Object[] params)
+            throws org.ogf.saga.error.Exception {
 
-        if (adaptors.size() == 0) {
-            throw new Error("no adaptors could be loaded for this object");
+        if (adaptors == null || adaptors.size() == 0) {
+            throw new NoSuccess("no adaptors could be loaded for this object");
         }
+        
+        org.ogf.saga.error.Exception exception = null; 
 
         for (Adaptor adaptor : adaptors) {
-            String adaptorname = adaptor.getName();
+            String adaptorname = adaptor.getAdaptorName();
 
             try {
                 Object object = initAdaptor(adaptor, types, params);
@@ -115,12 +119,29 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 this.adaptors.put(adaptorname, adaptor);
                 adaptorSorter.add(adaptorname);
             } catch (Throwable t) {
-                // For now, ignored
+                logger.debug("Instantiation of " + adaptorname + " failed", t);
+
+                while (t instanceof InvocationTargetException) {
+                    t = ((InvocationTargetException) t)
+                        .getTargetException();
+                }
+                
+                // keep the most specific exception around. We can throw that
+                // when all adaptors fail.
+                if (t instanceof org.ogf.saga.error.Exception) {
+                    org.ogf.saga.error.Exception e = (org.ogf.saga.error.Exception) t;
+                    if (exception == null || e.compareTo(exception) < 0) {
+                        exception = e;
+                    }
+                } else if (exception == null) {
+                    exception = new NoSuccess("Got exception from constructor of "
+                            + adaptor.getShortAdaptorClassName(), t);
+                }
             }
         }
 
         if (this.adaptors.size() == 0) {
-            throw new Error("no adaptors could be successfully instantiated");
+            throw exception;
         }
     }
 
@@ -133,6 +154,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method m, Object[] params)
         throws Throwable {
 
+        org.ogf.saga.error.Exception exception = null;
+        
         ArrayList<String> adaptornames = adaptorSorter.getOrdering(m);
         boolean first = true;
 
@@ -170,6 +193,18 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                         t = ((InvocationTargetException) t)
                             .getTargetException();
                     }
+                    
+                    // keep the most specific exception around. We can throw that
+                    // when all adaptors fail.
+                    if (t instanceof org.ogf.saga.error.Exception) {
+                        org.ogf.saga.error.Exception e = (org.ogf.saga.error.Exception) t;
+                        if (exception == null || e.compareTo(exception) < 0) {
+                            exception = e;
+                        }
+                    } else if (exception == null) {
+                        exception = new NoSuccess("Got exception from " + m.getName()
+                                + " on " + adaptor.getShortAdaptorClassName(), t);
+                    }
 
                     if (logger.isDebugEnabled()) {
                         logger.debug("Method " + m.getName() + " on "
@@ -181,23 +216,32 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
 
         if (logger.isInfoEnabled()) {
-            logger.info("invoke: No adaptor could be invoked.");
+            logger.info("invoke: All adaptors failed");
+        }
+        
+        if (exception == null) {
+            // Can this happen??? I don't think so.
+            throw new NoSuccess("no adaptor found for " + m.getName());
         }
 
-        throw new Error("All adaptors failed");
+        // throw the most specific exception.
+        throw exception;
     }
 
     /**
-     * Instantiates an instance of the specified XXXSpi class consistent with the
+     * Creates an instance of the specified adaptor consistent with the
      * passed parameters.
      * 
      * @param adaptor
-     *            The adaptor to initialize.
+     *            The adaptor to instantiate.
+     * @param types
+     *            The parameter types of the Spi constructor.
      * @param parameters
-     *            The parameters for the Spi Constructor.
+     *            The actual parameters for the Spi Constructor.
      * @return the instance.
      */
-    private Object initAdaptor(Adaptor adaptor, Class<?>[] types, Object... parameters) {
+    private Object initAdaptor(Adaptor adaptor, Class<?>[] types, Object... parameters)
+            throws Throwable {
         
         Object result;
 
@@ -207,18 +251,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     + adaptor.getShortSpiName());
         }
         
-        try {
-            result = adaptor.instantiate(types, parameters);
-        } catch (Throwable t) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("initAdaptor: Couldn't create "
-                        + adaptor.getShortAdaptorClassName() + ": "
-                        + t.getMessage(), t);
-            }
-
-            throw new Error("Could not create adaptor", t);
-        }
-
+        result = adaptor.instantiate(types, parameters);
+ 
         if (logger.isInfoEnabled()) {
             logger.info("initAdaptor: instantiated "
                     + adaptor.getShortAdaptorClassName() + " for type "

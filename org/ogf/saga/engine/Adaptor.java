@@ -7,31 +7,32 @@ import java.lang.reflect.InvocationTargetException;
  * Information container for a specific adaptor.
  */
 class Adaptor {
-    /** The class of the api this adaptor implements. */
-    private Class<?> spiClass;
+    /** The interface of the api implemented by this adaptor. */
+    private Class<?> spiInterface;
 
-    /** The actual class of this adaptor, must be a subclass of spiClass. */
+    /** The actual class of this adaptor, must be an implementation of spiClass. */
     private Class<?> adaptorClass;
     
     private String shortSpiName = null;
     
-    private String shortAdaptorClassName;
+    private String shortAdaptorClassName = null;
     
     /**
-     * @param spiClass
-     *            The class of the api this adaptor implements.
+     * @param spiInterface
+     *            The interface of the api this adaptor implements.
      * @param adaptorClass
-     *            The actual class of this adaptor, must be a subclass of
+     *            The actual class of this adaptor, must be an implementation of
      *            spiClass.
      */
-    Adaptor(Class<?> spiClass, Class<?> adaptorClass) {
-        this.spiClass = spiClass;
+    Adaptor(Class<?> spiInterface, Class<?> adaptorClass) {
+        this.spiInterface = spiInterface;
         this.adaptorClass = adaptorClass;
     }
     
     /**
      * Creates an instance of the adaptor, and returns it.
-     * @param parameters the constructor parameters.
+     * @param types the constructor parameter types.
+     * @param parameters the actual constructor parameters.
      * @return the adaptor instance.
      * @exception Throwable anything that the constructor throws, or an
      *     error indicating that no suitable constructor was found.
@@ -39,8 +40,7 @@ class Adaptor {
     Object instantiate(Class<?>[] types, Object[] parameters)
             throws Throwable {
         try {
-            // TODO: this may be too strict. The parameters could be of
-            // a subclass of the type specified in the constructor.
+            // Use the specified types to find the constructor that we want.
             Constructor<?> ctor = adaptorClass.getConstructor(types);
 
             if (ctor == null) {
@@ -54,15 +54,7 @@ class Adaptor {
         }
     }
 
-    String getSpi() {
-        return spiClass.getName();
-    }
-
-    Class<?> getSpiClass() {
-        return spiClass;
-    }
-
-    String getName() {
+    String getAdaptorName() {
         return adaptorClass.getName();
     }
 
@@ -71,12 +63,12 @@ class Adaptor {
     }
     
     public String toString() {
-        return getName();
+        return adaptorClass.getName();
     }
 
     synchronized String getShortSpiName() {
         if (shortSpiName == null) {
-            shortSpiName = spiClass.getName();
+            shortSpiName = spiInterface.getName();
             int index = shortSpiName.lastIndexOf(".");
             if(index > 0) {
                 shortSpiName = shortSpiName.substring(index+1);

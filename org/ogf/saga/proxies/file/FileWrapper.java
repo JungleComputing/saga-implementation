@@ -7,10 +7,13 @@ import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.engine.SAGAEngine;
+import org.ogf.saga.error.AlreadyExists;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
+import org.ogf.saga.error.DoesNotExist;
 import org.ogf.saga.error.IncorrectState;
+import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
@@ -28,15 +31,52 @@ class FileWrapper extends NSEntryWrapper implements File {
     
     private FileSpiInterface proxy;
     
-    FileWrapper(Session session, URL name, int flags) {
+    FileWrapper(Session session, URL name, int flags) 
+            throws NotImplemented, IncorrectURL, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, BadParameter,
+            AlreadyExists, DoesNotExist, Timeout, NoSuccess {
         super(session);
         Object[] parameters = { session, name, flags };
-        proxy = (FileSpiInterface) SAGAEngine.createAdaptorProxy(
-                FileSpiInterface.class,
-                new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
-                    Integer.TYPE },
-                parameters);
-        super.setProxy(proxy);
+        try {
+            proxy = (FileSpiInterface) SAGAEngine.createAdaptorProxy(
+                    FileSpiInterface.class,
+                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                        Integer.TYPE },
+                        parameters);
+            super.setProxy(proxy);
+        } catch(org.ogf.saga.error.Exception e) {
+            if (e instanceof NotImplemented) {
+                throw (NotImplemented) e;
+            }
+            if (e instanceof IncorrectURL) {
+                throw (IncorrectURL) e;
+            }
+            if (e instanceof AuthenticationFailed) {
+                throw (AuthenticationFailed) e;
+            }
+            if (e instanceof AuthorizationFailed) {
+                throw (AuthorizationFailed) e;
+            }
+            if (e instanceof PermissionDenied) {
+                throw (PermissionDenied) e;
+            }
+            if (e instanceof BadParameter) {
+                throw (BadParameter) e;
+            }
+            if (e instanceof  AlreadyExists) {
+                throw (AlreadyExists) e;
+            }
+            if (e instanceof DoesNotExist) {
+                throw (DoesNotExist) e;
+            }
+            if (e instanceof Timeout) {
+                throw (Timeout) e;
+            }
+            if (e instanceof NoSuccess) {
+                throw (NoSuccess) e;
+            }
+            throw new NoSuccess("Constructor failed", e);
+        }
     }
     
     public long getSize()

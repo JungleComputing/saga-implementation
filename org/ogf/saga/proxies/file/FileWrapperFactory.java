@@ -6,7 +6,6 @@ import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
 import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
@@ -34,7 +33,7 @@ public class FileWrapperFactory extends FileFactory {
     protected File doCreateFile(Session session, URL name, int flags)
             throws NotImplemented, IncorrectURL, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+            AlreadyExists, DoesNotExist, Timeout, NoSuccess {
         return new FileWrapper(session, name, flags);
     }
    
@@ -42,14 +41,14 @@ public class FileWrapperFactory extends FileFactory {
     protected FileInputStream doCreateFileInputStream(Session session, URL name)
             throws NotImplemented, IncorrectURL, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+            AlreadyExists, DoesNotExist, Timeout, NoSuccess {
         return new FileInputStreamWrapper(session, name);
     }
 
     protected FileOutputStream doCreateFileOutputStream(Session session,
             URL name, boolean append) throws NotImplemented, IncorrectURL,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
+            BadParameter, AlreadyExists, DoesNotExist, Timeout,
             NoSuccess {
 
         return new FileOutputStreamWrapper(session, name, append);
