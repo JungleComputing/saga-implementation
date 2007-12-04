@@ -29,14 +29,51 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     
     private NSEntrySpiInterface proxy;
     
-    protected NSEntryWrapper(Session session, URL name, int flags) {        
+    protected NSEntryWrapper(Session session, URL name, int flags)
+            throws NotImplemented, IncorrectURL,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, DoesNotExist, AlreadyExists, Timeout, NoSuccess {        
         super(session);
         Object[] parameters = { session, name, flags };
-        proxy = (NSEntrySpiInterface) SAGAEngine.createAdaptorProxy(
-                NSEntrySpiInterface.class,
-                new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
-                    Integer.TYPE },
-                parameters);
+        try {
+            proxy = (NSEntrySpiInterface) SAGAEngine.createAdaptorProxy(
+                    NSEntrySpiInterface.class,
+                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                        Integer.TYPE },
+                        parameters);
+        } catch(org.ogf.saga.error.Exception e) {
+            if (e instanceof NotImplemented) {
+                throw (NotImplemented) e;
+            }
+            if (e instanceof IncorrectURL) {
+                throw (IncorrectURL) e;
+            }
+            if (e instanceof AuthenticationFailed) {
+                throw (AuthenticationFailed) e;
+            }
+            if (e instanceof AuthorizationFailed) {
+                throw (AuthorizationFailed) e;
+            }
+            if (e instanceof PermissionDenied) {
+                throw (PermissionDenied) e;
+            }
+            if (e instanceof BadParameter) {
+                throw (BadParameter) e;
+            }
+            if (e instanceof  AlreadyExists) {
+                throw (AlreadyExists) e;
+            }
+            if (e instanceof DoesNotExist) {
+                throw (DoesNotExist) e;
+            }
+            if (e instanceof Timeout) {
+                throw (Timeout) e;
+            }
+            if (e instanceof NoSuccess) {
+                throw (NoSuccess) e;
+            }
+            throw new NoSuccess("Constructor failed", e);
+        }
     }
     
     protected NSEntryWrapper(Session session) {

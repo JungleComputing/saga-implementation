@@ -38,7 +38,7 @@ public class SAGAEngine {
 
     private boolean ended = false;
 
-    /** Keys are spiClass names, elements are AdaptorLists. */
+    /** Keys are SPI names, elements are AdaptorLists. */
     private AdaptorSet adaptors;
 
     private URLClassLoader sagaClassLoader = null;
@@ -178,7 +178,7 @@ public class SAGAEngine {
     }
 
     /**
-     * Obtains JarFiles in the optional directory that are SAGA jars.
+     * Obtains JarFiles in the optional directory.
      * 
      * @param dir
      *            the directory to get the jar files from
@@ -349,15 +349,13 @@ public class SAGAEngine {
     }
 
     public static Object createAdaptorProxy(
-            Class<?> interfaceClass, Class[] types, Object[] tmpParams) {
+            Class<?> interfaceClass, Class[] types, Object[] tmpParams)
+                throws org.ogf.saga.error.Exception {
 
         SAGAEngine sagaEngine = SAGAEngine.getSAGAEngine();
 
         AdaptorList adaptors = sagaEngine.getAdaptorList(interfaceClass);
-        if (adaptors == null) {
-            throw new Error("could not find any adaptors");
-        }
-
+    
         AdaptorInvocationHandler handler = new AdaptorInvocationHandler(
                 adaptors, types, tmpParams);
         Object proxy = Proxy.newProxyInstance(interfaceClass.getClassLoader(),

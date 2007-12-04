@@ -29,15 +29,52 @@ class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
     private DirectorySpiInterface proxy;
     
-    DirectoryWrapper(Session session, URL name, int flags) {
+    DirectoryWrapper(Session session, URL name, int flags)
+            throws NotImplemented, IncorrectURL, AuthenticationFailed,
+                AuthorizationFailed, PermissionDenied, BadParameter, AlreadyExists,
+                DoesNotExist, Timeout, NoSuccess {
         super(session);
         Object[] parameters = { session, name, flags };
-        proxy = (DirectorySpiInterface) SAGAEngine.createAdaptorProxy(
+        try {
+            proxy = (DirectorySpiInterface) SAGAEngine.createAdaptorProxy(
                     DirectorySpiInterface.class,
                     new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE },
                         parameters);        
-        super.setProxy(proxy);
+            super.setProxy(proxy);
+        } catch(org.ogf.saga.error.Exception e) {
+            if (e instanceof NotImplemented) {
+                throw (NotImplemented) e;
+            }
+            if (e instanceof IncorrectURL) {
+                throw (IncorrectURL) e;
+            }
+            if (e instanceof AuthenticationFailed) {
+                throw (AuthenticationFailed) e;
+            }
+            if (e instanceof AuthorizationFailed) {
+                throw (AuthorizationFailed) e;
+            }
+            if (e instanceof PermissionDenied) {
+                throw (PermissionDenied) e;
+            }
+            if (e instanceof BadParameter) {
+                throw (BadParameter) e;
+            }
+            if (e instanceof  AlreadyExists) {
+                throw (AlreadyExists) e;
+            }
+            if (e instanceof DoesNotExist) {
+                throw (DoesNotExist) e;
+            }
+            if (e instanceof Timeout) {
+                throw (Timeout) e;
+            }
+            if (e instanceof NoSuccess) {
+                throw (NoSuccess) e;
+            }
+            throw new NoSuccess("Constructor failed", e);
+        }
     }
     
     public long getSize(URL name, int flags)

@@ -6,7 +6,6 @@ import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
 import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
@@ -24,14 +23,14 @@ public class LogicalFileWrapperFactory extends LogicalFileFactory {
     protected LogicalDirectory doCreateLogicalDirectory(Session session,
             URL name, int flags) throws NotImplemented, IncorrectURL,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, DoesNotExist, Timeout, NoSuccess {
+            BadParameter, DoesNotExist, AlreadyExists, Timeout, NoSuccess {
             return new LogicalDirectoryWrapper(session, name, flags);
     }
 
     protected LogicalFile doCreateLogicalFile(Session session, URL name,
             int flags) throws NotImplemented, IncorrectURL,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
+            BadParameter, AlreadyExists, DoesNotExist, Timeout,
             NoSuccess {
             return new LogicalFileWrapper(session, name, flags);
     }
