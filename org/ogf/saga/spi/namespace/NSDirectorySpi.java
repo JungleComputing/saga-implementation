@@ -22,6 +22,7 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.namespace.NSFactory;
+import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -31,15 +32,15 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
       
     protected static Logger logger = Logger.getLogger(NSDirectorySpi.class);
     
-    protected NSDirectorySpi(Session session, URL name, int flags)
+    protected NSDirectorySpi(NSDirectoryWrapper wrapper, Session session, URL name, int flags)
             throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
             PermissionDenied, AuthorizationFailed, AuthenticationFailed,
             Timeout, NoSuccess, AlreadyExists {
-        super(session, name, flags);
+        super(wrapper, session, name, flags);
     }
 
     public Task changeDir(TaskMode mode, URL name) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "changeDir", new Class[] { URL.class }, name);
     }
 
@@ -58,35 +59,35 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
 
     public Task copy(TaskMode mode, URL source, URL target, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "copy", new Class[] { URL.class, URL.class, Integer.TYPE },
                 source, target, flags);
     }
 
     public Task<Boolean> exists(TaskMode mode, URL name) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
+        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "exists", new Class[] { URL.class }, name);
     }
 
     public Task<List<URL>> find(TaskMode mode, String pattern, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<List<URL>>(this, session,
+        return new org.ogf.saga.impl.task.Task<List<URL>>(wrapper, session,
                 mode, "find", new Class[] { String.class, Integer.TYPE },
                 pattern, flags);
     }
 
     public Task<URL> getEntry(TaskMode mode, int entryNo) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<URL>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
                 "getEntry", new Class[] { Integer.TYPE }, entryNo);
     }
 
     public Task<Integer> getNumEntries(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Integer>(this, session,
+        return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session,
                 mode, "getNumEntries", new Class[] {});
     }
 
     public Task<Boolean> isDir(TaskMode mode, URL name) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
+        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "isDir", new Class[] { URL.class }, name);
     }
 
@@ -126,18 +127,18 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
     }
 
     public Task<Boolean> isEntry(TaskMode mode, URL name) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
+        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "isEntry", new Class[] { URL.class }, name);
     }
 
     public Task<Boolean> isLink(TaskMode mode, URL name) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
+        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "isLink", new Class[] { URL.class }, name);
     }
 
     public Task link(TaskMode mode, URL source, URL target, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "link", new Class[] { URL.class, URL.class, Integer.TYPE },
                 source, target, flags);
     }
@@ -203,7 +204,7 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
 
     public Task<List<URL>> list(TaskMode mode, String pattern, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<List<URL>>(this, session,
+        return new org.ogf.saga.impl.task.Task<List<URL>>(wrapper, session,
                 mode, "list", new Class[] { String.class, Integer.TYPE },
                 pattern, flags);
     }
@@ -228,13 +229,13 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
 
     public Task makeDir(TaskMode mode, URL name, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "makeDir", new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 
     public Task move(TaskMode mode, URL src, URL dest, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "move", new Class[] { URL.class, URL.class, Integer.TYPE },
                 src, dest, flags);
     }
@@ -251,7 +252,7 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
     public Task<NSEntry> open(TaskMode mode, URL name,
             int flags) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<NSEntry>(
-                this, session, mode, "open", new Class[] { URL.class,
+                wrapper, session, mode, "open", new Class[] { URL.class,
                         Integer.TYPE }, name, flags);
     }
 
@@ -267,13 +268,13 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
     public Task<org.ogf.saga.namespace.NSDirectory> openDir(TaskMode mode,
             URL name, int flags) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<org.ogf.saga.namespace.NSDirectory>(
-                this, session, mode, "openDir", new Class[] { URL.class,
+                wrapper, session, mode, "openDir", new Class[] { URL.class,
                         Integer.TYPE }, name, flags);
     }
 
     public Task permissionsAllow(TaskMode mode, URL name, String id,
             int permissions, int flags) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsAllow", new Class[] { URL.class, String.class,
                         Integer.TYPE, Integer.TYPE }, name, id, permissions,
                 flags);
@@ -281,20 +282,20 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
 
     public Task permissionsDeny(TaskMode mode, URL name, String id,
             int permissions, int flags) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsDeny", new Class[] { URL.class, String.class,
                         Integer.TYPE, Integer.TYPE }, name, id, permissions,
                 flags);
     }
 
     public Task<URL> readLink(TaskMode mode, URL name) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<URL>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
                 "readlink", new Class[] { URL.class }, name);
     }
 
     public Task remove(TaskMode mode, URL name, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "remove", new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 }

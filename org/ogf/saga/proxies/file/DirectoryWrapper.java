@@ -25,7 +25,7 @@ import org.ogf.saga.spi.file.DirectorySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
+public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
     private DirectorySpiInterface proxy;
     
@@ -34,11 +34,12 @@ class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
                 AuthorizationFailed, PermissionDenied, BadParameter, AlreadyExists,
                 DoesNotExist, Timeout, NoSuccess {
         super(session);
-        Object[] parameters = { session, name, flags };
+        Object[] parameters = { this, session, name, flags };
         try {
             proxy = (DirectorySpiInterface) SAGAEngine.createAdaptorProxy(
                     DirectorySpiInterface.class,
-                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    new Class[] { DirectoryWrapper.class,
+                        org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE },
                         parameters);        
             super.setProxy(proxy);

@@ -24,6 +24,7 @@ import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.spi.namespace.NSDirectorySpi;
+import org.ogf.saga.proxies.logicalfile.LogicalDirectoryWrapper;
 
 public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         LogicalDirectorySpiInterface {
@@ -40,12 +41,12 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return flags;
     }
 
-    public LogicalDirectorySpi(Session session, URL name, int flags)
+    public LogicalDirectorySpi(LogicalDirectoryWrapper wrapper, Session session, URL name, int flags)
             throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
             PermissionDenied, AuthorizationFailed, AuthenticationFailed,
             Timeout, NoSuccess, AlreadyExists {
-        super(session, name, checkFlags(flags) & Flags.ALLNAMESPACEFLAGS.getValue());
-        attributes = new LogicalFileAttributes(session, true);
+        super(wrapper, session, name, checkFlags(flags) & Flags.ALLNAMESPACEFLAGS.getValue());
+        attributes = new LogicalFileAttributes(wrapper, session, true);
         logicalFileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
     }
 
@@ -94,7 +95,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
     public Task<List<URL>> find(TaskMode mode, String namePattern,
             String[] attrPattern, int flags) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<List<URL>>(
-                this, session, mode, "find",
+                wrapper, session, mode, "find",
                 new Class[] {String.class, String[].class, Integer.TYPE },
                 namePattern, attrPattern, flags);
     }
@@ -117,7 +118,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
     public Task<LogicalDirectory> openLogicalDir(
             TaskMode mode, URL name, int flags) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<LogicalDirectory>(
-                this, session, mode, "openLogicalDir",
+                wrapper, session, mode, "openLogicalDir",
                 new Class[] {URL.class, Integer.TYPE },
                 name, flags);
     }
@@ -141,7 +142,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
     public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name, int flags)
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<LogicalFile>(
-                this, session, mode, "openLogicalFile",
+                wrapper, session, mode, "openLogicalFile",
                 new Class[] {URL.class, Integer.TYPE },
                 name, flags);
     }

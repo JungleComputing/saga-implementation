@@ -6,12 +6,12 @@ import org.ogf.saga.impl.attributes.AttributeType;
 
 class LogicalFileAttributes extends AsyncAttributes {
 
-    LogicalFileAttributes(Session session, boolean autoAdd) {
-        super(session, autoAdd);
+    LogicalFileAttributes(Object object, Session session, boolean autoAdd) {
+        super(object, session, autoAdd);
     }
 
-    LogicalFileAttributes(Session session) {
-        super(session, false);
+    LogicalFileAttributes(Object object, Session session) {
+        super(object, session, false);
     }
     
     protected void addAttribute(String name, AttributeType type, boolean vector,

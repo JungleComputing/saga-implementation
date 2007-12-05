@@ -24,7 +24,7 @@ import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 
-final class LogicalFileWrapper extends NSEntryWrapper implements LogicalFile {
+public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalFile {
     
     private LogicalFileSpiInterface proxy;
     
@@ -34,11 +34,12 @@ final class LogicalFileWrapper extends NSEntryWrapper implements LogicalFile {
             BadParameter, AlreadyExists, DoesNotExist,
             Timeout, NoSuccess {
         super(session);
-        Object[] parameters = { session, name, flags };
+        Object[] parameters = { this, session, name, flags };
         try {
             proxy = (LogicalFileSpiInterface) SAGAEngine.createAdaptorProxy(
                     LogicalFileSpiInterface.class,
-                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    new Class[] { LogicalFileWrapper.class,
+                        org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE }, 
                         parameters);
             super.setProxy(proxy);

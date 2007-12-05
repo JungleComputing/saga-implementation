@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -49,8 +50,16 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
     private Object[] parameters = null;
     private Future<E> future = null;
     
+    protected HashMap<String, Metric> metrics = new HashMap<String, Metric>();
+    
     private static ExecutorService executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
             10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+    
+    // Constructor used for Job.
+    public Task(Session session) {
+        super(session);
+        this.object = this;
+    }
     
     public Task(Object object, Session session, TaskMode mode, String methodName,
             Class[] parameterTypes, Object... parameters) {
@@ -75,6 +84,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
             logger.error("Could not create metric", e);
             throw new SagaError("Unexpected exception", e);
         }
+        metrics.put(TASK_STATE, metric);
         this.object = object;
         this.parameters = parameters;
         
@@ -326,14 +336,14 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * @see org.ogf.saga.monitoring.Monitorable#addCallback(java.lang.String,
      *      org.ogf.saga.monitoring.Callback)
      */
-    public int addCallback(String name, Callback cb) throws NotImplemented,
+    public synchronized int addCallback(String name, Callback cb) throws NotImplemented,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             DoesNotExist, Timeout, NoSuccess, IncorrectState {
-        if (TASK_STATE.equals(name)) {
-            return metric.addCallback(cb);
+        Metric m = metrics.get(name);
+        if (m == null) {
+            throw new DoesNotExist("metric " + name + " does not exist");
         }
-        
-        throw new DoesNotExist("metric " + name + " does not exist");
+        return m.addCallback(cb);
     }
 
     /*
@@ -341,13 +351,14 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      *
      * @see org.ogf.saga.monitoring.Monitorable#getMetric(java.lang.String)
      */
-    public Metric getMetric(String name) throws NotImplemented,
+    public org.ogf.saga.monitoring.Metric getMetric(String name) throws NotImplemented,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             DoesNotExist, Timeout, NoSuccess {
-        if (TASK_STATE.equals(name)) {
-            return metric;
+        Metric m = metrics.get(name);
+        if (m == null) {
+            throw new DoesNotExist("metric " + name + " does not exist");
         }
-        throw new DoesNotExist("metric " + name + " does not exist");
+        return m;
     }
 
     /*
@@ -355,9 +366,9 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.monitoring.Monitorable#listMetrics()
      */
-    public String[] listMetrics() throws NotImplemented, AuthenticationFailed,
+    public synchronized String[] listMetrics() throws NotImplemented, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
-        return new String[] {TASK_STATE} ;
+        return metrics.keySet().toArray(new String[metrics.size()]);
     }
 
     /*
@@ -366,14 +377,14 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * @see org.ogf.saga.monitoring.Monitorable#removeCallback(java.lang.String,
      *      int)
      */
-    public void removeCallback(String name, int cookie) throws NotImplemented,
+    public synchronized void removeCallback(String name, int cookie) throws NotImplemented,
             DoesNotExist, BadParameter, Timeout, NoSuccess,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied {
-        if (TASK_STATE.equals(name)) {
-            metric.removeCallback(cookie);
-        } else {
+        Metric m = metrics.get(name);
+        if (m == null) {
             throw new DoesNotExist("metric " + name + " does not exist");
         }
+        m.removeCallback(cookie);
     }
 
     public synchronized boolean cancel(boolean mayInterruptIfRunning) {
@@ -446,5 +457,9 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
             setState(State.DONE);
         }
         return result;
+    }
+    
+    protected void addMetric(String name, Metric metric) {
+        metrics.put(name, metric);
     }
 }

@@ -24,11 +24,13 @@ public abstract class StreamServiceSpi implements StreamServiceSpiInterface {
     protected Session session;
     protected URL url;
     protected Metric clientConnectMetric;
+    protected StreamServiceWrapper wrapper;
     
     public StreamServiceSpi(StreamServiceWrapper wrapper, Session session, URL url)
             throws NotImplemented, BadParameter {
         this.session = session;
         this.url = url;
+        this.wrapper = wrapper;
         clientConnectMetric = new Metric(wrapper, session,
                 StreamService.STREAMSERVER_CLIENTCONNECT,
                 "fires if a client connects", "ReadOnly", "1", "Trigger", "1");
@@ -36,42 +38,42 @@ public abstract class StreamServiceSpi implements StreamServiceSpiInterface {
     
     public Task close(TaskMode mode, float timeoutInSeconds)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "close", new Class[] { Float.TYPE }, timeoutInSeconds);
     }
 
     public Task<URL> getUrl(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<URL>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
                 "getURL", new Class[] { });
     }
 
     public Task<Stream> serve(TaskMode mode, float timeoutInSeconds)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Stream>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream>(wrapper, session, mode,
                 "serve", new Class[] { Float.TYPE }, timeoutInSeconds);
     }
 
     public Task<Integer> addCallback(TaskMode mode, String name, Callback cb)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Integer>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
                 "addCallback", new Class[] { String.class, Callback.class },
                 name, cb);
     }
 
     public Task<org.ogf.saga.monitoring.Metric> getMetric(TaskMode mode, String name)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.monitoring.Metric>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.monitoring.Metric>(wrapper, session, mode,
                 "getMetric", new Class[] { String.class }, name);
     }
 
     public Task<String[]> listMetrics(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<String[]>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<String[]>(wrapper, session, mode,
                 "listMetrics", new Class[] { });
     }
 
     public Task removeCallback(TaskMode mode, String name, int cookie)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "removeCallback", new Class[] { String.class, Integer.TYPE },
                 name, cookie);
     }
@@ -105,32 +107,32 @@ public abstract class StreamServiceSpi implements StreamServiceSpiInterface {
     }
 
     public Task<String> getGroup(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<String>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<String>(wrapper, session, mode,
                 "getGroup", new Class[] { });
     }
 
     public Task<String> getOwner(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<String>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<String>(wrapper, session, mode,
                 "getOwner", new Class[] { });
     }
 
     public Task permissionsAllow(TaskMode mode, String id, int permissions)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsAllow", new Class[] {String.class, Integer.TYPE},
                 id, permissions);
     }
 
     public Task<Boolean> permissionsCheck(TaskMode mode, String id,
             int permissions) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session, mode,
                 "permissionsCheck", new Class[] {String.class, Integer.TYPE},
                 id, permissions);
     }
 
     public Task permissionsDeny(TaskMode mode, String id, int permissions)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsDeny", new Class[] {String.class, Integer.TYPE},
                 id, permissions);
     }

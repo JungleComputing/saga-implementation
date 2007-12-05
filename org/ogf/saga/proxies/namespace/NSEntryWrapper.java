@@ -34,11 +34,12 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, DoesNotExist, AlreadyExists, Timeout, NoSuccess {        
         super(session);
-        Object[] parameters = { session, name, flags };
+        Object[] parameters = { this, session, name, flags };
         try {
             proxy = (NSEntrySpiInterface) SAGAEngine.createAdaptorProxy(
                     NSEntrySpiInterface.class,
-                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    new Class[] { NSEntryWrapper.class,
+                        org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE },
                         parameters);
         } catch(org.ogf.saga.error.Exception e) {
