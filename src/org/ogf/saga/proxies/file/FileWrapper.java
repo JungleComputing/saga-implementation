@@ -27,7 +27,7 @@ import org.ogf.saga.spi.file.FileSpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-class FileWrapper extends NSEntryWrapper implements File {
+public class FileWrapper extends NSEntryWrapper implements File {
     
     private FileSpiInterface proxy;
     
@@ -36,11 +36,12 @@ class FileWrapper extends NSEntryWrapper implements File {
             AuthorizationFailed, PermissionDenied, BadParameter,
             AlreadyExists, DoesNotExist, Timeout, NoSuccess {
         super(session);
-        Object[] parameters = { session, name, flags };
+        Object[] parameters = { this, session, name, flags };
         try {
             proxy = (FileSpiInterface) SAGAEngine.createAdaptorProxy(
                     FileSpiInterface.class,
-                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    new Class[] { FileWrapper.class,
+                        org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE },
                         parameters);
             super.setProxy(proxy);

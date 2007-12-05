@@ -15,6 +15,7 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.namespace.Flags;
+import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -26,11 +27,13 @@ public abstract class NSEntrySpi implements NSEntrySpiInterface {
     protected Session session;
     protected boolean closed = false;
     protected URL nameUrl;
+    protected NSEntryWrapper wrapper;
 
-    public NSEntrySpi(Session session, URL name, int flags)
+    public NSEntrySpi(NSEntryWrapper wrapper, Session session, URL name, int flags)
         throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
             PermissionDenied, AuthorizationFailed, AuthenticationFailed,
             Timeout, NoSuccess, AlreadyExists {
+        this.wrapper = wrapper;
         this.session = session;
         nameUrl = name.normalize();
         if (name == nameUrl) {
@@ -91,7 +94,7 @@ public abstract class NSEntrySpi implements NSEntrySpiInterface {
 
     public Task close(TaskMode mode, float timeoutInSeconds)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "close", new Class[] { Float.TYPE }, timeoutInSeconds);
     }
 
@@ -122,7 +125,7 @@ public abstract class NSEntrySpi implements NSEntrySpiInterface {
     }
 
     public Task<URL> getCWD(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<URL>(this, session,
+        return new org.ogf.saga.impl.task.Task<URL>(wrapper, session,
                 mode, "getCWD", new Class[] {});
     }
 
@@ -140,7 +143,7 @@ public abstract class NSEntrySpi implements NSEntrySpiInterface {
     }
 
     public Task<URL> getName(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<URL>(this, session,
+        return new org.ogf.saga.impl.task.Task<URL>(wrapper, session,
                 mode, "getName", new Class[] {});
     }
 
@@ -155,7 +158,7 @@ public abstract class NSEntrySpi implements NSEntrySpiInterface {
     }
 
     public Task<URL> getURL(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<URL>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
                 "getURL", new Class[] {});
     }
 
@@ -188,29 +191,29 @@ public abstract class NSEntrySpi implements NSEntrySpiInterface {
 
     public Task copy(TaskMode mode, URL target, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "copy", new Class[] { URL.class, Integer.TYPE }, target, flags);
     }
 
     public Task<Boolean> isDir(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
+        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "isDir", new Class[] { });
     }
 
     public Task<Boolean> isEntry(TaskMode mode)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
+        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "isEntry", new Class[] { });
     }
 
     public Task<Boolean> isLink(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
+        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "isLink", new Class[] { });
     }
   
     public Task link(TaskMode mode, URL target, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "link", new Class[] { URL.class, Integer.TYPE }, target, flags);
     }
 
@@ -239,31 +242,31 @@ public abstract class NSEntrySpi implements NSEntrySpiInterface {
 
     public Task move(TaskMode mode, URL target, int flags)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "move", new Class[] { URL.class, Integer.TYPE }, target, flags);
     }
     
     public Task permissionsAllow(TaskMode mode, String id, int permissions,
             int flags) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsAllow", new Class[] { String.class, Integer.TYPE,
                         Integer.TYPE }, id, permissions, flags);
     }
 
     public Task permissionsDeny(TaskMode mode, String id, int permissions,
             int flags) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsDeny", new Class[] { String.class, Integer.TYPE,
                         Integer.TYPE }, id, permissions, flags);
     }
 
     public Task<URL> readLink(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<URL>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
                 "readLink", new Class[] {});
     }
 
     public Task remove(TaskMode mode, int flags) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<URL>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
                 "remove", new Class[] { Integer.TYPE }, flags);
     }
 
@@ -281,14 +284,14 @@ public abstract class NSEntrySpi implements NSEntrySpiInterface {
 
     public Task permissionsAllow(TaskMode mode, String id, int permissions)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsAllow", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
     public Task<Boolean> permissionsCheck(TaskMode mode, String id,
             int permissions) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
+        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "permissionsCheck", new Class[] { String.class,
                         Integer.TYPE }, id, permissions);
     }
@@ -307,18 +310,18 @@ public abstract class NSEntrySpi implements NSEntrySpiInterface {
 
     public Task permissionsDeny(TaskMode mode, String id, int permissions)
             throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsDeny", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
     public Task<String> getGroup(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<String>(this, session,
+        return new org.ogf.saga.impl.task.Task<String>(wrapper, session,
                 mode, "getGroup", new Class[] {});
     }
 
     public Task<String> getOwner(TaskMode mode) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task<String>(this, session,
+        return new org.ogf.saga.impl.task.Task<String>(wrapper, session,
                 mode, "getOwner", new Class[] {});
     }
 }

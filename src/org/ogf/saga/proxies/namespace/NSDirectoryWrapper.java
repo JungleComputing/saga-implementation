@@ -33,11 +33,12 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, DoesNotExist, AlreadyExists, Timeout, NoSuccess {
         super(session);
-        Object[] parameters = { session, name, flags };
+        Object[] parameters = { this, session, name, flags };
         try {
             proxy = (NSDirectorySpiInterface) SAGAEngine.createAdaptorProxy(
                     NSDirectorySpiInterface.class,
-                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    new Class[] { NSDirectoryWrapper.class,
+                        org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE },
                         parameters);
             super.setProxy(proxy);

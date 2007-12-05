@@ -16,6 +16,7 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.namespace.Flags;
+import org.ogf.saga.proxies.logicalfile.LogicalFileWrapper;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.spi.namespace.NSEntrySpi;
 import org.ogf.saga.task.Task;
@@ -35,13 +36,13 @@ public abstract class LogicalFileSpi extends NSEntrySpi implements
         return flags;
     }
 
-    public LogicalFileSpi(Session session, URL name, int flags)
+    public LogicalFileSpi(LogicalFileWrapper wrapper, Session session, URL name, int flags)
             throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
             PermissionDenied, AuthorizationFailed, AuthenticationFailed,
             Timeout, NoSuccess, AlreadyExists {
-        super(session, name, checkFlags(flags) & Flags.ALLNAMESPACEFLAGS.getValue());
+        super(wrapper, session, name, checkFlags(flags) & Flags.ALLNAMESPACEFLAGS.getValue());
         logicalFileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
-        attributes = new LogicalFileAttributes(session, true);
+        attributes = new LogicalFileAttributes(wrapper, session, true);
     }
 
     public void addAttribute(String name, AttributeType type, boolean vector,
@@ -145,34 +146,34 @@ public abstract class LogicalFileSpi extends NSEntrySpi implements
 
     public Task addLocation(TaskMode mode, URL name) throws NotImplemented {  
         return new org.ogf.saga.impl.task.Task(
-                this, session, mode, "addLocation",
+                wrapper, session, mode, "addLocation",
                 new Class[] { URL.class },
                 name);
     }
 
     public Task<List<URL>> listLocations(TaskMode mode) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<List<URL>>(
-                this, session, mode, "listLocations",
+                wrapper, session, mode, "listLocations",
                 new Class[] { });
     }
 
     public Task removeLocation(TaskMode mode, URL name) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task(
-                this, session, mode, "removeLocation",
+                wrapper, session, mode, "removeLocation",
                 new Class[] { URL.class },
                 name);
     }
 
     public Task replicate(TaskMode mode, URL name, int flags) throws NotImplemented { 
         return new org.ogf.saga.impl.task.Task(
-            this, session, mode, "replicate",
+            wrapper, session, mode, "replicate",
             new Class[] { URL.class, Integer.TYPE },
             name, flags);
     }
 
     public Task updateLocation(TaskMode mode, URL nameOld, URL nameNew) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task(
-                this, session, mode, "updateLocation",
+                wrapper, session, mode, "updateLocation",
                 new Class[] { URL.class, URL.class },
                 nameOld, nameNew);
     }

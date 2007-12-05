@@ -5,12 +5,12 @@ import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.impl.session.Session;
 
 public class StreamAttributes extends AsyncAttributes {
-    StreamAttributes(Session session, boolean autoAdd) {
-        super(session, autoAdd);
+    StreamAttributes(Object object, Session session, boolean autoAdd) {
+        super(object, session, autoAdd);
     }
 
-    StreamAttributes(Session session) {
-        super(session, false);
+    StreamAttributes(Object object, Session session) {
+        super(object, session, false);
     }
     
     protected void addAttribute(String name, AttributeType type, boolean vector,

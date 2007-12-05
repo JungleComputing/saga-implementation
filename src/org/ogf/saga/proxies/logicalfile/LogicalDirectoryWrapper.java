@@ -25,7 +25,7 @@ import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-class LogicalDirectoryWrapper extends NSDirectoryWrapper implements LogicalDirectory {
+public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements LogicalDirectory {
     
     private LogicalDirectorySpiInterface proxy;
     
@@ -35,11 +35,12 @@ class LogicalDirectoryWrapper extends NSDirectoryWrapper implements LogicalDirec
             BadParameter, AlreadyExists, DoesNotExist, Timeout,
             NoSuccess {
         super(session);
-        Object[] parameters = { session, name, flags };
+        Object[] parameters = { this, session, name, flags };
         try {
             proxy = (LogicalDirectorySpiInterface) SAGAEngine.createAdaptorProxy(
                     LogicalDirectorySpiInterface.class,
-                    new Class[] { org.ogf.saga.impl.session.Session.class, URL.class,
+                    new Class[] { LogicalDirectoryWrapper.class,
+                        org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE },
                         parameters);
             super.setProxy(proxy);
