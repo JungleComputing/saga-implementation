@@ -36,16 +36,20 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
       
     private static class CallbackHandler implements Runnable {
         boolean busy = false;
-        private final Monitorable monitorable;
-        private final Callback cb;
+        private Monitorable monitorable;
+        final Callback cb;
         private final Metric metric;
-        private final int cookie;
+        final int cookie;
         
         public CallbackHandler(Monitorable monitorable, Callback cb,
                 Metric metric, int cookie) {
             this.cb = cb;
             this.metric = metric;
             this.cookie = cookie;
+            this.monitorable = monitorable;
+        }
+        
+        public void setMonitorable(Monitorable monitorable) {
             this.monitorable = monitorable;
         }
         
@@ -96,8 +100,8 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         }
     };
     
-    private final MetricAttributes attributes = new MetricAttributes();
-    private final ArrayList<CallbackHandler> callBacks = new ArrayList<CallbackHandler>();
+    private MetricAttributes attributes = new MetricAttributes();
+    private ArrayList<CallbackHandler> callBacks = new ArrayList<CallbackHandler>();
     private Monitorable monitorable;    
     private int fireCount = 0;
     
@@ -117,6 +121,32 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         } catch(DoesNotExist e) {
             // Should not happen.
         }        
+    }
+    
+    /**
+     * Method that comes in handy when clone() is called on a monitorable object.
+     * In this case, a metric clone has to be created that has the clone of the
+     * monitorable as reference.
+     * @param monitorable the clone.
+     * @return the copy. 
+     */
+    public Metric copy(Monitorable monitorable) throws CloneNotSupportedException {
+        Metric copy = (Metric) super.clone();
+        copy.attributes = (MetricAttributes) attributes.clone();
+        copy.monitorable = monitorable;
+        copy.fireCount = 0;
+        for (int i = 0; i < copy.callBacks.size(); i++) {
+            CallbackHandler cb = copy.callBacks.get(i);
+            if (cb == null) {
+                continue;
+            }
+            callBacks.set(i, new CallbackHandler(monitorable, cb.cb, this, cb.cookie));
+        }
+        return copy;
+    }
+    
+    public Object clone() throws CloneNotSupportedException {
+        return copy(monitorable);
     }
       
     public Metric(Monitorable monitorable, Session session, String name, String desc,
