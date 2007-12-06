@@ -97,21 +97,21 @@ public abstract class StreamSpi implements StreamSpiInterface {
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
                 "read", new Class[] { Buffer.class, Integer.TYPE },
-                len, buffer);
+                buffer, len);
     }
 
     public Task<Integer> waitStream(TaskMode mode, int what,
             float timeoutInSeconds) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
                 "waitStream", new Class[] { Integer.TYPE, Float.TYPE },
-                timeoutInSeconds, what);
+                what, timeoutInSeconds);
     }
 
     public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
-                "write", new Class[] { Integer.TYPE, Buffer.class },
-                len, buffer);
+                "write", new Class[] { Buffer.class, Integer.TYPE },
+                buffer, len);
     }
 
     public Task<Integer> addCallback(TaskMode mode, String name, Callback cb)
