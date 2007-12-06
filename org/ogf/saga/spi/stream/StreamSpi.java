@@ -11,7 +11,6 @@ import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.impl.session.Session;
@@ -66,7 +65,7 @@ public abstract class StreamSpi implements StreamSpiInterface {
             clone.url = new URL(url.toString());
         } catch (Throwable e) {
             // Should not happen.
-            throw new SagaError("Oops", e);
+            throw new CloneNotSupportedException("Oops");
         }
         clone.attributes = (StreamAttributes) attributes.clone();
         return clone;

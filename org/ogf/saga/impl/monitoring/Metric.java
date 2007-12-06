@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import org.ogf.saga.ObjectType;
-import org.ogf.saga.attributes.Attributes;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
@@ -24,26 +23,30 @@ import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.impl.SagaObjectBase;
 
-public class Metric extends SagaObjectBase implements Attributes,
-        org.ogf.saga.monitoring.Metric {
+/**
+ * Base implementation of metrics.
+ */
+public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Metric {
     
     protected static Logger logger = Logger.getLogger(Metric.class);
     
+    /** A thread pool to execute callbacks. */
     private static ExecutorService executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-            5L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-    
-    private int fireCount = 0;
-    
-    private class CallbackHandler implements Runnable {
+            3L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+      
+    private static class CallbackHandler implements Runnable {
         boolean busy = false;
-        private Callback cb;
-        private Metric metric;
-        private int cookie;
+        private final Monitorable monitorable;
+        private final Callback cb;
+        private final Metric metric;
+        private final int cookie;
         
-        public CallbackHandler(Callback cb, Metric metric, int cookie) {
+        public CallbackHandler(Monitorable monitorable, Callback cb,
+                Metric metric, int cookie) {
             this.cb = cb;
             this.metric = metric;
             this.cookie = cookie;
+            this.monitorable = monitorable;
         }
         
         public void run() {        
@@ -95,8 +98,9 @@ public class Metric extends SagaObjectBase implements Attributes,
     
     private final MetricAttributes attributes = new MetricAttributes();
     private final ArrayList<CallbackHandler> callBacks = new ArrayList<CallbackHandler>();
-    private Monitorable monitorable;
-     
+    private Monitorable monitorable;    
+    private int fireCount = 0;
+    
     Metric(Session session, String name, String desc, String mode,
             String unit, String type, String value) throws NotImplemented,
             BadParameter {
@@ -145,7 +149,6 @@ public class Metric extends SagaObjectBase implements Attributes,
         this.monitorable = monitorable;
     }
 
-    @Override
     public ObjectType getType() {
         return ObjectType.METRIC;
     }
@@ -229,7 +232,7 @@ public class Metric extends SagaObjectBase implements Attributes,
         } catch(DoesNotExist e) {
             // Should not happen.
         }
-        CallbackHandler b = new CallbackHandler(cb, this, callBacks.size());
+        CallbackHandler b = new CallbackHandler(monitorable, cb, this, callBacks.size());
         callBacks.add(b);
         return callBacks.size()-1;
     }
@@ -276,7 +279,7 @@ public class Metric extends SagaObjectBase implements Attributes,
             }
         }
         
-        // TODO: Should we wait here? I think yes.
+        // Wait until all callbacks are done.
         while (fireCount != 0) {
             try {
                 wait();
@@ -299,6 +302,7 @@ public class Metric extends SagaObjectBase implements Attributes,
 
             cb = callBacks.get(cookie);
             if (cb == null) {
+                // This callback was already removed. Ignore.
                 return;
             }
             callBacks.set(cookie, null);

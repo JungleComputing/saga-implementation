@@ -34,15 +34,15 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
     
     // Information about attributes: name, type, value,
     // read/write, removable or not, implemented. 
-    private static class AttributeInfo {
-        String name;
-        AttributeType type;
+    private static class AttributeInfo implements Cloneable {
+        final String name;
+        final AttributeType type;
         String value;
         String[] vectorValue;
-        boolean vector;
-        boolean readOnly;
-        boolean removable;
-        boolean notImplemented;
+        final boolean vector;
+        final boolean readOnly;
+        final boolean removable;
+        final boolean notImplemented;
         
         public AttributeInfo(String name, AttributeType type, boolean vector,
                 boolean readOnly, boolean notImplemented, boolean removable) {
@@ -88,6 +88,12 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
             }
             return true;
         }
+        
+        protected Object clone() throws CloneNotSupportedException {
+            AttributeInfo clone = (AttributeInfo) super.clone();
+            clone.vectorValue = vectorValue.clone();
+            return clone;
+        }
     }
     
     private HashMap<String, AttributeInfo> attributes;
@@ -106,7 +112,10 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
     
     public Object clone() throws CloneNotSupportedException {
         Attributes clone = (Attributes) super.clone();
-        clone.attributes = new HashMap<String, AttributeInfo>(attributes);
+        clone.attributes = new HashMap<String, AttributeInfo>();
+        for (String s : attributes.keySet()) {
+            clone.attributes.put(s, (AttributeInfo) attributes.get(s).clone());
+        }
         return clone;
     }
     
