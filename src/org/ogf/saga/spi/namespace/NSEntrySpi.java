@@ -16,11 +16,12 @@ import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
+import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class NSEntrySpi implements NSEntrySpiInterface {
+public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterface {
 
     private static Logger logger = Logger.getLogger(NSEntrySpi.class);
 

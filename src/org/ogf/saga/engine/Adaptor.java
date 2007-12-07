@@ -8,10 +8,10 @@ import java.lang.reflect.InvocationTargetException;
  */
 class Adaptor {
     /** The interface of the api implemented by this adaptor. */
-    private Class<?> spiInterface;
+    private final Class<?> spiInterface;
 
     /** The actual class of this adaptor, must be an implementation of spiClass. */
-    private Class<?> adaptorClass;
+    private final Class<?> adaptorClass;
     
     private String shortSpiName = null;
     

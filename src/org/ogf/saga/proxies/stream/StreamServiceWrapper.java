@@ -67,6 +67,13 @@ public class StreamServiceWrapper extends SagaObjectBase implements
             throw new NoSuccess("Constructor failed", e);
         }
     }
+    
+    public Object clone() throws CloneNotSupportedException {
+        StreamServiceWrapper clone = (StreamServiceWrapper) super.clone();
+        clone.proxy = (StreamServiceSpiInterface) SAGAEngine.createAdaptorCopy(
+                    StreamServiceSpiInterface.class, proxy);
+        return clone;
+    }
 
     public int addCallback(String name, Callback cb) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, DoesNotExist, Timeout, NoSuccess, IncorrectState {
         return proxy.addCallback(name, cb);

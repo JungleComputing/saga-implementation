@@ -27,6 +27,7 @@ import org.ogf.saga.task.TaskMode;
 public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     
     private NSDirectorySpiInterface proxy;
+    private boolean inheritedProxy = false;
     
     protected NSDirectoryWrapper(Session session, URL name, int flags)
             throws NotImplemented, IncorrectURL,
@@ -84,6 +85,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     protected void setProxy(NSDirectorySpiInterface proxy) {
         this.proxy = proxy;
         super.setProxy(proxy);
+        inheritedProxy = true;
     }
     
     public Task changeDir(TaskMode mode, URL dir) throws NotImplemented {
@@ -95,11 +97,14 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             BadParameter, IncorrectState, DoesNotExist, Timeout, NoSuccess {
         proxy.changeDir(dir);
     }
-
+    
     public Object clone() throws CloneNotSupportedException {
         NSDirectoryWrapper clone = (NSDirectoryWrapper) super.clone();
-        clone.proxy = (NSDirectorySpiInterface) proxy.clone();
-        return clone();
+        if (! inheritedProxy) {
+            clone.proxy = (NSDirectorySpiInterface)
+                    SAGAEngine.createAdaptorCopy(NSDirectorySpiInterface.class, proxy);
+        }
+        return clone;
     }
 
     public Task copy(TaskMode mode, URL target, int flags)

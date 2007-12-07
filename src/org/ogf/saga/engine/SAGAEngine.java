@@ -362,4 +362,11 @@ public class SAGAEngine {
                 new Class[] { interfaceClass }, handler);
         return proxy;
     }
+    
+    public static Object createAdaptorCopy(Class<?> interfaceClass, Object proxy) {
+        AdaptorInvocationHandler copy = new AdaptorInvocationHandler(
+                (AdaptorInvocationHandler) Proxy.getInvocationHandler(proxy));
+        return Proxy.newProxyInstance(interfaceClass.getClassLoader(),
+                new Class[] { interfaceClass }, copy);
+    }
 }

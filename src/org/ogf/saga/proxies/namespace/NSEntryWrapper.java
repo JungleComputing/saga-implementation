@@ -28,6 +28,7 @@ import org.ogf.saga.task.TaskMode;
 public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     
     private NSEntrySpiInterface proxy;
+    private boolean inheritedProxy = false;
     
     protected NSEntryWrapper(Session session, URL name, int flags)
             throws NotImplemented, IncorrectURL,
@@ -83,12 +84,17 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     
     protected void setProxy(NSEntrySpiInterface proxy) {
         this.proxy = proxy;
+        inheritedProxy = true;
     }
 
     public Object clone() throws CloneNotSupportedException {
         NSEntryWrapper clone = (NSEntryWrapper) super.clone();
-        clone.proxy = (NSEntrySpiInterface) proxy.clone();
-        return clone();
+        if (! inheritedProxy) {
+            // subclasses should call setProxy again.
+            clone.proxy = (NSEntrySpiInterface)
+                    SAGAEngine.createAdaptorCopy(NSEntrySpiInterface.class, proxy);
+        }
+        return clone;
     }
 
     public void close() throws NotImplemented, IncorrectState, NoSuccess {

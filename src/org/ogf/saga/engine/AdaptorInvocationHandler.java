@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 import org.ogf.saga.error.NoSuccess;
+import org.ogf.saga.impl.AdaptorBase;
 
 /**
  * Takes care of method invocations.
@@ -144,6 +145,20 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             throw exception;
         }
     }
+    
+    public AdaptorInvocationHandler(AdaptorInvocationHandler orig) {
+        adaptors = new Hashtable<String, Adaptor>(adaptors);
+        adaptorInstantiations = new Hashtable<String, Object>();
+        for (String s : orig.adaptorInstantiations.keySet()) {
+            try {
+                Object cp = ((AdaptorBase) orig.adaptorInstantiations.get(s)).clone();
+                adaptorInstantiations.put(s, cp);
+            } catch (CloneNotSupportedException e) {
+                logger.error("Adaptor " + orig.adaptorInstantiations.get(s)
+                        + " does not support clone()", e);
+            }
+        }
+    }
 
     /*
      * (non-Javadoc)
@@ -153,7 +168,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      */
     public Object invoke(Object proxy, Method m, Object[] params)
         throws Throwable {
-
+        
         org.ogf.saga.error.Exception exception = null;
         
         ArrayList<String> adaptornames = adaptorSorter.getOrdering(m);
