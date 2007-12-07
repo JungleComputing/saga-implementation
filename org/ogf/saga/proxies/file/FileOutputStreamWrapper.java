@@ -84,11 +84,12 @@ class FileOutputStreamWrapper extends FileOutputStream {
             throw new NoSuccess("Constructor failed", e);
         }
     }
-
+   
     public Object clone() throws CloneNotSupportedException {
         FileOutputStreamWrapper clone = (FileOutputStreamWrapper) super.clone();
         clone.sagaObject = (OutputSagaObject) sagaObject.clone();
-        clone.proxy = (FileOutputStreamSpiInterface) proxy.clone();
+        clone.proxy = (FileOutputStreamSpiInterface) SAGAEngine.createAdaptorCopy(
+                    FileOutputStreamSpiInterface.class, proxy);
         return clone;
     }
 

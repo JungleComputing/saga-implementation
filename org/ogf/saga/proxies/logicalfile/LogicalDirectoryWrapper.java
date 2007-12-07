@@ -81,8 +81,10 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
 
     public Object clone() throws CloneNotSupportedException {
         LogicalDirectoryWrapper clone = (LogicalDirectoryWrapper) super.clone();
-        clone.proxy = (LogicalDirectorySpiInterface) proxy.clone();
-        return clone();
+        clone.proxy = (LogicalDirectorySpiInterface)
+                SAGAEngine.createAdaptorCopy(LogicalDirectorySpiInterface.class, proxy);
+        clone.setProxy(clone.proxy);
+        return clone;
     }
 
     public List<URL> find(String namePattern, String[] attrPattern, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {

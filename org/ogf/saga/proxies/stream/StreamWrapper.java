@@ -72,7 +72,8 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
 
     public Object clone() throws CloneNotSupportedException {
         StreamWrapper clone = (StreamWrapper) super.clone();
-        proxy = (StreamSpiInterface) proxy.clone();
+        clone.proxy = (StreamSpiInterface) SAGAEngine.createAdaptorCopy(
+                    StreamSpiInterface.class, proxy);
         return clone;
     }
     

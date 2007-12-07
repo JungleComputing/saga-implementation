@@ -10,6 +10,7 @@ import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
+import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.impl.monitoring.Metric;
@@ -19,7 +20,7 @@ import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class StreamServiceSpi implements StreamServiceSpiInterface {
+public abstract class StreamServiceSpi extends AdaptorBase implements StreamServiceSpiInterface {
 
     protected Session session;
     protected URL url;

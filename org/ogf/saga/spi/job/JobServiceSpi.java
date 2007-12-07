@@ -3,6 +3,7 @@ package org.ogf.saga.spi.job;
 import java.util.List;
 
 import org.ogf.saga.error.NotImplemented;
+import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
@@ -11,7 +12,7 @@ import org.ogf.saga.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class JobServiceSpi implements JobServiceSpiInterface {
+public abstract class JobServiceSpi extends AdaptorBase implements JobServiceSpiInterface {
 
     protected Session session;
     protected JobServiceWrapper wrapper;
