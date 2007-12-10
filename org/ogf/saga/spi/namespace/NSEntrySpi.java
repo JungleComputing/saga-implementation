@@ -28,13 +28,12 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
     protected Session session;
     protected boolean closed = false;
     protected URL nameUrl;
-    protected NSEntryWrapper wrapper;
 
     public NSEntrySpi(NSEntryWrapper wrapper, Session session, URL name, int flags)
         throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
             PermissionDenied, AuthorizationFailed, AuthenticationFailed,
             Timeout, NoSuccess, AlreadyExists {
-        this.wrapper = wrapper;
+        super(wrapper);
         this.session = session;
         nameUrl = name.normalize();
         if (name == nameUrl) {

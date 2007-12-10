@@ -44,6 +44,12 @@ public abstract class LogicalFileSpi extends NSEntrySpi implements
         logicalFileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
         attributes = new LogicalFileAttributes(wrapper, session, true);
     }
+    
+    public Object clone() throws CloneNotSupportedException {
+        LogicalFileSpi clone = (LogicalFileSpi) super.clone();
+        clone.attributes = (LogicalFileAttributes) attributes.clone();        
+        return clone;
+    }
 
     public void addAttribute(String name, AttributeType type, boolean vector,
              boolean readOnly, boolean notImplemented, boolean removeable) {

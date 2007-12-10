@@ -9,6 +9,7 @@ import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
+import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.impl.session.Session;
@@ -25,16 +26,26 @@ public abstract class StreamServiceSpi extends AdaptorBase implements StreamServ
     protected Session session;
     protected URL url;
     protected Metric clientConnectMetric;
-    protected StreamServiceWrapper wrapper;
     
     public StreamServiceSpi(StreamServiceWrapper wrapper, Session session, URL url)
             throws NotImplemented, BadParameter {
+        super(wrapper);
         this.session = session;
         this.url = url;
-        this.wrapper = wrapper;
         clientConnectMetric = new Metric(wrapper, session,
                 StreamService.STREAMSERVER_CLIENTCONNECT,
                 "fires if a client connects", "ReadOnly", "1", "Trigger", "1");
+    }
+    
+    public Object clone() throws CloneNotSupportedException {
+        StreamServiceSpi clone = (StreamServiceSpi) super.clone();
+        try {
+            clone.url = new URL(url.toString());
+        } catch (Throwable e) {
+            throw new SagaError("Should not happen", e);
+        }
+        clone.clientConnectMetric = (Metric) clientConnectMetric.clone();
+        return clone;
     }
     
     public Task close(TaskMode mode, float timeoutInSeconds)

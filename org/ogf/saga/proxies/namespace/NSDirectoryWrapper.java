@@ -102,7 +102,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         NSDirectoryWrapper clone = (NSDirectoryWrapper) super.clone();
         if (! inheritedProxy) {
             clone.proxy = (NSDirectorySpiInterface)
-                    SAGAEngine.createAdaptorCopy(NSDirectorySpiInterface.class, proxy);
+                    SAGAEngine.createAdaptorCopy(NSDirectorySpiInterface.class, proxy, clone);
         }
         return clone;
     }

@@ -82,7 +82,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
     public Object clone() throws CloneNotSupportedException {
         LogicalDirectoryWrapper clone = (LogicalDirectoryWrapper) super.clone();
         clone.proxy = (LogicalDirectorySpiInterface)
-                SAGAEngine.createAdaptorCopy(LogicalDirectorySpiInterface.class, proxy);
+                SAGAEngine.createAdaptorCopy(LogicalDirectorySpiInterface.class, proxy, clone);
         clone.setProxy(clone.proxy);
         return clone;
     }

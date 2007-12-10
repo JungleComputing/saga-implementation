@@ -109,7 +109,7 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
     public Object clone() throws CloneNotSupportedException {
         JobServiceWrapper clone = (JobServiceWrapper) super.clone();
         clone.proxy = (JobServiceSpiInterface) SAGAEngine.createAdaptorCopy(
-                    JobServiceSpiInterface.class, proxy);
+                    JobServiceSpiInterface.class, proxy, clone);
         return clone;
     }
     

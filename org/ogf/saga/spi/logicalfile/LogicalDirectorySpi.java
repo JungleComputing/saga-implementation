@@ -49,6 +49,12 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         attributes = new LogicalFileAttributes(wrapper, session, true);
         logicalFileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
     }
+    
+    public Object clone() throws CloneNotSupportedException {
+        LogicalDirectorySpi clone = (LogicalDirectorySpi) super.clone();
+        clone.attributes = (LogicalFileAttributes) attributes.clone();
+        return clone;
+    }
 
     public List<URL> find(String namePattern, String[] attrPattern, int flags)
             throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
