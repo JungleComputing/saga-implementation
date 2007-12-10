@@ -89,7 +89,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
     public Object clone() throws CloneNotSupportedException {
         LogicalFileWrapper clone = (LogicalFileWrapper) super.clone();
         clone.proxy = (LogicalFileSpiInterface)
-                SAGAEngine.createAdaptorCopy(LogicalFileSpiInterface.class, proxy);
+                SAGAEngine.createAdaptorCopy(LogicalFileSpiInterface.class, proxy, clone);
         clone.setProxy(clone.proxy);
         return clone;
     }

@@ -89,7 +89,7 @@ class FileOutputStreamWrapper extends FileOutputStream {
         FileOutputStreamWrapper clone = (FileOutputStreamWrapper) super.clone();
         clone.sagaObject = (OutputSagaObject) sagaObject.clone();
         clone.proxy = (FileOutputStreamSpiInterface) SAGAEngine.createAdaptorCopy(
-                    FileOutputStreamSpiInterface.class, proxy);
+                    FileOutputStreamSpiInterface.class, proxy, clone);
         return clone;
     }
 

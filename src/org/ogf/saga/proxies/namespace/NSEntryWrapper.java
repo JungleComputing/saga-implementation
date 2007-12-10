@@ -92,7 +92,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         if (! inheritedProxy) {
             // subclasses should call setProxy again.
             clone.proxy = (NSEntrySpiInterface)
-                    SAGAEngine.createAdaptorCopy(NSEntrySpiInterface.class, proxy);
+                    SAGAEngine.createAdaptorCopy(NSEntrySpiInterface.class, proxy, clone);
         }
         return clone;
     }

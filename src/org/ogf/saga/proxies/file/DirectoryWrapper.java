@@ -105,7 +105,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
     public Object clone() throws CloneNotSupportedException {
         DirectoryWrapper clone = (DirectoryWrapper) super.clone();
         clone.proxy = (DirectorySpiInterface) SAGAEngine.createAdaptorCopy(
-                DirectorySpiInterface.class, proxy);
+                DirectorySpiInterface.class, proxy, clone);
         clone.setProxy(proxy);
         return clone;
     }

@@ -146,12 +146,14 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
     }
     
-    public AdaptorInvocationHandler(AdaptorInvocationHandler orig) {
+    public AdaptorInvocationHandler(AdaptorInvocationHandler orig, Object wrapper) {
         adaptors = new Hashtable<String, Adaptor>(adaptors);
         adaptorInstantiations = new Hashtable<String, Object>();
         for (String s : orig.adaptorInstantiations.keySet()) {
             try {
-                Object cp = ((AdaptorBase) orig.adaptorInstantiations.get(s)).clone();
+                AdaptorBase cp = (AdaptorBase)
+                        ((AdaptorBase) orig.adaptorInstantiations.get(s)).clone();
+                cp.setWrapper(wrapper);
                 adaptorInstantiations.put(s, cp);
             } catch (CloneNotSupportedException e) {
                 logger.error("Adaptor " + orig.adaptorInstantiations.get(s)

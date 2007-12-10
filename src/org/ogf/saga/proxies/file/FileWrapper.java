@@ -94,7 +94,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
     public Object clone() throws CloneNotSupportedException {
         FileWrapper clone = (FileWrapper) super.clone();
         clone.proxy = (FileSpiInterface) SAGAEngine.createAdaptorCopy(
-                FileSpiInterface.class, proxy);
+                FileSpiInterface.class, proxy, clone);
         clone.setProxy(proxy);
         return clone;
     }

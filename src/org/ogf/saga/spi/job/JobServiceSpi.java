@@ -15,14 +15,16 @@ import org.ogf.saga.task.TaskMode;
 public abstract class JobServiceSpi extends AdaptorBase implements JobServiceSpiInterface {
 
     protected Session session;
-    protected JobServiceWrapper wrapper;
     protected String rm;
     
     public JobServiceSpi(JobServiceWrapper wrapper, Session session, String rm) {
+        super(wrapper);
         this.session = session;
         this.rm = rm;
-        this.wrapper = wrapper;
     }
+    
+    // No dedicated clone() method needed. The session field does not have to
+    // be cloned, and the rm field is immutable.
 
     public Task<Job> createJob(TaskMode mode, JobDescription jd)
             throws NotImplemented {
