@@ -27,7 +27,9 @@ import org.ogf.saga.spi.stream.StreamSpiInterface;
 
 /**
  * This class make the various SAGA adaptors available to SAGA.
- * The code is mostly stolen from the JavaGAT engine implementation.
+ * Some of this code is stolen from the JavaGAT engine implementation.
+ * This class also supports cloning of SAGA adaptors, which is
+ * required when a SAGA object is cloned.
  */
 public class SAGAEngine {
 
@@ -98,7 +100,7 @@ public class SAGAEngine {
     }
 
     /**
-     * This method periodically populates the Map returned from a call to the
+     * This method populates the Map returned from a call to the
      * method getSpiClasses().
      */
     private void readJarFiles() {
@@ -161,7 +163,7 @@ public class SAGAEngine {
     }
 
     /**
-     * Obtains Files in the optional directory.
+     * Obtains Files in the specified directory.
      * 
      * @param f
      *            a directory to list
@@ -178,7 +180,7 @@ public class SAGAEngine {
     }
 
     /**
-     * Obtains JarFiles in the optional directory.
+     * Obtains JarFiles in the specified directory.
      * 
      * @param dir
      *            the directory to get the jar files from
@@ -348,6 +350,16 @@ public class SAGAEngine {
         }
     }
 
+    /**
+     * Creates a proxy for the adaptor spi interface, instantiating adaptors
+     * on the fly.
+     * @param interfaceClass The adaptor spi.
+     * @param types the types of the constructor parameters.
+     * @param tmpParams the actual constructor parameters.
+     * @return the proxy object.
+     * @throws org.ogf.saga.error.Exception when no adaptor could be
+     * created, the most specific exception is thrown.
+     */
     public static Object createAdaptorProxy(
             Class<?> interfaceClass, Class[] types, Object[] tmpParams)
                 throws org.ogf.saga.error.Exception {
@@ -363,6 +375,14 @@ public class SAGAEngine {
         return proxy;
     }
     
+    /**
+     * Creates a new proxy, which is a copy (clone) of the specified proxy,
+     * with cloned adaptors.
+     * @param interfaceClass the adaptor spi.
+     * @param proxy the proxy to clone. 
+     * @param wrapper the clone of the wrapper object initiating the clone.
+     * @return the proxy clone.
+     */
     public static Object createAdaptorCopy(Class<?> interfaceClass, Object proxy, Object wrapper) {
         AdaptorInvocationHandler copy = new AdaptorInvocationHandler(
                 (AdaptorInvocationHandler) Proxy.getInvocationHandler(proxy), wrapper);
