@@ -30,8 +30,7 @@ public class MetaFactory implements SagaFactory {
     }
 
     public JobFactory createJobFactory() throws NotImplemented {
-        // TODO Auto-generated method stub
-        throw new NotImplemented("Job factory not implemented yet");
+        return new org.ogf.saga.proxies.job.JobWrapperFactory();
     }
 
     public LogicalFileFactory createLogicalFileFactory() throws NotImplemented {
@@ -48,7 +47,7 @@ public class MetaFactory implements SagaFactory {
 
     public RPCFactory createRPCFactory() {
         // TODO Auto-generated method stub
-        throw new SagaError("Task factory not implemented");
+        throw new SagaError("RPC factory not implemented");
     }
 
     public SessionFactory createSessionFactory() {

@@ -19,7 +19,6 @@ public class JobDescription extends SagaObjectBase implements
     
     public JobDescription() {
         super(null);
-
     }
 
     public Object clone() throws CloneNotSupportedException {
