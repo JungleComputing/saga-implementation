@@ -18,7 +18,7 @@ import org.ogf.saga.task.TaskFactory;
 public class MetaFactory implements SagaFactory {
 
     public BufferFactory createBufferFactory() throws NotImplemented {
-        throw new NotImplemented("buffer");
+        return new org.ogf.saga.impl.buffer.BufferFactory();
     }
 
     public ContextFactory createContextFactory() {
@@ -35,8 +35,7 @@ public class MetaFactory implements SagaFactory {
     }
 
     public LogicalFileFactory createLogicalFileFactory() throws NotImplemented {
-        // TODO Auto-generated method stub
-        throw new NotImplemented("LogicalFile factory not implemented yet");
+        return new org.ogf.saga.proxies.logicalfile.LogicalFileWrapperFactory();
     }
 
     public MonitoringFactory createMonitoringFactory() throws NotImplemented {
@@ -57,8 +56,7 @@ public class MetaFactory implements SagaFactory {
     }
 
     public StreamFactory createStreamFactory() throws NotImplemented {
-        // TODO Auto-generated method stub
-        throw new NotImplemented("Stream factory not implemented");
+        return new org.ogf.saga.proxies.stream.StreamWrapperFactory();
     }
 
     public TaskFactory createTaskFactory() throws NotImplemented {
