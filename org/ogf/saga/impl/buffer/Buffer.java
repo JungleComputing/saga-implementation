@@ -7,18 +7,18 @@ import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.impl.SagaObjectBase;
 
-final class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer {
+public class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer {
 
     protected byte[] buf;
     protected boolean implementationManaged;
     protected int size;
     protected boolean closed = false;
 
-    Buffer() throws NotImplemented, BadParameter {
+    protected Buffer() throws NotImplemented, BadParameter {
         this(-1);
     }
 
-    Buffer(int size) throws NotImplemented, BadParameter {
+    protected Buffer(int size) throws NotImplemented, BadParameter {
         super(null);
         try {
             setSize(size);
@@ -27,7 +27,7 @@ final class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer 
         }
     }
 
-    Buffer(byte[] buf) throws BadParameter, NotImplemented {
+    protected Buffer(byte[] buf) throws BadParameter, NotImplemented {
         super(null);
         try {
             setData(buf);
