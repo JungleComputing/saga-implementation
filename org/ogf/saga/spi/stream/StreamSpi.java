@@ -22,7 +22,6 @@ import org.ogf.saga.task.TaskMode;
 
 public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterface {
     
-    protected Session session;
     protected URL url;
     protected StreamAttributes attributes;
     protected Metric streamState;
@@ -33,8 +32,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
     
     public StreamSpi(StreamWrapper wrapper, Session session, URL url) throws NotImplemented,
             BadParameter {
-        super(wrapper);
-        this.session = session;
+        super(session, wrapper);
         this.url = url;
         attributes = new StreamAttributes(wrapper, session);
         streamState = new Metric(wrapper, session,

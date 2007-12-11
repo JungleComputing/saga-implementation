@@ -25,7 +25,6 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
 
     private static Logger logger = Logger.getLogger(NSEntrySpi.class);
 
-    protected Session session;
     protected boolean closed = false;
     protected URL nameUrl;
 
@@ -33,8 +32,7 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
         throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
             PermissionDenied, AuthorizationFailed, AuthenticationFailed,
             Timeout, NoSuccess, AlreadyExists {
-        super(wrapper);
-        this.session = session;
+        super(session, wrapper);
         nameUrl = name.normalize();
         if (name == nameUrl) {
             nameUrl = new URL(name.toString());
