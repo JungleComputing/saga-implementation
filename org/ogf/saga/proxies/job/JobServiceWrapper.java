@@ -35,7 +35,8 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
         try {
             proxy = (JobServiceSpiInterface) SAGAEngine.createAdaptorProxy(
                     JobServiceSpiInterface.class,
-                    new Class[] { JobServiceWrapper.class, Session.class, String.class },
+                    new Class[] { JobServiceWrapper.class, 
+                        org.ogf.saga.impl.session.Session.class, String.class },
                     parameters);
         } catch(org.ogf.saga.error.Exception e) {
             if (e instanceof NotImplemented) {
