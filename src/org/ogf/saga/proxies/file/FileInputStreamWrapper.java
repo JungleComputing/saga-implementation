@@ -20,7 +20,7 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.file.FileInputStreamSpiInterface;
 
-class FileInputStreamWrapper extends FileInputStream {
+public class FileInputStreamWrapper extends FileInputStream {
     
     private static class InputSagaObject extends SagaObjectBase {
         
@@ -40,11 +40,12 @@ class FileInputStreamWrapper extends FileInputStream {
             throws NotImplemented, IncorrectURL, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
             AlreadyExists, DoesNotExist, Timeout, NoSuccess {
-        Object[] parameters = { session, name };
+        Object[] parameters = { this, session, name };
         try {
             proxy = (FileInputStreamSpiInterface) SAGAEngine.createAdaptorProxy(
                     FileInputStreamSpiInterface.class,
-                    new Class[] { URL.class, Integer.TYPE },
+                    new Class[] { FileInputStreamWrapper.class,
+                        org.ogf.saga.impl.session.Session.class, URL.class },
                     parameters);
             sagaObject = new InputSagaObject(session);
         } catch(org.ogf.saga.error.Exception e) {
