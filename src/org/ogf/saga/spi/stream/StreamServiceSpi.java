@@ -23,14 +23,12 @@ import org.ogf.saga.task.TaskMode;
 
 public abstract class StreamServiceSpi extends AdaptorBase implements StreamServiceSpiInterface {
 
-    protected Session session;
     protected URL url;
     protected Metric clientConnectMetric;
     
     public StreamServiceSpi(StreamServiceWrapper wrapper, Session session, URL url)
             throws NotImplemented, BadParameter {
-        super(wrapper);
-        this.session = session;
+        super(session, wrapper);
         this.url = url;
         clientConnectMetric = new Metric(wrapper, session,
                 StreamService.STREAMSERVER_CLIENTCONNECT,

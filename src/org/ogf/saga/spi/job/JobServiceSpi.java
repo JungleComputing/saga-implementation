@@ -8,18 +8,16 @@ import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
 import org.ogf.saga.proxies.job.JobServiceWrapper;
-import org.ogf.saga.session.Session;
+import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public abstract class JobServiceSpi extends AdaptorBase implements JobServiceSpiInterface {
 
-    protected Session session;
     protected String rm;
     
     public JobServiceSpi(JobServiceWrapper wrapper, Session session, String rm) {
-        super(wrapper);
-        this.session = session;
+        super(session, wrapper);
         this.rm = rm;
     }
     
