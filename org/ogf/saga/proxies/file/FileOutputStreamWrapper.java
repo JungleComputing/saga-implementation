@@ -20,7 +20,7 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.file.FileOutputStreamSpiInterface;
 
-class FileOutputStreamWrapper extends FileOutputStream {
+public class FileOutputStreamWrapper extends FileOutputStream {
   
     // FileOutputStreamWrapper cannot extend SagaObjectBase, since it already extends
     // FileOutputStream. So, we create the base object here.
@@ -43,11 +43,13 @@ class FileOutputStreamWrapper extends FileOutputStream {
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, AlreadyExists, DoesNotExist, Timeout,
             NoSuccess {
-        Object[] parameters = { session, name, append };
+        Object[] parameters = { this, session, name, append };
         try {
             proxy = (FileOutputStreamSpiInterface) SAGAEngine.createAdaptorProxy(
                     FileOutputStreamSpiInterface.class,
-                    new Class[] { URL.class, Integer.TYPE },
+                    new Class[] { FileOutputStreamWrapper.class,
+                        org.ogf.saga.impl.session.Session.class,
+                        URL.class, Boolean.TYPE },
                     parameters);
             sagaObject = new OutputSagaObject(session);
         } catch(org.ogf.saga.error.Exception e) {
