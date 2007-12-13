@@ -3,6 +3,7 @@ package org.ogf.saga.proxies.job;
 import java.util.List;
 
 import org.ogf.saga.ObjectType;
+import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
@@ -27,7 +28,7 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
     
     private JobServiceSpiInterface proxy;
 
-    public JobServiceWrapper(Session session, String rm) throws NoSuccess,
+    public JobServiceWrapper(Session session, URL rm) throws NoSuccess,
                 Timeout, PermissionDenied, AuthorizationFailed, AuthenticationFailed,
                 IncorrectURL, NotImplemented {
         super(session);
@@ -36,7 +37,7 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
             proxy = (JobServiceSpiInterface) SAGAEngine.createAdaptorProxy(
                     JobServiceSpiInterface.class,
                     new Class[] { JobServiceWrapper.class, 
-                        org.ogf.saga.impl.session.Session.class, String.class },
+                        org.ogf.saga.impl.session.Session.class, URL.class },
                     parameters);
         } catch(org.ogf.saga.error.Exception e) {
             if (e instanceof NotImplemented) {

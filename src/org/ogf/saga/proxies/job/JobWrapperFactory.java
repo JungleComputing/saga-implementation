@@ -1,5 +1,6 @@
 package org.ogf.saga.proxies.job;
 
+import org.ogf.saga.URL;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.IncorrectURL;
@@ -24,17 +25,17 @@ public class JobWrapperFactory extends JobFactory {
         return new JobDescription();
     }
 
-    protected JobService doCreateJobService(Session session, String rm)
+    protected JobService doCreateJobService(Session session, URL rm)
             throws NotImplemented, IncorrectURL, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
         return new JobServiceWrapper(session, rm);
     }
 
     protected Task<JobService> doCreateJobService(TaskMode mode,
-            Session session, String rm) throws NotImplemented {
+            Session session, URL rm) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<JobService>(this, session, mode,
                 "doCreateJobService",
-                new Class[] { Session.class, String.class } ,
+                new Class[] { Session.class, URL.class } ,
                 session, rm);
     }
 }

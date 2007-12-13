@@ -2,6 +2,7 @@ package org.ogf.saga.spi.job;
 
 import java.util.List;
 
+import org.ogf.saga.URL;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.job.Job;
@@ -14,9 +15,9 @@ import org.ogf.saga.task.TaskMode;
 
 public abstract class JobServiceSpi extends AdaptorBase implements JobServiceSpiInterface {
 
-    protected String rm;
+    protected URL rm;
     
-    public JobServiceSpi(JobServiceWrapper wrapper, Session session, String rm) {
+    public JobServiceSpi(JobServiceWrapper wrapper, Session session, URL rm) {
         super(session, wrapper);
         this.rm = rm;
     }
