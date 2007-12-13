@@ -41,7 +41,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
 
     private static Logger logger = Logger.getLogger(Task.class);
     
-    private State state = State.NEW;
+    protected State state = State.NEW;
     private final Object object;
     private Throwable exception = null;
     private Metric metric;
@@ -116,10 +116,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      */
     public synchronized void cancel() throws NotImplemented, IncorrectState, Timeout,
             NoSuccess {
-        if (state == State.NEW) {
-            throw new IncorrectState("cancel() called on task in state New");
-        }
-        cancel(true);
+        cancel(0.0F);
     }
 
     /*
@@ -129,7 +126,10 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      */
     public void cancel(float timeoutInSeconds) throws NotImplemented,
             IncorrectState, Timeout, NoSuccess {
-        cancel();
+        if (state == State.NEW) {
+            throw new IncorrectState("cancel() called on task in state New");
+        }
+        cancel(true);
     }
 
     /*
@@ -429,6 +429,10 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
         } catch(Throwable e) {
             throw new SagaError("Internal error", e);
         }
+    }
+    
+    protected void setStateValue(State value) {
+        state = value;
     }
     
     @SuppressWarnings("unchecked")
