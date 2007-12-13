@@ -9,10 +9,12 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import org.ogf.saga.ObjectType;
+import org.ogf.saga.context.Context;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
 import org.ogf.saga.error.DoesNotExist;
+import org.ogf.saga.error.Exception;
 import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
@@ -40,17 +42,23 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         final Callback cb;
         private final Metric metric;
         final int cookie;
+        Context context;
         
         public CallbackHandler(Monitorable monitorable, Callback cb,
-                Metric metric, int cookie) {
+                Metric metric, int cookie, Context context) {
             this.cb = cb;
             this.metric = metric;
             this.cookie = cookie;
             this.monitorable = monitorable;
+            this.context = context;
         }
         
         public void setMonitorable(Monitorable monitorable) {
             this.monitorable = monitorable;
+        }
+        
+        public void setContext(Context context) {
+            this.context = context;
         }
         
         public void run() {        
@@ -60,7 +68,7 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
                 while (busy) {
                     try {
                         wait();
-                    } catch(Exception e) {
+                    } catch(Throwable e) {
                         // ignored
                     }
                 }
@@ -70,18 +78,22 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
             if (logger.isDebugEnabled()) {
                 logger.debug("Invoking callback for metric " + metric);
             }
-            boolean retval;
+            boolean retval = true;
             try {
-                retval = cb.cb(monitorable, metric, null);
-            } catch(Throwable e) {
+                retval = cb.cb(monitorable, metric, context);
+            } catch(Exception e) {
+                synchronized(metric) {
+                    metric.callbackExceptions.add(e);
+                }
                 logger.warn("Callback throws exception", e);
                 // if callback throws an exception, keep the callback.
                 retval = true;
-            }
-            synchronized(metric) {
-                metric.fireCount--;
-                if (metric.fireCount == 0) {
-                    metric.notifyAll();
+            } finally {
+                synchronized(metric) {
+                    metric.fireCount--;
+                    if (metric.fireCount == 0) {
+                        metric.notifyAll();
+                    }
                 }
             }
             if (! retval) {
@@ -104,6 +116,7 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
     private ArrayList<CallbackHandler> callBacks = new ArrayList<CallbackHandler>();
     private Monitorable monitorable;    
     private int fireCount = 0;
+    private ArrayList<Exception> callbackExceptions = new ArrayList<Exception>();
     
     Metric(Session session, String name, String desc, String mode,
             String unit, String type, String value) throws NotImplemented,
@@ -140,7 +153,8 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
             if (cb == null) {
                 continue;
             }
-            callBacks.set(i, new CallbackHandler(monitorable, cb.cb, this, cb.cookie));
+            callBacks.set(i,
+                    new CallbackHandler(monitorable, cb.cb, this, cb.cookie, cb.context));
         }
         return copy;
     }
@@ -262,7 +276,7 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         } catch(DoesNotExist e) {
             // Should not happen.
         }
-        CallbackHandler b = new CallbackHandler(monitorable, cb, this, callBacks.size());
+        CallbackHandler b = new CallbackHandler(monitorable, cb, this, callBacks.size(), null);
         callBacks.add(b);
         return callBacks.size()-1;
     }
@@ -290,10 +304,11 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
             while (fireCount != 0) {
                 try {
                     wait();
-                } catch(Exception e) {
+                } catch(Throwable e) {
                     // ignored
                 }
             }
+            callbackExceptions.clear();
             cbhs = new ArrayList<CallbackHandler>();
             for (CallbackHandler cbh : callBacks) {
                 if (cbh != null) {
@@ -310,15 +325,33 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         }
         
         // Wait until all callbacks are done.
-        while (fireCount != 0) {
-            try {
-                wait();
-            } catch(Exception e) {
-                // ignored
+        synchronized(this) {
+            while (fireCount != 0) {
+                try {
+                    wait();
+                } catch(Throwable e) {
+                    // ignored
+                }
             }
         }
     }
-  
+
+    public synchronized void setCallbackContext(Context context) {
+        
+        while (fireCount != 0) {
+            try {
+                wait();
+            } catch(Throwable e) {
+                // ignored
+            }
+        }
+        for (CallbackHandler cbh : callBacks) {
+            if (cbh != null) {
+                cbh.setContext(context);
+            }
+        }
+    }
+
     public void removeCallback(int cookie) throws NotImplemented, BadParameter,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             Timeout, NoSuccess {
@@ -344,7 +377,7 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
             while (cb.busy) {
                 try {
                     cb.wait();
-                } catch(Exception e) {
+                } catch(Throwable e) {
                     // ignored
                 }
             }
