@@ -30,8 +30,8 @@ import org.ogf.saga.task.TaskMode;
  * Rather, a JobService SPI can use this class as a base class to construct jobs
  * from.
  */
-public abstract class Job extends org.ogf.saga.impl.task.Task implements
-        org.ogf.saga.job.Job {
+public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
+        org.ogf.saga.job.Job<E> {
 
     protected final JobAttributes attributes;
     protected final JobDescription jobDescription;
@@ -126,16 +126,16 @@ public abstract class Job extends org.ogf.saga.impl.task.Task implements
         throw new NoSuccess("getObject() called on Job");
     }
     
-    public Object getResult() throws NotImplemented, IncorrectState, Timeout,
+    public E getResult() throws NotImplemented, IncorrectState, Timeout,
             NoSuccess {
         throw new NoSuccess("getResult() called on Job");
     }  
     
-    public Object get() throws InterruptedException, ExecutionException {
+    public E get() throws InterruptedException, ExecutionException {
         throw new SagaError("get() called on Job");
     }
     
-    public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public E get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         throw new SagaError("get() called on Job");
     }
     
@@ -146,7 +146,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task implements
         throw new NoSuccess("rethrow() called on Job");
     }
     
-    public Object call() throws Exception {
+    public E call() throws Exception {
         throw new NoSuccess("call() called on Job");
     }
     
