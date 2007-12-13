@@ -2,6 +2,10 @@ package org.ogf.saga.impl.job;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.ogf.saga.ObjectType;
 import org.ogf.saga.error.AlreadyExists;
 import org.ogf.saga.error.AuthenticationFailed;
@@ -13,9 +17,11 @@ import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
+import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.task.State;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -41,7 +47,12 @@ public abstract class Job extends org.ogf.saga.impl.task.Task implements
             throws NotImplemented, BadParameter {
         super(session);
         attributes = new JobAttributes(this, session);
-        this.jobDescription = jobDescription;
+        try {
+            this.jobDescription = (JobDescription) jobDescription.clone();
+        } catch (CloneNotSupportedException e) {
+            // Should not happen.
+            throw new SagaError("JobDescription does not support clone???", e);
+        }
         jobState = new Metric(this, session,
                 JOB_STATE,
                 "fires on state changes of the job, and has the literal value of the job state enum",
@@ -79,6 +90,67 @@ public abstract class Job extends org.ogf.saga.impl.task.Task implements
         addMetric(JOB_PERFORMANCE, jobPerformance);
         
     }
+    
+    protected synchronized void setState(State value) {
+        setStateValue(value);
+        notifyAll();
+        try {
+            if (value == State.DONE || value == State.FAILED
+                    || value == State.CANCELED) {
+                jobState.setMode("Final");
+            }
+            jobState.setValue(value.toString());
+            jobState.internalFire();
+        } catch(Throwable e) {
+            throw new SagaError("Internal error", e);
+        }
+    }
+    
+    // Methods from task that should be re-implemented
+    public abstract  void cancel(float timeoutInSeconds) throws NotImplemented,
+            IncorrectState, Timeout, NoSuccess;
+    
+    public abstract boolean cancel(boolean mayInterruptIfRunning);
+    
+    public abstract void run() throws NotImplemented, IncorrectState, Timeout, NoSuccess;
+    
+    public abstract boolean waitTask(float timeoutInSeconds)
+            throws NotImplemented, IncorrectState, Timeout, NoSuccess;
+    
+    public abstract boolean isCancelled();
+    
+    public abstract boolean isDone();
+    
+    // Methods from task that are impossible on jobs   
+    public <T> T getObject() throws NotImplemented, Timeout, NoSuccess {
+        throw new NoSuccess("getObject() called on Job");
+    }
+    
+    public Object getResult() throws NotImplemented, IncorrectState, Timeout,
+            NoSuccess {
+        throw new NoSuccess("getResult() called on Job");
+    }  
+    
+    public Object get() throws InterruptedException, ExecutionException {
+        throw new SagaError("get() called on Job");
+    }
+    
+    public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        throw new SagaError("get() called on Job");
+    }
+    
+    public void rethrow() throws NotImplemented, IncorrectURL,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
+            NoSuccess {
+        throw new NoSuccess("rethrow() called on Job");
+    }
+    
+    public Object call() throws Exception {
+        throw new NoSuccess("call() called on Job");
+    }
+    
+    // Base implementations.
 
     public ObjectType getType() {
         return ObjectType.JOB;
@@ -143,18 +215,6 @@ public abstract class Job extends org.ogf.saga.impl.task.Task implements
     public Task suspend(TaskMode mode) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task(this, session, mode,
                 "suspend", new Class[] { });
-    }
-
-    public Object getResult() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
-        throw new NoSuccess("getResult() not available for jobs");
-    }
-
-    public void rethrow() throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
-            NoSuccess {
-        throw new NoSuccess("rethrow() not available for jobs");
     }
 
     public Task permissionsAllow(TaskMode mode, String id, int permissions)
