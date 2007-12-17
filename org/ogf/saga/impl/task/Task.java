@@ -153,7 +153,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
         if (state == State.NEW || state == State.CANCELED || state == State.FAILED) {
             throw new IncorrectState("getResult called in state " + state);
         }
-        waitTask();
+        waitFor();
         return result;
     }
     
@@ -248,9 +248,9 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#waitTask()
      */
-    public void waitTask() throws NotImplemented, IncorrectState, Timeout,
+    public void waitFor() throws NotImplemented, IncorrectState, Timeout,
             NoSuccess {
-        waitTask(-1.0F);
+        waitFor(-1.0F);
 
     }
 
@@ -259,7 +259,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#waitTask(float)
      */
-    public synchronized boolean waitTask(float timeoutInSeconds) throws NotImplemented,
+    public synchronized boolean waitFor(float timeoutInSeconds) throws NotImplemented,
             IncorrectState, Timeout, NoSuccess {
         if (state == State.NEW) {
             throw new IncorrectState("waitTask called on new task");

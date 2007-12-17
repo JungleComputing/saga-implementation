@@ -202,19 +202,19 @@ public class TaskContainer extends SagaObjectBase implements
         return tasks.size();
     }
 
-    public Task waitTasks(WaitMode mode) throws NotImplemented,
+    public Task waitFor(WaitMode mode) throws NotImplemented,
             IncorrectState, DoesNotExist, Timeout, NoSuccess {
-        return waitTasks(-1.0F, mode);
+        return waitFor(-1.0F, mode);
     }
     
     public Task waitTasks() throws NotImplemented,
             IncorrectState, DoesNotExist, Timeout, NoSuccess {
-        return waitTasks(-1.0F, WaitMode.ALL);
+        return waitFor(-1.0F, WaitMode.ALL);
     }
 
     public Task waitTasks(float timeoutInSeconds) throws NotImplemented,
             IncorrectState, DoesNotExist, Timeout, NoSuccess {
-        return waitTasks(timeoutInSeconds, WaitMode.ALL);       
+        return waitFor(timeoutInSeconds, WaitMode.ALL);       
     }
     
     private Task getFinishedTask(WaitMode mode) throws DoesNotExist, Timeout,
@@ -252,7 +252,7 @@ public class TaskContainer extends SagaObjectBase implements
         return null;     
     }
     
-    public synchronized Task waitTasks(float timeoutInSeconds, WaitMode mode)
+    public synchronized Task waitFor(float timeoutInSeconds, WaitMode mode)
             throws NotImplemented, IncorrectState, DoesNotExist, Timeout,
             NoSuccess {
         Task t = getFinishedTask(mode);
