@@ -114,7 +114,7 @@ public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
     
     public abstract void run() throws NotImplemented, IncorrectState, Timeout, NoSuccess;
     
-    public abstract boolean waitTask(float timeoutInSeconds)
+    public abstract boolean waitFor(float timeoutInSeconds)
             throws NotImplemented, IncorrectState, Timeout, NoSuccess;
     
     public abstract boolean isCancelled();

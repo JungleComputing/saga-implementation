@@ -85,7 +85,7 @@ public class TaskCopyTest implements Callback {
             
             container.run();
             while (container.size() != 0) {
-                Task t = container.waitTasks(WaitMode.ANY);
+                Task t = container.waitFor(WaitMode.ANY);
                 System.out.println("Task finished, state = " + t.getState());
                 if (State.FAILED.equals(t.getState())) {
                     try {
