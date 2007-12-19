@@ -230,6 +230,11 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
                 throw new DoesNotExist("Attribute " + key + " does not exist");
             }
         }
+        
+        if (info.type == AttributeType.TRIGGER) {
+            throw new DoesNotExist("Cannot get/set value of a Trigger");
+        }
+        
         if (info.notImplemented) {
             throw new NotImplemented("Attribute " + key
                     + " not available in this implementation");
@@ -392,7 +397,7 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
             }
             break;
         case BOOL:
-            if (! value.equals("True") && ! value.equals("False")) {
+            if (! value.equals(TRUE) && ! value.equals(FALSE)) {
                 throw new BadParameter("Bool-typed attribute set to non-bool " + value);
             }
             break;
@@ -414,6 +419,7 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         if (info.readOnly) {
             throw new PermissionDenied("Attribute " + key + " is readOnly");
         }
+
         if (info.type == AttributeType.TIME) {
             try {
                 long v = Long.parseLong(value);

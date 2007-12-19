@@ -18,10 +18,12 @@ import org.ogf.saga.spi.file.DirectorySpiInterface;
 import org.ogf.saga.spi.file.FileInputStreamSpiInterface;
 import org.ogf.saga.spi.file.FileOutputStreamSpiInterface;
 import org.ogf.saga.spi.file.FileSpiInterface;
+import org.ogf.saga.spi.job.JobServiceSpiInterface;
 import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
 import org.ogf.saga.spi.logicalfile.LogicalFileSpiInterface;
 import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
 import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
+import org.ogf.saga.spi.rpc.RPCSpiInterface;
 import org.ogf.saga.spi.stream.StreamServiceSpiInterface;
 import org.ogf.saga.spi.stream.StreamSpiInterface;
 
@@ -295,6 +297,10 @@ public class SAGAEngine {
                 StreamSpiInterface.class);
         loadSpiClass(jarFile, manifest, attributes, "StreamService",
                 StreamServiceSpiInterface.class);
+        loadSpiClass(jarFile, manifest, attributes, "JobService",
+                JobServiceSpiInterface.class);
+        loadSpiClass(jarFile, manifest, attributes, "RPC",
+                RPCSpiInterface.class);
     }
 
     /**
