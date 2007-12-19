@@ -25,13 +25,13 @@ class MetricAttributes extends Attributes {
     protected void checkValueType(String key, AttributeType type, String value)
             throws BadParameter {
         if (Metric.TYPE.equals(key)) {
-            if (! "String".equals(value)
-                && ! "Int".equals(value)
-                && ! "Enum".equals(value)
-                && ! "Float".equals(value)
-                && ! "Bool".equals(value)
-                && ! "Time".equals(value)
-                && ! "Trigger".equals(value)) {
+            if (! STRING.equals(value)
+                && ! INT.equals(value)
+                && ! ENUM.equals(value)
+                && ! FLOAT.equals(value)
+                && ! BOOL.equals(value)
+                && ! TIME.equals(value)
+                && ! TRIGGER.equals(value)) {
                 throw new BadParameter("Illegal metric type: " + value);
             }
         } else if (Metric.MODE.equals(key)) {

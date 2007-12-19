@@ -97,7 +97,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
             break;
         case SYNC:
             internalRun();
-            internalWaitTask(-1.0F);
+            internalWaitFor(-1.0F);
             break;
         case TASK:
             break;
@@ -262,9 +262,9 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
     public synchronized boolean waitFor(float timeoutInSeconds) throws NotImplemented,
             IncorrectState, Timeout, NoSuccess {
         if (state == State.NEW) {
-            throw new IncorrectState("waitTask called on new task");
+            throw new IncorrectState("waitFor called on new task");
         }
-        return internalWaitTask(timeoutInSeconds);
+        return internalWaitFor(timeoutInSeconds);
     }
     
     /**
@@ -272,7 +272,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * @param timeoutInSeconds the timeout.
      * @return <code>true</code> if the task is finished.
      */
-    private synchronized boolean internalWaitTask(float timeoutInSeconds) {
+    private synchronized boolean internalWaitFor(float timeoutInSeconds) {
         
         if (logger.isDebugEnabled()) {
             logger.debug("Waiting for task " + method.getName());
@@ -465,5 +465,9 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
     
     protected void addMetric(String name, Metric metric) {
         metrics.put(name, metric);
+    }
+    
+    protected synchronized void setException(Throwable e) {
+        exception = e;
     }
 }

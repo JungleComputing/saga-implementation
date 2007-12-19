@@ -369,4 +369,8 @@ public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
         return attributes.setVectorAttribute(mode, key, values);
     }
 
+    protected void setValue(String key, String value) throws DoesNotExist,
+            NotImplemented, IncorrectState, BadParameter {
+        attributes.setValue(key, value);
+    }
 }
