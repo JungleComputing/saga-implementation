@@ -61,6 +61,31 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
         this.object = this;
     }
     
+    public Task(Task<E> orig) {
+        super(orig);
+        this.object = orig.object;
+        this.state = orig.state;
+        this.result = orig.result;
+        this.exception = null;
+        this.method = orig.method;
+        if (orig.parameters != null) {
+            this.parameters = orig.parameters.clone();
+        } else {
+            this.parameters = null;
+        }
+        this.future = orig.future;
+        this.metrics = new HashMap<String, Metric>(orig.metrics);
+        for (String s : metrics.keySet()) {
+            Metric m = new Metric(metrics.get(s));
+            m.setMonitorable(this);
+            metrics.put(s, m);
+        }
+    }
+    
+    public Object clone() {
+        return new Task<E>(this);
+    }
+    
     public Task(Object object, Session session, TaskMode mode, String methodName,
             Class[] parameterTypes, Object... parameters) {
         
@@ -102,11 +127,6 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
         case TASK:
             break;
         }
-    }
-    
-    public Object clone() throws CloneNotSupportedException {
-        Task clone = (Task) super.clone();
-        return clone;
     }
     
     /*

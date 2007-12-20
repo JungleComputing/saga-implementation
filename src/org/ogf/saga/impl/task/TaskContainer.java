@@ -19,6 +19,7 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
+import org.ogf.saga.session.Session;
 import org.ogf.saga.task.State;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.WaitMode;
@@ -68,7 +69,7 @@ public class TaskContainer extends SagaObjectBase implements
     ContainerCallback cb;
     
     TaskContainer() {
-        super(null);
+        super((Session) null);
         cb = new ContainerCallback(this);
         try {
             taskContainerMetric = new Metric(

@@ -15,6 +15,11 @@ public abstract class SagaObjectBase implements SagaObject {
     protected SagaObjectBase(Session session) {
         this.session = (Session) session;
     }
+    
+    protected SagaObjectBase(SagaObjectBase cp) {
+        session = cp.session;
+        uuid = UUID.randomUUID();
+    }
 
     public String getId() {
         return uuid.toString();

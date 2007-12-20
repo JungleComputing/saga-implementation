@@ -19,7 +19,7 @@ public class Session extends SagaObjectBase
             = new HashMap<String, AdaptorSessionInterface>();
 
     Session(boolean defaults) {
-        super(null);
+        super((org.ogf.saga.session.Session) null);
     }
     
     public synchronized AdaptorSessionInterface getAdaptorSession(String name) {

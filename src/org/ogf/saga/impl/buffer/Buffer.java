@@ -6,6 +6,7 @@ import org.ogf.saga.error.DoesNotExist;
 import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.impl.SagaObjectBase;
+import org.ogf.saga.session.Session;
 
 public class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer {
 
@@ -19,7 +20,7 @@ public class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer
     }
 
     protected Buffer(int size) throws NotImplemented, BadParameter {
-        super(null);
+        super((Session) null);
         try {
             setSize(size);
         } catch (IncorrectState e) {
@@ -28,12 +29,24 @@ public class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer
     }
 
     protected Buffer(byte[] buf) throws BadParameter, NotImplemented {
-        super(null);
+        super((Session) null);
         try {
             setData(buf);
         } catch(IncorrectState e) {
             // Cannot happen.
         }
+    }
+    
+    protected Buffer(Buffer orig) {
+        super(orig);
+        implementationManaged = orig.implementationManaged;
+        size = orig.size;
+        closed = orig.closed;
+        if (orig.buf != null) {
+            buf = orig.buf.clone();
+        } else {
+            buf = null;
+        }       
     }
 
     public void close() throws NotImplemented {
@@ -91,12 +104,8 @@ public class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer
         setSize(-1);
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        Buffer b = (Buffer) super.clone();
-        if (buf != null) {
-            b.buf = buf.clone();
-        }
-        return b;
+    public Object clone() {
+        return new Buffer(this);
     }
 
     public ObjectType getType() {

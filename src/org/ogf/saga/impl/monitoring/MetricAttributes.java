@@ -17,6 +17,14 @@ class MetricAttributes extends Attributes {
         addAttribute(Metric.VALUE, AttributeType.STRING, false, false, false, false);
     }
     
+    MetricAttributes(MetricAttributes orig) {
+        super(orig);
+    }
+    
+    public Object clone() {
+        return new MetricAttributes(this);
+    }
+    
     protected void setValue(String key, String value)
             throws NotImplemented, BadParameter, DoesNotExist, IncorrectState {
         super.setValue(key, value);

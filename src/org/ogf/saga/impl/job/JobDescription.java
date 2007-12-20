@@ -11,20 +11,25 @@ import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.SagaObjectBase;
+import org.ogf.saga.session.Session;
 
 public class JobDescription extends SagaObjectBase implements
         org.ogf.saga.job.JobDescription {
 
-    JobDescriptionAttributes attributes = new JobDescriptionAttributes();
+    final JobDescriptionAttributes attributes;
     
     public JobDescription() {
-        super(null);
+        super((Session) null);
+        attributes = new JobDescriptionAttributes();
+    }
+    
+    public JobDescription(JobDescription orig) {
+        super(orig);
+        attributes = new JobDescriptionAttributes(orig.attributes);
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        JobDescription clone = (JobDescription) super.clone();
-        clone.attributes = (JobDescriptionAttributes) attributes.clone();
-        return clone;
+    public Object clone() {
+        return new JobDescription(this);
     }
     
     public ObjectType getType() {

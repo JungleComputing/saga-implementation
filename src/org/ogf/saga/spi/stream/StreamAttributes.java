@@ -8,9 +8,17 @@ public class StreamAttributes extends AsyncAttributes {
     StreamAttributes(Object object, Session session, boolean autoAdd) {
         super(object, session, autoAdd);
     }
+    
+    protected StreamAttributes(StreamAttributes orig) {
+        super(orig);
+    }
+    
+    public Object clone() {
+        return new StreamAttributes(this);
+    }
 
     StreamAttributes(Object object, Session session) {
-        super(object, session, false);
+        this(object, session, false);
     }
     
     protected void addAttribute(String name, AttributeType type, boolean vector,

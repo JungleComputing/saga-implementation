@@ -21,6 +21,14 @@ public class JobAttributes extends AsyncAttributes {
         addAttribute(Job.EXITCODE, AttributeType.INT, false, true, false, false);
         addAttribute(Job.TERMSIG, AttributeType.INT, false, true, false, false);
     }
+       
+    JobAttributes(JobAttributes orig) {
+        super(orig);
+    }
+    
+    public Object clone() {
+        return new JobAttributes(this);
+    }
     
     protected void setValue(String key, String value) throws DoesNotExist, NotImplemented,
             IncorrectState, BadParameter {

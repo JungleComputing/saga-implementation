@@ -112,16 +112,18 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         }
     };
     
-    private MetricAttributes attributes = new MetricAttributes();
-    private ArrayList<CallbackHandler> callBacks = new ArrayList<CallbackHandler>();
+    private final MetricAttributes attributes;
+    private final ArrayList<CallbackHandler> callBacks;
     private Monitorable monitorable;    
     private int fireCount = 0;
-    private ArrayList<Exception> callbackExceptions = new ArrayList<Exception>();
+    private final ArrayList<Exception> callbackExceptions = new ArrayList<Exception>();
     
     Metric(Session session, String name, String desc, String mode,
             String unit, String type, String value) throws NotImplemented,
             BadParameter {
         super(session);
+        callBacks = new ArrayList<CallbackHandler>();
+        attributes = new MetricAttributes();
         try {
             attributes.setValue(Metric.NAME, name);
             attributes.setValue(Metric.DESCRIPTION, desc);
@@ -136,31 +138,24 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         }        
     }
     
-    /**
-     * Method that comes in handy when clone() is called on a monitorable object.
-     * In this case, a metric clone has to be created that has the clone of the
-     * monitorable as reference.
-     * @param monitorable the clone.
-     * @return the copy. 
-     */
-    public Metric copy(Monitorable monitorable) throws CloneNotSupportedException {
-        Metric copy = (Metric) super.clone();
-        copy.attributes = (MetricAttributes) attributes.clone();
-        copy.monitorable = monitorable;
-        copy.fireCount = 0;
-        for (int i = 0; i < copy.callBacks.size(); i++) {
-            CallbackHandler cb = copy.callBacks.get(i);
+    public Metric(Metric orig) {
+        super(orig);
+        attributes = new MetricAttributes(orig.attributes);
+        this.monitorable = orig.monitorable;
+        fireCount = 0;
+        callBacks = new ArrayList<CallbackHandler>(orig.callBacks);
+        for (int i = 0; i < callBacks.size(); i++) {
+            CallbackHandler cb = callBacks.get(i);
             if (cb == null) {
                 continue;
             }
             callBacks.set(i,
                     new CallbackHandler(monitorable, cb.cb, this, cb.cookie, cb.context));
         }
-        return copy;
     }
-    
-    public Object clone() throws CloneNotSupportedException {
-        return copy(monitorable);
+       
+    public Object clone() {
+        return new Metric(this);
     }
       
     public Metric(Monitorable monitorable, Session session, String name, String desc,
@@ -189,7 +184,7 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
     }
     
     // This method is to be called from addMetric() implementations.
-    public synchronized void setMonitorable(Session session, Monitorable monitorable) {
+    public synchronized void setMonitorable(Monitorable monitorable) {
         this.monitorable = monitorable;
     }
 

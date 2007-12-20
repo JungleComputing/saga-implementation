@@ -8,13 +8,23 @@ import org.ogf.saga.task.TaskMode;
 public class AsyncAttributes extends Attributes implements
         org.ogf.saga.attributes.AsyncAttributes {
 
-    private Session session;
-    private Object object;
+    private final Session session;
+    private final Object object;
     
     public AsyncAttributes(Object object, Session session, boolean autoAdd) {
         super(autoAdd);
         this.session = session;
         this.object = object;
+    }
+    
+    protected AsyncAttributes(AsyncAttributes orig) {
+        super(orig);
+        session = orig.session;
+        object = orig.object;
+    }
+    
+    public Object clone() {
+        return new AsyncAttributes(this);
     }
 
     public Task<String[]> findAttributes(TaskMode mode, String... patterns)
