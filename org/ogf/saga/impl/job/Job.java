@@ -33,26 +33,22 @@ import org.ogf.saga.task.TaskMode;
 public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
         org.ogf.saga.job.Job<E> {
 
-    protected final JobAttributes attributes;
-    protected final JobDescription jobDescription;
-    protected final Metric jobState;
-    protected final Metric jobStateDetail;
-    protected final Metric jobSignal;
-    protected final Metric jobCpuTime;
-    protected final Metric jobMemoryUse;
-    protected final Metric jobVMemoryUse;
-    protected final Metric jobPerformance;
+    private JobAttributes attributes;
+    protected JobDescription jobDescription;
+    protected Metric jobState;
+    protected Metric jobStateDetail;
+    protected Metric jobSignal;
+    protected Metric jobCpuTime;
+    protected Metric jobMemoryUse;
+    protected Metric jobVMemoryUse;
+    protected Metric jobPerformance;
     
     public Job(JobDescription jobDescription, Session session)
             throws NotImplemented, BadParameter {
         super(session);
         attributes = new JobAttributes(this, session);
-        try {
-            this.jobDescription = (JobDescription) jobDescription.clone();
-        } catch (CloneNotSupportedException e) {
-            // Should not happen.
-            throw new SagaError("JobDescription does not support clone???", e);
-        }
+        this.jobDescription = new JobDescription(jobDescription);
+
         jobState = new Metric(this, session,
                 JOB_STATE,
                 "fires on state changes of the job, and has the literal value of the job state enum",
@@ -88,7 +84,21 @@ public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
         addMetric(JOB_MEMORYUSE, jobMemoryUse);
         addMetric(JOB_VMEMORYUSE, jobVMemoryUse);
         addMetric(JOB_PERFORMANCE, jobPerformance);
+    }
+    
+    protected Job(Job<E> orig) {
+        super(orig);
         
+        attributes = new JobAttributes(orig.attributes);
+        jobDescription = new JobDescription(orig.jobDescription);
+        
+        jobState = metrics.get(JOB_STATE);
+        jobStateDetail = metrics.get(JOB_STATEDETAIL);
+        jobSignal = metrics.get(JOB_SIGNAL);
+        jobCpuTime = metrics.get(JOB_CPUTIME);
+        jobMemoryUse = metrics.get(JOB_MEMORYUSE);       
+        jobVMemoryUse = metrics.get(JOB_VMEMORYUSE);
+        jobPerformance = metrics.get(JOB_PERFORMANCE);
     }
     
     protected synchronized void setState(State value) {
@@ -120,6 +130,8 @@ public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
     public abstract boolean isCancelled();
     
     public abstract boolean isDone();
+    
+    public abstract Object clone();
     
     // Methods from task that are impossible on jobs   
     public <T> T getObject() throws NotImplemented, Timeout, NoSuccess {
@@ -167,12 +179,7 @@ public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
         if (jobDescription == null) {
             throw new DoesNotExist("No jobDescription available for this job");
         }
-        try { 
-            return (JobDescription) jobDescription.clone();
-        } catch(CloneNotSupportedException e) {
-            // Should not happen.
-            throw new NoSuccess("getJobDescription failure", e);
-        }
+        return new JobDescription(jobDescription);
     }
 
     public Task<org.ogf.saga.job.JobDescription> getJobDescription(TaskMode mode)

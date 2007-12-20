@@ -12,15 +12,16 @@ import org.ogf.saga.error.PermissionDenied;
 import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.SagaObjectBase;
+import org.ogf.saga.session.Session;
 
 public class Context extends SagaObjectBase
         implements org.ogf.saga.context.Context {
 
-    private ContextAttributes attributes;
+    private final ContextAttributes attributes;
 
     Context(String type) throws NotImplemented, IncorrectState, Timeout,
             NoSuccess {
-        super(null);
+        super((Session) null);
         attributes = new ContextAttributes();
 
         if (type != null && !type.equals("")) {
@@ -32,11 +33,14 @@ public class Context extends SagaObjectBase
             setDefaults();
         }
     }
+    
+    Context(Context orig) {
+        super(orig);
+        attributes = new ContextAttributes(orig.attributes);
+    }
 
-    public Object clone() throws CloneNotSupportedException {
-        Context clone = (Context) super.clone();
-        clone.attributes = (ContextAttributes) attributes.clone();
-        return clone;
+    public Object clone() {
+        return new Context(this);
     }
 
     @Override

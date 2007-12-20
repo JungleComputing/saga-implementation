@@ -54,4 +54,8 @@ public class JobDescriptionAttributes extends Attributes {
         addAttribute(JobDescription.JOBCONTACT, AttributeType.STRING,
                 true, false, false, false);
     }
+    
+    public JobDescriptionAttributes(JobDescriptionAttributes orig) {
+        super(orig);
+    }
 }

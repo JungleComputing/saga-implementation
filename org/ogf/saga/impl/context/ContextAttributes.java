@@ -36,6 +36,14 @@ class ContextAttributes extends Attributes {
             throw new SagaError("Internal error", e);
         }
     }
+    
+    ContextAttributes(ContextAttributes orig) {
+        super(orig);
+    }
+    
+    public Object clone() {
+        return new ContextAttributes(this);
+    }
 
     // Makes setValue() available for this package.
     protected void setValue(String key, String value)

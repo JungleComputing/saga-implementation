@@ -34,7 +34,7 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
     
     // Information about attributes: name, type, value,
     // read/write, removable or not, implemented. 
-    private static class AttributeInfo implements Cloneable {
+    private static class AttributeInfo {
         final String name;
         final AttributeType type;
         String value;
@@ -44,7 +44,7 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         final boolean removable;
         final boolean notImplemented;
         
-        public AttributeInfo(String name, AttributeType type, boolean vector,
+        private AttributeInfo(String name, AttributeType type, boolean vector,
                 boolean readOnly, boolean notImplemented, boolean removable) {
             this.name = name;
             this.type = type;
@@ -54,6 +54,13 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
             this.removable = removable;
             this.value = "";
             this.vectorValue = new String[0];
+        }
+        
+        private AttributeInfo(AttributeInfo info) {
+            this(info.name, info.type, info.vector, info.readOnly, info.notImplemented,
+                    info.removable);
+            value = info.value;
+            vectorValue = info.vectorValue.clone();
         }
         
         public int hashCode() {
@@ -88,17 +95,11 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
             }
             return true;
         }
-        
-        protected Object clone() throws CloneNotSupportedException {
-            AttributeInfo clone = (AttributeInfo) super.clone();
-            clone.vectorValue = vectorValue.clone();
-            return clone;
-        }
     }
     
-    private HashMap<String, AttributeInfo> attributes;
+    private final HashMap<String, AttributeInfo> attributes;
     
-    private boolean autoAdd;
+    private final boolean autoAdd;
 
     public Attributes(boolean autoAdd) {
         attributes = new HashMap<String, AttributeInfo>();
@@ -106,17 +107,22 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         this.autoAdd = autoAdd;
     }
     
+    protected Attributes(Attributes orig) {
+        attributes = new HashMap<String, AttributeInfo>();
+        for (String s : orig.attributes.keySet()) {
+            attributes.put(s, new AttributeInfo(orig.attributes.get(s)));
+        }
+        dateFormatter.setLenient(false);
+        autoAdd = orig.autoAdd;
+        
+    }
+    
     public Attributes() {
         this(false);
     }
     
-    public Object clone() throws CloneNotSupportedException {
-        Attributes clone = (Attributes) super.clone();
-        clone.attributes = new HashMap<String, AttributeInfo>();
-        for (String s : attributes.keySet()) {
-            clone.attributes.put(s, (AttributeInfo) attributes.get(s).clone());
-        }
-        return clone;
+    public Object clone() {
+        return new Attributes(this);
     }
     
     public int hashCode() {
