@@ -1,12 +1,22 @@
 package org.ogf.saga.spi.job;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.ogf.saga.URL;
+import org.ogf.saga.error.AuthenticationFailed;
+import org.ogf.saga.error.AuthorizationFailed;
+import org.ogf.saga.error.BadParameter;
+import org.ogf.saga.error.IncorrectState;
+import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
+import org.ogf.saga.error.PermissionDenied;
+import org.ogf.saga.error.SagaError;
+import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
+import org.ogf.saga.job.JobFactory;
 import org.ogf.saga.job.JobSelf;
 import org.ogf.saga.proxies.job.JobServiceWrapper;
 import org.ogf.saga.impl.session.Session;
@@ -22,6 +32,106 @@ public abstract class JobServiceSpi extends AdaptorBase implements JobServiceSpi
         this.rm = rm;
     }
     
+    List<String> getCommandLineElements(String commandLine) {
+        ArrayList<String> elts = new ArrayList<String>();
+        StringBuffer elt = new StringBuffer();
+        boolean escaped = false;
+        boolean inString = false;
+        boolean sawBytes = false;
+        
+        // From the Saga specification:
+        // - Elements are delimited by white space, which is either a space or a tab.
+        // - A string surrounded by double quotation marks is interpreted as a
+        //   single element, regardless of white space contained within.
+        //   A quoted string can be embedded in an element.
+        // - A double quotation mark preceded by a backslash (\) is interpreted as a
+        //   literal double quotation mark (").
+        // - Backslashes are interpreted literally, unless they immediately precede
+        //   a double quotation mark.
+        
+        for (char c : commandLine.toCharArray()) {
+            switch(c) {
+            case ' ':
+            case '\t':
+                if (escaped) {
+                    elt.append('\\');
+                    escaped = false;
+                }
+                if (inString) {
+                    elt.append(c);
+                } else {
+                    if (sawBytes) {
+                        elts.add(elt.toString());
+                        elt = new StringBuffer();
+                        sawBytes = false;
+                    }
+                }
+                break;
+            case '"':
+                sawBytes = true;
+                if (escaped) {
+                    elt.append(c);
+                    escaped = false;
+                } else {
+                    inString = ! inString;
+                }
+                break;
+            case '\\':
+                if (escaped) {
+                    elt.append('\\');
+                }
+                sawBytes = true;
+                escaped = true;
+                break;
+            default:
+                if (escaped) {
+                    elt.append('\\');
+                }
+                sawBytes = true;
+                escaped = false;
+                elt.append(c);
+                break;
+            }
+        }
+        
+        // Now, elt may have no elements but still represent an argument,
+        // for instance when it had "". In this case, sawBytes is true.
+        if (sawBytes) {
+            if (escaped) {
+                elt.append('\\');
+            }
+            elts.add(elt.toString());
+            // Note: no check on inString???
+        }
+        return elts;
+    }
+    
+    public Job runJob(String commandLine, String host, boolean interactive) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, Timeout, NoSuccess {
+        JobDescription jd = JobFactory.createJobDescription();
+        List<String> elts = getCommandLineElements(commandLine);
+        if (elts.size() == 0) {
+            throw new BadParameter("Empty command line");
+        }
+        try {
+            jd.setAttribute(JobDescription.EXECUTABLE, elts.remove(0));
+            jd.setVectorAttribute(JobDescription.ARGUMENTS, elts.toArray(new String[elts.size()]));
+            if (host != null && ! "".equals(host)) {
+                jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS, new String[] {host});
+            }
+        } catch (Throwable e) {
+            throw new SagaError("Should not happen", e);
+        }
+        Job job = createJob(jd);
+        try {
+            job.run();
+        } catch (IncorrectState e) {
+            throw new SagaError("Internal error", e);
+        }
+        return job;
+    }
+   
     // No dedicated clone() method needed. The session field does not have to
     // be cloned, and the rm field is immutable.
 
@@ -30,7 +140,14 @@ public abstract class JobServiceSpi extends AdaptorBase implements JobServiceSpi
         return new org.ogf.saga.impl.task.Task<Job>(wrapper, session, mode,
                 "createJob", new Class[] { JobDescription.class }, jd);
     }
-
+    
+    public Task<Job> runJob(TaskMode mode, String commandLine, String host, boolean interactive)
+            throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task<Job>(wrapper, session, mode,
+                "runJob", new Class[] { String.class, String.class, Boolean.TYPE },
+                commandLine, host, interactive);
+    }
+    
     public Task<Job> getJob(TaskMode mode, String jobId) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Job>(wrapper, session, mode,
                 "getJob", new Class[] { String.class }, jobId);

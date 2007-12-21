@@ -30,7 +30,29 @@ public interface JobServiceSpiInterface extends Async {
     public Job createJob(JobDescription jd) throws NotImplemented,
            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
            BadParameter, Timeout, NoSuccess;
-
+    
+    /**
+     * Runs the specified command on the specified host.
+     * Deviation from the SAGA specification: the input, output and
+     * error stream OUT parameters are not specified here, since Java
+     * has no OUT parameters. Unfortunately, their absence, according
+     * to the SAGA specifications, implies a non-interactive job. 
+     * Since interactive jobs should still be supported, a parameter
+     * is added here to specify whether the job is interactive.
+     * If interactive, the streams can be obtained from the Job
+     * using the {@link Job#getStdin()}, {@link Job#getStdout()},
+     * and {@link Job#getStderr()} methods.
+     * @param commandLine the command to run.
+     * @param host hostname of the host on which the command must be run.
+     *     If this is an empty string, the implementation is free to choose
+     *     a host.
+     * @param interactive specifies whether the job is interactive.
+     * @return the job.
+     */
+    public Job runJob(String commandLine, String host, boolean interactive)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, BadParameter, Timeout, NoSuccess;
+    
     /**
      * Obtains the list of jobs that are currently known to the
      * resource manager.
@@ -69,6 +91,28 @@ public interface JobServiceSpiInterface extends Async {
      */
     public Task<Job> createJob(TaskMode mode, JobDescription jd)
         throws NotImplemented;
+    
+    /**
+     * Creates a task that runs the specified command on the specified host.
+     * Deviation from the SAGA specification: the input, output and
+     * error stream OUT parameters are not specified here, since Java
+     * has no OUT parameters. Unfortunately, their absence, according
+     * to the SAGA specifications, implies a non-interactive job. 
+     * Since interactive jobs should still be supported, a parameter
+     * is added here to specify whether the job is interactive.
+     * If interactive, the streams can be obtained from the Job
+     * using the {@link Job#getStdin()}, {@link Job#getStdout()},
+     * and {@link Job#getStderr()} methods
+     * @param mode the task mode.
+     * @param commandLine the command to run.
+     * @param host hostname of the host on which the command must be run.
+     *     If this is an empty string, the implementation is free to choose
+     *     a host.
+     * @param interactive specifies whether the job is interactive.
+     * @return the task.
+     */
+    public Task<Job> runJob(TaskMode mode, String commandLine, String host,
+            boolean interactive) throws NotImplemented;
 
     /**
      * Creates a task that obtains the list of jobs that are currently known

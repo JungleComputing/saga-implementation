@@ -25,6 +25,11 @@ public class JobDescriptionAttributes extends Attributes {
                 true, false, false, false);
         addAttribute(JobDescription.WORKINGDIRECTORY, AttributeType.STRING,
                 false, false, false, false);
+        try {
+            setValue(JobDescription.WORKINGDIRECTORY, ".");
+        } catch(Throwable e) {
+            // ignored
+        }
         addAttribute(JobDescription.INTERACTIVE, AttributeType.BOOL,
                 false, false, false, false);
         addAttribute(JobDescription.INPUT, AttributeType.STRING,
@@ -37,6 +42,11 @@ public class JobDescriptionAttributes extends Attributes {
                 true, false, false, false);
         addAttribute(JobDescription.CLEANUP, AttributeType.STRING,
                 false, false, false, false);
+        try {
+            setValue(JobDescription.CLEANUP, "Default");
+        } catch(Throwable e) {
+            // ignored
+        }
         addAttribute(JobDescription.JOBSTARTTIME, AttributeType.INT,
                 false, false, false, false);
         addAttribute(JobDescription.TOTALCPUTIME, AttributeType.INT,

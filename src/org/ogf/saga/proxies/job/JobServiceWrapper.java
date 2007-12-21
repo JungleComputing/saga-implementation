@@ -114,6 +114,46 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
                     JobServiceSpiInterface.class, proxy, clone);
         return clone;
     }
+
+    public Job runJob(String commandLine, String host, boolean interactive) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, Timeout, NoSuccess {
+        return proxy.runJob(commandLine, host, interactive);
+    }
+
+    public Job runJob(String commandLine, String host) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, Timeout, NoSuccess {
+        return runJob(commandLine, host, false);
+    }
+
+    public Job runJob(String commandLine, boolean interactive) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, Timeout, NoSuccess {
+        return runJob(commandLine, "", interactive);
+    }
+
+    public Job runJob(String commandLine) throws NotImplemented, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, BadParameter, Timeout, NoSuccess {
+        return runJob(commandLine, "", false);
+    }
+
+    public Task<Job> runJob(TaskMode mode, String commandLine, String host, boolean interactive)
+            throws NotImplemented {
+        return proxy.runJob(mode, commandLine, host, interactive);
+    }
+
+    public Task<Job> runJob(TaskMode mode, String commandLine, String host) throws NotImplemented {
+        return runJob(mode, commandLine, host, false);
+    }
+
+    public Task<Job> runJob(TaskMode mode, String commandLine, boolean interactive) throws NotImplemented {
+        return runJob(mode, commandLine, "", interactive);
+    }
+
+    public Task<Job> runJob(TaskMode mode, String commandLine) throws NotImplemented {
+        return runJob(mode, commandLine, "", false);
+    }
     
     
 

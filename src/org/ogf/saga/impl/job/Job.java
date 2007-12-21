@@ -30,8 +30,8 @@ import org.ogf.saga.task.TaskMode;
  * Rather, a JobService SPI can use this class as a base class to construct jobs
  * from.
  */
-public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
-        org.ogf.saga.job.Job<E> {
+public abstract class Job extends org.ogf.saga.impl.task.Task<Object> implements
+        org.ogf.saga.job.Job {
 
     private JobAttributes attributes;
     protected JobDescription jobDescription;
@@ -86,7 +86,7 @@ public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
         addMetric(JOB_PERFORMANCE, jobPerformance);
     }
     
-    protected Job(Job<E> orig) {
+    protected Job(Job orig) {
         super(orig);
         
         attributes = new JobAttributes(orig.attributes);
@@ -138,16 +138,16 @@ public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
         throw new NoSuccess("getObject() called on Job");
     }
     
-    public E getResult() throws NotImplemented, IncorrectState, Timeout,
+    public Object getResult() throws NotImplemented, IncorrectState, Timeout,
             NoSuccess {
         throw new NoSuccess("getResult() called on Job");
     }  
     
-    public E get() throws InterruptedException, ExecutionException {
+    public Object get() throws InterruptedException, ExecutionException {
         throw new SagaError("get() called on Job");
     }
     
-    public E get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         throw new SagaError("get() called on Job");
     }
     
@@ -158,7 +158,7 @@ public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
         throw new NoSuccess("rethrow() called on Job");
     }
     
-    public E call() throws Exception {
+    public Object call() throws Exception {
         throw new NoSuccess("call() called on Job");
     }
     
@@ -379,5 +379,10 @@ public abstract class Job<E> extends org.ogf.saga.impl.task.Task<E> implements
     protected void setValue(String key, String value) throws DoesNotExist,
             NotImplemented, IncorrectState, BadParameter {
         attributes.setValue(key, value);
+    }
+    
+    protected void setVectorValue(String key, String[] value) throws DoesNotExist,
+            NotImplemented, IncorrectState, BadParameter {
+        attributes.setVectorValue(key, value);
     }
 }
