@@ -34,4 +34,9 @@ public class JobAttributes extends AsyncAttributes {
             IncorrectState, BadParameter {
         super.setValue(key, value);
     }
+    
+    protected void setVectorValue(String key, String[] values) throws DoesNotExist, NotImplemented,
+            IncorrectState, BadParameter {
+        super.setVectorValue(key, values);
+    }
 }
