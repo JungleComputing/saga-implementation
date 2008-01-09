@@ -63,6 +63,13 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
                 "copy", new Class[] { URL.class, URL.class, Integer.TYPE },
                 source, target, flags);
     }
+    
+    public Task copy(TaskMode mode, String source, URL target, int flags)
+            throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+                "copy", new Class[] { String.class, URL.class, Integer.TYPE },
+                source, target, flags);
+    }
 
     public Task<Boolean> exists(TaskMode mode, URL name) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
@@ -140,6 +147,13 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "link", new Class[] { URL.class, URL.class, Integer.TYPE },
+                source, target, flags);
+    }
+    
+    public Task link(TaskMode mode, String source, URL target, int flags)
+            throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+                "link", new Class[] { String.class, URL.class, Integer.TYPE },
                 source, target, flags);
     }
 
@@ -239,6 +253,13 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
                 "move", new Class[] { URL.class, URL.class, Integer.TYPE },
                 src, dest, flags);
     }
+    
+    public Task move(TaskMode mode, String src, URL dest, int flags)
+            throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+                "move", new Class[] { String.class, URL.class, Integer.TYPE },
+                src, dest, flags);
+    }
 
     public NSEntry open(URL name, int flags)
             throws NotImplemented, IncorrectURL, AuthenticationFailed,
@@ -279,6 +300,14 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
                         Integer.TYPE, Integer.TYPE }, name, id, permissions,
                 flags);
     }
+    
+    public Task permissionsAllow(TaskMode mode, String name, String id,
+            int permissions, int flags) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+                "permissionsAllow", new Class[] { String.class, String.class,
+                        Integer.TYPE, Integer.TYPE }, name, id, permissions,
+                flags);
+    }
 
     public Task permissionsDeny(TaskMode mode, URL name, String id,
             int permissions, int flags) throws NotImplemented {
@@ -287,6 +316,14 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
                         Integer.TYPE, Integer.TYPE }, name, id, permissions,
                 flags);
     }
+    
+    public Task permissionsDeny(TaskMode mode, String name, String id,
+            int permissions, int flags) throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+                "permissionsDeny", new Class[] { String.class, String.class,
+                        Integer.TYPE, Integer.TYPE }, name, id, permissions,
+                flags);
+    }   
 
     public Task<URL> readLink(TaskMode mode, URL name) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
@@ -297,5 +334,11 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "remove", new Class[] { URL.class, Integer.TYPE }, name, flags);
+    }
+    
+    public Task remove(TaskMode mode, String name, int flags)
+            throws NotImplemented {
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+                "remove", new Class[] { String.class, Integer.TYPE }, name, flags);
     }
 }

@@ -139,6 +139,17 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
             AlreadyExists, DoesNotExist, Timeout, NoSuccess;
 
     /**
+     * Copies the source entry to another part of the namespace.
+     * @param source name to copy.
+     * @param target name to copy to.
+     * @param flags defining the operation modus.
+     */
+    public void copy(String source, URL target, int flags)
+        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectURL, BadParameter, IncorrectState,
+            AlreadyExists, DoesNotExist, Timeout, NoSuccess;
+    
+    /**
      * Creates a symbolic link from the specified target to the
      * specified source.
      * @param source name to link to.
@@ -146,6 +157,18 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
      * @param flags defining the operation modus.
      */
     public void link(URL source, URL target, int flags)
+        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectURL, BadParameter, IncorrectState,
+            AlreadyExists, DoesNotExist, Timeout, NoSuccess;
+    
+    /**
+     * Creates a symbolic link from the specified target to the
+     * specified source.
+     * @param source name to link to.
+     * @param target name of the link.
+     * @param flags defining the operation modus.
+     */
+    public void link(String source, URL target, int flags)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, IncorrectURL, BadParameter, IncorrectState,
             AlreadyExists, DoesNotExist, Timeout, NoSuccess;
@@ -163,11 +186,33 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
             AlreadyExists, DoesNotExist, Timeout, NoSuccess;
     
     /**
+     * Renames the specified source to the specified target, or move the
+     * specified source to the specified target if the target is a directory.
+     * @param source name to move.
+     * @param target name to move to.
+     * @param flags defining the operation modus.
+     */
+    public void move(String source, URL target, int flags)
+        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectURL, BadParameter, IncorrectState,
+            AlreadyExists, DoesNotExist, Timeout, NoSuccess;
+    
+    /**
      * Removes the specified entry.
      * @param target name to remove.
      * @param flags defining the operation modus.
      */
     public void remove(URL target, int flags)
+        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectURL, BadParameter, IncorrectState,
+            DoesNotExist, Timeout, NoSuccess;
+    
+    /**
+     * Removes the specified entry.
+     * @param target name to remove.
+     * @param flags defining the operation modus.
+     */
+    public void remove(String target, int flags)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, IncorrectURL, BadParameter, IncorrectState,
             DoesNotExist, Timeout, NoSuccess;
@@ -218,6 +263,19 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
             int flags)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, IncorrectState, BadParameter, Timeout, NoSuccess;
+    
+    /**
+     * Allows the specified permissions for the specified id.
+     * An id of "*" enables the permissions for all.
+     * @param target the entry affected.
+     * @param id the id.
+     * @param permissions the permissions to enable.
+     * @param flags the only allowed flags are RECURSIVE and DEREFERENCE.
+     */
+    public void permissionsAllow(String target, String id, int permissions,
+            int flags)
+        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectState, BadParameter, Timeout, NoSuccess;
 
     /**
      * Denies the specified permissions for the specified id.
@@ -228,6 +286,19 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
      * @param flags the only allowed flags are RECURSIVE and DEREFERENCE.
      */
     public void permissionsDeny(URL target, String id, int permissions,
+            int flags)
+        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, BadParameter, Timeout, NoSuccess;
+    
+    /**
+     * Denies the specified permissions for the specified id.
+     * An id of "*" disables the permissions for all.
+     * @param target the entry affected.
+     * @param id the id.
+     * @param permissions the permissions to disable.
+     * @param flags the only allowed flags are RECURSIVE and DEREFERENCE.
+     */
+    public void permissionsDeny(String target, String id, int permissions,
             int flags)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter, Timeout, NoSuccess;
@@ -366,6 +437,20 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
      */
     public Task copy(TaskMode mode, URL source, URL target, int flags)
         throws NotImplemented;
+    
+    /**
+     * Creates a task that copies source the entry to another part of
+     * the namespace.
+     * @param mode the task mode.
+     * @param source name to copy.
+     * @param target name to copy to.
+     * @param flags defining the operation modus.
+     * @return the task.
+     * @exception NotImplemented is thrown when the task version of this
+     *     method is not implemented.
+     */
+    public Task copy(TaskMode mode, String source, URL target, int flags)
+        throws NotImplemented;
   
     /**
      * Creates a task that creates a symbolic link from the specified
@@ -379,6 +464,20 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
      *     method is not implemented.
      */
     public Task link(TaskMode mode, URL source, URL target, int flags)
+        throws NotImplemented;
+    
+    /**
+     * Creates a task that creates a symbolic link from the specified
+     * target to the specified source.
+     * @param mode the task mode.
+     * @param source name to link to.
+     * @param target name of the link.
+     * @param flags defining the operation modus.
+     * @return the task.
+     * @exception NotImplemented is thrown when the task version of this
+     *     method is not implemented.
+     */
+    public Task link(TaskMode mode, String source, URL target, int flags)
         throws NotImplemented;
    
     /**
@@ -396,6 +495,22 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
     public Task move(TaskMode mode, URL source, URL target, int flags)
         throws NotImplemented;
     
+    
+    /**
+     * Creates a task that renames the specified source to the specified target,
+     * or move the specified source to the specified target if the target is a
+     * directory.
+     * @param mode the task mode.
+     * @param source name to move.
+     * @param target name to move to.
+     * @param flags defining the operation modus.
+     * @return the task.
+     * @exception NotImplemented is thrown when the task version of this
+     *     method is not implemented.
+     */
+    public Task move(TaskMode mode, String source, URL target, int flags)
+        throws NotImplemented;
+    
     /**
      * Creates a task that removes the specified entry.
      * @param mode the task mode.
@@ -406,6 +521,18 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
      *     method is not implemented.
      */
     public Task remove(TaskMode mode, URL target, int flags)
+        throws NotImplemented;
+    
+    /**
+     * Creates a task that removes the specified entry.
+     * @param mode the task mode.
+     * @param target name to remove.
+     * @param flags defining the operation modus.
+     * @return the task.
+     * @exception NotImplemented is thrown when the task version of this
+     *     method is not implemented.
+     */
+    public Task remove(TaskMode mode, String target, int flags)
         throws NotImplemented;
     
     /**
@@ -461,6 +588,23 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
     public Task permissionsAllow(TaskMode mode, URL target, String id,
             int permissions, int flags)
         throws NotImplemented;
+    
+    /**
+     * Creates a task that enables the specified permissions for the
+     * specified id.
+     * An id of "*" enables the permissions for all.
+     * @param mode determines the initial state of the task.
+     * @param target the entry affected.
+     * @param id the id.
+     * @param permissions the permissions to enable.
+     * @param flags the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @return the task object.
+     * @exception NotImplemented is thrown when the task version of this
+     *     method is not implemented.
+     */
+    public Task permissionsAllow(TaskMode mode, String target, String id,
+            int permissions, int flags)
+        throws NotImplemented;
    
     /**
      * Creates a task that disables the specified permissions for the
@@ -476,6 +620,23 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface {
      *     method is not implemented.
      */
     public Task permissionsDeny(TaskMode mode, URL target, String id,
+            int permissions, int flags)
+        throws NotImplemented;
+    
+    /**
+     * Creates a task that disables the specified permissions for the
+     * specified id.
+     * An id of "*" disables the permissions for all.
+     * @param mode determines the initial state of the task.
+     * @param target the entry affected.
+     * @param id the id.
+     * @param permissions the permissions to disable.
+     * @param flags the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @return the task object.
+     * @exception NotImplemented is thrown when the task version of this
+     *     method is not implemented.
+     */
+    public Task permissionsDeny(TaskMode mode, String target, String id,
             int permissions, int flags)
         throws NotImplemented;
 }

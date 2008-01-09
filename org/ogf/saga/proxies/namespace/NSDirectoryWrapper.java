@@ -459,4 +459,191 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         remove(target, Flags.NONE.getValue());
     }
 
+    public void copy(String source, URL target, int flags)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectURL, BadParameter, IncorrectState,
+            AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+        proxy.copy(source, target, flags);
+    }
+
+    public Task copy(TaskMode mode, String source, URL target, int flags)
+            throws NotImplemented {
+        return proxy.copy(mode, source, target, flags);
+    }
+
+    public void link(String source, URL target, int flags)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectURL, BadParameter, IncorrectState,
+            AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+        proxy.link(source, target, flags);
+    }
+
+    public Task link(TaskMode mode, String source, URL target, int flags)
+            throws NotImplemented {
+        return proxy.link(mode, source, target, flags);
+    }
+
+    public void move(String source, URL target, int flags)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectURL, BadParameter, IncorrectState,
+            AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+        proxy.move(source, target, flags);
+    }
+
+    public Task move(TaskMode mode, String source, URL target, int flags)
+            throws NotImplemented {
+        return proxy.move(mode, source, target, flags);
+    }
+
+    public void permissionsAllow(String id, int permissions, int flags)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectState, BadParameter, Timeout, NoSuccess {
+        proxy.permissionsAllow(id, permissions, flags);
+    }
+
+    public void permissionsAllow(String id, int permissions)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, BadParameter, Timeout, NoSuccess {
+        proxy.permissionsAllow(id, permissions);
+    }
+
+    public void permissionsAllow(String target, String id, int permissions,
+            int flags) throws NotImplemented, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, IncorrectState,
+            BadParameter, Timeout, NoSuccess {
+        proxy.permissionsAllow(target, id, permissions, flags);
+    }
+
+    public Task permissionsAllow(TaskMode mode, String id, int permissions,
+            int flags) throws NotImplemented {
+        return proxy.permissionsAllow(mode, id, permissions, flags);
+    }
+
+    public Task permissionsAllow(TaskMode mode, String id, int permissions)
+            throws NotImplemented {
+        return proxy.permissionsAllow(mode, id, permissions);
+    }
+
+    public Task permissionsAllow(TaskMode mode, String target, String id,
+            int permissions, int flags) throws NotImplemented {
+        return proxy.permissionsAllow(mode, target, id, permissions, flags);
+    }
+
+    public void permissionsDeny(String id, int permissions, int flags)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess {
+        proxy.permissionsDeny(id, permissions, flags);
+    }
+
+    public void permissionsDeny(String id, int permissions)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, BadParameter, Timeout, NoSuccess {
+        proxy.permissionsDeny(id, permissions);
+    }
+
+    public void permissionsDeny(String target, String id, int permissions,
+            int flags) throws NotImplemented, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, BadParameter, Timeout,
+            NoSuccess {
+        proxy.permissionsDeny(target, id, permissions, flags);
+    }
+
+    public Task permissionsDeny(TaskMode mode, String id, int permissions,
+            int flags) throws NotImplemented {
+        return proxy.permissionsDeny(mode, id, permissions, flags);
+    }
+
+    public Task permissionsDeny(TaskMode mode, String id, int permissions)
+            throws NotImplemented {
+        return proxy.permissionsDeny(mode, id, permissions);
+    }
+
+    public Task permissionsDeny(TaskMode mode, String target, String id,
+            int permissions, int flags) throws NotImplemented {
+        return proxy.permissionsDeny(mode, target, id, permissions, flags);
+    }
+
+    public void remove(String target, int flags) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            IncorrectURL, BadParameter, IncorrectState, DoesNotExist, Timeout,
+            NoSuccess {
+        proxy.remove(target, flags);
+    }
+
+    public Task remove(TaskMode mode, String target, int flags)
+            throws NotImplemented {
+        return proxy.remove(mode, target, flags);
+    }
+
+    public void copy(String source, URL target) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            IncorrectURL, BadParameter, IncorrectState, AlreadyExists,
+            DoesNotExist, Timeout, NoSuccess {
+        copy(source, target, Flags.NONE.getValue());        
+    }
+
+    public Task copy(TaskMode mode, String source, URL target)
+            throws NotImplemented {
+        return copy(mode, source, target, Flags.NONE.getValue());
+    }
+
+    public void link(String source, URL target) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            IncorrectURL, BadParameter, IncorrectState, AlreadyExists,
+            DoesNotExist, Timeout, NoSuccess {
+        link(source, target, Flags.NONE.getValue());      
+    }
+
+    public Task link(TaskMode mode, String source, URL target)
+            throws NotImplemented {
+        return link(mode, source, target, Flags.NONE.getValue());
+    }
+
+    public void move(String source, URL target) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            IncorrectURL, BadParameter, IncorrectState, AlreadyExists,
+            DoesNotExist, Timeout, NoSuccess {
+        move(source, target, Flags.NONE.getValue());        
+    }
+
+    public Task move(TaskMode mode, String source, URL target)
+            throws NotImplemented {
+        return move(mode, source, target, Flags.NONE.getValue());
+    }
+
+    public void permissionsAllow(String target, String id, int permissions)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, IncorrectState, BadParameter, Timeout, NoSuccess {
+        permissionsAllow(target, id, permissions, Flags.NONE.getValue());        
+    }
+
+    public Task permissionsAllow(TaskMode mode, String target, String id,
+            int permissions) throws NotImplemented {
+        return permissionsAllow(mode, target, id, permissions, Flags.NONE.getValue());
+
+    }
+
+    public void permissionsDeny(String target, String id, int permissions)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, BadParameter, Timeout, NoSuccess {
+        permissionsDeny(target, id, permissions, Flags.NONE.getValue());
+        
+    }
+
+    public Task permissionsDeny(TaskMode mode, String target, String id,
+            int permissions) throws NotImplemented {
+        return permissionsDeny(mode, target, id, permissions, Flags.NONE.getValue());
+    }
+
+    public void remove(String target) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            IncorrectURL, BadParameter, IncorrectState, DoesNotExist, Timeout,
+            NoSuccess {
+        remove(target, Flags.NONE.getValue());        
+    }
+
+    public Task remove(TaskMode mode, String target) throws NotImplemented {
+        return remove(mode, target, Flags.NONE.getValue());
+    }
+
 }
