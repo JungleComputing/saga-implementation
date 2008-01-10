@@ -132,6 +132,159 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
 
         return u;
     }
+    
+    // list method without the special handling of a single directory.
+    protected List<URL> internalList(String pattern) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IncorrectURL {
+        
+        List<URL> resultList = new ArrayList<URL>();
+
+        PatternConverter f = new PatternConverter(pattern);
+        if (f.hasWildcard()) {
+            List<URL> list = list("", Flags.NONE.getValue());
+            for (URL u : list) {
+                String path = u.getPath();
+                if (f.matches(path)) {
+                    resultList.add(u);
+                }
+            }
+        } else {
+            URL url = new URL(pattern);
+            if (exists(url)) {
+                resultList.add(url);
+            }
+        }
+        return resultList;
+    }
+
+
+    protected List<URL> expandWildCards(String path) throws NotImplemented, NoSuccess,
+            BadParameter, IncorrectURL, DoesNotExist, PermissionDenied,
+            AuthorizationFailed, AuthenticationFailed, Timeout,
+            IncorrectState {
+
+        if (path.startsWith("/")) {
+            throw new BadParameter("a wildcard path must be relative");
+        }
+        
+        // Take the first part of the pattern, up until the first '/'.       
+        int slashIndex = path.indexOf('/');
+        String pattern;
+        if (slashIndex < 0) {
+            pattern = path;
+        } else {
+            pattern = path.substring(0, slashIndex);
+        }
+        
+        // List the contents of this directory that matches the pattern.
+        List<URL> list = internalList(pattern);
+        if (slashIndex < 0) {
+            // Done.
+            return list;
+        }
+        
+        List<URL> retval = new ArrayList<URL>();
+        String subPath = path.substring(slashIndex+1);
+        
+        // If subPath is now an empty string, the original path ended with a '/',
+        // so we now filter out the non-directories.
+        if (subPath.equals("")) {
+            for (URL u : list) {
+                try {
+                    if (isDir(u)) {
+                        retval.add(u);
+                    }
+                } catch(Throwable e) {
+                    logger.debug("isDir() gave an exception!", e);
+                }
+            }
+            return retval;
+        }
+        
+        // The pattern continues, so check sub-directories.
+        for (URL url : list) {
+            try {
+                String urlPath = url.getPath();
+                if (isDir(url)) {
+                    logger.debug("" + urlPath + " is directory");
+                    NSDirectorySpi dir = (NSDirectorySpi) clone();
+                    dir.changeDir(url);
+                    List<URL> subdirList = dir.expandWildCards(subPath);
+                    dir.close(0);
+                    for (URL u : subdirList) {
+                        u.setPath(url.getPath() + "/" + u.getPath());
+                        retval.add(u);
+                    }
+                } else {
+                    logger.debug("" + urlPath + " is not a directory");
+                }
+            } catch (Throwable e) {
+                logger.debug("got an exception!", e);
+            }
+        }
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("Wildcard " + path + " gave: ");
+            for (URL u : retval) {
+                logger.debug("    " + u);
+            }
+        }
+        return retval;
+    }
+    
+    public List<URL> find(String pattern, int flags) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess {
+        checkClosed();
+        int allowedFlags = Flags.DEREFERENCE.or(Flags.RECURSIVE);
+        if ((allowedFlags | flags) != allowedFlags) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Wrong flags used!");
+            }
+            throw new BadParameter("Flags not allowed for find method: "
+                    + flags);
+        }
+//      first add all files in the current directory that match the pattern
+
+        List<URL> resultList;
+
+        try {
+            resultList = internalList(pattern);
+        } catch(IncorrectURL e) {
+            throw new BadParameter("Incorrect pattern", e);
+        }
+
+//      then list all files in the current directory if Recursive is set
+        if (Flags.RECURSIVE.isSet(flags)) {
+            List<URL> list;
+            try {
+                list = list(".", Flags.NONE.getValue());
+            } catch(IncorrectURL e) {
+                throw new SagaError("Internal error", e);
+            }
+            for (URL u : list) {
+                try {
+                    // and if it is a directory then find the pattern
+                    if (isDir(u)) {
+                        NSDirectorySpi dir = (NSDirectorySpi) clone();
+                        dir.changeDir(u);
+                        List<URL> l = dir.find(pattern, flags);
+                        dir.close(0);
+                        for (URL u1 : l) {
+                            u1.setPath(u.getPath() + "/" + u1.getPath());
+                            resultList.add(u1);
+                        }
+                    }
+                } catch (Throwable e) {
+                    logger.debug("Got exception!", e);
+                }
+            }
+
+        }
+        return resultList;
+    }
+
 
     public Task<Boolean> isEntry(TaskMode mode, URL name) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
@@ -179,7 +332,7 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
             pattern = ".";
         }
 
-        List<URL> list = listDir(flags);
+        List<URL> list = list(".", flags);
 
         if (".".equals(pattern)) {
             return list;
@@ -212,9 +365,6 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
 
         return resultList;
     }
-
-    protected abstract List<URL> listDir(int flags) throws NoSuccess, NotImplemented,
-              BadParameter;
 
     public Task<List<URL>> list(TaskMode mode, String pattern, int flags)
             throws NotImplemented {
