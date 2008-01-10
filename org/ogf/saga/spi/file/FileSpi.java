@@ -44,16 +44,16 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
                 "getSize", new Class[] {});
     }
 
-    public Task<Integer> read(TaskMode mode, int len, Buffer buffer)
+    public Task<Integer> read(TaskMode mode, Buffer buffer, int len)
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
-                "read", new Class[] { Integer.TYPE, Buffer.class }, len, buffer);
+                "read", new Class[] { Buffer.class, Integer.TYPE }, buffer, len);
     }
 
-    public Task<Integer> write(TaskMode mode, int arg1, Buffer arg2)
+    public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
-                "write", new Class[] { Integer.TYPE, Buffer.class }, arg1, arg2);
+                "write", new Class[] { Buffer.class, Integer.TYPE }, buffer, len);
     }
 
     public Task<Long> seek(TaskMode mode, long arg1, SeekMode arg2)
