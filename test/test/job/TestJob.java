@@ -8,18 +8,25 @@ import org.ogf.saga.job.JobService;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
+import org.ogf.saga.session.Session;
+import org.ogf.saga.session.SessionFactory;
 
 public class TestJob implements Callback {
 
     public static void main(String[] args) {
         try {
-        JobDescription jd = JobFactory.createJobDescription();
-        jd.setAttribute(JobDescription.EXECUTABLE, "/bin/date");
-        jd.setAttribute(JobDescription.OUTPUT, "/home/ceriel/date.out");
-        JobService js = JobFactory.createJobService();
-        Job job = js.createJob(jd);
-        job.run();
-        job.waitFor();
+            Session session = SessionFactory.createSession(true);
+            JobDescription jd = JobFactory.createJobDescription();
+            jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS, new String[] {"fs0.das2.cs.vu.nl"});
+            jd.setAttribute(JobDescription.EXECUTABLE, "/bin/uname");
+            jd.setVectorAttribute(JobDescription.ARGUMENTS, new String[] { "-a" });
+            jd.setAttribute(JobDescription.OUTPUT, "uname.out");
+            // jd.setAttribute(JobDescription.OUTPUT, "file://fs0.das2.cs.vu.nl/tmp/uname.out");
+            // jd.setVectorAttribute(JobDescription.FILETRANSFER, new String[] { "uname.out < file://fs0.das2.cs.vu.nl/tmp/uname.out" });
+            JobService js = JobFactory.createJobService(session);
+            Job job = js.createJob(jd);
+            job.run();
+            job.waitFor();
         } catch(Throwable e) {
             System.out.println("Got exception " + e);
             e.printStackTrace();

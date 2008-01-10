@@ -41,7 +41,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param buffer the buffer to read data into.
      * @return the number of bytes read.
      */
-    int read(int len, Buffer buffer)
+    int read(Buffer buffer, int len)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess, IOException;
@@ -55,7 +55,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param buffer the buffer to write data from.
      * @return the number of bytes written.
      */
-    int write(int len, Buffer buffer)
+    int write(Buffer buffer, int len)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess, IOException;
@@ -209,7 +209,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> read(TaskMode mode, int len, Buffer buffer)
+    Task<Integer> read(TaskMode mode, Buffer buffer, int len)
         throws NotImplemented;
       
     /**
@@ -223,7 +223,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> write(TaskMode mode, int len, Buffer buffer)
+    Task<Integer> write(TaskMode mode, Buffer buffer, int len)
         throws NotImplemented;
        
     /**

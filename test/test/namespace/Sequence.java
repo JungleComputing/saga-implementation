@@ -48,7 +48,7 @@ class Sequence {
                     + file.getSize() + " bytes (before write)");
             Buffer buffer = BufferFactory.createBuffer();
             buffer.setData(message.getBytes());
-            file.write(message.length(), buffer);
+            file.write(buffer, message.length());
             System.out.println("Written: '" + message + "' to "
                     + file.getURL().toString());
             System.out.println("File size (" + file.getURL().toString() + "): "
