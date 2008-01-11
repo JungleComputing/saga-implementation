@@ -96,4 +96,22 @@ public class FileWrapperFactory extends FileFactory {
         // TODO Auto-generated method stub
         return null;
     }
+
+	@Override
+	protected IOVec doCreateIOVec(int size, int lenIn) throws BadParameter, NoSuccess {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected IOVec doCreateIOVec(byte[] data) throws BadParameter, NoSuccess {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected IOVec doCreateIOVec(int size) throws BadParameter, NoSuccess {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
