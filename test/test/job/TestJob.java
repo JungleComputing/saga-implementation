@@ -17,12 +17,10 @@ public class TestJob implements Callback {
         try {
             Session session = SessionFactory.createSession(true);
             JobDescription jd = JobFactory.createJobDescription();
-            jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS, new String[] {"fs0.das2.cs.vu.nl"});
+            jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS, new String[] {"fs0.das3.cs.vu.nl"});
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/uname");
             jd.setVectorAttribute(JobDescription.ARGUMENTS, new String[] { "-a" });
             jd.setAttribute(JobDescription.OUTPUT, "uname.out");
-            // jd.setAttribute(JobDescription.OUTPUT, "file://fs0.das2.cs.vu.nl/tmp/uname.out");
-            // jd.setVectorAttribute(JobDescription.FILETRANSFER, new String[] { "uname.out < file://fs0.das2.cs.vu.nl/tmp/uname.out" });
             JobService js = JobFactory.createJobService(session);
             Job job = js.createJob(jd);
             job.run();
