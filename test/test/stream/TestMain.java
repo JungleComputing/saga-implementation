@@ -1,5 +1,6 @@
 package test.stream;
 
+import org.apache.log4j.Logger;
 import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -16,10 +17,12 @@ public class TestMain {
 
 	private static String SERVER_URL = "advert://server";
 
+	private static Logger logger = Logger.getLogger(TestMain.class);
+	
 	private static Callback readable = new Callback() {
 		public boolean cb(Monitorable mt, Metric metric, Context ctx)
 				throws NotImplemented, AuthorizationFailed {
-			System.out.println("Stream Client: Stream is readable [METRIC]");
+			logger.debug("Stream Client: Stream is readable [METRIC]");
 			return true;
 		}
 	};
@@ -141,15 +144,14 @@ public class TestMain {
 					| Activity.WRITE.getValue(), 8.0f);
 
 			if (outcome == 0)
-				System.out.println("Client: nothing detected [WAIT]");
+				logger.debug("Client: nothing detected [WAIT]");
 
 			if ((outcome & Activity.EXCEPTION.getValue()) != 0)
-				System.out
-						.println("Client: exceptional condition detected [WAIT]");
+				logger.debug("Client: exceptional condition detected [WAIT]");
 			if ((outcome & Activity.READ.getValue()) != 0)
-				System.out.println("Client: readable detected [WAIT]");
+				logger.debug("Client: readable detected [WAIT]");
 			if ((outcome & Activity.WRITE.getValue()) != 0)
-				System.out.println("Client: writable detected [WAIT]");
+				logger.debug("Client: writable detected [WAIT]");
 
 			stream.close();
 			Thread.sleep(5000);

@@ -2,6 +2,7 @@ package test.stream;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
@@ -16,6 +17,8 @@ import org.ogf.saga.stream.Stream;
 
 public class ServerThreadReading extends ServerThread {
 
+	private static Logger logger = Logger.getLogger(ServerThreadReading.class);
+	
 	protected void processStream(Stream stream) throws NotImplemented,
 			BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
 			AuthorizationFailed, PermissionDenied, Timeout, IOException,
@@ -24,13 +27,13 @@ public class ServerThreadReading extends ServerThread {
 
 		// Thread.sleep(8000);
 
-		System.out.println("Server: Attempting to read the message");
+		logger.debug("Server: Attempting to read the message");
 		for (int i = 0; i < 20; i++) {
 			buffer.setData(new byte[BUFFER_SIZE]);
 			int bytesCnt = stream.read(buffer, buffer.getSize());
-			System.out.println("Server: Read " + bytesCnt + " bytes");
-			System.out.println("Server: Message content:");
-			System.out.println(new String(buffer.getData()).trim());
+			logger.debug("Server: Read " + bytesCnt + " bytes");
+			logger.debug("Server: Message content:");
+			logger.debug(new String(buffer.getData()).trim());
 			Thread.sleep(1000);
 		}
 	}

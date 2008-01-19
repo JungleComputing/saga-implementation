@@ -2,6 +2,7 @@ package test.stream;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -27,10 +28,12 @@ public class ServerThread implements Runnable {
 
 	protected static final int BUFFER_SIZE = 100;
 
+	private static Logger logger = Logger.getLogger(ServerThread.class);
+	
 	private Callback readable = new Callback() {
 		public boolean cb(Monitorable mt, Metric metric, Context ctx)
 				throws NotImplemented, AuthorizationFailed {
-			System.out.println("Stream Server: Stream is readable [METRIC]");
+			logger.debug("Stream Server: Stream is readable [METRIC]");
 			return true;
 		}
 	};
@@ -38,7 +41,7 @@ public class ServerThread implements Runnable {
 	private Callback writeable = new Callback() {
 		public boolean cb(Monitorable mt, Metric metric, Context ctx)
 				throws NotImplemented, AuthorizationFailed {
-			System.out.println("Stream Server: Stream is writable [METRIC]");
+			logger.debug("Stream Server: Stream is writable [METRIC]");
 			return true;
 		}
 	};
@@ -46,7 +49,7 @@ public class ServerThread implements Runnable {
 	private Callback clientConnect = new Callback() {
 		public boolean cb(Monitorable mt, Metric metric, Context ctx)
 				throws NotImplemented, AuthorizationFailed {
-			System.out.println("Stream Server: Client connected [METRIC]");
+			logger.debug("Stream Server: Client connected [METRIC]");
 			return true;
 		}
 	};
@@ -56,11 +59,10 @@ public class ServerThread implements Runnable {
 				throws NotImplemented, AuthorizationFailed {
 
 			try {
-				System.out.println("Stream Server: State changed --> "
+				logger.debug("Stream Server: State changed --> "
 						+ metric.getAttribute(Metric.VALUE) + " [METRIC]");
 			} catch (Exception e) {
-				System.out
-						.println("Exception! in callback (changeState) should not happen");
+				logger.debug("Exception! in callback (changeState) should not happen");
 			}
 			return true;
 		}
@@ -70,7 +72,7 @@ public class ServerThread implements Runnable {
 	private Callback exception = new Callback() {
 		public boolean cb(Monitorable mt, Metric metric, Context ctx)
 				throws NotImplemented, AuthorizationFailed {
-			System.out.println("Stream Server: Stream exception [METRIC]");
+			logger.debug("Stream Server: Stream exception [METRIC]");
 			return true;
 		}
 	};
@@ -78,7 +80,7 @@ public class ServerThread implements Runnable {
 	private Callback dropped = new Callback() {
 		public boolean cb(Monitorable mt, Metric metric, Context ctx)
 				throws NotImplemented, AuthorizationFailed {
-			System.out.println("Stream Server: Connection dropped [METRIC]");
+			logger.debug("Stream Server: Connection dropped [METRIC]");
 			return true;
 		}
 	};
@@ -93,7 +95,7 @@ public class ServerThread implements Runnable {
 							org.ogf.saga.stream.StreamService.STREAMSERVER_CLIENTCONNECT)
 					.addCallback(clientConnect);
 			while (!stop) {
-				System.out.println("Server Thread: listening...");
+				logger.debug("Server Thread: listening...");
 				Stream stream = service.serve(30.0f);
 
 				stream.getMetric(org.ogf.saga.stream.Stream.STREAM_READ)
@@ -113,10 +115,10 @@ public class ServerThread implements Runnable {
 			}
 			service.close();
 		} catch (Exception e) {
-			System.out.println("Caught exception: Aborting server....");
+			logger.debug("Caught exception: Aborting server....");
 			e.printStackTrace();
 		}
-		System.out.println("stopping server...");
+		logger.debug("stopping server...");
 	}
 
 	public void stopServer() {
@@ -133,11 +135,11 @@ public class ServerThread implements Runnable {
 
 		// Thread.sleep(8000);
 
-		System.out.println("Server: Attempting to read the message");
+		logger.debug("Server: Attempting to read the message");
 		int bytesCnt = stream.read(buffer, buffer.getSize());
-		System.out.println("Server: Read " + bytesCnt + " bytes");
-		System.out.println("Server: Message content:");
-		System.out.println(new String(buffer.getData()).trim());
+		logger.debug("Server: Read " + bytesCnt + " bytes");
+		logger.debug("Server: Message content:");
+		logger.debug(new String(buffer.getData()).trim());
 	}
 
 }
