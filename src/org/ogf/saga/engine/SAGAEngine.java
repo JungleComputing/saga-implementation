@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Comparator;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -48,6 +50,12 @@ public class SAGAEngine {
     private URLClassLoader sagaClassLoader = null;
 
     private static Logger logger = Logger.getLogger(SAGAEngine.class);
+
+    private static class FileComparator implements Comparator<File> {
+        public int compare(File f1, File f2) {
+            return f1.getName().compareTo(f2.getName());
+        }
+    }
 
     /** Constructs a default SAGAEngine instance. */
     private SAGAEngine() {
@@ -177,6 +185,14 @@ public class SAGAEngine {
         if (files == null) {
             return new File[0];
         }
+        // Sort the list of files so that the classloader always sees the jar
+        // files in the same order. Then, at least, it is deterministic which
+        // version of a class is loaded. It could still be the wrong one for
+        // a specific adaptor, though, especially when different adaptors
+        // depend on different versions of a jar.
+        // I don't know what to do about that. Different classloader for
+        // each adaptor? --Ceriel
+        Arrays.sort(files, new FileComparator());
 
         return files;
     }
@@ -356,6 +372,109 @@ public class SAGAEngine {
         }
     }
 
+    private static String getFullAdaptorName(String shortName,
+            AdaptorList adaptors) {
+        for (Adaptor adaptor : adaptors) {
+            String adaptorType = adaptor.getShortSpiName();
+            String adaptorName = adaptor.getShortAdaptorClassName();
+            String postfix = adaptorType + "Adaptor";
+            String prefix = null;
+
+            // The prefix is the class name of the adaptor, with the TypeAdaptor
+            // part stripped of:
+            // So, "SshFileAdaptor" becomes "Ssh".
+            if (adaptorName.length() > postfix.length()) {
+                prefix = adaptorName.substring(0, adaptorName.length()
+                        - postfix.length());
+            }
+            if (prefix.equalsIgnoreCase(shortName))
+                return adaptor.getAdaptorName();
+        }
+        return null;
+    }
+
+    private static AdaptorList reorderAdaptorList(AdaptorList adaptors) {
+        // parse the orderingString
+        // all adaptor names are separated by a ',' and adaptors that should
+        // not be used are prefixed with a '!'
+        // the case of the adaptor's name doesn't matter
+        int insertPosition = 0;
+
+        // Create a copy of the adaptor list.
+        AdaptorList result = new AdaptorList(adaptors);
+
+        // retrieve the adaptor type from the cpiClass
+        String adaptorType = adaptors.getSpiName().replace("SpiInterface", "");
+
+        String nameString = System.getProperty(adaptorType + ".adaptor.name");
+	if (nameString == null) {
+	    return result;
+	}
+
+        // split the nameString into individual names
+        String[] names = nameString.split(",");
+	for (String name : names) {
+            name = name.trim(); // remove the whitespace
+            // names of adaptors that should not be used start with a '!'
+            if (name.startsWith("!")) {
+                name = name.substring(1); // remove the '!'
+                int pos = result.getPos(getFullAdaptorName(name, adaptors));
+                // if the adaptor is found, remove it from the list
+                if (pos >= 0) {
+                    result.remove(pos);
+                    // the insert position changes when an adaptor before
+                    // this position is removed, so adjust the insertPosition
+                    // administration.
+                    if (pos < insertPosition)
+                        insertPosition--;
+                } else {
+                    if (logger.isInfoEnabled()) {
+                        logger.info("Found non existing adaptor in "
+                                + adaptorType + ".adaptor.name property: "
+                                + name);
+                    }
+                }
+            } else if (name.equals("")) {
+                // which means there is an empty name string. All the remaining
+                // adaptors can be added in random order, so just return the
+                // result
+                return result;
+            } else {
+                // when the current position is before the insert position, it
+                // means that the adaptor is already inserted, so don't insert
+                // it again
+                if (result.getPos(getFullAdaptorName(name, adaptors)) >= insertPosition) {
+                    // try to place the adaptor on the proper position
+                    if (result.placeAdaptor(insertPosition, getFullAdaptorName(
+                            name, adaptors)) >= 0) {
+                        // adjust the insert position only when the replacing
+                        // succeeded
+                        insertPosition++;
+                    } else {
+                        if (logger.isInfoEnabled()) {
+                            logger.info("Found non existing adaptor in "
+                                    + adaptorType
+                                    + ".adaptor.name property: " + name);
+                        }
+                    }
+
+                }
+            }
+        }
+        // when at least one adaptor has been replaced properly (without being
+        // removed) the other adaptors are removed from the list unless, the
+        // namestring ends with a ','
+        if (insertPosition > 0 && !nameString.trim().endsWith(",")) {
+            int endPosition = result.size();
+            for (int i = insertPosition; i < endPosition; i++) {
+                result.remove(insertPosition);
+            }
+	} else if (insertPosition == 0) {
+	    throw new Error("no adaptors available for property: \"" + adaptorType + ".adaptor.name\", \"" + nameString + "\"");
+	}
+        return result;
+    }
+
     /**
      * Creates a proxy for the adaptor spi interface, instantiating adaptors
      * on the fly.
@@ -373,6 +492,8 @@ public class SAGAEngine {
         SAGAEngine sagaEngine = SAGAEngine.getSAGAEngine();
 
         AdaptorList adaptors = sagaEngine.getAdaptorList(interfaceClass);
+
+        reorderAdaptorList(adaptors);
     
         AdaptorInvocationHandler handler = new AdaptorInvocationHandler(
                 adaptors, types, tmpParams);
