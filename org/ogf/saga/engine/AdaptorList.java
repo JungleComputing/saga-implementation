@@ -22,8 +22,36 @@ class AdaptorList extends ArrayList<Adaptor> {
         this.spiClass = spiClass;
     }
 
+    AdaptorList(AdaptorList l) {
+        super(l);
+        this.spiClass = l.spiClass;
+    }
+
     String getSpiName() {
         return spiClass;
+    }
+    
+    int getPos(String adaptorName) {
+        for (int i = 0; i < size(); i++) {
+            Adaptor a = get(i);
+
+            if (a.getAdaptorName().equals(adaptorName)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    int placeAdaptor(int destPos, String name) {
+        int pos = getPos(name);
+
+        if (pos != -1) {
+            add(destPos, remove(pos));
+            destPos++;
+        }
+
+        return destPos;
     }
     
     public String toString() {
