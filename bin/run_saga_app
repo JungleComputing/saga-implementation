@@ -32,7 +32,4 @@ add_to_saga_classpath () {
 
 add_to_saga_classpath $SAGA_LIB_LOCATION
 
-SANDBOXBASE="-DJavaGAT.resourceAdaptor.sandboxBase=/home0/ceriel"
-RESOURCEADAPTOR="-DjavaGAT.resourceAdaptor.name=gridsam"
-
-java -cp "$CLASSPATH:$SAGA_CLASSPATH" $SANDBOXBASE $RESOURCEADAPTOR -Dlog4j.configuration=file:$SAGA_HOME/log4j.properties -Dsaga.adaptor.path=$SAGA_ADAPTOR_LOCATION -Dgat.adaptor.path=$GAT_ADAPTOR_LOCATION -Dsaga.factory=org.ogf.saga.impl.bootstrap.MetaFactory "$@"
+java -cp "$CLASSPATH:$SAGA_CLASSPATH" $PREFERENCES -Dlog4j.configuration=file:$SAGA_HOME/log4j.properties -Dsaga.adaptor.path=$SAGA_ADAPTOR_LOCATION -Dgat.adaptor.path=$GAT_ADAPTOR_LOCATION -Dsaga.factory=org.ogf.saga.impl.bootstrap.MetaFactory "$@"
