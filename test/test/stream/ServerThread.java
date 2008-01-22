@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.ogf.saga.URL;
-import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
@@ -22,7 +21,7 @@ import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamFactory;
 import org.ogf.saga.stream.StreamService;
 
-public class ServerThread implements Runnable {
+public abstract class ServerThread implements Runnable {
 
 	private boolean stop = false;
 
@@ -125,21 +124,9 @@ public class ServerThread implements Runnable {
 		this.stop = true;
 	}
 
-	protected void processStream(Stream stream) throws NotImplemented,
+	protected abstract void processStream(Stream stream) throws NotImplemented,
 			BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
 			AuthorizationFailed, PermissionDenied, Timeout, IOException,
-			DoesNotExist, InterruptedException {
-		Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory.createBuffer();
-
-		buffer.setData(new byte[BUFFER_SIZE]);
-
-		// Thread.sleep(8000);
-
-		logger.debug("Server: Attempting to read the message");
-		int bytesCnt = stream.read(buffer, buffer.getSize());
-		logger.debug("Server: Read " + bytesCnt + " bytes");
-		logger.debug("Server: Message content:");
-		logger.debug(new String(buffer.getData()).trim());
-	}
-
+			DoesNotExist, InterruptedException;
+	
 }
