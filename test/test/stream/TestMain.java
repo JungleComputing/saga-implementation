@@ -37,8 +37,39 @@ public class TestMain {
 
 		Test.initialize();
 
-		test13();
-
+		if (args.length > 0) {
+			String arg = args[0];
+			try {
+				int testNum = Integer.parseInt(arg);
+				
+				System.out.println("=== RUNNING TEST " + testNum + " ===");
+				
+				if (testNum == 1)      test1();
+				else if (testNum == 2) test2();
+				else if (testNum == 3) test3();
+				else if (testNum == 4) test4();
+				else if (testNum == 5) test5();
+				else if (testNum == 6) test6();
+				else if (testNum == 7) test7();
+				else if (testNum == 8) test8();
+				else if (testNum == 9) test9();
+				else if (testNum == 10) test10();
+				else if (testNum == 11) test11();
+				else if (testNum == 12) test12();
+				else if (testNum == 13) test13();
+				else if (testNum == 14) test14();
+				else if (testNum == 15) test15();
+				else if (testNum == 16) test16();
+				else if (testNum == 17) test17();
+				else if (testNum == 18) test18();
+				else if (testNum == 19) test19();
+				else if (testNum == 20) test20();
+				
+			} catch (Exception e) {
+				test20();
+			}
+		} else
+			test20();
 	}
 
 	// connect to server while it is down, should throw NoSuccess
@@ -444,7 +475,7 @@ public class TestMain {
 	public static void test13() {
 
 		Stream stream = null;
-		
+
 		try {
 			stream = StreamFactory.createStream(new URL("advert://server"));
 			stream.close();
@@ -454,17 +485,18 @@ public class TestMain {
 		} catch (Exception e) {
 			logger.debug("FAIL: Threw other exception");
 		}
-		
+
 		try {
 			stream = StreamFactory.createStream(new URL("advert://server"));
 			stream.connect(); // should fail
 			logger.debug("FAIL: Connect should have failed");
 		} catch (NoSuccess e) {
-			logger.debug("OK: Connect not succeded -- should switch to Error state");
+			logger
+					.debug("OK: Connect not succeded -- should switch to Error state");
 		} catch (Exception e) {
-			logger.debug("FAIL: Threw other exception");			
+			logger.debug("FAIL: Threw other exception");
 		}
-		
+
 		try {
 			stream.close();
 		} catch (IncorrectState e) {
@@ -718,9 +750,9 @@ public class TestMain {
 
 			logger.debug("FAIL: Should have thrown IncorrectState");
 
-		} catch (IncorrectState e) { 
-		    logger.debug("OK: Threw IncorrectState");
-	    } catch (Exception e) {
+		} catch (IncorrectState e) {
+			logger.debug("OK: Threw IncorrectState");
+		} catch (Exception e) {
 			logger.debug("FAIL: Should have thrown IncorrectState");
 		}
 	}
