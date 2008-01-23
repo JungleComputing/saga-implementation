@@ -372,23 +372,21 @@ public class SAGAEngine {
         }
     }
 
+    // The idea of adaptor class names is the following:
+    // - the name ends with the name of the SPI it is providing, so a
+    //   JobService adaptor should end with "JobService".
+    // - the specific adaptor, f.i. javaGAT, should be in the
+    //   package name, or in the class name as well.
     private static String getFullAdaptorName(String shortName,
             AdaptorList adaptors) {
         for (Adaptor adaptor : adaptors) {
             String adaptorType = adaptor.getShortSpiName();
             String adaptorName = adaptor.getShortAdaptorClassName();
-            String postfix = adaptorType + "Adaptor";
-            String prefix = null;
-
-            // The prefix is the class name of the adaptor, with the TypeAdaptor
-            // part stripped of:
-            // So, "SshFileAdaptor" becomes "Ssh".
-            if (adaptorName.length() > postfix.length()) {
-                prefix = adaptorName.substring(0, adaptorName.length()
-                        - postfix.length());
+            if (adaptorName.endsWith(adaptorType)) {
+                if (adaptor.getAdaptorName().toLowerCase().contains(shortName.toLowerCase())) {
+                    return adaptor.getAdaptorName();
+                }
             }
-            if (prefix.equalsIgnoreCase(shortName))
-                return adaptor.getAdaptorName();
         }
         return null;
     }
@@ -443,10 +441,10 @@ public class SAGAEngine {
                 // when the current position is before the insert position, it
                 // means that the adaptor is already inserted, so don't insert
                 // it again
-                if (result.getPos(getFullAdaptorName(name, adaptors)) >= insertPosition) {
+                String fullAdaptorName = getFullAdaptorName(name, adaptors);
+                if (result.getPos(fullAdaptorName) >= insertPosition) {
                     // try to place the adaptor on the proper position
-                    if (result.placeAdaptor(insertPosition, getFullAdaptorName(
-                            name, adaptors)) >= 0) {
+                    if (result.placeAdaptor(insertPosition, fullAdaptorName) >= 0) {
                         // adjust the insert position only when the replacing
                         // succeeded
                         insertPosition++;
