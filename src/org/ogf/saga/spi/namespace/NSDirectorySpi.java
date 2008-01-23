@@ -332,7 +332,7 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
             pattern = ".";
         }
 
-        List<URL> list = list(".", flags);
+        List<URL> list = listCurrentDir(flags);
 
         if (".".equals(pattern)) {
             return list;
@@ -348,15 +348,14 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
         }
         
         try {
-
-        if (resultList.size() == 1 && isDir(resultList.get(0))) {
-            // Pattern indicates a single directory. In this case, list the
-            // contents of the directory (like "ls").
-            NSDirectory dir = NSFactory.createNSDirectory(session,
-                    nameUrl.resolve(resultList.get(0)),
-                    Flags.NONE.getValue());
-            return dir.list(".", flags);
-        }
+            if (resultList.size() == 1 && isDir(resultList.get(0))) {
+                // Pattern indicates a single directory. In this case, list the
+                // contents of the directory (like "ls").
+                NSDirectory dir = NSFactory.createNSDirectory(session,
+                        nameUrl.resolve(resultList.get(0)),
+                        Flags.NONE.getValue());
+                return dir.list(".", flags);
+            }
         } catch(DoesNotExist e) {
             throw new SagaError("Should not happen", e);
         } catch(AlreadyExists e) {
@@ -365,6 +364,10 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
 
         return resultList;
     }
+    
+    public abstract List<URL> listCurrentDir(int flags) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess;
 
     public Task<List<URL>> list(TaskMode mode, String pattern, int flags)
             throws NotImplemented {
