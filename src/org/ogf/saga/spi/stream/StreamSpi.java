@@ -11,6 +11,7 @@ import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
+import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.impl.monitoring.Metric;
@@ -73,6 +74,13 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         clone.streamException = (Metric) streamException.clone();
         clone.streamDropped = (Metric) streamDropped.clone();
         return clone;
+    }
+    
+    protected void checkBufferType(Buffer buffer) {
+        if (!(buffer instanceof org.ogf.saga.impl.buffer.Buffer)) {
+            throw new SagaError("Wrong buffer type: "
+                    + buffer.getClass().getName());
+        }
     }
 
     public Task close(TaskMode mode, float timeoutInSeconds)

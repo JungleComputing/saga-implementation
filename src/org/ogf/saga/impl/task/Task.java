@@ -56,7 +56,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
             10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
     
     // Constructor used for Job.
-    public Task(Session session) {
+    public Task(Session session) throws BadParameter {
         super(session);
         this.object = this;
     }

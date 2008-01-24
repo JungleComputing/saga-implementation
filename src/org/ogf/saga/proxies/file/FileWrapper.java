@@ -28,24 +28,23 @@ import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public class FileWrapper extends NSEntryWrapper implements File {
-    
+
     private FileSpiInterface proxy;
-    
-    FileWrapper(Session session, URL name, int flags) 
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+
+    FileWrapper(Session session, URL name, int flags) throws NotImplemented,
+            IncorrectURL, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, BadParameter, AlreadyExists, DoesNotExist,
+            Timeout, NoSuccess {
         super(session);
+
         Object[] parameters = { this, session, name, flags };
         try {
             proxy = (FileSpiInterface) SAGAEngine.createAdaptorProxy(
-                    FileSpiInterface.class,
-                    new Class[] { FileWrapper.class,
-                        org.ogf.saga.impl.session.Session.class, URL.class,
-                        Integer.TYPE },
-                        parameters);
+                    FileSpiInterface.class, new Class[] { FileWrapper.class,
+                            org.ogf.saga.impl.session.Session.class, URL.class,
+                            Integer.TYPE }, parameters);
             super.setProxy(proxy);
-        } catch(org.ogf.saga.error.Exception e) {
+        } catch (org.ogf.saga.error.Exception e) {
             if (e instanceof NotImplemented) {
                 throw (NotImplemented) e;
             }
@@ -64,7 +63,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
             if (e instanceof BadParameter) {
                 throw (BadParameter) e;
             }
-            if (e instanceof  AlreadyExists) {
+            if (e instanceof AlreadyExists) {
                 throw (AlreadyExists) e;
             }
             if (e instanceof DoesNotExist) {
@@ -79,18 +78,17 @@ public class FileWrapper extends NSEntryWrapper implements File {
             throw new NoSuccess("Constructor failed", e);
         }
     }
-    
-    public long getSize()
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-                    PermissionDenied, IncorrectState, Timeout, NoSuccess {
+
+    public long getSize() throws NotImplemented, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, IncorrectState, Timeout,
+            NoSuccess {
         return proxy.getSize();
     }
-    
-    public Task<Long> getSize(TaskMode mode)
-            throws NotImplemented {
+
+    public Task<Long> getSize(TaskMode mode) throws NotImplemented {
         return proxy.getSize(mode);
     }
-       
+
     public Object clone() throws CloneNotSupportedException {
         FileWrapper clone = (FileWrapper) super.clone();
         clone.proxy = (FileSpiInterface) SAGAEngine.createAdaptorCopy(
@@ -103,7 +101,9 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return ObjectType.FILE;
     }
 
-    public List<String> modesE() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, Timeout, NoSuccess {
+    public List<String> modesE() throws NotImplemented, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, IncorrectState, Timeout,
+            NoSuccess {
         return proxy.modesE();
     }
 
@@ -111,39 +111,54 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.modesE(mode);
     }
 
-    public int read(Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public int read(Buffer buffer) throws NotImplemented, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, BadParameter,
+            IncorrectState, Timeout, NoSuccess, IOException {
         return read(buffer, buffer.getSize());
     }
 
-    public int read(Buffer buffer, int len) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public int read(Buffer buffer, int len) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
         return proxy.read(buffer, len);
     }
 
-    public Task<Integer> read(TaskMode mode, Buffer buffer) throws NotImplemented {
+    public Task<Integer> read(TaskMode mode, Buffer buffer)
+            throws NotImplemented {
         return read(mode, buffer, -1);
     }
 
-    public Task<Integer> read(TaskMode mode, Buffer buffer, int len) throws NotImplemented {
+    public Task<Integer> read(TaskMode mode, Buffer buffer, int len)
+            throws NotImplemented {
         return proxy.read(mode, buffer, len);
     }
 
-    public int readE(String emode, String spec, Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public int readE(String emode, String spec, Buffer buffer)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess,
+            IOException {
         return proxy.readE(emode, spec, buffer);
     }
 
-    public Task<Integer> readE(TaskMode mode, String emode, String spec, Buffer buffer) throws NotImplemented {
+    public Task<Integer> readE(TaskMode mode, String emode, String spec,
+            Buffer buffer) throws NotImplemented {
         return proxy.readE(mode, emode, spec, buffer);
     }
 
-    public int readP(String pattern, Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public int readP(String pattern, Buffer buffer) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
         return proxy.readP(pattern, buffer);
     }
 
-    public Task<Integer> readP(TaskMode mode, String pattern, Buffer buffer) throws NotImplemented {
+    public Task<Integer> readP(TaskMode mode, String pattern, Buffer buffer)
+            throws NotImplemented {
         return proxy.readP(mode, pattern, buffer);
     }
 
-    public void readV(IOVec[] iovecs) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public void readV(IOVec[] iovecs) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
         proxy.readV(iovecs);
     }
 
@@ -151,63 +166,87 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.readV(mode, iovecs);
     }
 
-    public long seek(long offset, SeekMode whence) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, Timeout, NoSuccess, IOException {
+    public long seek(long offset, SeekMode whence) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            IncorrectState, Timeout, NoSuccess, IOException {
         return proxy.seek(offset, whence);
     }
 
-    public Task<Long> seek(TaskMode mode, long offset, SeekMode whence) throws NotImplemented {
+    public Task<Long> seek(TaskMode mode, long offset, SeekMode whence)
+            throws NotImplemented {
         return proxy.seek(mode, offset, whence);
     }
 
-    public int sizeE(String emode, String spec) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess {
+    public int sizeE(String emode, String spec) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, IncorrectState,
+            PermissionDenied, BadParameter, Timeout, NoSuccess {
         return proxy.sizeE(emode, spec);
     }
 
-    public Task<Integer> sizeE(TaskMode mode, String emode, String spec) throws NotImplemented {
+    public Task<Integer> sizeE(TaskMode mode, String emode, String spec)
+            throws NotImplemented {
         return proxy.sizeE(mode, emode, spec);
     }
 
-    public int sizeP(String pattern) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess {
+    public int sizeP(String pattern) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, IncorrectState,
+            PermissionDenied, BadParameter, Timeout, NoSuccess {
         return proxy.sizeP(pattern);
     }
 
-    public Task<Integer> sizeP(TaskMode mode, String pattern) throws NotImplemented {
+    public Task<Integer> sizeP(TaskMode mode, String pattern)
+            throws NotImplemented {
         return proxy.sizeP(mode, pattern);
     }
 
-    public int write(Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public int write(Buffer buffer) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
         return write(buffer, -1);
     }
 
-    public int write(Buffer buffer, int len) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public int write(Buffer buffer, int len) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
         return proxy.write(buffer, len);
     }
 
-    public Task<Integer> write(TaskMode mode, Buffer buffer) throws NotImplemented {
+    public Task<Integer> write(TaskMode mode, Buffer buffer)
+            throws NotImplemented {
         return write(mode, buffer, -1);
     }
 
-    public Task<Integer> write(TaskMode mode, Buffer buffer, int len) throws NotImplemented {
+    public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
+            throws NotImplemented {
         return proxy.write(mode, buffer, len);
     }
 
-    public int writeE(String emode, String spec, Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public int writeE(String emode, String spec, Buffer buffer)
+            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
+            PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess,
+            IOException {
         return proxy.writeE(emode, spec, buffer);
     }
 
-    public Task<Integer> writeE(TaskMode mode, String emode, String spec, Buffer buffer) throws NotImplemented {
+    public Task<Integer> writeE(TaskMode mode, String emode, String spec,
+            Buffer buffer) throws NotImplemented {
         return proxy.writeE(mode, emode, spec, buffer);
     }
 
-    public int writeP(String pattern, Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public int writeP(String pattern, Buffer buffer) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
         return proxy.writeP(pattern, buffer);
     }
 
-    public Task<Integer> writeP(TaskMode mode, String pattern, Buffer buffer) throws NotImplemented {
+    public Task<Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
+            throws NotImplemented {
         return proxy.writeP(mode, pattern, buffer);
     }
 
-    public void writeV(IOVec[] iovecs) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+    public void writeV(IOVec[] iovecs) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
         proxy.writeV(iovecs);
     }
 
