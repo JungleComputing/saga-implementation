@@ -13,6 +13,7 @@ import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
 import org.ogf.saga.error.PermissionDenied;
+import org.ogf.saga.error.SagaError;
 import org.ogf.saga.error.Timeout;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
@@ -27,15 +28,33 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
 
     protected int fileFlags;
 
-    public FileSpi(FileWrapper wrapper, Session session, URL name, int flags) throws NotImplemented,
-            IncorrectURL, BadParameter, DoesNotExist, PermissionDenied,
-            AuthorizationFailed, AuthenticationFailed, Timeout, NoSuccess,
-            AlreadyExists {
-        super(wrapper, session, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
+    public FileSpi(FileWrapper wrapper, Session session, URL name, int flags)
+            throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
+            PermissionDenied, AuthorizationFailed, AuthenticationFailed,
+            Timeout, NoSuccess, AlreadyExists {
+        super(wrapper, session, name, flags
+                & Flags.ALLNAMESPACEFLAGS.getValue());
         fileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
-        if ((fileFlags | Flags.ALLFILEFLAGS.getValue())
-                != Flags.ALLFILEFLAGS.getValue()) {
-            throw new BadParameter("Illegal flags for File constructor: " + flags);
+        if ((fileFlags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
+                .getValue()) {
+            throw new BadParameter("Illegal flags for File constructor: "
+                    + flags);
+        }
+    }
+
+    protected void checkBufferType(Buffer buffer) {
+        if (!(buffer instanceof org.ogf.saga.impl.buffer.Buffer)) {
+            throw new SagaError("Wrong buffer type: "
+                    + buffer.getClass().getName());
+        }
+    }
+
+    protected void checkIOVecsType(IOVec[] iovecs) {
+        for (IOVec iovec : iovecs) {
+            if (!(iovec instanceof org.ogf.saga.proxies.file.IOVec)) {
+                throw new SagaError("Wrong iovec type: "
+                        + iovec.getClass().getName());
+            }
         }
     }
 
@@ -53,7 +72,8 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
     public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
-                "write", new Class[] { Buffer.class, Integer.TYPE }, buffer, len);
+                "write", new Class[] { Buffer.class, Integer.TYPE }, buffer,
+                len);
     }
 
     public Task<Long> seek(TaskMode mode, long arg1, SeekMode arg2)
@@ -113,7 +133,7 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
     }
 
     public Task writeV(TaskMode mode, IOVec[] arg1) throws NotImplemented {
-        return new org.ogf.saga.impl.task.Task(wrapper, session, mode, "writeV",
-                new Class[] { IOVec[].class }, (Object) arg1);
+        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+                "writeV", new Class[] { IOVec[].class }, (Object) arg1);
     }
 }

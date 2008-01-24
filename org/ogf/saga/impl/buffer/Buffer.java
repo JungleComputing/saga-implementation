@@ -5,6 +5,7 @@ import org.ogf.saga.error.BadParameter;
 import org.ogf.saga.error.DoesNotExist;
 import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.NotImplemented;
+import org.ogf.saga.error.SagaError;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 
@@ -67,6 +68,22 @@ public class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer
         }
         return buf;
     }
+    
+    public byte[] getBuf() {
+        return buf;
+    }
+    
+    public void setBuf(byte[] buf) {
+        if (! implementationManaged) {
+            throw new SagaError("Internal error: implementation allocated application-managed buffer!");
+        }
+        this.buf = buf;
+        size = buf.length;
+    }
+    
+    public boolean isImplementationManaged() {
+        return implementationManaged;
+    }
 
     public int getSize() throws NotImplemented, IncorrectState {
         if (closed) {
@@ -97,6 +114,7 @@ public class Buffer extends SagaObjectBase implements org.ogf.saga.buffer.Buffer
             this.size = -1;
         } else {
             this.size = size;
+            buf = new byte[size];
         }
     }
 
