@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Some file manipulations within a remote directory
+
+. ./paths
+
+$SAGA_HOME/bin/run_saga_app -Xmx256M test.namespace.Sequence file1 file2 gsiftp://fs0.das2.cs.vu.nl/home/ceriel/testDirectory "Hello world"

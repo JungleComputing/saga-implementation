@@ -1,0 +1,5 @@
+#!/bin/sh
+
+. ./paths
+
+$SAGA_HOME/bin/run_saga_app test.job.TestJob

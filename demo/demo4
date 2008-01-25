@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# For now, javaGAT only has a local file adaptor for RandomAccessFile,
+# so as long as we only have a javaGAT adaptor for File, this only works
+# for local files.
+
+. ./paths
+
+$SAGA_HOME/bin/run_saga_app -Xmx256M test.file.FileSize file://$HOME/.bashrc
