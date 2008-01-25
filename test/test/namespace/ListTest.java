@@ -2,6 +2,9 @@ package test.namespace;
 
 import java.util.List;
 
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+
 import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
@@ -16,20 +19,38 @@ import org.ogf.saga.session.SessionFactory;
 // First argument is the directory, the other arguments are patterns to list.
 
 public class ListTest {
+    
+    private static String getPassphrase() {
+        JPasswordField pwd = new JPasswordField();
+        Object[] message = { "grid-proxy-init\nPlease enter your passphrase.",
+                pwd };
+        JOptionPane.showMessageDialog(null, message, "Grid-Proxy-Init",
+                JOptionPane.QUESTION_MESSAGE);
+        return new String(pwd.getPassword());
+    }
+
 
     public static void main(String[] args) {
         try {
-            // Add an anonymous ftp context to the default session.
+            URL directory = new URL(args[0]);
+            
             Session session = SessionFactory.createSession(true);
-            Context ftpContext = ContextFactory.createContext("ftp");
-            session.addContext(ftpContext);
-
-            // Possibly add other contexts ...
+            
+            String scheme = directory.getScheme();
+            if ("ftp".equals(scheme)) {
+                // FTP context. Default is anonymous.
+                session.addContext(ContextFactory.createContext("ftp"));
+            } else if ("gsiftp".equals(scheme)) {
+                // Gridftp context.
+                Context context = ContextFactory.createContext("gridftp");
+                context.setAttribute(Context.USERPASS, getPassphrase());
+                session.addContext(context);
+            }
 
             // Print a listing of the directory indicated in the first argument.
-            NSDirectory entry = NSFactory.createNSDirectory(new URL(args[0]));
+            NSDirectory entry = NSFactory.createNSDirectory(directory);
             List<URL> list = entry.list();
-            System.out.println("Contents of " + args[0] + ":");
+            System.out.println("Contents of " + directory + ":");
             for (URL u : list) {
                 System.out.println("    " + u);
             }
@@ -37,7 +58,7 @@ public class ListTest {
             // The rest of the arguments are patterns to list the same
             // directory with.
             for (int i = 1; i < args.length; i++) {
-                System.out.println("List " + args[0] + ", matching with "
+                System.out.println("List " + directory + ", matching with "
                         + args[i] + ":");
                 list = entry.list(args[i]);
                 for (URL u : list) {
