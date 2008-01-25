@@ -14,7 +14,8 @@ public abstract class SagaObjectBase implements SagaObject {
     private UUID uuid = UUID.randomUUID();
    
     protected SagaObjectBase(Session session) {
-        if (! (session instanceof org.ogf.saga.impl.session.Session)) {
+        if (session != null
+                && ! (session instanceof org.ogf.saga.impl.session.Session)) {
             throw new SagaError("Wrong session type: " + session.getClass().getName());
         }
         this.session = (org.ogf.saga.impl.session.Session) session;
