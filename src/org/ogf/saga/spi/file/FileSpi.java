@@ -1,5 +1,6 @@
 package org.ogf.saga.spi.file;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.ogf.saga.URL;
@@ -9,6 +10,7 @@ import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
 import org.ogf.saga.error.DoesNotExist;
+import org.ogf.saga.error.IncorrectState;
 import org.ogf.saga.error.IncorrectURL;
 import org.ogf.saga.error.NoSuccess;
 import org.ogf.saga.error.NotImplemented;
@@ -58,21 +60,46 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
         }
     }
 
+    public void readV(IOVec[] arg0) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+        checkIOVecsType(arg0);
+        for (IOVec iov : arg0) {
+            org.ogf.saga.proxies.file.IOVec iovec = (org.ogf.saga.proxies.file.IOVec) iov;
+            int lenIn = iovec.getLenIn();
+            int offset = iovec.getOffset();
+            iovec.setLenOut(read(iovec, offset, lenIn));
+        }
+    }
+
+    public void writeV(IOVec[] arg0) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+        checkIOVecsType(arg0);
+        for (IOVec iov : arg0) {
+            org.ogf.saga.proxies.file.IOVec iovec = (org.ogf.saga.proxies.file.IOVec) iov;
+            int lenIn = iovec.getLenIn();
+            int offset = iovec.getOffset();
+            iovec.setLenOut(write(iovec, offset, lenIn));
+        }
+    }
+
+
     public Task<Long> getSize(TaskMode mode) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Long>(wrapper, session, mode,
                 "getSize", new Class[] {});
     }
 
-    public Task<Integer> read(TaskMode mode, Buffer buffer, int len)
+    public Task<Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
-                "read", new Class[] { Buffer.class, Integer.TYPE }, buffer, len);
+                "read", new Class[] { Buffer.class, Integer.TYPE, Integer.TYPE }, buffer, len);
     }
 
-    public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
+    public Task<Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
             throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
-                "write", new Class[] { Buffer.class, Integer.TYPE }, buffer,
+                "write", new Class[] { Buffer.class, Integer.TYPE, Integer.TYPE }, buffer,
                 len);
     }
 

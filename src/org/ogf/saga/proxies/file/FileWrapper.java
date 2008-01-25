@@ -114,13 +114,19 @@ public class FileWrapper extends NSEntryWrapper implements File {
     public int read(Buffer buffer) throws NotImplemented, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess, IOException {
-        return read(buffer, buffer.getSize());
+        return read(buffer, 0, buffer.getSize());
     }
 
     public int read(Buffer buffer, int len) throws NotImplemented,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
-        return proxy.read(buffer, len);
+        return read(buffer, 0, len);
+    }
+    
+    public int read(Buffer buffer, int offset, int len) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+        return proxy.read(buffer, offset, len);
     }
 
     public Task<Integer> read(TaskMode mode, Buffer buffer)
@@ -130,7 +136,12 @@ public class FileWrapper extends NSEntryWrapper implements File {
 
     public Task<Integer> read(TaskMode mode, Buffer buffer, int len)
             throws NotImplemented {
-        return proxy.read(mode, buffer, len);
+        return read(mode, buffer, 0, len);
+    }
+    
+    public Task<Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
+            throws NotImplemented {
+        return proxy.read(mode, buffer, offset, len);
     }
 
     public int readE(String emode, String spec, Buffer buffer)
@@ -202,25 +213,37 @@ public class FileWrapper extends NSEntryWrapper implements File {
     public int write(Buffer buffer) throws NotImplemented,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
-        return write(buffer, -1);
+        return write(buffer, 0, -1);
     }
-
+    
     public int write(Buffer buffer, int len) throws NotImplemented,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
-        return proxy.write(buffer, len);
+        return write(buffer, 0, len);
+    }
+
+    public int write(Buffer buffer, int offset, int len) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+        return proxy.write(buffer, offset, len);
     }
 
     public Task<Integer> write(TaskMode mode, Buffer buffer)
             throws NotImplemented {
-        return write(mode, buffer, -1);
+        return write(mode, buffer, 0, -1);
     }
 
     public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
             throws NotImplemented {
-        return proxy.write(mode, buffer, len);
+        return write(mode, buffer, 0, len);
+    }
+    
+    public Task<Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
+            throws NotImplemented {
+        return proxy.write(mode, buffer, offset, len);
     }
 
+    
     public int writeE(String emode, String spec, Buffer buffer)
             throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess,
