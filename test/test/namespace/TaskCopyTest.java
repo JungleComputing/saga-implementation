@@ -1,5 +1,8 @@
 package test.namespace;
 
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+
 import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
@@ -21,14 +24,24 @@ import org.ogf.saga.task.WaitMode;
 
 /**
  * A small test for TaskContainers (and copy()).
- * It creates two tasks, one to copy an ftp file to a local file, and one
- * to copy a http file to a local file. These tasks are stored in a
+ * It creates a temporary directory, and then copies the files
+ * indicated by the arguments given to it, each copy action being
+ * a separate task. These tasks are stored in a
  * task container, which has a callback installed on it, which just prints
  * a message, demonstrating that it gets invoked.
  * The task container is run and waited for. Any exceptions thrown by the tasks
  * are printed.
  */
 public class TaskCopyTest implements Callback {
+
+    private static String getPassphrase() {
+        JPasswordField pwd = new JPasswordField();
+        Object[] message = { "grid-proxy-init\nPlease enter your passphrase.",
+                pwd };
+        JOptionPane.showMessageDialog(null, message, "Grid-Proxy-Init",
+                JOptionPane.QUESTION_MESSAGE);
+        return new String(pwd.getPassword());
+    }
     
     public boolean cb(Monitorable m, Metric metric, Context ctxt) {
         try {
@@ -51,55 +64,63 @@ public class TaskCopyTest implements Callback {
         return true;
     }
     
-    private static TaskContainer createTasks(Session session) throws Exception {
-        NSDirectory dir = NSFactory.createNSDirectory(session, new URL("."));
-
-        // Create two copy tasks and a task container 
-        Task task1 = dir.copy(TaskMode.TASK,
-                new URL("ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz"),
-                new URL("LLgen.tar.gz"), Flags.OVERWRITE.getValue());
-        Task task2 = dir.copy(TaskMode.TASK,
-                new URL("http://www.cs.vu.nl/ibis/index.html"),
-                new URL("index.html"), Flags.OVERWRITE.getValue());
-        TaskContainer container = TaskFactory.createTaskContainer();
+    private static TaskContainer createTasks(Session session, URL[] urls) throws Exception {
+        NSDirectory dir = NSFactory.createNSDirectory(session, new URL("tmp"), Flags.CREATE.getValue());
         
-        // Install a callback detecting state changes in the tasks
+        // Create task container with callbacks.
+        TaskContainer container = TaskFactory.createTaskContainer();
         container.addCallback(TaskContainer.TASKCONTAINER_STATE,
                 new TaskCopyTest());
         
-        container.add(task2); 
-        container.add(task1);
+        // Create copy tasks, add them to container.
+        for (URL url : urls) {
+            String path = url.getPath();
+            path = path.substring(path.lastIndexOf('/') + 1);
+            
+            Task task = dir.copy(TaskMode.TASK, url, new URL(path), Flags.OVERWRITE.getValue());
+            container.add(task);
+        }
+
         return container;
     }
     
     public static void main(String[] args) throws Exception {
-        Session session = null;
-        try {
-            session = SessionFactory.createSession(true);
-            
-            // Create an ftp context.
-            Context ftpContext = ContextFactory.createContext("ftp");
-            session.addContext(ftpContext);
-            
-            TaskContainer container = createTasks(session);
-            
-            container.run();
-            while (container.size() != 0) {
-                Task t = container.waitFor(WaitMode.ANY);
-                System.out.println("Task finished, state = " + t.getState());
-                if (State.FAILED.equals(t.getState())) {
-                    try {
-                        t.rethrow();
-                    } catch(Throwable e) {
-                        System.err.println("Task threw exception: " + e);
-                        e.printStackTrace(System.err);
-                    }
-                }
-            }           
-        } finally {
-            // Explicit close is needed, unfortunately, for termination.
-            // This should be fixed.
-            session.close();
+        Session session = SessionFactory.createSession(true);
+
+        URL[] urls = new URL[args.length];
+
+        for (int i = 0; i < args.length; i++) {
+            urls[i] = new URL(args[i]);
         }
+
+        // Create an ftp context.
+        Context ftpContext = ContextFactory.createContext("ftp");
+        session.addContext(ftpContext);
+
+        for (URL url : urls) {
+            String scheme = url.getScheme();
+            if ("gsiftp".equals(scheme)) {
+                Context context = ContextFactory.createContext("gridftp");
+                context.setAttribute(Context.USERPASS, getPassphrase());
+                session.addContext(context);
+                break;
+            }
+        }
+
+        TaskContainer container = createTasks(session, urls);
+        container.run();
+
+        while (container.size() != 0) {
+            Task t = container.waitFor(WaitMode.ANY);
+            System.out.println("Task finished, state = " + t.getState());
+            if (State.FAILED.equals(t.getState())) {
+                try {
+                    t.rethrow();
+                } catch (Throwable e) {
+                    System.err.println("Task threw exception: " + e);
+                    e.printStackTrace(System.err);
+                }
+            }
+        }           
     }
 }
