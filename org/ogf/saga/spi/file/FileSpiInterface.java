@@ -38,10 +38,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * to implement non-blocking reads.
      * 
      * @param len the number of bytes to be read.
+     * @param offset the buffer offset.
      * @param buffer the buffer to read data into.
      * @return the number of bytes read.
      */
-    int read(Buffer buffer, int len)
+    int read(Buffer buffer, int offset, int len)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess, IOException;
@@ -52,10 +53,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * Returns the number of bytes written.
      * 
      * @param len the number of bytes to be written.
+     * @param offset the buffer offset.
      * @param buffer the buffer to write data from.
      * @return the number of bytes written.
      */
-    int write(Buffer buffer, int len)
+    int write(Buffer buffer, int offset, int len)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
             PermissionDenied, BadParameter,
             IncorrectState, Timeout, NoSuccess, IOException;
@@ -203,13 +205,14 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * The number returned by the task is the number of bytes read, or 0 at
      * end-of-file.
      * @param mode the task mode.
+     * @param offset the buffer offset.
      * @param len the number of bytes to be read.
      * @param buffer the buffer to read data into.
      * @return the task.
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> read(TaskMode mode, Buffer buffer, int len)
+    Task<Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
         throws NotImplemented;
       
     /**
@@ -217,13 +220,14 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * to the file at the current file position.
      * The number returned by the task is the number of bytes written.
      * @param mode the task mode.
+     * @param offset the buffer offset.
      * @param len the number of bytes to be written.
      * @param buffer the buffer to write data from.
      * @return the task.
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> write(TaskMode mode, Buffer buffer, int len)
+    Task<Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
         throws NotImplemented;
        
     /**
