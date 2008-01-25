@@ -11,7 +11,10 @@ class AdaptorList extends ArrayList<Adaptor> {
     private static final long serialVersionUID = 1L;
     
     /** The api class all adaptors in this set implement. */
-    private String spiClass;
+    private final String spiClass;
+
+    /** The short name for the api class. */
+    private final String shortSpiName;
 
     /**
      * Constructs an empty adaptor list for the specified spi class.
@@ -20,17 +23,28 @@ class AdaptorList extends ArrayList<Adaptor> {
      */
     AdaptorList(String spiClass) {
         this.spiClass = spiClass;
+        int index = spiClass.lastIndexOf(".");
+        if(index > 0) {
+            shortSpiName = spiClass.substring(index+1).replace("SpiInterface", "");
+        } else {
+            shortSpiName = spiClass.replace("SpiInterface", "");
+        }
     }
 
     AdaptorList(AdaptorList l) {
         super(l);
         this.spiClass = l.spiClass;
+        this.shortSpiName = l.shortSpiName;
     }
 
     String getSpiName() {
         return spiClass;
     }
     
+    String getShortSpiName() {
+        return shortSpiName;
+    }
+
     int getPos(String adaptorName) {
         for (int i = 0; i < size(); i++) {
             Adaptor a = get(i);
