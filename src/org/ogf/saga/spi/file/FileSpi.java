@@ -1,6 +1,7 @@
 package org.ogf.saga.spi.file;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.ogf.saga.URL;
@@ -20,6 +21,7 @@ import org.ogf.saga.error.Timeout;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
 import org.ogf.saga.namespace.Flags;
+import org.ogf.saga.proxies.file.Falls;
 import org.ogf.saga.proxies.file.FileWrapper;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.spi.namespace.NSEntrySpi;
@@ -29,6 +31,7 @@ import org.ogf.saga.task.TaskMode;
 public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
 
     protected int fileFlags;
+    protected final HashMap<String, Falls> fallsCache = new HashMap<String, Falls>();
 
     public FileSpi(FileWrapper wrapper, Session session, URL name, int flags)
             throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
@@ -83,7 +86,46 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
             iovec.setLenOut(write(iovec, offset, lenIn));
         }
     }
+ 
+    public int readP(String fallsPattern, Buffer buf) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
 
+        int size = sizeP(fallsPattern);
+
+        // Make sure the buffer is large enough.
+        try {
+            buf.getData();
+        } catch(DoesNotExist e) {
+            if (buf.getSize() < 0) {
+                buf.setSize(size);
+            }
+        }
+        if (buf.getSize() < size) {
+            // It was'nt.
+            throw new BadParameter("buffer too small for the specified pattern");
+        }
+        
+        
+        throw new NotImplemented("Not implemented!");
+    }
+
+    public int sizeP(String fallsPattern) throws NotImplemented, AuthenticationFailed,
+            AuthorizationFailed, IncorrectState, PermissionDenied,
+            BadParameter, Timeout, NoSuccess {
+        Falls falls = fallsCache.get(fallsPattern);
+        if (falls == null) {
+            falls = new Falls(fallsPattern);
+            fallsCache.put(fallsPattern, falls);
+        }
+        return falls.getSize();
+    }
+
+    public int writeP(String arg0, Buffer arg1) throws NotImplemented,
+            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
+            BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
+        throw new NotImplemented("Not implemented!");
+    }
 
     public Task<Long> getSize(TaskMode mode) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Long>(wrapper, session, mode,
