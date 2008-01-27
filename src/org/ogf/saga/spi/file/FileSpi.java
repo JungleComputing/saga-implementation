@@ -86,12 +86,50 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
             iovec.setLenOut(write(iovec, offset, lenIn));
         }
     }
- 
+
+    /**
+     * This method splits a FALLS pattern read up into read() and seek() calls.
+     * Needless to say, this is very slow and should only be used if nothing better
+     * is available.
+     * @param falls the FALLS pattern.
+     * @param buf the buffer to store into.
+     * @param bufOffset the buffer offset to use. 
+     * @return the number of bytes read.
+     */
+    private int readByFallsPattern(Falls falls, Buffer buf, int bufOffset)
+            throws NotImplemented, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, BadParameter,
+            IncorrectState, Timeout, NoSuccess, IOException {
+        int rep = falls.getRep();
+        int from = falls.getFrom();
+        int to = falls.getTo();
+        int stride = falls.getStride();
+        Falls nested = falls.getNested();
+        long current = seek(from, SeekMode.CURRENT);
+
+        for (int i = 0; i < rep; i++) {
+            if (nested != null) {
+                bufOffset += readByFallsPattern(nested, buf, bufOffset);
+            } else {
+                bufOffset += read(buf, bufOffset, (to - from + 1));
+            }
+            current += stride;
+            seek(current, SeekMode.START);
+        }
+        return bufOffset;
+    }
+    
     public int readP(String fallsPattern, Buffer buf) throws NotImplemented,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
 
-        int size = sizeP(fallsPattern);
+        Falls falls = fallsCache.get(fallsPattern);
+        if (falls == null) {
+            falls = new Falls(fallsPattern);
+            fallsCache.put(fallsPattern, falls);
+        }
+        
+        int size = falls.getSize();
 
         // Make sure the buffer is large enough.
         try {
@@ -106,8 +144,7 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
             throw new BadParameter("buffer too small for the specified pattern");
         }
         
-        
-        throw new NotImplemented("Not implemented!");
+        return readByFallsPattern(falls, buf, 0);
     }
 
     public int sizeP(String fallsPattern) throws NotImplemented, AuthenticationFailed,
@@ -120,11 +157,61 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
         }
         return falls.getSize();
     }
+    /**
+     * This method splits a FALLS pattern write up into write() and seek() calls.
+     * Needless to say, this is very slow and should only be used if nothing better
+     * is available.
+     * @param falls the FALLS pattern.
+     * @param buf the buffer to write from.
+     * @param bufOffset the buffer offset to use. 
+     * @return the number of bytes written.
+     */
+    private int writeByFallsPattern(Falls falls, Buffer buf, int bufOffset)
+            throws NotImplemented, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, BadParameter,
+            IncorrectState, Timeout, NoSuccess, IOException {
+        int rep = falls.getRep();
+        int from = falls.getFrom();
+        int to = falls.getTo();
+        int stride = falls.getStride();
+        Falls nested = falls.getNested();
+        long current = seek(from, SeekMode.CURRENT);
 
-    public int writeP(String arg0, Buffer arg1) throws NotImplemented,
+        for (int i = 0; i < rep; i++) {
+            if (nested != null) {
+                bufOffset += writeByFallsPattern(nested, buf, bufOffset);
+            } else {
+                bufOffset += write(buf, bufOffset, (to - from + 1));
+            }
+            current += stride;
+            seek(current, SeekMode.START);
+        }
+        return bufOffset;
+    }
+    
+    public int writeP(String fallsPattern, Buffer buf) throws NotImplemented,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
-        throw new NotImplemented("Not implemented!");
+        Falls falls = fallsCache.get(fallsPattern);
+        if (falls == null) {
+            falls = new Falls(fallsPattern);
+            fallsCache.put(fallsPattern, falls);
+        }
+        
+        int size = falls.getSize();
+
+        // Make sure the buffer is large enough.
+        try {
+            buf.getData();
+        } catch(DoesNotExist e) {
+            throw new BadParameter("Buffer has no data");
+        }
+        if (buf.getSize() < size) {
+            // It was'nt.
+            throw new BadParameter("buffer too small for the specified pattern");
+        }
+        
+        return writeByFallsPattern(falls, buf, 0);
     }
 
     public Task<Long> getSize(TaskMode mode) throws NotImplemented {
