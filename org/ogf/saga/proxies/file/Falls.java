@@ -175,11 +175,9 @@ public class Falls {
     
     /**
      * Returns the size of the buffer required for this FALLS pattern.
-     * The only things that matter here is the number of repetitions
-     * and the size of the nested pattern.
      * @return the required size.
      */
     public int getSize() {
-        return rep * (nested != null ? nested.getSize() : 1);
+        return rep * (nested != null ? nested.getSize() : (to - from + 1));
     }
 }
