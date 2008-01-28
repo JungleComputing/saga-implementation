@@ -30,7 +30,7 @@ public class TestJob implements Callback {
             // just localhost. This is only needed because the gridsam server
             // is reached through a tunnel.
             System.setProperty("GATPreferences.ResourceBroker.sandbox.host",
-                    "localhost:4567");
+                    "ceriel@localhost:4567");
 
             // Create the JobService. Note: the gridsam service is behind a
             // firewall and is reached through an ssh tunnel, which the user
