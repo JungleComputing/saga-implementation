@@ -19,6 +19,10 @@ public class ServerThreadOneRead extends ServerThread {
 
 	private static Logger logger = Logger.getLogger(ServerThreadOneRead.class);	
 	
+	public ServerThreadOneRead(String url) {
+		super(url);
+	}
+	
 	protected void processStream(Stream stream) throws NotImplemented,
 			BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
 			AuthorizationFailed, PermissionDenied, Timeout, IOException,

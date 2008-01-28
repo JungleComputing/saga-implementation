@@ -19,6 +19,10 @@ public class ServerThreadWait extends ServerThread {
 
 	private static Logger logger = Logger.getLogger(ServerThreadWait.class);
 	
+	public ServerThreadWait(String url) {
+		super(url);
+	}
+	
 	protected void processStream(Stream stream) throws NotImplemented,
 			BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
 			AuthorizationFailed, PermissionDenied, Timeout, IOException,

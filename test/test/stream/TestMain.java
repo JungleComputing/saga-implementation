@@ -21,7 +21,7 @@ import org.ogf.saga.stream.StreamService;
 
 public class TestMain {
 
-	private static String SERVER_URL = "advert://server";
+	private static String SERVER_URL = "tcp://localhost:3333";
 
 	private static Logger logger = Logger.getLogger(TestMain.class);
 
@@ -33,11 +33,19 @@ public class TestMain {
 		}
 	};
 
+	// INVOCATION:
+	// test [test-number] [server-URL]   -OR-
+	// test [server-URL]  -- default test will be invoked
+	// without [server-URL] default server URL will be used
+	
 	public static void main(String args[]) {
 
 		Test.initialize();
 
 		if (args.length > 0) {
+			if (args.length > 1) {
+				SERVER_URL = args[1];
+			}
 			String arg = args[0];
 			try {
 				int testNum = Integer.parseInt(arg);
@@ -66,6 +74,7 @@ public class TestMain {
 				else if (testNum == 20) test20();
 				
 			} catch (Exception e) {
+				SERVER_URL = args[0];
 				test20();
 			}
 		} else
@@ -101,7 +110,7 @@ public class TestMain {
 
 	public static void test2() {
 
-		ServerThread server = new ServerThreadOneRead();
+		ServerThread server = new ServerThreadOneRead(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -127,7 +136,7 @@ public class TestMain {
 	}
 
 	public static void test3() {
-		ServerThread server = new ServerThreadReading();
+		ServerThread server = new ServerThreadReading(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -159,7 +168,7 @@ public class TestMain {
 	}
 
 	public static void test4() {
-		ServerThread server = new ServerThreadWriting();
+		ServerThread server = new ServerThreadWriting(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -200,7 +209,7 @@ public class TestMain {
 	}
 
 	public static void test5() {
-		ServerThread server = new ServerThreadWait();
+		ServerThread server = new ServerThreadWait(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -238,7 +247,7 @@ public class TestMain {
 	// currently the buffer is 1024 bytes long
 
 	public static void test6() {
-		ServerThread server = new ServerThreadReading();
+		ServerThread server = new ServerThreadReading(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -279,7 +288,7 @@ public class TestMain {
 		try {
 
 			StreamService service = StreamFactory.createStreamService(new URL(
-					"advert://server"));
+					SERVER_URL));
 
 			service.close();
 
@@ -299,7 +308,7 @@ public class TestMain {
 		try {
 
 			service = StreamFactory.createStreamService(new URL(
-					"advert://server"));
+					SERVER_URL));
 
 			service.serve(1.0f);
 
@@ -331,7 +340,7 @@ public class TestMain {
 
 		try {
 
-			stream = StreamFactory.createStream(new URL("url://sample"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 
 			stream.getContext();
 			logger.debug("FAIL: Should have thrown IncorrectState exception");
@@ -353,7 +362,7 @@ public class TestMain {
 
 		try {
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 
 			stream.connect(); // erroneous call changes state to 'Error'
 		} catch (NoSuccess e) {
@@ -384,7 +393,7 @@ public class TestMain {
 
 	public static void test11() {
 
-		ServerThread server = new ServerThreadOneRead();
+		ServerThread server = new ServerThreadOneRead(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -395,7 +404,7 @@ public class TestMain {
 
 			Thread.sleep(1400);
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should be successful
 
 			Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
@@ -432,7 +441,7 @@ public class TestMain {
 
 	public static void test12() {
 
-		ServerThread server = new ServerThreadOneRead();
+		ServerThread server = new ServerThreadOneRead(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -443,7 +452,7 @@ public class TestMain {
 
 			Thread.sleep(1400);
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should be successful
 
 		} catch (Exception e) {
@@ -477,7 +486,7 @@ public class TestMain {
 		Stream stream = null;
 
 		try {
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.close();
 			logger.debug("FAIL: Successful close");
 		} catch (IncorrectState e) {
@@ -487,7 +496,7 @@ public class TestMain {
 		}
 
 		try {
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should fail
 			logger.debug("FAIL: Connect should have failed");
 		} catch (NoSuccess e) {
@@ -510,7 +519,7 @@ public class TestMain {
 
 	public static void test14() {
 
-		ServerThread server = new ServerThreadWriting();
+		ServerThread server = new ServerThreadWriting(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -521,7 +530,7 @@ public class TestMain {
 
 			Thread.sleep(1400);
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should be successful
 
 			Buffer b = BufferFactory.createBuffer();
@@ -548,7 +557,7 @@ public class TestMain {
 	// read with length == 0
 
 	public static void test15() {
-		ServerThread server = new ServerThreadWriting();
+		ServerThread server = new ServerThreadWriting(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -559,7 +568,7 @@ public class TestMain {
 
 			Thread.sleep(1400);
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should be successful
 
 			Buffer b = BufferFactory.createBuffer();
@@ -589,7 +598,7 @@ public class TestMain {
 	// write with negative length
 
 	public static void test16() {
-		ServerThread server = new ServerThreadOneRead();
+		ServerThread server = new ServerThreadOneRead(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -600,7 +609,7 @@ public class TestMain {
 
 			Thread.sleep(1400);
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should be successful
 
 			Buffer buffer = BufferFactory.createBuffer();
@@ -625,7 +634,7 @@ public class TestMain {
 	// write with 0 length
 
 	public static void test17() {
-		ServerThread server = new ServerThreadOneRead();
+		ServerThread server = new ServerThreadOneRead(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -636,7 +645,7 @@ public class TestMain {
 
 			Thread.sleep(1400);
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should be successful
 
 			Buffer buffer = BufferFactory.createBuffer();
@@ -661,7 +670,7 @@ public class TestMain {
 	// write -- passing uninitialized buffer
 
 	public static void test18() {
-		ServerThread server = new ServerThreadOneRead();
+		ServerThread server = new ServerThreadOneRead(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -672,7 +681,7 @@ public class TestMain {
 
 			Thread.sleep(1400);
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should be successful
 
 			Buffer buffer = BufferFactory.createBuffer();
@@ -696,7 +705,7 @@ public class TestMain {
 	// calling wait with zeroed "what" flag
 
 	public static void test19() {
-		ServerThread server = new ServerThreadWriting();
+		ServerThread server = new ServerThreadWriting(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -707,7 +716,7 @@ public class TestMain {
 
 			Thread.sleep(1400);
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should be successful
 
 			int val = stream.waitStream(0, 5.0f);
@@ -731,7 +740,7 @@ public class TestMain {
 	// calling wait in state other than open
 
 	public static void test20() {
-		ServerThread server = new ServerThreadWriting();
+		ServerThread server = new ServerThreadWriting(SERVER_URL);
 		Thread sThread = new Thread(server);
 
 		sThread.start();
@@ -742,7 +751,7 @@ public class TestMain {
 
 			Thread.sleep(1400);
 
-			stream = StreamFactory.createStream(new URL("advert://server"));
+			stream = StreamFactory.createStream(new URL(SERVER_URL));
 			stream.connect(); // should be successful
 			stream.close();
 

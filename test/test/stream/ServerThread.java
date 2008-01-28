@@ -29,6 +29,12 @@ public abstract class ServerThread implements Runnable {
 
 	private static Logger logger = Logger.getLogger(ServerThread.class);
 	
+	private String url;
+	
+	public ServerThread(String url) {
+		this.url = url;
+	}
+	
 	private Callback readable = new Callback() {
 		public boolean cb(Monitorable mt, Metric metric, Context ctx)
 				throws NotImplemented, AuthorizationFailed {
@@ -88,7 +94,7 @@ public abstract class ServerThread implements Runnable {
 
 		try {
 			StreamService service = StreamFactory.createStreamService(new URL(
-					"advert://server"));
+					url));
 			service
 					.getMetric(
 							org.ogf.saga.stream.StreamService.STREAMSERVER_CLIENTCONNECT)

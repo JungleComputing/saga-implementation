@@ -19,6 +19,10 @@ public class ServerThreadWriting extends ServerThread {
 
 	private static Logger logger = Logger.getLogger(ServerThreadWriting.class);
 	
+	public ServerThreadWriting(String url) {
+		super(url);
+	}
+	
 	protected void processStream(Stream stream) throws NotImplemented,
 			BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
 			AuthorizationFailed, PermissionDenied, Timeout, IOException,
