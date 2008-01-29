@@ -28,13 +28,13 @@ public abstract class ServerThread implements Runnable {
 	protected static final int BUFFER_SIZE = 100;
 
 	private static Logger logger = Logger.getLogger(ServerThread.class);
-	
+
 	private String url;
-	
+
 	public ServerThread(String url) {
 		this.url = url;
 	}
-	
+
 	private Callback readable = new Callback() {
 		public boolean cb(Monitorable mt, Metric metric, Context ctx)
 				throws NotImplemented, AuthorizationFailed {
@@ -67,7 +67,8 @@ public abstract class ServerThread implements Runnable {
 				logger.debug("Stream Server: State changed --> "
 						+ metric.getAttribute(Metric.VALUE) + " [METRIC]");
 			} catch (Exception e) {
-				logger.debug("Exception! in callback (changeState) should not happen");
+				logger
+						.debug("Exception! in callback (changeState) should not happen");
 			}
 			return true;
 		}
@@ -113,10 +114,11 @@ public abstract class ServerThread implements Runnable {
 						.addCallback(stateChanged);
 				stream.getMetric(org.ogf.saga.stream.Stream.STREAM_DROPPED)
 						.addCallback(dropped);
-
-				processStream(stream);
-
-				stream.close();
+				try {
+					processStream(stream);
+				} finally {
+					stream.close();
+				}
 			}
 			service.close();
 		} catch (Exception e) {
@@ -134,5 +136,5 @@ public abstract class ServerThread implements Runnable {
 			BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
 			AuthorizationFailed, PermissionDenied, Timeout, IOException,
 			DoesNotExist, InterruptedException;
-	
+
 }
