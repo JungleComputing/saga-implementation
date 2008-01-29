@@ -384,10 +384,12 @@ public class SAGAEngine {
             String adaptorName = adaptor.getShortAdaptorClassName();
             if (adaptorName.endsWith(adaptorType)) {
                 if (adaptor.getAdaptorName().toLowerCase().contains(shortName.toLowerCase())) {
+                    logger.debug("getFullAdaptorName returns " + adaptor.getAdaptorName());
                     return adaptor.getAdaptorName();
                 }
             }
         }
+        logger.debug("getFullAdaptorName returns null");
         return null;
     }
 
@@ -495,7 +497,7 @@ public class SAGAEngine {
 
         AdaptorList adaptors = sagaEngine.getAdaptorList(interfaceClass);
 
-        reorderAdaptorList(adaptors);
+        adaptors = reorderAdaptorList(adaptors);
     
         AdaptorInvocationHandler handler = new AdaptorInvocationHandler(
                 adaptors, types, tmpParams);
