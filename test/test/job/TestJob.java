@@ -74,7 +74,9 @@ public class TestJob implements Callback {
     public boolean cb(Monitorable m, Metric metric, Context ctxt) {
         try {
             String value = metric.getAttribute(Metric.VALUE);
-            System.out.println("Callback called, value = " + value);
+            String name = metric.getAttribute(Metric.NAME);
+            System.out.println("Callback called for metric "
+                    + name + ", value = " + value);
         } catch (Throwable e) {
             System.err.println("error" + e);
             e.printStackTrace(System.err);
