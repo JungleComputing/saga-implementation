@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# This runs the SAGA gridsam adaptor (not the JavaGAT one).
+# For this test, you first need to run an ftp server on port 12345.
+# For instance:
+#     $HOME/OMIICLIENT/gridsam/bin/gridsam-ftp-server -d $HOME/data -p 12345
+# Also, an ssh-tunnel needs to be set up to fs0.das3.cs.vu.nl, in order
+# to be able to reach the gridsam service.
+
+. paths
+
+$SAGA_HOME/bin/run_saga_app -DJobService.adaptor.name=gridsam test.job.TestJob1
