@@ -59,6 +59,8 @@ public class TestJob implements Callback {
 
             // Create the job, run it, and wait for it.
             Job job = js.createJob(jd);
+            job.addCallback(Job.JOB_STATE, new TestJob());
+            job.addCallback(Job.JOB_STATEDETAIL, new TestJob());
             job.run();
             job.waitFor();
         } catch (Throwable e) {
