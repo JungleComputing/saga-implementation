@@ -135,6 +135,8 @@ public class TestMain {
 
 	}
 
+	// send 1 msg then check if the connection dropped condition is detected...
+	
 	public static void test3() {
 		ServerThread server = new ServerThreadReading(SERVER_URL);
 		Thread sThread = new Thread(server);
@@ -167,6 +169,9 @@ public class TestMain {
 		server.stopServer();
 	}
 
+	// testing the correctness of wait on the client side
+	// trying out writeability & exception --- none should be detected
+	
 	public static void test4() {
 		ServerThread server = new ServerThreadWriting(SERVER_URL);
 		Thread sThread = new Thread(server);
@@ -208,6 +213,8 @@ public class TestMain {
 		server.stopServer();
 	}
 
+	// testing readability detection on server side by waitStream call
+	
 	public static void test5() {
 		ServerThread server = new ServerThreadWait(SERVER_URL);
 		Thread sThread = new Thread(server);
