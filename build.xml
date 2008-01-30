@@ -37,6 +37,8 @@
     	    <compilerarg value="-Xlint:unchecked"/>
     	</javac>
 
+	<!-- Copy license, so that it will end up in the jar. -->
+	<copy file="LICENSE.txt" todir="${tmp}"/>
     </target>
 
     <target name="build" depends="compile" description="build the JAR file">
