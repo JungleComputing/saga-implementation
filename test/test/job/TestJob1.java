@@ -24,14 +24,14 @@ public class TestJob1 implements Callback {
             // firewall and is reached through an ssh tunnel, which the user
             // must have set up beforehand.
             JobService js = JobFactory.createJobService(new URL(
-                    "https://localhost:18443/gridsam/services/gridsam"));
+                    "https://titan.cs.vu.nl:18443/gridsam/services/gridsam"));
 
             // Create a job description to execute "/bin/uname -a" on
             // fs0.das3.cs.vu.nl.
             // The output will be staged out to the current directory.
             JobDescription jd = JobFactory.createJobDescription();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
-                    new String[] { "fs0.das3.cs.vu.nl" });
+                    new String[] { "titan.cs.vu.nl" });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/uname");
             jd.setVectorAttribute(JobDescription.ARGUMENTS,
                     new String[] { "-a" });
@@ -50,6 +50,7 @@ public class TestJob1 implements Callback {
             job.addCallback(Job.JOB_STATEDETAIL, new TestJob1());
             job.run();
             job.waitFor();
+            System.out.println("Exit status = " + job.getAttribute(Job.EXITCODE));
         } catch (Throwable e) {
             System.out.println("Got exception " + e);
             e.printStackTrace();
