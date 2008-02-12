@@ -22,8 +22,14 @@ public class Context extends SagaObjectBase
     Context(String type) throws NotImplemented, IncorrectState, Timeout,
             NoSuccess {
         super((Session) null);
-        attributes = new ContextAttributes();
-
+        
+        // Allow for a "preferences" extensible context. This allows for
+        // passing on adaptor-specific info.
+        if ("preferences".equals(type)) {
+            attributes = new ContextAttributes(true);
+        } else {
+            attributes = new ContextAttributes();
+        }
         if (type != null && !type.equals("")) {
             try {
                 attributes.setValue(TYPE, type);
@@ -75,6 +81,8 @@ public class Context extends SagaObjectBase
                 setValue(Context.USERKEY, home + "/.globus/userkey.pem");
                 setValue(Context.USERCERT, home + "/.globus/usercert.pem");
                 // attributes.setValue(Context.USERPASS, "");
+            } else if ("preferences".equals(type)) {
+                // nothing
             } else if (!type.equals("")) {
                 throw new NoSuccess("Unrecognized TYPE attribute value: "
                         + type);

@@ -2,6 +2,7 @@ package test.job;
 
 import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
+import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
@@ -9,28 +10,33 @@ import org.ogf.saga.job.JobService;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
+import org.ogf.saga.session.Session;
+import org.ogf.saga.session.SessionFactory;
 
 public class TestJob implements Callback {
 
     public static void main(String[] args) {
         try {
-            // Make sure that the SAGA engine picks the javagat adaptor for
-            // JobService.
-            System.setProperty("JobService.adaptor.name", "javaGAT");
-
+            Session session = SessionFactory.createSession(true);
+            
+            // Create a preferences context for JavaGAT.
+            // The "preferences" context is special: it is extensible.
+            Context context = ContextFactory.createContext("preferences");
             // Make sure that javaGAT picks the gridsam adaptor.
-            System.setProperty("GATPreferences.ResourceBroker.adaptor.name",
-                    "gridsam");
-
-            // Sandbox root must be an absolute path for the javaGAT gridsam
-            // adaptor.
-            System.setProperty("GAT.sandbox.root", "/tmp");
-
+            context.setAttribute("ResourceBroker.adaptor.name", "gridsam");
             // Set a sandbox host for javaGAT, otherwise javagat thinks it is
             // just localhost. This is only needed because the gridsam server
             // is reached through a tunnel.
-            System.setProperty("GATPreferences.ResourceBroker.sandbox.host",
-                    "ceriel@localhost:4567");
+            context.setAttribute("ResourceBroker.sandbox.host", "ceriel@localhost:4567");
+            // Sandbox root must be an absolute path for the javaGAT gridsam
+            // adaptor.
+            context.setAttribute("ResourceBroker.sandbox.root", "/tmp");
+            
+            session.addContext(context);
+                        
+            // Make sure that the SAGA engine picks the javagat adaptor for
+            // JobService.
+            System.setProperty("JobService.adaptor.name", "javaGAT");
 
             // Create the JobService. Note: the gridsam service is behind a
             // firewall and is reached through an ssh tunnel, which the user
