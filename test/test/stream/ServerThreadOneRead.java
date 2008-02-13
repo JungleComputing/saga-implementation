@@ -17,27 +17,27 @@ import org.ogf.saga.stream.Stream;
 
 public class ServerThreadOneRead extends ServerThread {
 
-	private static Logger logger = Logger.getLogger(ServerThreadOneRead.class);	
-	
-	public ServerThreadOneRead(String url) {
-		super(url);
-	}
-	
-	protected void processStream(Stream stream) throws NotImplemented,
-			BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
-			AuthorizationFailed, PermissionDenied, Timeout, IOException,
-			DoesNotExist, InterruptedException {
-		Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory.createBuffer();
+    private static Logger logger = Logger.getLogger(ServerThreadOneRead.class);
 
-		buffer.setData(new byte[BUFFER_SIZE]);
+    public ServerThreadOneRead(String url) {
+        super(url);
+    }
 
-		// Thread.sleep(8000);
+    protected void processStream(Stream stream) throws NotImplemented,
+            BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, Timeout, IOException,
+            DoesNotExist, InterruptedException {
+        Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory.createBuffer();
 
-		logger.debug("Server: Attempting to read the message");
-		int bytesCnt = stream.read(buffer, buffer.getSize());
-		logger.debug("Server: Read " + bytesCnt + " bytes");
-		logger.debug("Server: Message content:");
-		logger.debug(new String(buffer.getData()).trim());
-	}
+        buffer.setData(new byte[BUFFER_SIZE]);
+
+        // Thread.sleep(8000);
+
+        logger.debug("Server: Attempting to read the message");
+        int bytesCnt = stream.read(buffer, buffer.getSize());
+        logger.debug("Server: Read " + bytesCnt + " bytes");
+        logger.debug("Server: Message content:");
+        logger.debug(new String(buffer.getData()).trim());
+    }
 
 }

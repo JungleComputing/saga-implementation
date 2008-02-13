@@ -17,24 +17,24 @@ import org.ogf.saga.stream.Stream;
 
 public class ServerThreadWriting extends ServerThread {
 
-	private static Logger logger = Logger.getLogger(ServerThreadWriting.class);
-	
-	public ServerThreadWriting(String url) {
-		super(url);
-	}
-	
-	protected void processStream(Stream stream) throws NotImplemented,
-			BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
-			AuthorizationFailed, PermissionDenied, Timeout, IOException,
-			DoesNotExist, InterruptedException {
+    private static Logger logger = Logger.getLogger(ServerThreadWriting.class);
 
-		Thread.sleep(5000);
+    public ServerThreadWriting(String url) {
+        super(url);
+    }
 
-		logger.debug("Server: Attempting to send a message");
-		Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory.createBuffer();
-		buffer.setData("Hello World".getBytes());
-		
-		stream.write(buffer);
-	}
+    protected void processStream(Stream stream) throws NotImplemented,
+            BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
+            AuthorizationFailed, PermissionDenied, Timeout, IOException,
+            DoesNotExist, InterruptedException {
+
+        Thread.sleep(5000);
+
+        logger.debug("Server: Attempting to send a message");
+        Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory.createBuffer();
+        buffer.setData("Hello World".getBytes());
+
+        stream.write(buffer);
+    }
 
 }

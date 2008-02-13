@@ -21,755 +21,775 @@ import org.ogf.saga.stream.StreamService;
 
 public class TestMain {
 
-	private static String SERVER_URL = "tcp://localhost:3333";
-
-	private static Logger logger = Logger.getLogger(TestMain.class);
-
-	private static Callback readable = new Callback() {
-		public boolean cb(Monitorable mt, Metric metric, Context ctx)
-				throws NotImplemented, AuthorizationFailed {
-			logger.debug("Stream Client: Stream is readable [METRIC]");
-			return true;
-		}
-	};
-
-	// INVOCATION:
-	// test [test-number] [server-URL]   -OR-
-	// test [server-URL]  -- default test will be invoked
-	// without [server-URL] default server URL will be used
-	
-	public static void main(String args[]) {
-
-		Test.initialize();
-
-		if (args.length > 0) {
-			if (args.length > 1) {
-				SERVER_URL = args[1];
-			}
-			String arg = args[0];
-			try {
-				int testNum = Integer.parseInt(arg);
-				
-				System.out.println("=== RUNNING TEST " + testNum + " ===");
-				
-				if (testNum == 1)      test1();
-				else if (testNum == 2) test2();
-				else if (testNum == 3) test3();
-				else if (testNum == 4) test4();
-				else if (testNum == 5) test5();
-				else if (testNum == 6) test6();
-				else if (testNum == 7) test7();
-				else if (testNum == 8) test8();
-				else if (testNum == 9) test9();
-				else if (testNum == 10) test10();
-				else if (testNum == 11) test11();
-				else if (testNum == 12) test12();
-				else if (testNum == 13) test13();
-				else if (testNum == 14) test14();
-				else if (testNum == 15) test15();
-				else if (testNum == 16) test16();
-				else if (testNum == 17) test17();
-				else if (testNum == 18) test18();
-				else if (testNum == 19) test19();
-				else if (testNum == 20) test20();
-				
-			} catch (Exception e) {
-				SERVER_URL = args[0];
-				test20();
-			}
-		} else
-			test20();
-	}
-
-	// connect to server while it is down, should throw NoSuccess
-
-	public static void test1() {
+    private static String SERVER_URL = "tcp://localhost:3333";
+    private static final int SERVER_WAIT = 3000;
+
+    private static Logger logger = Logger.getLogger(TestMain.class);
+
+    private static Callback readable = new Callback() {
+        public boolean cb(Monitorable mt, Metric metric, Context ctx)
+                throws NotImplemented, AuthorizationFailed {
+            logger.debug("Stream Client: Stream is readable [METRIC]");
+            return true;
+        }
+    };
+
+    // INVOCATION:
+    // test [test-number] [server-URL] -OR-
+    // test [server-URL] -- default test will be invoked
+    // without [server-URL] default server URL will be used
+
+    public static void main(String args[]) {
+
+        Test.initialize();
+
+        if (args.length > 0) {
+            if (args.length > 1) {
+                SERVER_URL = args[1];
+            }
+            String arg = args[0];
+            try {
+                int testNum = Integer.parseInt(arg);
+
+                System.out.println("=== RUNNING TEST " + testNum + " ===");
+
+                if (testNum == 1)
+                    test1();
+                else if (testNum == 2)
+                    test2();
+                else if (testNum == 3)
+                    test3();
+                else if (testNum == 4)
+                    test4();
+                else if (testNum == 5)
+                    test5();
+                else if (testNum == 6)
+                    test6();
+                else if (testNum == 7)
+                    test7();
+                else if (testNum == 8)
+                    test8();
+                else if (testNum == 9)
+                    test9();
+                else if (testNum == 10)
+                    test10();
+                else if (testNum == 11)
+                    test11();
+                else if (testNum == 12)
+                    test12();
+                else if (testNum == 13)
+                    test13();
+                else if (testNum == 14)
+                    test14();
+                else if (testNum == 15)
+                    test15();
+                else if (testNum == 16)
+                    test16();
+                else if (testNum == 17)
+                    test17();
+                else if (testNum == 18)
+                    test18();
+                else if (testNum == 19)
+                    test19();
+                else if (testNum == 20)
+                    test20();
+
+            } catch (Exception e) {
+                SERVER_URL = args[0];
+                test20();
+            }
+        } else
+            test20();
+    }
 
-		Stream stream = null;
+    // connect to server while it is down, should throw NoSuccess
 
-		try {
+    public static void test1() {
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        Stream stream = null;
 
-		// should now throw IncorrectState exception
-		// because it should enter error state
+        try {
 
-		try {
-			stream.connect();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	// connect & disconnect without writing anything
-	// while the server is reading
+        // should now throw IncorrectState exception
+        // because it should enter error state
 
-	public static void test2() {
+        try {
+            stream.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-		ServerThread server = new ServerThreadOneRead(SERVER_URL);
-		Thread sThread = new Thread(server);
+    // connect & disconnect without writing anything
+    // while the server is reading
 
-		sThread.start();
+    public static void test2() {
 
-		Stream stream = null;
+        ServerThread server = new ServerThreadOneRead(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-		try {
-
-			Thread.sleep(1500);
+        sThread.start();
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect();
+        Stream stream = null;
 
-			Thread.sleep(1000);
+        try {
 
-			stream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            Thread.sleep(SERVER_WAIT);
 
-		server.stopServer();
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect();
 
-	}
+            Thread.sleep(1000);
 
-	// send 1 msg then check if the connection dropped condition is detected...
-	
-	public static void test3() {
-		ServerThread server = new ServerThreadReading(SERVER_URL);
-		Thread sThread = new Thread(server);
+            stream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		sThread.start();
+        server.stopServer();
 
-		Stream stream = null;
+    }
 
-		try {
+    // send 1 msg then check if the connection dropped condition is detected...
 
-			Thread.sleep(1500);
+    public static void test3() {
+        ServerThread server = new ServerThreadReading(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect();
+        sThread.start();
 
-			Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
-					.createBuffer();
-			buffer.setData("Hello World".getBytes());
+        Stream stream = null;
 
-			stream.write(buffer);
+        try {
 
-			// Thread.sleep(10000);
+            Thread.sleep(SERVER_WAIT);
 
-			stream.close();
-			Thread.sleep(5000);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect();
 
-		server.stopServer();
-	}
+            Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
+                    .createBuffer();
+            buffer.setData("Hello World".getBytes());
 
-	// testing the correctness of wait on the client side
-	// trying out writeability & exception --- none should be detected
-	
-	public static void test4() {
-		ServerThread server = new ServerThreadWriting(SERVER_URL);
-		Thread sThread = new Thread(server);
+            stream.write(buffer);
 
-		sThread.start();
+            // Thread.sleep(10000);
 
-		Stream stream = null;
+            stream.close();
+            Thread.sleep(5000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		try {
+        server.stopServer();
+    }
 
-			Thread.sleep(1500);
+    // testing the correctness of wait on the client side
+    // trying out writeability & exception --- none should be detected
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
+    public static void test4() {
+        ServerThread server = new ServerThreadWriting(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			stream.getMetric(org.ogf.saga.stream.Stream.STREAM_READ)
-					.addCallback(readable);
+        sThread.start();
 
-			stream.connect();
+        Stream stream = null;
 
-			int outcome = stream.waitStream(Activity.EXCEPTION.getValue()
-					| Activity.WRITE.getValue(), 8.0f);
+        try {
 
-			if (outcome == 0)
-				logger.debug("Client: nothing detected [WAIT]");
+            Thread.sleep(SERVER_WAIT);
 
-			if ((outcome & Activity.EXCEPTION.getValue()) != 0)
-				logger.debug("Client: exceptional condition detected [WAIT]");
-			if ((outcome & Activity.READ.getValue()) != 0)
-				logger.debug("Client: readable detected [WAIT]");
-			if ((outcome & Activity.WRITE.getValue()) != 0)
-				logger.debug("Client: writable detected [WAIT]");
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
 
-			stream.close();
-			Thread.sleep(5000);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            stream.getMetric(org.ogf.saga.stream.Stream.STREAM_READ)
+                    .addCallback(readable);
 
-		server.stopServer();
-	}
+            stream.connect();
 
-	// testing readability detection on server side by waitStream call
-	
-	public static void test5() {
-		ServerThread server = new ServerThreadWait(SERVER_URL);
-		Thread sThread = new Thread(server);
+            int outcome = stream.waitStream(Activity.EXCEPTION.getValue()
+                    | Activity.WRITE.getValue(), 8.0f);
 
-		sThread.start();
+            if (outcome == 0)
+                logger.debug("Client: nothing detected [WAIT]");
 
-		Stream stream = null;
+            if ((outcome & Activity.EXCEPTION.getValue()) != 0)
+                logger.debug("Client: exceptional condition detected [WAIT]");
+            if ((outcome & Activity.READ.getValue()) != 0)
+                logger.debug("Client: readable detected [WAIT]");
+            if ((outcome & Activity.WRITE.getValue()) != 0)
+                logger.debug("Client: writable detected [WAIT]");
 
-		try {
+            stream.close();
+            Thread.sleep(5000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-			Thread.sleep(1500);
+        server.stopServer();
+    }
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
+    // testing readability detection on server side by waitStream call
 
-			stream.connect();
+    public static void test5() {
+        ServerThread server = new ServerThreadWait(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
-					.createBuffer();
-			buffer.setData("Hello World".getBytes());
+        sThread.start();
 
-			stream.write(buffer);
+        Stream stream = null;
 
-			Thread.sleep(3000);
+        try {
 
-			stream.close();
-			Thread.sleep(5000);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            Thread.sleep(SERVER_WAIT);
 
-		server.stopServer();
-	}
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
 
-	// we will try to write more than the reading buffer can store
-	// and see what happens
+            stream.connect();
 
-	// currently the buffer is 1024 bytes long
+            Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
+                    .createBuffer();
+            buffer.setData("Hello World".getBytes());
 
-	public static void test6() {
-		ServerThread server = new ServerThreadReading(SERVER_URL);
-		Thread sThread = new Thread(server);
+            stream.write(buffer);
 
-		sThread.start();
+            Thread.sleep(3000);
 
-		Stream stream = null;
+            stream.close();
+            Thread.sleep(5000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		try {
+        server.stopServer();
+    }
 
-			Thread.sleep(1500);
+    // we will try to write more than the reading buffer can store
+    // and see what happens
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
+    // currently the buffer is 1024 bytes long
 
-			stream.connect();
+    public static void test6() {
+        ServerThread server = new ServerThreadReading(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
-					.createBuffer();
-			byte big[] = new byte[1000];
-			buffer.setData(big);
+        sThread.start();
 
-			stream.write(buffer);
-			stream.write(buffer);
+        Stream stream = null;
 
-			// Thread.sleep(3000);
+        try {
 
-			stream.close();
-			Thread.sleep(5000);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            Thread.sleep(SERVER_WAIT);
 
-		server.stopServer();
-	}
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
 
-	// tries to close not opened stream service
+            stream.connect();
 
-	public static void test7() {
+            Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
+                    .createBuffer();
+            byte big[] = new byte[1000];
+            buffer.setData(big);
 
-		try {
+            stream.write(buffer);
+            stream.write(buffer);
 
-			StreamService service = StreamFactory.createStreamService(new URL(
-					SERVER_URL));
+            // Thread.sleep(3000);
 
-			service.close();
+            stream.close();
+            Thread.sleep(5000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        server.stopServer();
+    }
 
-	}
+    // tries to close not opened stream service
 
-	// multiple calls to close should not raise an exception
-	// + test for throwing Timeout exception in serve method
+    public static void test7() {
 
-	public static void test8() {
+        try {
 
-		StreamService service = null;
+            StreamService service = StreamFactory.createStreamService(new URL(
+                    SERVER_URL));
 
-		try {
+            service.close();
 
-			service = StreamFactory.createStreamService(new URL(
-					SERVER_URL));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-			service.serve(1.0f);
+    }
 
-			logger.debug("TEST");
-		} catch (Timeout t) {
-			logger.debug("OK: Thrown timeout exception");
-		} catch (Exception e) {
-			logger.debug("WRONG: Exception thrown");
-			e.printStackTrace();
-		}
+    // multiple calls to close should not raise an exception
+    // + test for throwing Timeout exception in serve method
 
-		try {
-			service.close();
-			service.close();
-			logger.debug("OK: multiple close invocations allowed");
-		} catch (Exception e) {
-			logger.debug("WRONG: Exception from close() ");
-			e.printStackTrace();
-		}
+    public static void test8() {
 
-	}
+        StreamService service = null;
 
-	// getContext() method test
+        try {
 
-	public static void test9() {
-		// the stream should be or have been in Open state before
+            service = StreamFactory.createStreamService(new URL(SERVER_URL));
 
-		Stream stream = null;
+            service.serve(1.0f);
 
-		try {
+            logger.debug("TEST");
+        } catch (Timeout t) {
+            logger.debug("OK: Thrown timeout exception");
+        } catch (Exception e) {
+            logger.debug("WRONG: Exception thrown");
+            e.printStackTrace();
+        }
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
+        try {
+            service.close();
+            service.close();
+            logger.debug("OK: multiple close invocations allowed");
+        } catch (Exception e) {
+            logger.debug("WRONG: Exception from close() ");
+            e.printStackTrace();
+        }
 
-			stream.getContext();
-			logger.debug("FAIL: Should have thrown IncorrectState exception");
+    }
 
-		} catch (IncorrectState e) {
-			logger.debug("OK: Should have thrown IncorrectState exception");
-		} catch (Exception e) {
-			logger.debug("FAIL: Should have thrown IncorrectState exception");
-			e.printStackTrace();
-		}
+    // getContext() method test
 
-	}
+    public static void test9() {
+        // the stream should be or have been in Open state before
 
-	// getContext() method test
+        Stream stream = null;
 
-	public static void test10() {
+        try {
 
-		Stream stream = null;
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
 
-		try {
+            stream.getContext();
+            logger.debug("FAIL: Should have thrown IncorrectState exception");
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
+        } catch (IncorrectState e) {
+            logger.debug("OK: Should have thrown IncorrectState exception");
+        } catch (Exception e) {
+            logger.debug("FAIL: Should have thrown IncorrectState exception");
+            e.printStackTrace();
+        }
 
-			stream.connect(); // erroneous call changes state to 'Error'
-		} catch (NoSuccess e) {
-			logger.debug("OK: Should have thrown NoSuccess exception");
-		} catch (Exception e) {
-			logger.debug("FAIL: Should have thrown NoSuccess exception");
-			e.printStackTrace();
-		}
+    }
 
-		try {
-			stream.getContext(); // should not give context because the
-			// stream
-			// wasn't opened
+    // getContext() method test
 
-		} catch (IncorrectState e) {
-			logger.debug("OK: Should have thrown IncorrectState exception");
-		} catch (Exception e) {
-			logger.debug("FAIL: Should have thrown IncorrectState exception");
-			e.printStackTrace();
-		}
+    public static void test10() {
 
-	}
+        Stream stream = null;
 
-	// getContext() test -- we go from Open to some final state and expect
-	// this method to finish successfully
+        try {
 
-	// TODO: 'Unknown' TYPE of the Context should be recognized
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
 
-	public static void test11() {
+            stream.connect(); // erroneous call changes state to 'Error'
+        } catch (NoSuccess e) {
+            logger.debug("OK: Should have thrown NoSuccess exception");
+        } catch (Exception e) {
+            logger.debug("FAIL: Should have thrown NoSuccess exception");
+            e.printStackTrace();
+        }
 
-		ServerThread server = new ServerThreadOneRead(SERVER_URL);
-		Thread sThread = new Thread(server);
+        try {
+            stream.getContext(); // should not give context because the
+            // stream
+            // wasn't opened
 
-		sThread.start();
+        } catch (IncorrectState e) {
+            logger.debug("OK: Should have thrown IncorrectState exception");
+        } catch (Exception e) {
+            logger.debug("FAIL: Should have thrown IncorrectState exception");
+            e.printStackTrace();
+        }
 
-		Stream stream = null;
+    }
 
-		try {
+    // getContext() test -- we go from Open to some final state and expect
+    // this method to finish successfully
 
-			Thread.sleep(1400);
+    // TODO: 'Unknown' TYPE of the Context should be recognized
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should be successful
+    public static void test11() {
 
-			Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
-					.createBuffer();
-			buffer.setData("Hello World".getBytes());
+        ServerThread server = new ServerThreadOneRead(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			stream.write(buffer);
+        sThread.start();
 
-			Thread.sleep(5000);
-			stream.write(buffer);
+        Stream stream = null;
 
-		} catch (NoSuccess e) {
-			logger
-					.debug("OK: Should have thrown NoSuccess -- the server is down");
-		} catch (Exception e) {
-			logger
-					.debug("FAIL: Should have thrown NoSuccess -- the server is down");
-			e.printStackTrace();
-		}
+        try {
 
-		// we should be now in DROPPED state
+            Thread.sleep(1400);
 
-		try {
-			stream.getContext();
-			logger.debug("OK: we should have received security context");
-		} catch (Exception e) {
-			logger.debug("FAIL: we should have received security context");
-		}
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should be successful
 
-	}
+            Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
+                    .createBuffer();
+            buffer.setData("Hello World".getBytes());
 
-	// if we successfully connect to server we should not be able to do it
-	// for the second time
+            stream.write(buffer);
 
-	public static void test12() {
+            Thread.sleep(5000);
+            stream.write(buffer);
 
-		ServerThread server = new ServerThreadOneRead(SERVER_URL);
-		Thread sThread = new Thread(server);
+        } catch (NoSuccess e) {
+            logger
+                    .debug("OK: Should have thrown NoSuccess -- the server is down");
+        } catch (Exception e) {
+            logger
+                    .debug("FAIL: Should have thrown NoSuccess -- the server is down");
+            e.printStackTrace();
+        }
 
-		sThread.start();
+        // we should be now in DROPPED state
 
-		Stream stream = null;
+        try {
+            stream.getContext();
+            logger.debug("OK: we should have received security context");
+        } catch (Exception e) {
+            logger.debug("FAIL: we should have received security context");
+        }
 
-		try {
+    }
 
-			Thread.sleep(1400);
+    // if we successfully connect to server we should not be able to do it
+    // for the second time
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should be successful
+    public static void test12() {
 
-		} catch (Exception e) {
-			logger
-					.debug("FAIL: Should not have thrown exceptions before 2nd connect");
-		}
+        ServerThread server = new ServerThreadOneRead(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-		try {
-			stream.connect();
-		} catch (IncorrectState e) {
-			logger.debug("OK: Should detect incorrect state");
-		} catch (Exception e) {
-			logger.debug("FAIL: Should detect incorrect state");
-		}
+        sThread.start();
 
-		try {
-			stream.close();
-		} catch (IncorrectState e) {
-			logger.debug("OK: Should detect incorrect state");
-		} catch (Exception e) {
-			logger.debug("FAIL: Should detect incorrect state");
-		}
+        Stream stream = null;
 
-	}
+        try {
 
-	// close should throw IncorrectState when the stream is in New
-	// or Error state
+            Thread.sleep(1400);
 
-	public static void test13() {
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should be successful
 
-		Stream stream = null;
+        } catch (Exception e) {
+            logger
+                    .debug("FAIL: Should not have thrown exceptions before 2nd connect");
+        }
 
-		try {
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.close();
-			logger.debug("FAIL: Successful close");
-		} catch (IncorrectState e) {
-			logger.debug("OK: Threw IncorrectState exception");
-		} catch (Exception e) {
-			logger.debug("FAIL: Threw other exception");
-		}
+        try {
+            stream.connect();
+        } catch (IncorrectState e) {
+            logger.debug("OK: Should detect incorrect state");
+        } catch (Exception e) {
+            logger.debug("FAIL: Should detect incorrect state");
+        }
 
-		try {
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should fail
-			logger.debug("FAIL: Connect should have failed");
-		} catch (NoSuccess e) {
-			logger
-					.debug("OK: Connect not succeded -- should switch to Error state");
-		} catch (Exception e) {
-			logger.debug("FAIL: Threw other exception");
-		}
+        try {
+            stream.close();
+        } catch (IncorrectState e) {
+            logger.debug("OK: Should detect incorrect state");
+        } catch (Exception e) {
+            logger.debug("FAIL: Should detect incorrect state");
+        }
 
-		try {
-			stream.close();
-		} catch (IncorrectState e) {
-			logger.debug("OK: Threw IncorrectState exception");
-		} catch (Exception e) {
-			logger.debug("FAIL: Threw other exception");
-		}
-	}
+    }
 
-	// read with negative length
+    // close should throw IncorrectState when the stream is in New
+    // or Error state
 
-	public static void test14() {
+    public static void test13() {
 
-		ServerThread server = new ServerThreadWriting(SERVER_URL);
-		Thread sThread = new Thread(server);
+        Stream stream = null;
 
-		sThread.start();
+        try {
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.close();
+            logger.debug("FAIL: Successful close");
+        } catch (IncorrectState e) {
+            logger.debug("OK: Threw IncorrectState exception");
+        } catch (Exception e) {
+            logger.debug("FAIL: Threw other exception");
+        }
 
-		Stream stream = null;
+        try {
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should fail
+            logger.debug("FAIL: Connect should have failed");
+        } catch (NoSuccess e) {
+            logger
+                    .debug("OK: Connect not succeded -- should switch to Error state");
+        } catch (Exception e) {
+            logger.debug("FAIL: Threw other exception");
+        }
 
-		try {
+        try {
+            stream.close();
+        } catch (IncorrectState e) {
+            logger.debug("OK: Threw IncorrectState exception");
+        } catch (Exception e) {
+            logger.debug("FAIL: Threw other exception");
+        }
+    }
 
-			Thread.sleep(1400);
+    // read with negative length
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should be successful
+    public static void test14() {
 
-			Buffer b = BufferFactory.createBuffer();
+        ServerThread server = new ServerThreadWriting(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			int nBytes = stream.read(b, -223);
+        sThread.start();
 
-			logger.debug("OK: Successful; " + nBytes + " bytes read");
+        Stream stream = null;
 
-		} catch (BadParameter e) {
-			logger.debug("OK: BadParameter thrown");
-		} catch (Exception e) {
-			logger
-					.debug("FAIL: It should be successful or BadParameter should be thrown");
-		}
+        try {
 
-		try {
-			stream.close();
-		} catch (Exception e) {
-			logger.debug("FAIL: Failure while closing connection to server");
-		}
+            Thread.sleep(1400);
 
-	}
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should be successful
 
-	// read with length == 0
+            Buffer b = BufferFactory.createBuffer();
 
-	public static void test15() {
-		ServerThread server = new ServerThreadWriting(SERVER_URL);
-		Thread sThread = new Thread(server);
+            int nBytes = stream.read(b, -223);
 
-		sThread.start();
+            logger.debug("OK: Successful; " + nBytes + " bytes read");
 
-		Stream stream = null;
+        } catch (BadParameter e) {
+            logger.debug("OK: BadParameter thrown");
+        } catch (Exception e) {
+            logger
+                    .debug("FAIL: It should be successful or BadParameter should be thrown");
+        }
 
-		try {
+        try {
+            stream.close();
+        } catch (Exception e) {
+            logger.debug("FAIL: Failure while closing connection to server");
+        }
 
-			Thread.sleep(1400);
+    }
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should be successful
+    // read with length == 0
 
-			Buffer b = BufferFactory.createBuffer();
+    public static void test15() {
+        ServerThread server = new ServerThreadWriting(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			int nBytes = stream.read(b, 0);
+        sThread.start();
 
-			logger.debug("OK: Successful; " + nBytes + " bytes read");
+        Stream stream = null;
 
-			nBytes = stream.read(b, 50);
+        try {
 
-			logger.debug("OK: Successful; " + nBytes + " bytes read");
+            Thread.sleep(1400);
 
-		} catch (BadParameter e) {
-			logger.debug("OK: BadParameter thrown");
-		} catch (Exception e) {
-			logger
-					.debug("FAIL: It should be successful or BadParameter should be thrown");
-		}
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should be successful
 
-		try {
-			stream.close();
-		} catch (Exception e) {
-			logger.debug("FAIL: Failure while closing connection to server");
-		}
-	}
+            Buffer b = BufferFactory.createBuffer();
 
-	// write with negative length
+            int nBytes = stream.read(b, 0);
 
-	public static void test16() {
-		ServerThread server = new ServerThreadOneRead(SERVER_URL);
-		Thread sThread = new Thread(server);
+            logger.debug("OK: Successful; " + nBytes + " bytes read");
 
-		sThread.start();
+            nBytes = stream.read(b, 50);
 
-		Stream stream = null;
+            logger.debug("OK: Successful; " + nBytes + " bytes read");
 
-		try {
+        } catch (BadParameter e) {
+            logger.debug("OK: BadParameter thrown");
+        } catch (Exception e) {
+            logger
+                    .debug("FAIL: It should be successful or BadParameter should be thrown");
+        }
 
-			Thread.sleep(1400);
+        try {
+            stream.close();
+        } catch (Exception e) {
+            logger.debug("FAIL: Failure while closing connection to server");
+        }
+    }
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should be successful
+    // write with negative length
 
-			Buffer buffer = BufferFactory.createBuffer();
-			buffer.setData("Hello world".getBytes());
+    public static void test16() {
+        ServerThread server = new ServerThreadOneRead(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			stream.write(buffer, -323);
-			logger
-					.debug("OK: Implementation figured out how to handle negative value of length");
-		} catch (BadParameter e) {
-			logger.debug("OK: BadParameter was thrown");
-		} catch (Exception e) {
-			logger.debug("FAIL: Situation was not dealt with properly");
-		}
+        sThread.start();
 
-		try {
-			stream.close();
-		} catch (Exception e) {
-			logger.debug("FAIL: Failure while closing connection to server");
-		}
-	}
+        Stream stream = null;
 
-	// write with 0 length
+        try {
 
-	public static void test17() {
-		ServerThread server = new ServerThreadOneRead(SERVER_URL);
-		Thread sThread = new Thread(server);
+            Thread.sleep(1400);
 
-		sThread.start();
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should be successful
 
-		Stream stream = null;
+            Buffer buffer = BufferFactory.createBuffer();
+            buffer.setData("Hello world".getBytes());
 
-		try {
+            stream.write(buffer, -323);
+            logger
+                    .debug("OK: Implementation figured out how to handle negative value of length");
+        } catch (BadParameter e) {
+            logger.debug("OK: BadParameter was thrown");
+        } catch (Exception e) {
+            logger.debug("FAIL: Situation was not dealt with properly");
+        }
 
-			Thread.sleep(1400);
+        try {
+            stream.close();
+        } catch (Exception e) {
+            logger.debug("FAIL: Failure while closing connection to server");
+        }
+    }
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should be successful
+    // write with 0 length
 
-			Buffer buffer = BufferFactory.createBuffer();
-			buffer.setData("Hello world".getBytes());
+    public static void test17() {
+        ServerThread server = new ServerThreadOneRead(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			int nBytes = stream.write(buffer, 0);
-			logger.debug("OK: Written " + nBytes + " bytes");
-			nBytes = stream.write(buffer, buffer.getSize());
-			logger.debug("OK: Written " + nBytes + " bytes");
+        sThread.start();
 
-		} catch (Exception e) {
-			logger.debug("FAIL: Situation was not dealt with properly");
-		}
+        Stream stream = null;
 
-		try {
-			stream.close();
-		} catch (Exception e) {
-			logger.debug("FAIL: Failure while closing connection to server");
-		}
-	}
+        try {
 
-	// write -- passing uninitialized buffer
+            Thread.sleep(1400);
 
-	public static void test18() {
-		ServerThread server = new ServerThreadOneRead(SERVER_URL);
-		Thread sThread = new Thread(server);
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should be successful
 
-		sThread.start();
+            Buffer buffer = BufferFactory.createBuffer();
+            buffer.setData("Hello world".getBytes());
 
-		Stream stream = null;
+            int nBytes = stream.write(buffer, 0);
+            logger.debug("OK: Written " + nBytes + " bytes");
+            nBytes = stream.write(buffer, buffer.getSize());
+            logger.debug("OK: Written " + nBytes + " bytes");
 
-		try {
+        } catch (Exception e) {
+            logger.debug("FAIL: Situation was not dealt with properly");
+        }
 
-			Thread.sleep(1400);
+        try {
+            stream.close();
+        } catch (Exception e) {
+            logger.debug("FAIL: Failure while closing connection to server");
+        }
+    }
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should be successful
+    // write -- passing uninitialized buffer
 
-			Buffer buffer = BufferFactory.createBuffer();
+    public static void test18() {
+        ServerThread server = new ServerThreadOneRead(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			stream.write(buffer, -323);
-			logger
-					.debug("OK: Implementation figured out how to handle negative value of length");
-		} catch (BadParameter e) {
-			logger.debug("OK: BadParameter was thrown");
-		} catch (Exception e) {
-			logger.debug("FAIL: Situation was not dealt with properly");
-		}
+        sThread.start();
 
-		try {
-			stream.close();
-		} catch (Exception e) {
-			logger.debug("FAIL: Failure while closing connection to server");
-		}
-	}
+        Stream stream = null;
 
-	// calling wait with zeroed "what" flag
+        try {
 
-	public static void test19() {
-		ServerThread server = new ServerThreadWriting(SERVER_URL);
-		Thread sThread = new Thread(server);
+            Thread.sleep(1400);
 
-		sThread.start();
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should be successful
 
-		Stream stream = null;
+            Buffer buffer = BufferFactory.createBuffer();
 
-		try {
+            stream.write(buffer, -323);
+            logger
+                    .debug("OK: Implementation figured out how to handle negative value of length");
+        } catch (BadParameter e) {
+            logger.debug("OK: BadParameter was thrown");
+        } catch (Exception e) {
+            logger.debug("FAIL: Situation was not dealt with properly");
+        }
 
-			Thread.sleep(1400);
+        try {
+            stream.close();
+        } catch (Exception e) {
+            logger.debug("FAIL: Failure while closing connection to server");
+        }
+    }
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should be successful
+    // calling wait with zeroed "what" flag
 
-			int val = stream.waitStream(0, 5.0f);
+    public static void test19() {
+        ServerThread server = new ServerThreadWriting(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			logger
-					.debug("OK: Survived with 'incorrect' input. Result = "
-							+ val);
+        sThread.start();
 
-		} catch (Exception e) {
-			logger.debug("FAIL: Thrown exception");
-		}
+        Stream stream = null;
 
-		try {
-			stream.close();
-		} catch (Exception e) {
-			logger.debug("FAIL: Failure while closing connection to server");
-		}
+        try {
 
-	}
+            Thread.sleep(1400);
 
-	// calling wait in state other than open
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should be successful
 
-	public static void test20() {
-		ServerThread server = new ServerThreadWriting(SERVER_URL);
-		Thread sThread = new Thread(server);
+            int val = stream.waitStream(0, 5.0f);
 
-		sThread.start();
+            logger
+                    .debug("OK: Survived with 'incorrect' input. Result = "
+                            + val);
 
-		Stream stream = null;
+        } catch (Exception e) {
+            logger.debug("FAIL: Thrown exception");
+        }
 
-		try {
+        try {
+            stream.close();
+        } catch (Exception e) {
+            logger.debug("FAIL: Failure while closing connection to server");
+        }
 
-			Thread.sleep(1400);
+    }
 
-			stream = StreamFactory.createStream(new URL(SERVER_URL));
-			stream.connect(); // should be successful
-			stream.close();
+    // calling wait in state other than open
 
-			stream.waitStream(0, 5.0f);
+    public static void test20() {
+        ServerThread server = new ServerThreadWriting(SERVER_URL);
+        Thread sThread = new Thread(server);
 
-			logger.debug("FAIL: Should have thrown IncorrectState");
+        sThread.start();
 
-		} catch (IncorrectState e) {
-			logger.debug("OK: Threw IncorrectState");
-		} catch (Exception e) {
-			logger.debug("FAIL: Should have thrown IncorrectState");
-		}
-	}
+        Stream stream = null;
+
+        try {
+
+            Thread.sleep(1400);
+
+            stream = StreamFactory.createStream(new URL(SERVER_URL));
+            stream.connect(); // should be successful
+            stream.close();
+
+            stream.waitStream(0, 5.0f);
+
+            logger.debug("FAIL: Should have thrown IncorrectState");
+
+        } catch (IncorrectState e) {
+            logger.debug("OK: Threw IncorrectState");
+        } catch (Exception e) {
+            logger.debug("FAIL: Should have thrown IncorrectState");
+        }
+    }
 }
