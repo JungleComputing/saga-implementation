@@ -67,7 +67,9 @@ public class Context extends SagaObjectBase
             throw new SagaError("could not get TYPE attribute", e);
         }
         try {
-            if ("ftp".equals(type)) {
+            if ("Unknown".equals(type)) {
+                // nothing
+            } else if ("ftp".equals(type)) {
                 // Default is anonymous
                 setValue(Context.USERID, "anonymous");
                 setValue(Context.USERPASS, "anonymous@localhost");
