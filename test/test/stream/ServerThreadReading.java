@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.ogf.saga.buffer.Buffer;
+import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
@@ -27,7 +28,7 @@ public class ServerThreadReading extends ServerThread {
             BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
             AuthorizationFailed, PermissionDenied, Timeout, IOException,
             DoesNotExist, InterruptedException {
-        Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory.createBuffer();
+        Buffer buffer = BufferFactory.createBuffer();
 
         // Thread.sleep(8000);
 
@@ -38,7 +39,6 @@ public class ServerThreadReading extends ServerThread {
             logger.debug("Server: Read " + bytesCnt + " bytes");
             logger.debug("Server: Message content:");
             logger.debug(new String(buffer.getData()).trim());
-            Thread.sleep(1000);
         }
     }
 

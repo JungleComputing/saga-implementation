@@ -2,6 +2,7 @@ package test.stream;
 
 import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
+import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamFactory;
 
@@ -19,8 +20,7 @@ public class StreamClient {
                     "advert://server"));
             stream.connect();
 
-            Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory
-                    .createBuffer();
+            Buffer buffer = BufferFactory.createBuffer();
             buffer.setData("Hello World".getBytes());
             int bytesCnt = stream.write(buffer, buffer.getSize());
             System.out.println("Wrote " + bytesCnt + " bytes");

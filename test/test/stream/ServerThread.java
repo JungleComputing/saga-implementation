@@ -92,28 +92,21 @@ public abstract class ServerThread implements Runnable {
     };
 
     public void run() {
-
+        StreamService service = null;
         try {
-            StreamService service = StreamFactory.createStreamService(new URL(
-                    url));
-            service
-                    .getMetric(
-                            org.ogf.saga.stream.StreamService.STREAMSERVER_CLIENTCONNECT)
+            service = StreamFactory.createStreamService(new URL(url));
+            service.getMetric(StreamService.STREAMSERVER_CLIENTCONNECT)
                     .addCallback(clientConnect);
             while (!stop) {
                 logger.debug("Server Thread: listening...");
                 Stream stream = service.serve(30.0f);
 
-                stream.getMetric(org.ogf.saga.stream.Stream.STREAM_READ)
-                        .addCallback(readable);
-                stream.getMetric(org.ogf.saga.stream.Stream.STREAM_WRITE)
-                        .addCallback(writeable);
-                stream.getMetric(org.ogf.saga.stream.Stream.STREAM_EXCEPTION)
-                        .addCallback(exception);
-                stream.getMetric(org.ogf.saga.stream.Stream.STREAM_STATE)
-                        .addCallback(stateChanged);
-                stream.getMetric(org.ogf.saga.stream.Stream.STREAM_DROPPED)
-                        .addCallback(dropped);
+                stream.getMetric(Stream.STREAM_READ).addCallback(readable);
+                stream.getMetric(Stream.STREAM_WRITE).addCallback(writeable);
+                stream.getMetric(Stream.STREAM_EXCEPTION).addCallback(exception);
+                stream.getMetric(Stream.STREAM_STATE).addCallback(stateChanged);
+                stream.getMetric(Stream.STREAM_DROPPED).addCallback(dropped);
+                
                 try {
                     processStream(stream);
                 } finally {
@@ -121,9 +114,14 @@ public abstract class ServerThread implements Runnable {
                 }
             }
             service.close();
-        } catch (Exception e) {
-            logger.debug("Caught exception: Aborting server....");
-            e.printStackTrace();
+        } catch (Throwable e) {
+            logger.debug("Caught exception: Aborting server....", e);
+        } finally {
+            try {
+                service.close();
+            } catch(Throwable e) {
+                // ignored
+            }
         }
         logger.debug("stopping server...");
     }

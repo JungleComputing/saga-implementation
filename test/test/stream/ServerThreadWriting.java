@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.ogf.saga.buffer.Buffer;
+import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.error.AuthenticationFailed;
 import org.ogf.saga.error.AuthorizationFailed;
 import org.ogf.saga.error.BadParameter;
@@ -31,7 +32,7 @@ public class ServerThreadWriting extends ServerThread {
         Thread.sleep(5000);
 
         logger.debug("Server: Attempting to send a message");
-        Buffer buffer = org.ogf.saga.impl.buffer.BufferFactory.createBuffer();
+        Buffer buffer = BufferFactory.createBuffer();
         buffer.setData("Hello World".getBytes());
 
         stream.write(buffer);
