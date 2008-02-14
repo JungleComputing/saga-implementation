@@ -29,8 +29,6 @@ public class ServerThreadWriting extends ServerThread {
             AuthorizationFailed, PermissionDenied, Timeout, IOException,
             DoesNotExist, InterruptedException {
 
-        Thread.sleep(5000);
-
         logger.debug("Server: Attempting to send a message");
         Buffer buffer = BufferFactory.createBuffer();
         buffer.setData("Hello World".getBytes());
