@@ -78,6 +78,20 @@ public class TestMain extends TestCase {
             fail("connect should now throw IncorrectState");
         }
     }
+    
+    private void close(Stream stream) {
+        try {
+            stream.close();
+        } catch(Throwable e) {
+            logger.error("close gave exception", e);
+            fail("close gave exception: " + e);            		
+        }
+        try {
+            Thread.sleep(2000);
+        } catch(Throwable e) {
+            // ignored
+        }
+    }
 
     // connect & disconnect without writing anything
     // while the server is reading
@@ -102,13 +116,7 @@ public class TestMain extends TestCase {
             server.stopServer();
         }
         
-        try {
-            Thread.sleep(1000);
-            stream.close();
-        } catch (Throwable e) {
-            logger.error("FAIL: got exception ", e);
-            fail("got exception" + e);
-        }
+        close(stream);
     }
 
     // send 1 msg then check if the connection dropped condition is detected...
@@ -137,11 +145,10 @@ public class TestMain extends TestCase {
             buffer.setData("Hello World".getBytes());
 
             stream.write(buffer);
-            stream.close();
-            Thread.sleep(5000);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        close(stream);
     }
 
     // testing the correctness of wait on the client side
@@ -192,13 +199,7 @@ public class TestMain extends TestCase {
             fail("Got exception " + e);
         }
         
-        try {
-            stream.close();
-        } catch (Throwable e) {
-            logger.error("Got exception", e);
-            fail("Got exception " + e);
-        }
-
+        close(stream);
     }
 
     // testing readability detection on server side by waitStream call
@@ -263,14 +264,10 @@ public class TestMain extends TestCase {
 
             stream.write(buffer);
             stream.write(buffer);
-
-            // Thread.sleep(3000);
-
-            stream.close();
-            Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
+        close(stream);
     }
 
     // tries to close not opened stream service
@@ -460,14 +457,8 @@ public class TestMain extends TestCase {
             logger.error("FAIL: 2nd connect should throw IncorrectState", e);
             fail("2nd connect should throw IncorrectState, not " + e);
         }
-
-        try {
-            stream.close();
-            Thread.sleep(1000);
-        } catch (Throwable e) {
-            logger.error("FAIL: Should detect incorrect state", e);
-            fail("close() should give IncorrectState, not " + e);
-        }
+        
+        close(stream);
     }
 
     // close should throw IncorrectState when the stream is in New
@@ -481,11 +472,11 @@ public class TestMain extends TestCase {
             stream.close();
             logger.error("FAIL: successful close on unconnected stream");
             fail("Successful close on unconnected stream");
-        } catch (IncorrectState e) {
-            logger.debug("OK: Threw IncorrectState exception");
+        } catch(IncorrectState e) {
+            logger.debug("OK, close on NEW stream threw IncorrectState");
         } catch (Throwable e) {
-            logger.error("FAIL: Threw other exception", e);
-            fail("threw wrong exception " + e);
+            logger.error("FAIL: Threw exception", e);
+            fail("threw exception " + e);
         }
 
         stream = createStream();
@@ -502,15 +493,8 @@ public class TestMain extends TestCase {
             fail("threw wrong exception" + e);
             return;
         }
-
-        try {
-            stream.close();
-        } catch (IncorrectState e) {
-            logger.debug("OK: Threw IncorrectState exception");
-        } catch (Throwable e) {
-            logger.error("FAIL: Threw other exception", e);
-            fail("threw wrong exception" + e);
-        }
+        
+        close(stream);
     }
 
     // read with negative length
@@ -547,13 +531,8 @@ public class TestMain extends TestCase {
             logger.debug("FAIL: BadParameter should be thrown", e);
             fail("threw wrong exception " + e);
         }
-
-        try {
-            stream.close();
-        } catch (Throwable e) {
-            logger.debug("FAIL: Failure while closing connection to server");
-            fail("Failure while closing connection to server");
-        }
+        
+        close(stream);
     }
 
     // read with length == 0
@@ -592,13 +571,7 @@ public class TestMain extends TestCase {
             logger.error("FAIL: got exception", e);
             fail("got exception " + e);
         }
-
-        try {
-            stream.close();
-        } catch (Throwable e) {
-            logger.error("FAIL: Failure while closing connection to server", e);
-            fail("Failure while closing connection to server, " + e);
-        }
+        close(stream);
     }
 
     // write with negative length
@@ -631,13 +604,7 @@ public class TestMain extends TestCase {
         } catch (Throwable e) {
             logger.debug("FAIL: Situation was not dealt with properly");
         }
-
-        try {
-            stream.close();
-        } catch (Throwable e) {
-            logger.error("FAIL: Failure while closing connection to server", e);
-            fail("close()");
-        }
+        close(stream);
     }
 
     // write with 0 length
@@ -674,12 +641,7 @@ public class TestMain extends TestCase {
         } catch (Exception e) {
             logger.debug("FAIL: Situation was not dealt with properly");
         }
-
-        try {
-            stream.close();
-        } catch (Exception e) {
-            logger.debug("FAIL: Failure while closing connection to server");
-        }
+        close(stream);
     }
 
     // write -- passing uninitialized buffer
@@ -711,13 +673,7 @@ public class TestMain extends TestCase {
             logger.error("FAIL: Situation was not dealt with properly", e);
             fail("got exception " + e);
         }
-
-        try {
-            stream.close();
-        } catch (Throwable e) {
-            logger.error("FAIL: Failure while closing connection to server", e);
-            fail("close gave exception " + e);
-        }
+        close(stream);
     }
 
     // calling wait with zeroed "what" flag
@@ -749,14 +705,7 @@ public class TestMain extends TestCase {
             logger.error("FAIL: waitStream gave exception", e);
             fail("waitStream gave exception " + e);
         }
-
-        try {
-            stream.close();
-        } catch (Throwable e) {
-            logger.error("FAIL: Failure while closing connection to server", e);
-            fail("close gave exception " + e);
-        }
-
+        close(stream);
     }
 
     // calling wait in state other than open
@@ -777,14 +726,7 @@ public class TestMain extends TestCase {
         } finally {
             server.stopServer();
         }
-
-        try {
-            stream.close();
-        } catch(Throwable e) {
-            logger.error("FAIL: close failed", e);
-            fail("close threw exception " + e);
-            return;
-        }
+        close(stream);
         
         try {
             stream.waitStream(0, 5.0f);
