@@ -5,6 +5,6 @@
 # For instance:
 #     $HOME/OMIICLIENT/gridsam/bin/gridsam-ftp-server -d $HOME/data -p 12345
 
-. paths
+. ./paths
 
 $SAGA_HOME/bin/run_saga_app -DJobService.adaptor.name=gridsam test.job.TestJob1

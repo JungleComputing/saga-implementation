@@ -20,14 +20,12 @@ public class TestJob1 implements Callback {
             // Make sure the gridsam adaptor is selected.
             System.setProperty("JobService.adaptor.name", "gridsam");
 
-            // Create the JobService. Note: the gridsam service is behind a
-            // firewall and is reached through an ssh tunnel, which the user
-            // must have set up beforehand.
+            // Create the JobService. Gridsam service lives on titan.cs.vu.nl.
             JobService js = JobFactory.createJobService(new URL(
                     "https://titan.cs.vu.nl:18443/gridsam/services/gridsam"));
 
             // Create a job description to execute "/bin/uname -a" on
-            // fs0.das3.cs.vu.nl.
+            // titan.cs.vu.nl.
             // The output will be staged out to the current directory.
             JobDescription jd = JobFactory.createJobDescription();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
