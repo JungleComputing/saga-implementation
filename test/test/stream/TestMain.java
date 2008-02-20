@@ -49,7 +49,7 @@ public class TestMain extends TestCase {
 
     // connect to server while it is down, should throw NoSuccess
 
-    public void test1() {
+    public void testConnect1() {
 
         Stream stream = createStream();
 
@@ -96,7 +96,7 @@ public class TestMain extends TestCase {
     // connect & disconnect without writing anything
     // while the server is reading
 
-    public void test2() {
+    public void testConnect2() {
 
         ServerThread server = new ServerThreadOneRead(SERVER_URL);
         Thread sThread = new Thread(server);
@@ -119,11 +119,10 @@ public class TestMain extends TestCase {
         close(stream);
     }
 
-    // send 1 msg then check if the connection dropped condition is detected...
+    // read 1 msg then check if the connection dropped condition is detected...
 
-    public void test3() {
-        // TODO: reverse
-        ServerThread server = new ServerThreadReading(SERVER_URL);
+    public void testRead1() {
+        ServerThread server = new ServerThreadWriting(SERVER_URL);
         Thread sThread = new Thread(server);
 
         sThread.start();
@@ -142,11 +141,30 @@ public class TestMain extends TestCase {
         
         try {
             Buffer buffer = BufferFactory.createBuffer();
-            buffer.setData("Hello World".getBytes());
+            buffer.setData(new byte[1024]);
 
-            stream.write(buffer);
-        } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug("Attempting to read the message");
+            int bytesCnt = stream.read(buffer, buffer.getSize());
+            logger.debug("Read " + bytesCnt + " bytes");
+            logger.debug("Message content:");
+            logger.debug(new String(buffer.getData()).trim());
+        } catch (Throwable e) {
+            logger.error("FAIL: got exception", e);
+            fail("got exception " + e);
+        }
+        
+        try {
+            Buffer buffer = BufferFactory.createBuffer();
+            buffer.setData(new byte[1024]);
+            logger.debug("Attempting to read a second message");
+            int bytesCnt = stream.read(buffer, buffer.getSize());
+            if (bytesCnt != 0) {
+                logger.error("FAIL: return value of read != 0 at EOF");
+                fail("return value of read != 0 at EOF");
+            }
+        } catch(Throwable e) {
+            logger.error("FAIL: got exception", e);
+            fail("got exception " + e);
         }
         close(stream);
     }
@@ -154,7 +172,7 @@ public class TestMain extends TestCase {
     // testing the correctness of wait on the client side
     // trying out writeability & exception --- none should be detected
 
-    public void test4() {
+    public void testWait1() {
         ServerThread server = new ServerThreadWriting(SERVER_URL);
         Thread sThread = new Thread(server);
 
@@ -174,8 +192,8 @@ public class TestMain extends TestCase {
             server.stopServer();
         }
         try {
-            int outcome = stream.waitStream(Activity.EXCEPTION.getValue()
-                    | Activity.WRITE.getValue(), 8.0f);
+            int outcome = stream.waitFor(Activity.EXCEPTION.or(Activity.WRITE),
+                    8.0f);
 
             if (outcome == 0) {
                 logger.debug("Client: nothing detected [WAIT]");
@@ -193,48 +211,13 @@ public class TestMain extends TestCase {
                 fail("Client: outcome = " + outcome);
             }
         } catch(NotImplemented e) {
-            logger.warn("WARNING: waitStream gave NotImplemented", e);
+            logger.warn("WARNING: waitFor gave NotImplemented", e);
         } catch (Throwable e) {
             logger.error("Got exception", e);
             fail("Got exception " + e);
         }
         
         close(stream);
-    }
-
-    // testing readability detection on server side by waitStream call
-
-    public void test5() {
-        ServerThread server = new ServerThreadWait(SERVER_URL);
-        Thread sThread = new Thread(server);
-
-        sThread.start();
-
-        Stream stream = createStream();
-
-        try {
-            Thread.sleep(SERVER_WAIT);
-            stream.connect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            server.stopServer();
-        }
-        try {
-
-            Buffer buffer = BufferFactory.createBuffer();
-            buffer.setData("Hello World".getBytes());
-
-            stream.write(buffer);
-
-            Thread.sleep(3000);
-
-            stream.close();
-            
-            Thread.sleep(10000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     // we will try to write more than the reading buffer can store
@@ -697,13 +680,13 @@ public class TestMain extends TestCase {
         }
         
         try {
-            int val = stream.waitStream(0, 5.0f);
+            int val = stream.waitFor(0, 5.0f);
             logger.debug("OK: Survived with 'incorrect' input. Result = "
                             + val);
 
         } catch (Throwable e) {
-            logger.error("FAIL: waitStream gave exception", e);
-            fail("waitStream gave exception " + e);
+            logger.error("FAIL: waitFor gave exception", e);
+            fail("waitFor gave exception " + e);
         }
         close(stream);
     }
@@ -729,14 +712,14 @@ public class TestMain extends TestCase {
         close(stream);
         
         try {
-            stream.waitStream(0, 5.0f);
+            stream.waitFor(0, 5.0f);
             logger.error("FAIL: Should have thrown IncorrectState");
-            fail("waitStream should have thrown IncorrectState");
+            fail("waitFor should have thrown IncorrectState");
         } catch (IncorrectState e) {
             logger.debug("OK: Threw IncorrectState");
         } catch (Throwable e) {
             logger.error("FAIL: Should have thrown IncorrectState", e);
-            fail("waitStream should have thrown IncorrectState, not " + e);
+            fail("waitFor should have thrown IncorrectState, not " + e);
 
         }
     }

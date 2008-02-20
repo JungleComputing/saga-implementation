@@ -32,7 +32,7 @@ public class ServerThreadWait extends ServerThread {
 
         logger.debug("Server: Calling wait...");
 
-        int outcome = stream.waitStream(Activity.EXCEPTION.getValue()
+        int outcome = stream.waitFor(Activity.EXCEPTION.getValue()
                 | Activity.READ.getValue(), 8.0f);
 
         if (outcome == 0)
