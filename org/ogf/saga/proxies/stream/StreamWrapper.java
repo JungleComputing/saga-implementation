@@ -278,12 +278,12 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.setVectorAttribute(mode, key, values);
     }
 
-    public int waitStream(int what, float timeoutInSeconds) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, NoSuccess {
-        return proxy.waitStream(what, timeoutInSeconds);
+    public int waitFor(int what, float timeoutInSeconds) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, NoSuccess {
+        return proxy.waitFor(what, timeoutInSeconds);
     }
 
-    public Task<Integer> waitStream(TaskMode mode, int what, float timeoutInSeconds) throws NotImplemented {
-        return proxy.waitStream(mode, what, timeoutInSeconds);
+    public Task<Integer> waitFor(TaskMode mode, int what, float timeoutInSeconds) throws NotImplemented {
+        return proxy.waitFor(mode, what, timeoutInSeconds);
     }
 
     public int write(Buffer buffer, int len) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {
@@ -315,12 +315,12 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return read(mode, buffer, -1);
     }
 
-    public int waitStream(int what) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, NoSuccess {
-        return waitStream(what, -1.0F);
+    public int waitFor(int what) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, NoSuccess {
+        return waitFor(what, -1.0F);
     }
 
-    public Task<Integer> waitStream(TaskMode mode, int what) throws NotImplemented {
-        return waitStream(mode, what, -1.0F);
+    public Task<Integer> waitFor(TaskMode mode, int what) throws NotImplemented {
+        return waitFor(mode, what, -1.0F);
     }
 
     public int write(Buffer buffer) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess, IOException {

@@ -68,7 +68,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @param timeoutInSeconds the timeout in seconds.
      * @return the activities that apply.
      */
-    public int waitStream(int what, float timeoutInSeconds)
+    public int waitFor(int what, float timeoutInSeconds)
         throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
                PermissionDenied, IncorrectState, NoSuccess;
 
@@ -169,7 +169,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplemented is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> waitStream(TaskMode mode, int what,
+    public Task<Integer> waitFor(TaskMode mode, int what,
             float timeoutInSeconds)
         throws NotImplemented;
 

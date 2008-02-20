@@ -111,10 +111,10 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
                 buffer, len);
     }
 
-    public Task<Integer> waitStream(TaskMode mode, int what,
+    public Task<Integer> waitFor(TaskMode mode, int what,
             float timeoutInSeconds) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
-                "waitStream", new Class[] { Integer.TYPE, Float.TYPE },
+                "waitFor", new Class[] { Integer.TYPE, Float.TYPE },
                 what, timeoutInSeconds);
     }
 

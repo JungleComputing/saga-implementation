@@ -236,10 +236,10 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
                 buffer, len);
     }
 
-    public Task<Integer> waitStream(TaskMode mode, int what,
+    public Task<Integer> waitFor(TaskMode mode, int what,
             float timeoutInSeconds) throws NotImplemented {
         return new org.ogf.saga.impl.task.Task<Integer>(this, session, mode,
-                "waitStream", new Class[] { Integer.TYPE, Float.TYPE },
+                "waitFor", new Class[] { Integer.TYPE, Float.TYPE },
                 what, timeoutInSeconds);
     }
 
@@ -375,15 +375,15 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
         return read(mode, buffer, -1);
     }
 
-    public int waitStream(int what) throws NotImplemented,
+    public int waitFor(int what) throws NotImplemented,
             AuthenticationFailed, AuthorizationFailed, PermissionDenied,
             IncorrectState, NoSuccess {
-        return waitStream(what, -1.0F);
+        return waitFor(what, -1.0F);
     }
 
-    public Task<Integer> waitStream(TaskMode mode, int what)
+    public Task<Integer> waitFor(TaskMode mode, int what)
             throws NotImplemented {
-        return waitStream(mode, what, -1.0F);
+        return waitFor(mode, what, -1.0F);
     }
 
     public int write(Buffer buffer) throws NotImplemented,
