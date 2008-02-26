@@ -1,33 +1,20 @@
 package org.ogf.saga.engine;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileFilter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Comparator;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 
 import org.apache.log4j.Logger;
-import org.ogf.saga.spi.file.DirectorySpiInterface;
-import org.ogf.saga.spi.file.FileInputStreamSpiInterface;
-import org.ogf.saga.spi.file.FileOutputStreamSpiInterface;
-import org.ogf.saga.spi.file.FileSpiInterface;
-import org.ogf.saga.spi.job.JobServiceSpiInterface;
-import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
-import org.ogf.saga.spi.logicalfile.LogicalFileSpiInterface;
-import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
-import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
-import org.ogf.saga.spi.rpc.RPCSpiInterface;
-import org.ogf.saga.spi.stream.StreamServiceSpiInterface;
-import org.ogf.saga.spi.stream.StreamSpiInterface;
 
 /**
  * This class make the various SAGA adaptors available to SAGA.
@@ -47,13 +34,11 @@ public class SAGAEngine {
     /** Keys are SPI names, elements are AdaptorLists. */
     private AdaptorSet adaptors;
 
-    private URLClassLoader sagaClassLoader = null;
-
     private static Logger logger = Logger.getLogger(SAGAEngine.class);
 
-    private static class FileComparator implements Comparator<File> {
-        public int compare(File f1, File f2) {
-            return f1.getName().compareTo(f2.getName());
+    private static class URLComparator implements Comparator<URL> {
+        public int compare(URL u1, URL u2) {
+            return u1.toString().compareTo(u2.toString());
         }
     }
 
@@ -94,17 +79,19 @@ public class SAGAEngine {
      * @return the list of adaptors
      */
     private AdaptorList getAdaptorList(Class<?> spiClass) {
-        AdaptorList list = adaptors.getAdaptorList(spiClass.getName());
+        String name = spiClass.getSimpleName().replace("SpiInterface", ""); 
+
+        AdaptorList list = adaptors.getAdaptorList(name);
         if (list == null) {
             // no adaptors for this type loaded.
             if (logger.isInfoEnabled()) {
                 logger.info("getAdaptorList: No adaptors loaded for type "
-                        + spiClass.getName());
+                        + name);
             }
 
             throw new Error(
                     "getAdaptorList: No adaptors loaded for type "
-                    + spiClass.getName());
+                    + name);
         }
         return list;
     }
@@ -114,225 +101,118 @@ public class SAGAEngine {
      * method getSpiClasses().
      */
     private void readJarFiles() {
-        List<JarFile> adaptorPathList = new ArrayList<JarFile>();
+        HashMap<String, ClassLoader> adaptorClassLoaders
+        = new HashMap<String, ClassLoader>();
 
         String adaptorPath = System.getProperty("saga.adaptor.path");
 
         if (adaptorPath != null) {
             StringTokenizer st = new StringTokenizer(adaptorPath,
                     File.pathSeparator);
-
             while (st.hasMoreTokens()) {
                 String dir = st.nextToken();
-                List<JarFile> l = getJarFiles(dir);
-                adaptorPathList.addAll(l);
-            }
-        }
 
-        ArrayList<URL> adaptorPathURLs = new ArrayList<URL>();
-
-        // Sort jar files: put adaptors first.
-        // Adaptors might override classes in the external jars.
-        
-        for (JarFile jarFile : adaptorPathList) {
-
-            try {
-                File f = new File(jarFile.getName());
-
-                if (jarFile.getName().endsWith("Adaptor.jar")) {
-                    adaptorPathURLs.add(0, f.toURI().toURL()); // add to
-                    // beginning
-                } else {
-                    adaptorPathURLs.add(f.toURI().toURL()); // add to end
-                }
-
-            } catch (Exception e) {
-                throw new Error(e);
-            }
-        }
-
-        URL[] urls = adaptorPathURLs.toArray(new URL[adaptorPathURLs.size()]);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("List of SAGA jar files is: " + getJarsAsString(urls));
-        }
-        sagaClassLoader = new URLClassLoader(urls, 
-                this.getClass().getClassLoader());
-
-        // Populate spiClasses
-        loadJarFiles(adaptorPathList);
-    }
-
-    private String getJarsAsString(URL[] urls) {
-        StringBuffer buf = new StringBuffer();
-        for (URL url : urls) {
-            buf.append("    ");
-            buf.append(url.getFile());
-        }
-        return buf.toString();
-    }
-
-    /**
-     * Obtains Files in the specified directory.
-     * 
-     * @param f
-     *            a directory to list
-     * @return a list of files in the passed directory
-     */
-    private File[] getFiles(File f) {
-        File[] files = f.listFiles();
-
-        if (files == null) {
-            return new File[0];
-        }
-        // Sort the list of files so that the classloader always sees the jar
-        // files in the same order. Then, at least, it is deterministic which
-        // version of a class is loaded. It could still be the wrong one for
-        // a specific adaptor, though, especially when different adaptors
-        // depend on different versions of a jar.
-        // I don't know what to do about that. Different classloader for
-        // each adaptor? --Ceriel
-        Arrays.sort(files, new FileComparator());
-
-        return files;
-    }
-
-    /**
-     * Obtains JarFiles in the specified directory.
-     * 
-     * @param dir
-     *            the directory to get the jar files from
-     * @return a list of JarFile objects
-     */
-    private List<JarFile> getJarFiles(String dir) {
-        // Obtain files in the optional directory.
-        File[] files = getFiles(new File(dir));
-        ArrayList<JarFile> jarFiles = new ArrayList<JarFile>();
-
-        for (File file : files) {
-            if (file.isFile()) {
-                try {
-                    JarFile jarFile = new JarFile(file, true);
-                    Manifest manifest = jarFile.getManifest();
-
-                    if (null != manifest) {
-                        manifest.getMainAttributes();
-                        jarFiles.add(jarFile);
+                File adaptorRoot = new File(dir);
+                // Now get the adaptor dirs from the adaptor path, adaptor dirs are
+                // of course directories and further will end with "Adaptor".
+                File[] adaptorDirs = adaptorRoot.listFiles(new FileFilter() {
+                    public boolean accept(File file) {
+                        return file.isDirectory()
+                        && file.getName().endsWith("Adaptor");
                     }
-                } catch (IOException ioException) {
-                    // Ignore IOException
+                });
+
+                for (File adaptorDir : adaptorDirs) {
+                    try {
+                        adaptorClassLoaders.put(adaptorDir.getName(),
+                                loadDirectory(adaptorDir));
+                    } catch (Exception e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Unable to load adaptor '"
+                                    + adaptorDir.getName() + "': " + e);
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private ClassLoader loadDirectory(File adaptorDir) throws Exception {
+        File adaptorJarFile = new File(adaptorDir.getPath() + File.separator
+                + adaptorDir.getName() + ".jar");
+        logger.debug("adaptorJarFile: " + adaptorJarFile.getPath());
+        if (!adaptorJarFile.exists()) {
+            throw new Exception("found adaptor dir '" + adaptorDir.getPath()
+                    + "' that doesn't contain an adaptor named '"
+                    + adaptorJarFile.getPath() + "'");
+        }
+        JarFile adaptorJar = new JarFile(adaptorJarFile, true);
+        Attributes attributes = adaptorJar.getManifest().getMainAttributes();
+        String[] externalJars = adaptorDir.list(new java.io.FilenameFilter() {
+            public boolean accept(File file, String name) {
+                return name.endsWith(".jar");
+            }
+        });
+        ArrayList<URL> adaptorPathURLs = new ArrayList<URL>();
+        adaptorPathURLs.add(adaptorJarFile.toURI().toURL());
+        if (externalJars != null) {
+            for (String externalJar : externalJars) {
+                adaptorPathURLs.add(new URL(adaptorJarFile.getParentFile()
+                        .toURI().toURL().toString()
+                        + externalJar));
+            }
+        }
+        
+        URL[] urls = adaptorPathURLs.toArray(new URL[adaptorPathURLs.size()]);
+        
+        Arrays.sort(urls, new URLComparator());
+
+        for (URL url : urls) {
+            System.out.println("URL: " + url);
+        }
+        URLClassLoader adaptorLoader = new URLClassLoader(urls, this.getClass()
+                .getClassLoader());
+        
+        // We've a class loader, now have a look at which adaptors are inside
+        // this jar.
+        for (Object key : attributes.keySet()) {
+            if (((Attributes.Name) key).toString().endsWith("Spi-class")) {
+                // this is an adaptor!
+
+                // now get the spi name (for 'FileSpi' the spi name is 'File')
+                String spiName = ((Attributes.Name) key).toString().replace(
+                        "Spi-class", "");
+                String[] adaptorClasses = attributes.getValue(
+                        (Attributes.Name) key).split(",");
+                for (String adaptorClass : adaptorClasses) {
+                    try {
+                        // Thread.currentThread().setContextClassLoader(
+                        //        adaptorLoader);
+                        Class<?> clazz = adaptorLoader.loadClass(adaptorClass);
+                        
+                        Adaptor a = new Adaptor(spiName, clazz);
+                        AdaptorList s = adaptors.getAdaptorList(spiName);
+
+                        if (s == null) {
+                            s = new AdaptorList(spiName);
+                            adaptors.add(s);
+                        }
+
+                        s.add(a);
+                        // Ok, now we're done loading this class and updating
+                        // our administration.
+                    } catch (Exception e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Could not load Adaptor for " + key
+                                    + ": " + e);
+                        }
+                    }
                 }
             }
         }
 
-        return jarFiles;
-    }
-
-    private void loadSpiClass(JarFile jarFile, Manifest manifest,
-            Attributes attributes, String className, Class<?> spiClazz) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Trying to load adaptor for " + className);
-        }
-
-        // Get info for the adaptor
-        String attributeName = className + "Spi-class";
-        String clazzString = attributes.getValue(attributeName);
-        if (clazzString == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Adaptor for " + className
-                        + " not found in Manifest");
-            }
-            return;
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Adaptor for " + className
-                    + " found in Manifest, loading");
-        }
-
-        Class<?> clazz = null;
-
-        // Use a URL classloader to load the adaptors. This way, they don't have
-        // to be in the classpath.
-
-        try {
-            // Note: this will try the parent classloader first, which may not
-            // be what you want.
-            clazz = sagaClassLoader.loadClass(clazzString);
-        } catch (Exception e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Could not load Adaptor for " + className + ": "
-                        + e, e);
-            }
-            return;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Adaptor for " + className + " loaded");
-        }
-
-        Adaptor a = new Adaptor(spiClazz, clazz);
-        AdaptorList s = adaptors.getAdaptorList(spiClazz.getName());
-
-        if (s == null) {
-            s = new AdaptorList(spiClazz.getName());
-            adaptors.add(s);
-        }
-
-        s.add(a);
-    }
-
-    protected void loadSPIClassesFromJar(JarFile jarFile) {
-        Manifest manifest = null;
-
-        // Get info for all adaptors.
-        try {
-            manifest = jarFile.getManifest();
-        } catch (IOException e) {
-            return;
-        }
-
-        Attributes attributes = manifest.getMainAttributes();
-        
-        loadSpiClass(jarFile, manifest, attributes, "NSEntry",
-                NSEntrySpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "NSDirectory",
-                NSDirectorySpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "File",
-                FileSpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "FileInputStream",
-                FileInputStreamSpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "FileOutputStream",
-                FileOutputStreamSpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "Directory",
-                DirectorySpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "LogicalFile",
-                LogicalFileSpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "LogicalDirectory",
-                LogicalDirectorySpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "Stream",
-                StreamSpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "StreamService",
-                StreamServiceSpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "JobService",
-                JobServiceSpiInterface.class);
-        loadSpiClass(jarFile, manifest, attributes, "RPC",
-                RPCSpiInterface.class);
-    }
-
-    /**
-     * Load jar files in the list, looking for SPI classes.
-     * 
-     * @param jarFiles
-     *            the list of JarFile objects to load
-     */
-    private void loadJarFiles(List<JarFile> jarFiles) {
-
-        for (JarFile jarFile : jarFiles) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("loading adaptors from " + jarFile.getName());
-            }
-            loadSPIClassesFromJar(jarFile);
-        }
+        return adaptorLoader;
     }
 
     /**
@@ -380,7 +260,7 @@ public class SAGAEngine {
     private static String getFullAdaptorName(String shortName,
             AdaptorList adaptors) {
         for (Adaptor adaptor : adaptors) {
-            String adaptorType = adaptor.getShortSpiName();
+            String adaptorType = adaptor.getSpiName();
             String adaptorName = adaptor.getShortAdaptorClassName();
             if (adaptorName.endsWith(adaptorType)) {
                 if (adaptor.getAdaptorName().toLowerCase().contains(shortName.toLowerCase())) {
@@ -404,7 +284,7 @@ public class SAGAEngine {
         AdaptorList result = new AdaptorList(adaptors);
 
         // retrieve the adaptor type from the cpiClass
-        String adaptorType = adaptors.getShortSpiName();
+        String adaptorType = adaptors.getSpiName();
 
         String nameString = System.getProperty(adaptorType + ".adaptor.name");
 

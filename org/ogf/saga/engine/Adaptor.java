@@ -8,13 +8,11 @@ import java.lang.reflect.InvocationTargetException;
  */
 class Adaptor {
     /** The interface of the api implemented by this adaptor. */
-    private final Class<?> spiInterface;
+    private final String spiInterface;
 
     /** The actual class of this adaptor, must be an implementation of spiClass. */
     private final Class<?> adaptorClass;
-    
-    private String shortSpiName = null;
-    
+       
     private String shortAdaptorClassName = null;
     
     /**
@@ -24,7 +22,7 @@ class Adaptor {
      *            The actual class of this adaptor, must be an implementation of
      *            spiClass.
      */
-    Adaptor(Class<?> spiInterface, Class<?> adaptorClass) {
+    Adaptor(String spiInterface, Class<?> adaptorClass) {
         this.spiInterface = spiInterface;
         this.adaptorClass = adaptorClass;
     }
@@ -66,18 +64,8 @@ class Adaptor {
         return adaptorClass.getName();
     }
 
-    synchronized String getShortSpiName() {
-        if (shortSpiName == null) {
-            shortSpiName = spiInterface.getName();
-            int index = shortSpiName.lastIndexOf(".");
-            if(index > 0) {
-                shortSpiName = shortSpiName.substring(index+1);
-            }
-
-            // clip of the "SpiInterface"
-            shortSpiName = shortSpiName.substring(0, shortSpiName.length()-12);
-        }
-        return shortSpiName;
+    synchronized String getSpiName() {
+        return spiInterface;
     }
 
     synchronized String getShortAdaptorClassName() {

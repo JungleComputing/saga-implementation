@@ -265,7 +265,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         if (logger.isDebugEnabled()) {
             logger.debug("initAdaptor: trying to instantiate "
                     + adaptor.getShortAdaptorClassName() + " for type "
-                    + adaptor.getShortSpiName());
+                    + adaptor.getSpiName());
         }
         
         result = adaptor.instantiate(types, parameters);
@@ -273,7 +273,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         if (logger.isInfoEnabled()) {
             logger.info("initAdaptor: instantiated "
                     + adaptor.getShortAdaptorClassName() + " for type "
-                    + adaptor.getShortSpiName());
+                    + adaptor.getSpiName());
         }
         return result;
     }
