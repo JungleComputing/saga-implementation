@@ -9,12 +9,9 @@ import java.util.ArrayList;
 class AdaptorList extends ArrayList<Adaptor> {
 
     private static final long serialVersionUID = 1L;
-    
-    /** The api class all adaptors in this set implement. */
-    private final String spiClass;
 
     /** The short name for the api class. */
-    private final String shortSpiName;
+    private final String spiName;
 
     /**
      * Constructs an empty adaptor list for the specified spi class.
@@ -22,27 +19,16 @@ class AdaptorList extends ArrayList<Adaptor> {
      *            The api class all adaptors in this set implement.
      */
     AdaptorList(String spiClass) {
-        this.spiClass = spiClass;
-        int index = spiClass.lastIndexOf(".");
-        if(index > 0) {
-            shortSpiName = spiClass.substring(index+1).replace("SpiInterface", "");
-        } else {
-            shortSpiName = spiClass.replace("SpiInterface", "");
-        }
+        this.spiName = spiClass;
     }
 
     AdaptorList(AdaptorList l) {
         super(l);
-        this.spiClass = l.spiClass;
-        this.shortSpiName = l.shortSpiName;
+        this.spiName = l.spiName;
     }
-
+   
     String getSpiName() {
-        return spiClass;
-    }
-    
-    String getShortSpiName() {
-        return shortSpiName;
+        return spiName;
     }
 
     int getPos(String adaptorName) {
@@ -69,7 +55,7 @@ class AdaptorList extends ArrayList<Adaptor> {
     }
     
     public String toString() {
-        String res = "Adaptor list for " + spiClass;
+        String res = "Adaptor list for " + spiName;
         
         res += ", adaptors = " + super.toString();
         return res;
