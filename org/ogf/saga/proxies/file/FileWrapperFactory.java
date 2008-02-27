@@ -1,16 +1,16 @@
 package org.ogf.saga.proxies.file;
 
 import org.ogf.saga.URL;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.Directory;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.FileFactory;
@@ -23,79 +23,79 @@ import org.ogf.saga.task.TaskMode;
 public class FileWrapperFactory extends FileFactory {
 
     protected Directory doCreateDirectory(Session session, URL name, int flags)
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter, AlreadyExists,
-            DoesNotExist, Timeout, NoSuccess {
+            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return new DirectoryWrapper(session, name, flags);
     }
 
     protected File doCreateFile(Session session, URL name, int flags)
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter, AlreadyExists,
-            DoesNotExist, Timeout, NoSuccess {
+            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return new FileWrapper(session, name, flags);
     }
 
     protected FileInputStream doCreateFileInputStream(Session session, URL name)
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter, AlreadyExists,
-            DoesNotExist, Timeout, NoSuccess {
+            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return new FileInputStreamWrapper(session, name);
     }
 
     protected FileOutputStream doCreateFileOutputStream(Session session,
-            URL name, boolean append) throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+            URL name, boolean append) throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
 
         return new FileOutputStreamWrapper(session, name, append);
     }
 
     protected Task<Directory> doCreateDirectory(TaskMode mode, Session session,
-            URL name, int flags) throws NotImplemented {
+            URL name, int flags) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Directory>(this, session, mode,
                 "doCreateDirectory", new Class[] { Session.class, URL.class,
                         Integer.TYPE }, session, name, flags);
     }
 
     protected Task<File> doCreateFile(TaskMode mode, Session session, URL name,
-            int flags) throws NotImplemented {
+            int flags) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<File>(this, session, mode,
                 "doCreateFile", new Class[] { Session.class, URL.class,
                         Integer.TYPE }, session, name, flags);
     }
 
     protected Task<FileInputStream> doCreateFileInputStream(TaskMode mode,
-            Session session, URL name) throws NotImplemented {
+            Session session, URL name) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<FileInputStream>(this, session,
                 mode, "doCreateFileInputStream", new Class[] { Session.class,
                         URL.class }, session, name);
     }
 
     protected Task<FileOutputStream> doCreateFileOutputStream(TaskMode mode,
-            Session session, URL name, boolean append) throws NotImplemented {
+            Session session, URL name, boolean append) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<FileOutputStream>(this, session,
                 mode, "doCreateFileOutputStream", new Class[] { Session.class,
                         URL.class, Boolean.TYPE }, session, name, append);
     }
 
     protected org.ogf.saga.file.IOVec doCreateIOVec(byte[] data, int lenIn)
-            throws BadParameter, NoSuccess, NotImplemented {
+            throws BadParameterException, NoSuccessException, NotImplementedException {
         return new IOVec(data, lenIn);
     }
 
     protected org.ogf.saga.file.IOVec doCreateIOVec(int size, int lenIn)
-            throws BadParameter, NoSuccess, NotImplemented {
+            throws BadParameterException, NoSuccessException, NotImplementedException {
         return new IOVec(size, lenIn);
     }
 
     protected org.ogf.saga.file.IOVec doCreateIOVec(byte[] data)
-            throws BadParameter, NoSuccess, NotImplemented {
+            throws BadParameterException, NoSuccessException, NotImplementedException {
         return new IOVec(data);
     }
 
     protected org.ogf.saga.file.IOVec doCreateIOVec(int size)
-            throws BadParameter, NoSuccess, NotImplemented {
+            throws BadParameterException, NoSuccessException, NotImplementedException {
         return new IOVec(size);
     }
 }

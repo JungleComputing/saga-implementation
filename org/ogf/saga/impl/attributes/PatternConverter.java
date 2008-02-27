@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.log4j.Logger;
-import org.ogf.saga.error.BadParameter;
+import org.ogf.saga.error.BadParameterException;
 
 /**
  * This class converts a wildcard expression to a java.util.regex
@@ -162,10 +162,10 @@ public class PatternConverter {
     /**
      * Constructs a regular expression from the specified wildcard expression.
      * @param wildcard the specified wildcard expression.
-     * @exception BadParameter is thrown when there is an error in the wildcard
+     * @exception BadParameterException is thrown when there is an error in the wildcard
      *     expression.
      */
-    public PatternConverter(String wildcard) throws BadParameter {
+    public PatternConverter(String wildcard) throws BadParameterException {
         this.wildcard = wildcard;
         this.wildcardLen = wildcard.length();
         try {
@@ -176,9 +176,9 @@ public class PatternConverter {
             }
             pattern = Pattern.compile(regexPattern);
         } catch(PatternSyntaxException e) {
-            throw new BadParameter("Conversion to regex error", e);
+            throw new BadParameterException("Conversion to regex error", e);
         } catch(Throwable e) {
-            throw new BadParameter("Illegal wildcard expression", e);
+            throw new BadParameterException("Illegal wildcard expression", e);
         }
     }
  

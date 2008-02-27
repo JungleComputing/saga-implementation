@@ -4,17 +4,17 @@ import java.util.List;
 
 import org.ogf.saga.URL;
 import org.ogf.saga.attributes.AsyncAttributes;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -27,18 +27,18 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @param name the location to add.
      */
     public void addLocation(URL name)
-        throws NotImplemented, IncorrectURL, AuthenticationFailed,
-                AuthorizationFailed, PermissionDenied, BadParameter,
-                IncorrectState, Timeout, NoSuccess;
+        throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+                AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+                IncorrectStateException, TimeoutException, NoSuccessException;
 
     /**
      * Removes a replica location from the replica set.
      * @param name the location to remove.
      */
     public void removeLocation(URL name)
-        throws NotImplemented, IncorrectURL, AuthenticationFailed,
-                AuthorizationFailed, PermissionDenied, BadParameter,
-                IncorrectState, DoesNotExist, Timeout, NoSuccess;
+        throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+                AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+                IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException;
 
     /**
      * Changes a replica location in the replica set.
@@ -46,17 +46,17 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @param nameNew the updated location.
      */
     public void updateLocation(URL nameOld, URL nameNew)
-        throws NotImplemented, IncorrectURL, AuthenticationFailed,
-                AuthorizationFailed, PermissionDenied, BadParameter,
-                IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess;
+        throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+                AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+                IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException;
 
     /**
      * Lists the locations in this location set.
      * @return the location list.
      */
     public List<URL> listLocations()
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-                PermissionDenied, IncorrectState, Timeout, NoSuccess;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+                PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException;
 
     /**
      * Replicates a file from any of the known locations to a new location.
@@ -64,9 +64,9 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @param flags flags defining the operation modus.
      */
     public void replicate(URL name, int flags)
-        throws NotImplemented, IncorrectURL, AuthenticationFailed,
-                AuthorizationFailed, PermissionDenied, BadParameter,
-                IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess;
+        throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+                AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+                IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException;
 
     //  Task versions ...
 
@@ -75,22 +75,22 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @param mode the task mode.
      * @param name the location to add.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task addLocation(TaskMode mode, URL name)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that removes a replica location from the replica set.
      * @param mode the task mode.
      * @param name the location to remove.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task removeLocation(TaskMode mode, URL name)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that changes a replica location in the replica set.
@@ -98,21 +98,21 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @param nameOld the location to be updated.
      * @param nameNew the updated location.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task updateLocation(TaskMode mode, URL nameOld, URL nameNew)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that lists the locations in this location set.
      * @param mode the task mode.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<List<URL>> listLocations(TaskMode mode)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that replicates a file from any of the known locations
@@ -121,9 +121,9 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @param name location to replicate to.
      * @param flags flags defining the operation modus.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task replicate(TaskMode mode, URL name, int flags)
-    throws NotImplemented;
+    throws NotImplementedException;
 }

@@ -1,19 +1,18 @@
 package org.ogf.saga.proxies.file;
 
-import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.Directory;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.FileInputStream;
@@ -30,9 +29,9 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
     private DirectorySpiInterface proxy;
 
     DirectoryWrapper(Session session, URL name, int flags)
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter, AlreadyExists,
-            DoesNotExist, Timeout, NoSuccess {
+            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         super(session);
         Object[] parameters = { this, session, name, flags };
         try {
@@ -42,60 +41,60 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
                             org.ogf.saga.impl.session.Session.class, URL.class,
                             Integer.TYPE }, parameters);
             super.setProxy(proxy);
-        } catch (org.ogf.saga.error.Exception e) {
-            if (e instanceof NotImplemented) {
-                throw (NotImplemented) e;
+        } catch (org.ogf.saga.error.SagaException e) {
+            if (e instanceof NotImplementedException) {
+                throw (NotImplementedException) e;
             }
-            if (e instanceof IncorrectURL) {
-                throw (IncorrectURL) e;
+            if (e instanceof IncorrectURLException) {
+                throw (IncorrectURLException) e;
             }
-            if (e instanceof AuthenticationFailed) {
-                throw (AuthenticationFailed) e;
+            if (e instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) e;
             }
-            if (e instanceof AuthorizationFailed) {
-                throw (AuthorizationFailed) e;
+            if (e instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) e;
             }
-            if (e instanceof PermissionDenied) {
-                throw (PermissionDenied) e;
+            if (e instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) e;
             }
-            if (e instanceof BadParameter) {
-                throw (BadParameter) e;
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
             }
-            if (e instanceof AlreadyExists) {
-                throw (AlreadyExists) e;
+            if (e instanceof AlreadyExistsException) {
+                throw (AlreadyExistsException) e;
             }
-            if (e instanceof DoesNotExist) {
-                throw (DoesNotExist) e;
+            if (e instanceof DoesNotExistException) {
+                throw (DoesNotExistException) e;
             }
-            if (e instanceof Timeout) {
-                throw (Timeout) e;
+            if (e instanceof TimeoutException) {
+                throw (TimeoutException) e;
             }
-            if (e instanceof NoSuccess) {
-                throw (NoSuccess) e;
+            if (e instanceof NoSuccessException) {
+                throw (NoSuccessException) e;
             }
-            throw new NoSuccess("Constructor failed", e);
+            throw new NoSuccessException("Constructor failed", e);
         }
     }
 
-    public long getSize(URL name, int flags) throws NotImplemented,
-            IncorrectURL, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, DoesNotExist,
-            Timeout, NoSuccess {
+    public long getSize(URL name, int flags) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, DoesNotExistException,
+            TimeoutException, NoSuccessException {
         return proxy.getSize(name, flags);
     }
 
-    public long getSize(URL name) throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public long getSize(URL name) throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return getSize(name, Flags.NONE.getValue());
     }
 
     public Task<Long> getSize(TaskMode mode, URL name, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.getSize(mode, name, flags);
     }
 
-    public Task<Long> getSize(TaskMode mode, URL name) throws NotImplemented {
+    public Task<Long> getSize(TaskMode mode, URL name) throws NotImplementedException {
         return getSize(mode, name, Flags.NONE.getValue());
     }
 
@@ -107,100 +106,96 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
         return clone;
     }
 
-    public ObjectType getType() {
-        return ObjectType.DIRECTORY;
-    }
-
-    public boolean isFile(URL name) throws NotImplemented, IncorrectURL,
-            DoesNotExist, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
+    public boolean isFile(URL name) throws NotImplementedException, IncorrectURLException,
+            DoesNotExistException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException {
         return proxy.isFile(name);
     }
 
-    public Task<Boolean> isFile(TaskMode mode, URL name) throws NotImplemented {
+    public Task<Boolean> isFile(TaskMode mode, URL name) throws NotImplementedException {
         return proxy.isFile(mode, name);
     }
 
     public Task<Directory> openDirectory(TaskMode mode, URL name, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.openDirectory(mode, name, flags);
     }
 
     public Task<Directory> openDirectory(TaskMode mode, URL name)
-            throws NotImplemented {
+            throws NotImplementedException {
         return openDirectory(mode, name, Flags.READ.getValue());
     }
 
-    public Directory openDirectory(URL name, int flags) throws NotImplemented,
-            IncorrectURL, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, AlreadyExists,
-            DoesNotExist, Timeout, NoSuccess {
+    public Directory openDirectory(URL name, int flags) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.openDirectory(name, flags);
     }
 
-    public Directory openDirectory(URL name) throws NotImplemented,
-            IncorrectURL, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, AlreadyExists,
-            DoesNotExist, Timeout, NoSuccess {
+    public Directory openDirectory(URL name) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return openDirectory(name, Flags.READ.getValue());
     }
 
     public Task<File> openFile(TaskMode mode, URL name, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.openFile(mode, name, flags);
     }
 
-    public Task<File> openFile(TaskMode mode, URL name) throws NotImplemented {
+    public Task<File> openFile(TaskMode mode, URL name) throws NotImplementedException {
         return openFile(mode, name, Flags.READ.getValue());
     }
 
-    public File openFile(URL name, int flags) throws NotImplemented,
-            IncorrectURL, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, AlreadyExists,
-            DoesNotExist, Timeout, NoSuccess {
+    public File openFile(URL name, int flags) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.openFile(name, flags);
     }
 
-    public File openFile(URL name) throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
-            NoSuccess {
+    public File openFile(URL name) throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         return openFile(name, Flags.READ.getValue());
     }
 
     public Task<FileInputStream> openFileInputStream(TaskMode mode, URL name)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.openFileInputStream(mode, name);
     }
 
-    public FileInputStream openFileInputStream(URL name) throws NotImplemented,
-            IncorrectURL, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, AlreadyExists,
-            DoesNotExist, Timeout, NoSuccess {
+    public FileInputStream openFileInputStream(URL name) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.openFileInputStream(name);
     }
 
     public Task<FileOutputStream> openFileOutputStream(TaskMode mode, URL name,
-            boolean append) throws NotImplemented {
+            boolean append) throws NotImplementedException {
         return proxy.openFileOutputStream(mode, name, append);
     }
 
     public Task<FileOutputStream> openFileOutputStream(TaskMode mode, URL name)
-            throws NotImplemented {
+            throws NotImplementedException {
         return openFileOutputStream(mode, name, false);
     }
 
     public FileOutputStream openFileOutputStream(URL name, boolean append)
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.openFileOutputStream(name, append);
     }
 
     public FileOutputStream openFileOutputStream(URL name)
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         return openFileOutputStream(name, false);
     }
 }

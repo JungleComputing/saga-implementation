@@ -1,7 +1,5 @@
 package org.ogf.saga.impl.task;
 
-import org.apache.log4j.Logger;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -12,26 +10,25 @@ import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import org.ogf.saga.ObjectType;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.SagaError;
-import org.ogf.saga.error.Timeout;
-import org.ogf.saga.monitoring.Callback;
+import org.apache.log4j.Logger;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.monitoring.Metric;
+import org.ogf.saga.monitoring.Callback;
+import org.ogf.saga.session.Session;
 import org.ogf.saga.task.State;
 import org.ogf.saga.task.TaskMode;
-import org.ogf.saga.session.Session;
 
 // The SAGA specifications warn against using threads.
 // However, there is nothing against a default implementation that uses them.
@@ -56,7 +53,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
             10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
     
     // Constructor used for Job.
-    public Task(Session session) throws BadParameter {
+    public Task(Session session) throws BadParameterException {
         super(session);
         this.object = this;
     }
@@ -96,7 +93,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
             method = object.getClass().getMethod(methodName, parameterTypes);
         } catch(Throwable e) {
             logger.error("Could not find method " + methodName, e);
-            throw new SagaError("Internal error", e);
+            throw new SagaRuntimeException("Internal error", e);
         }
                      
         // Create the task metric.
@@ -107,7 +104,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
         } catch(Throwable e) {
             // Should not happen.
             logger.error("Could not create metric", e);
-            throw new SagaError("Unexpected exception", e);
+            throw new SagaRuntimeException("Unexpected exception", e);
         }
         metrics.put(TASK_STATE, metric);
         this.object = object;
@@ -134,8 +131,8 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#cancel()
      */
-    public synchronized void cancel() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    public synchronized void cancel() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         cancel(0.0F);
     }
 
@@ -144,10 +141,10 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#cancel(float)
      */
-    public void cancel(float timeoutInSeconds) throws NotImplemented,
-            IncorrectState, Timeout, NoSuccess {
+    public void cancel(float timeoutInSeconds) throws NotImplementedException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         if (state == State.NEW) {
-            throw new IncorrectState("cancel() called on task in state New");
+            throw new IncorrectStateException("cancel() called on task in state New");
         }
         cancel(true);
     }
@@ -158,8 +155,8 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * @see org.ogf.saga.task.Task#getObject()
      */
     @SuppressWarnings("unchecked")
-    public <T> T getObject() throws NotImplemented, Timeout,
-            NoSuccess {
+    public <T> T getObject() throws NotImplementedException, TimeoutException,
+            NoSuccessException {
         return (T) object;
     }
 
@@ -168,10 +165,10 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * see org.ogf.saga.task.Task#getResult()
      */
-    public E getResult() throws NotImplemented, IncorrectState, Timeout,
-           NoSuccess {
+    public E getResult() throws NotImplementedException, IncorrectStateException, TimeoutException,
+           NoSuccessException {
         if (state == State.NEW || state == State.CANCELED || state == State.FAILED) {
-            throw new IncorrectState("getResult called in state " + state);
+            throw new IncorrectStateException("getResult called in state " + state);
         }
         waitFor();
         return result;
@@ -182,7 +179,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#getState()
      */
-    public State getState() throws NotImplemented, Timeout, NoSuccess {
+    public State getState() throws NotImplementedException, TimeoutException, NoSuccessException {
         return state;
     }
 
@@ -191,49 +188,49 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#rethrow()
      */
-    public synchronized void rethrow() throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
-            NoSuccess {
+    public synchronized void rethrow() throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         if (state == State.FAILED) {
             // otherwise we should do nothing
 
-            if (exception instanceof NotImplemented) {
-                throw (NotImplemented) exception;
+            if (exception instanceof NotImplementedException) {
+                throw (NotImplementedException) exception;
             }
-            if (exception instanceof IncorrectURL) {
-                throw (IncorrectURL) exception;
+            if (exception instanceof IncorrectURLException) {
+                throw (IncorrectURLException) exception;
             }
-            if (exception instanceof AuthenticationFailed) {
-                throw (AuthenticationFailed) exception;
+            if (exception instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) exception;
             }
-            if (exception instanceof AuthorizationFailed) {
-                throw (AuthorizationFailed) exception;
+            if (exception instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) exception;
             }
-            if (exception instanceof PermissionDenied) {
-                throw (PermissionDenied) exception;
+            if (exception instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) exception;
             }
-            if (exception instanceof BadParameter) {
-                throw (BadParameter) exception;
+            if (exception instanceof BadParameterException) {
+                throw (BadParameterException) exception;
             }
-            if (exception instanceof IncorrectState) {
-                throw (IncorrectState) exception;
+            if (exception instanceof IncorrectStateException) {
+                throw (IncorrectStateException) exception;
             }
-            if (exception instanceof AlreadyExists) {
-                throw (AlreadyExists) exception;
+            if (exception instanceof AlreadyExistsException) {
+                throw (AlreadyExistsException) exception;
             }
-            if (exception instanceof DoesNotExist) {
-                throw (DoesNotExist) exception;
+            if (exception instanceof DoesNotExistException) {
+                throw (DoesNotExistException) exception;
             }
-            if (exception instanceof Timeout) {
-                throw (Timeout) exception;
+            if (exception instanceof TimeoutException) {
+                throw (TimeoutException) exception;
             }
-            if (exception instanceof NoSuccess) {
-                throw (NoSuccess) exception;
+            if (exception instanceof NoSuccessException) {
+                throw (NoSuccessException) exception;
             }
             logger.error("Got unexpected exception in task", exception);
             //We should not get here.
-            throw new SagaError("Got unknown exception", exception);
+            throw new SagaRuntimeException("Got unknown exception", exception);
         }
     }
 
@@ -242,9 +239,9 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#run()
      */
-    public void run() throws NotImplemented, IncorrectState, Timeout, NoSuccess {
+    public void run() throws NotImplementedException, IncorrectStateException, TimeoutException, NoSuccessException {
         if (state != State.NEW) {
-            throw new IncorrectState("run() called in wrong state");
+            throw new IncorrectStateException("run() called in wrong state");
         }
         internalRun();
     }
@@ -268,8 +265,8 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#waitTask()
      */
-    public void waitFor() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    public void waitFor() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         waitFor(-1.0F);
 
     }
@@ -279,10 +276,10 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#waitTask(float)
      */
-    public synchronized boolean waitFor(float timeoutInSeconds) throws NotImplemented,
-            IncorrectState, Timeout, NoSuccess {
+    public synchronized boolean waitFor(float timeoutInSeconds) throws NotImplementedException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         if (state == State.NEW) {
-            throw new IncorrectState("waitFor called on new task");
+            throw new IncorrectStateException("waitFor called on new task");
         }
         return internalWaitFor(timeoutInSeconds);
     }
@@ -344,24 +341,15 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
     /*
      * (non-Javadoc)
      * 
-     * @see org.ogf.saga.SagaObject#getType()
-     */
-    public ObjectType getType() {
-        return ObjectType.TASK;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.ogf.saga.monitoring.Monitorable#addCallback(java.lang.String,
      *      org.ogf.saga.monitoring.Callback)
      */
-    public synchronized int addCallback(String name, Callback cb) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess, IncorrectState {
+    public synchronized int addCallback(String name, Callback cb) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException, IncorrectStateException {
         Metric m = metrics.get(name);
         if (m == null) {
-            throw new DoesNotExist("metric " + name + " does not exist");
+            throw new DoesNotExistException("metric " + name + " does not exist");
         }
         return m.addCallback(cb);
     }
@@ -371,12 +359,12 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      *
      * @see org.ogf.saga.monitoring.Monitorable#getMetric(java.lang.String)
      */
-    public org.ogf.saga.monitoring.Metric getMetric(String name) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public org.ogf.saga.monitoring.Metric getMetric(String name) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         Metric m = metrics.get(name);
         if (m == null) {
-            throw new DoesNotExist("metric " + name + " does not exist");
+            throw new DoesNotExistException("metric " + name + " does not exist");
         }
         return m;
     }
@@ -386,8 +374,8 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.monitoring.Monitorable#listMetrics()
      */
-    public synchronized String[] listMetrics() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
+    public synchronized String[] listMetrics() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
         return metrics.keySet().toArray(new String[metrics.size()]);
     }
 
@@ -397,12 +385,12 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * @see org.ogf.saga.monitoring.Monitorable#removeCallback(java.lang.String,
      *      int)
      */
-    public synchronized void removeCallback(String name, int cookie) throws NotImplemented,
-            DoesNotExist, BadParameter, Timeout, NoSuccess,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied {
+    public synchronized void removeCallback(String name, int cookie) throws NotImplementedException,
+            DoesNotExistException, BadParameterException, TimeoutException, NoSuccessException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException {
         Metric m = metrics.get(name);
         if (m == null) {
-            throw new DoesNotExist("metric " + name + " does not exist");
+            throw new DoesNotExistException("metric " + name + " does not exist");
         }
         m.removeCallback(cookie);
     }
@@ -418,7 +406,8 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
         return future.get();
     }
     
-    public E get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public E get(long timeout, TimeUnit unit) throws InterruptedException,
+            ExecutionException, java.util.concurrent.TimeoutException {
         return future.get(timeout, unit);
     }
 
@@ -447,7 +436,7 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
             metric.setValue(value.toString());
             metric.internalFire();
         } catch(Throwable e) {
-            throw new SagaError("Internal error", e);
+            throw new SagaRuntimeException("Internal error", e);
         }
     }
     

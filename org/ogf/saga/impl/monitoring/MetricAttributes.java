@@ -1,9 +1,9 @@
 package org.ogf.saga.impl.monitoring;
 
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NotImplemented;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.impl.attributes.Attributes;
 
@@ -26,12 +26,12 @@ class MetricAttributes extends Attributes {
     }
     
     protected void setValue(String key, String value)
-            throws NotImplemented, BadParameter, DoesNotExist, IncorrectState {
+            throws NotImplementedException, BadParameterException, DoesNotExistException, IncorrectStateException {
         super.setValue(key, value);
     }
     
     protected void checkValueType(String key, AttributeType type, String value)
-            throws BadParameter {
+            throws BadParameterException {
         if (Metric.TYPE.equals(key)) {
             if (! STRING.equals(value)
                 && ! INT.equals(value)
@@ -40,18 +40,18 @@ class MetricAttributes extends Attributes {
                 && ! BOOL.equals(value)
                 && ! TIME.equals(value)
                 && ! TRIGGER.equals(value)) {
-                throw new BadParameter("Illegal metric type: " + value);
+                throw new BadParameterException("Illegal metric type: " + value);
             }
         } else if (Metric.MODE.equals(key)) {
             if (! "ReadOnly".equals(value)
                 && ! "ReadWrite".equals(value)
                 && ! "Final".equals(value)) {
-                throw new BadParameter("Illegal metric mode: " + value);
+                throw new BadParameterException("Illegal metric mode: " + value);
             }
         }        
     }
     protected void setVectorValue(String key, String[] values)
-            throws DoesNotExist, NotImplemented, IncorrectState, BadParameter {
+            throws DoesNotExistException, NotImplementedException, IncorrectStateException, BadParameterException {
         super.setVectorValue(key, values);
     }
     

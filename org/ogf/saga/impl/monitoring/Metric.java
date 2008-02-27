@@ -7,23 +7,21 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-
-import org.ogf.saga.ObjectType;
 import org.ogf.saga.context.Context;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.Exception;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaException;
+import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.impl.SagaObjectBase;
 
 /**
  * Base implementation of metrics.
@@ -81,7 +79,7 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
             boolean retval = true;
             try {
                 retval = cb.cb(monitorable, metric, context);
-            } catch(Exception e) {
+            } catch(SagaException e) {
                 synchronized(metric) {
                     metric.callbackExceptions.add(e);
                 }
@@ -116,11 +114,11 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
     private final ArrayList<CallbackHandler> callBacks;
     private Monitorable monitorable;    
     private int fireCount = 0;
-    private final ArrayList<Exception> callbackExceptions = new ArrayList<Exception>();
+    private final ArrayList<SagaException> callbackExceptions = new ArrayList<SagaException>();
     
     Metric(Session session, String name, String desc, String mode,
-            String unit, String type, String value) throws NotImplemented,
-            BadParameter {
+            String unit, String type, String value) throws NotImplementedException,
+            BadParameterException {
         super(session);
         callBacks = new ArrayList<CallbackHandler>();
         attributes = new MetricAttributes();
@@ -131,9 +129,9 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
             attributes.setValue(Metric.TYPE, type);
             attributes.setValue(Metric.UNIT, unit);
             attributes.setValue(Metric.VALUE, value);
-        } catch(IncorrectState e) {
+        } catch(IncorrectStateException e) {
             // Should not happen.
-        } catch(DoesNotExist e) {
+        } catch(DoesNotExistException e) {
             // Should not happen.
         }        
     }
@@ -160,14 +158,14 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
       
     public Metric(Monitorable monitorable, Session session, String name, String desc,
             String mode, String unit, String type, String value)
-            throws NotImplemented, BadParameter {
+            throws NotImplementedException, BadParameterException {
         this(session, name, desc, mode, unit, type, value);
         this.monitorable = monitorable;
     }
     
     Metric(String name, String desc,
             String mode, String unit, String type, String value)
-            throws NotImplemented, BadParameter {
+            throws NotImplementedException, BadParameterException {
         this(null, name, desc, mode, unit, type, value);
     }
      
@@ -175,11 +173,11 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         return attributes.getValue(Metric.NAME);
     }
  
-    public void setValue(String value) throws NotImplemented , BadParameter, IncorrectState, DoesNotExist {
+    public void setValue(String value) throws NotImplementedException , BadParameterException, IncorrectStateException, DoesNotExistException {
         attributes.setValue(Metric.VALUE, value);   
     }
     
-    public void setMode(String value) throws NotImplemented, BadParameter, DoesNotExist, IncorrectState {
+    public void setMode(String value) throws NotImplementedException, BadParameterException, DoesNotExistException, IncorrectStateException {
         attributes.setValue(Metric.MODE, value);
     }
     
@@ -188,87 +186,83 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         this.monitorable = monitorable;
     }
 
-    public ObjectType getType() {
-        return ObjectType.METRIC;
-    }
-
-    public synchronized String[] findAttributes(String... patterns) throws NotImplemented,
-            BadParameter, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, Timeout, NoSuccess {
+    public synchronized String[] findAttributes(String... patterns) throws NotImplementedException,
+            BadParameterException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return attributes.findAttributes(patterns);
     }
 
-    public synchronized String getAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public synchronized String getAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.getAttribute(key);
     }
 
-    public String[] getVectorAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public String[] getVectorAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.getVectorAttribute(key);
     }
 
-    public boolean isReadOnlyAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isReadOnlyAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isReadOnlyAttribute(key);
     }
 
-    public boolean isRemovableAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isRemovableAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isRemovableAttribute(key);
     }
 
-    public boolean isVectorAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isVectorAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isVectorAttribute(key);
     }
 
-    public boolean isWritableAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isWritableAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isWritableAttribute(key);
     }
 
-    public String[] listAttributes() throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            Timeout, NoSuccess {
+    public String[] listAttributes() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
         return attributes.listAttributes();
     }
 
-    public void removeAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public void removeAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         attributes.removeAttribute(key);
 
     }
 
-    public void setAttribute(String key, String value) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, BadParameter, DoesNotExist, Timeout, NoSuccess {
+    public void setAttribute(String key, String value) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
         attributes.setAttribute(key, value);
     }
 
     public void setVectorAttribute(String key, String[] values)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, IncorrectState, BadParameter, DoesNotExist,
-            Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException,
+            TimeoutException, NoSuccessException {
         attributes.setVectorAttribute(key, values);
 
     }
 
-    public synchronized int addCallback(Callback cb) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, Timeout, NoSuccess {
+    public synchronized int addCallback(Callback cb) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         try {
             if ("Final".equals(attributes.getAttribute(Metric.MODE))) {
-                throw new IncorrectState("Callback added on Final metric");
+                throw new IncorrectStateException("Callback added on Final metric");
             }
-        } catch(DoesNotExist e) {
+        } catch(DoesNotExistException e) {
             // Should not happen.
         }
         CallbackHandler b = new CallbackHandler(monitorable, cb, this, callBacks.size(), null);
@@ -276,17 +270,17 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         return callBacks.size()-1;
     }
 
-    public void fire() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, IncorrectState, Timeout,
-            NoSuccess {
+    public void fire() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         try {
             if ("Final".equals(attributes.getAttribute(Metric.MODE))) {
-                throw new IncorrectState("fire called on Final metric");
+                throw new IncorrectStateException("fire called on Final metric");
             }
             if (! "ReadWrite".equals(attributes.getAttribute(Metric.MODE))) {
-                throw new PermissionDenied("file called on non-readwrite metric");
+                throw new PermissionDeniedException("file called on non-readwrite metric");
             }
-        } catch(DoesNotExist e) {
+        } catch(DoesNotExistException e) {
             // Should not happen.
         }
         internalFire();
@@ -347,15 +341,15 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         }
     }
 
-    public void removeCallback(int cookie) throws NotImplemented, BadParameter,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            Timeout, NoSuccess {
+    public void removeCallback(int cookie) throws NotImplementedException, BadParameterException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
         
         CallbackHandler cb;
         
         synchronized(this) {
             if (cookie >= callBacks.size()) {
-                throw new BadParameter("removeCallback with invalid cookie: " + cookie);
+                throw new BadParameterException("removeCallback with invalid cookie: " + cookie);
             }
 
             cb = callBacks.get(cookie);

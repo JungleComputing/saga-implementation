@@ -2,19 +2,18 @@ package org.ogf.saga.proxies.file;
 
 import java.io.IOException;
 
-import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
@@ -24,14 +23,9 @@ public class FileOutputStreamWrapper extends FileOutputStream {
   
     // FileOutputStreamWrapper cannot extend SagaObjectBase, since it already extends
     // FileOutputStream. So, we create the base object here.
-    private static class OutputSagaObject extends SagaObjectBase {
-        
+    private static class OutputSagaObject extends SagaObjectBase {        
         OutputSagaObject(Session session) {
             super(session);
-        }
-
-        public ObjectType getType() {
-            return ObjectType.FILEOUTPUTSTREAM;
         }
     }
     
@@ -39,10 +33,10 @@ public class FileOutputStreamWrapper extends FileOutputStream {
     private FileOutputStreamSpiInterface proxy;
     
     FileOutputStreamWrapper(Session session, URL name, boolean append)
-            throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, AlreadyExists, DoesNotExist, Timeout,
-            NoSuccess {
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         Object[] parameters = { this, session, name, append };
         try {
             proxy = (FileOutputStreamSpiInterface) SAGAEngine.createAdaptorProxy(
@@ -52,38 +46,38 @@ public class FileOutputStreamWrapper extends FileOutputStream {
                         URL.class, Boolean.TYPE },
                     parameters);
             sagaObject = new OutputSagaObject(session);
-        } catch(org.ogf.saga.error.Exception e) {
-            if (e instanceof NotImplemented) {
-                throw (NotImplemented) e;
+        } catch(org.ogf.saga.error.SagaException e) {
+            if (e instanceof NotImplementedException) {
+                throw (NotImplementedException) e;
             }
-            if (e instanceof IncorrectURL) {
-                throw (IncorrectURL) e;
+            if (e instanceof IncorrectURLException) {
+                throw (IncorrectURLException) e;
             }
-            if (e instanceof AuthenticationFailed) {
-                throw (AuthenticationFailed) e;
+            if (e instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) e;
             }
-            if (e instanceof AuthorizationFailed) {
-                throw (AuthorizationFailed) e;
+            if (e instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) e;
             }
-            if (e instanceof PermissionDenied) {
-                throw (PermissionDenied) e;
+            if (e instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) e;
             }
-            if (e instanceof BadParameter) {
-                throw (BadParameter) e;
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
             }
-            if (e instanceof  AlreadyExists) {
-                throw (AlreadyExists) e;
+            if (e instanceof  AlreadyExistsException) {
+                throw (AlreadyExistsException) e;
             }
-            if (e instanceof DoesNotExist) {
-                throw (DoesNotExist) e;
+            if (e instanceof DoesNotExistException) {
+                throw (DoesNotExistException) e;
             }
-            if (e instanceof Timeout) {
-                throw (Timeout) e;
+            if (e instanceof TimeoutException) {
+                throw (TimeoutException) e;
             }
-            if (e instanceof NoSuccess) {
-                throw (NoSuccess) e;
+            if (e instanceof NoSuccessException) {
+                throw (NoSuccessException) e;
             }
-            throw new NoSuccess("Constructor failed", e);
+            throw new NoSuccessException("Constructor failed", e);
         }
     }
    
@@ -107,12 +101,8 @@ public class FileOutputStreamWrapper extends FileOutputStream {
         return sagaObject.getId();
     }
 
-    public Session getSession() throws DoesNotExist {
+    public Session getSession() throws DoesNotExistException {
         return sagaObject.getSession();
-    }
-
-    public ObjectType getType() {
-        return sagaObject.getType();
     }
 
     public void write(byte[] b, int offset, int len) throws IOException {

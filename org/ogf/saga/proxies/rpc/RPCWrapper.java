@@ -1,18 +1,17 @@
 package org.ogf.saga.proxies.rpc;
 
-import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.rpc.Parameter;
 import org.ogf.saga.rpc.RPC;
@@ -26,9 +25,9 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
     private RPCSpiInterface proxy;
 
     public RPCWrapper(Session session, URL funcName)
-            throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, DoesNotExist, Timeout, NoSuccess
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException
     {
         super(session);
         Object[] parameters = { this, session, funcName };
@@ -38,120 +37,116 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
                     new Class[] { RPCWrapper.class, 
                         org.ogf.saga.impl.session.Session.class, URL.class },
                     parameters);
-        } catch(org.ogf.saga.error.Exception e) {
-            if (e instanceof NotImplemented) {
-                throw (NotImplemented) e;
+        } catch(org.ogf.saga.error.SagaException e) {
+            if (e instanceof NotImplementedException) {
+                throw (NotImplementedException) e;
             }
-            if (e instanceof IncorrectURL) {
-                throw (IncorrectURL) e;
+            if (e instanceof IncorrectURLException) {
+                throw (IncorrectURLException) e;
             }
-            if (e instanceof AuthenticationFailed) {
-                throw (AuthenticationFailed) e;
+            if (e instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) e;
             }
-            if (e instanceof AuthorizationFailed) {
-                throw (AuthorizationFailed) e;
+            if (e instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) e;
             }
-            if (e instanceof PermissionDenied) {
-                throw (PermissionDenied) e;
+            if (e instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) e;
             }
-            if (e instanceof BadParameter) {
-                throw (BadParameter) e;
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
             }
-            if (e instanceof DoesNotExist) {
-                throw (DoesNotExist) e;
+            if (e instanceof DoesNotExistException) {
+                throw (DoesNotExistException) e;
             }
-            if (e instanceof Timeout) {
-                throw (Timeout) e;
+            if (e instanceof TimeoutException) {
+                throw (TimeoutException) e;
             }
-            if (e instanceof NoSuccess) {
-                throw (NoSuccess) e;
+            if (e instanceof NoSuccessException) {
+                throw (NoSuccessException) e;
             }
-            throw new NoSuccess("Constructor failed", e);
+            throw new NoSuccessException("Constructor failed", e);
         } 
     }
 
-    public void call(Parameter... parameters) throws NotImplemented,
-            IncorrectURL, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, DoesNotExist,
-            Timeout, NoSuccess {
+    public void call(Parameter... parameters) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, DoesNotExistException,
+            TimeoutException, NoSuccessException {
         proxy.call(parameters);
     }
 
     public Task call(TaskMode mode, Parameter... parameters)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.call(mode, parameters);
     }
 
-    public void close(float timeoutInSeconds) throws NotImplemented,
-            IncorrectState, NoSuccess {
+    public void close(float timeoutInSeconds) throws NotImplementedException,
+            IncorrectStateException, NoSuccessException {
         proxy.close(timeoutInSeconds);
     }
 
     public Task close(TaskMode mode, float timeoutInSeconds)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.close(mode, timeoutInSeconds);
     }
 
-    public String getGroup() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
+    public String getGroup() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.getGroup();
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplemented {
+    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
         return proxy.getGroup(mode);
     }
 
-    public String getOwner() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
+    public String getOwner() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.getOwner();
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplemented {
+    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
         return proxy.getOwner(mode);
     }
 
     public void permissionsAllow(String id, int permissions)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
         proxy.permissionsAllow(id, permissions);
     }
 
     public Task permissionsAllow(TaskMode mode, String id, int permissions)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions);
     }
 
     public boolean permissionsCheck(String id, int permissions)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
         return proxy.permissionsCheck(id, permissions);
     }
 
     public Task<Boolean> permissionsCheck(TaskMode mode, String id,
-            int permissions) throws NotImplemented {
+            int permissions) throws NotImplementedException {
         return proxy.permissionsCheck(mode, id, permissions);
     }
 
     public void permissionsDeny(String id, int permissions)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
         proxy.permissionsDeny(id, permissions);
     }
 
     public Task permissionsDeny(TaskMode mode, String id, int permissions)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions);
     }
 
-    public ObjectType getType() {
-        return ObjectType.RPC;
-    }
-
-    public void close() throws NotImplemented, IncorrectState, NoSuccess {
+    public void close() throws NotImplementedException, IncorrectStateException, NoSuccessException {
         close(0.0F);
     }
 
-    public Task close(TaskMode mode) throws NotImplemented {
+    public Task close(TaskMode mode) throws NotImplementedException {
         return close(mode, 0.0F);
     }
 

@@ -366,12 +366,12 @@ public class SAGAEngine {
      * @param types the types of the constructor parameters.
      * @param tmpParams the actual constructor parameters.
      * @return the proxy object.
-     * @throws org.ogf.saga.error.Exception when no adaptor could be
+     * @throws org.ogf.saga.error.SagaException when no adaptor could be
      * created, the most specific exception is thrown.
      */
     public static Object createAdaptorProxy(
             Class<?> interfaceClass, Class[] types, Object[] tmpParams)
-                throws org.ogf.saga.error.Exception {
+                throws org.ogf.saga.error.SagaException {
 
         SAGAEngine sagaEngine = SAGAEngine.getSAGAEngine();
 

@@ -2,10 +2,8 @@ package org.ogf.saga.impl;
 
 import java.util.UUID;
 
-import org.ogf.saga.ObjectType;
 import org.ogf.saga.SagaObject;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.SagaError;
+import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.session.Session;
 
 public abstract class SagaObjectBase implements SagaObject {
@@ -16,7 +14,7 @@ public abstract class SagaObjectBase implements SagaObject {
     protected SagaObjectBase(Session session) {
         if (session != null
                 && ! (session instanceof org.ogf.saga.impl.session.Session)) {
-            throw new SagaError("Wrong session type: " + session.getClass().getName());
+            throw new SagaRuntimeException("Wrong session type: " + session.getClass().getName());
         }
         this.session = (org.ogf.saga.impl.session.Session) session;
     }
@@ -30,14 +28,12 @@ public abstract class SagaObjectBase implements SagaObject {
         return uuid.toString();
     }
 
-    public Session getSession() throws DoesNotExist {
+    public Session getSession() throws DoesNotExistException {
         if (session == null) {
-            throw new DoesNotExist("No session associated with object");
+            throw new DoesNotExistException("No session associated with object");
         }
         return session;
     }
-
-    public abstract ObjectType getType();
     
     public Object clone() throws CloneNotSupportedException {
         SagaObjectBase clone = (SagaObjectBase) super.clone();

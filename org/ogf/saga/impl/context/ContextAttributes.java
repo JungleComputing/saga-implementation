@@ -1,10 +1,10 @@
 package org.ogf.saga.impl.context;
 
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.SagaError;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.impl.attributes.Attributes;
 
@@ -33,7 +33,7 @@ class ContextAttributes extends Attributes {
         try {
             setValue(Context.LIFETIME, "-1");
         } catch(Throwable e) {
-            throw new SagaError("Internal error", e);
+            throw new SagaRuntimeException("Internal error", e);
         }
     }
     
@@ -47,7 +47,7 @@ class ContextAttributes extends Attributes {
 
     // Makes setValue() available for this package.
     protected void setValue(String key, String value)
-            throws DoesNotExist, NotImplemented, IncorrectState, BadParameter {
+            throws DoesNotExistException, NotImplementedException, IncorrectStateException, BadParameterException {
         super.setValue(key, value);
     }
     
