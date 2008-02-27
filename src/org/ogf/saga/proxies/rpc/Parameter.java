@@ -1,7 +1,7 @@
 package org.ogf.saga.proxies.rpc;
 
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.NotImplemented;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.buffer.Buffer;
 import org.ogf.saga.rpc.IOMode;
 
@@ -9,32 +9,32 @@ public class Parameter extends Buffer implements org.ogf.saga.rpc.Parameter {
     
     IOMode mode;
 
-    protected Parameter() throws NotImplemented, BadParameter {
+    protected Parameter() throws NotImplementedException, BadParameterException {
         super();
         mode = IOMode.IN;
     }
     
-    protected Parameter(IOMode mode) throws NotImplemented, BadParameter {
+    protected Parameter(IOMode mode) throws NotImplementedException, BadParameterException {
         super();
         this.mode = mode;
     }
     
-    protected Parameter(int sz) throws NotImplemented, BadParameter { 
+    protected Parameter(int sz) throws NotImplementedException, BadParameterException { 
         super(sz);
         this.mode = IOMode.IN;
     }
 
-    protected Parameter(int sz, IOMode mode) throws NotImplemented, BadParameter { 
+    protected Parameter(int sz, IOMode mode) throws NotImplementedException, BadParameterException { 
         super(sz);
         this.mode = mode;
     }
     
-    protected Parameter(byte[] b) throws NotImplemented, BadParameter { 
+    protected Parameter(byte[] b) throws NotImplementedException, BadParameterException { 
         super(b);
         this.mode = IOMode.IN;
     }
     
-    protected Parameter(byte[] b, IOMode mode) throws NotImplemented, BadParameter { 
+    protected Parameter(byte[] b, IOMode mode) throws NotImplementedException, BadParameterException { 
         super(b);
         this.mode = mode;
     }

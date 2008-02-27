@@ -4,21 +4,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import org.ogf.saga.ObjectType;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.SagaError;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.task.State;
@@ -44,7 +42,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Object> implements
     protected Metric jobPerformance;
     
     public Job(JobDescription jobDescription, Session session)
-            throws NotImplemented, BadParameter {
+            throws NotImplementedException, BadParameterException {
         super(session);
         attributes = new JobAttributes(this, session);
         this.jobDescription = new JobDescription(jobDescription);
@@ -112,20 +110,20 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Object> implements
             jobState.setValue(value.toString());
             jobState.internalFire();
         } catch(Throwable e) {
-            throw new SagaError("Internal error", e);
+            throw new SagaRuntimeException("Internal error", e);
         }
     }
     
     // Methods from task that should be re-implemented
-    public abstract  void cancel(float timeoutInSeconds) throws NotImplemented,
-            IncorrectState, Timeout, NoSuccess;
+    public abstract  void cancel(float timeoutInSeconds) throws NotImplementedException,
+            IncorrectStateException, TimeoutException, NoSuccessException;
     
     public abstract boolean cancel(boolean mayInterruptIfRunning);
     
-    public abstract void run() throws NotImplemented, IncorrectState, Timeout, NoSuccess;
+    public abstract void run() throws NotImplementedException, IncorrectStateException, TimeoutException, NoSuccessException;
     
     public abstract boolean waitFor(float timeoutInSeconds)
-            throws NotImplemented, IncorrectState, Timeout, NoSuccess;
+            throws NotImplementedException, IncorrectStateException, TimeoutException, NoSuccessException;
     
     public abstract boolean isCancelled();
     
@@ -134,255 +132,252 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Object> implements
     public abstract Object clone();
     
     // Methods from task that are impossible on jobs   
-    public <T> T getObject() throws NotImplemented, Timeout, NoSuccess {
-        throw new NoSuccess("getObject() called on Job");
+    public <T> T getObject() throws NotImplementedException, TimeoutException, NoSuccessException {
+        throw new NoSuccessException("getObject() called on Job");
     }
     
-    public Object getResult() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
-        throw new NoSuccess("getResult() called on Job");
+    public Object getResult() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
+        throw new NoSuccessException("getResult() called on Job");
     }  
     
     public Object get() throws InterruptedException, ExecutionException {
-        throw new SagaError("get() called on Job");
+        throw new SagaRuntimeException("get() called on Job");
     }
     
-    public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        throw new SagaError("get() called on Job");
+    public Object get(long timeout, TimeUnit unit) throws InterruptedException,
+            ExecutionException, java.util.concurrent.TimeoutException {
+        throw new SagaRuntimeException("get() called on Job");
     }
     
-    public void rethrow() throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
-            NoSuccess {
-        throw new NoSuccess("rethrow() called on Job");
+    public void rethrow() throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
+        throw new NoSuccessException("rethrow() called on Job");
     }
     
     public Object call() throws Exception {
-        throw new NoSuccess("call() called on Job");
+        throw new NoSuccessException("call() called on Job");
     }
     
     // Base implementations.
 
-    public ObjectType getType() {
-        return ObjectType.JOB;
-    }
-
-    public Task checkpoint(TaskMode mode) throws NotImplemented {
+    public Task checkpoint(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(this, session, mode,
                 "checkpoint", new Class[] { });
     }
 
-    public org.ogf.saga.job.JobDescription getJobDescription() throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public org.ogf.saga.job.JobDescription getJobDescription() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         if (jobDescription == null) {
-            throw new DoesNotExist("No jobDescription available for this job");
+            throw new DoesNotExistException("No jobDescription available for this job");
         }
         return new JobDescription(jobDescription);
     }
 
     public Task<org.ogf.saga.job.JobDescription> getJobDescription(TaskMode mode)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.JobDescription>(
                 this, session, mode, "getJobDescription", new Class[] { } );
     }
 
-    public Task<InputStream> getStderr(TaskMode mode) throws NotImplemented {
+    public Task<InputStream> getStderr(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<InputStream>(this, session, mode,
                 "getStderr", new Class[] { });
     }
 
-    public Task<OutputStream> getStdin(TaskMode mode) throws NotImplemented {
+    public Task<OutputStream> getStdin(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<OutputStream>(this, session, mode,
                 "getStdin", new Class[] { });
     }
 
-    public Task<InputStream> getStdout(TaskMode mode) throws NotImplemented {
+    public Task<InputStream> getStdout(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<InputStream>(this, session, mode,
                 "getStdout", new Class[] { });
     }
 
     public Task migrate(TaskMode mode, org.ogf.saga.job.JobDescription jd)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(this, session, mode,
                 "resume", new Class[] { org.ogf.saga.job.JobDescription.class }, jd);
     }
 
-    public Task resume(TaskMode mode) throws NotImplemented {
+    public Task resume(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(this, session, mode,
                 "resume", new Class[] { });
     }
 
-    public Task signal(TaskMode mode, int signum) throws NotImplemented {
+    public Task signal(TaskMode mode, int signum) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(this, session, mode,
                 "signal", new Class[] { Integer.TYPE }, signum);
     }
 
-    public Task suspend(TaskMode mode) throws NotImplemented {
+    public Task suspend(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(this, session, mode,
                 "suspend", new Class[] { });
     }
 
     public Task permissionsAllow(TaskMode mode, String id, int permissions)
-    throws NotImplemented {
+    throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(this, session, mode,
                 "permissionsAllow", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
     public Task<Boolean> permissionsCheck(TaskMode mode, String id,
-            int permissions) throws NotImplemented {
+            int permissions) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
                 mode, "permissionsCheck", new Class[] { String.class,
                 Integer.TYPE }, id, permissions);
     }
 
     public Task permissionsDeny(TaskMode mode, String id, int permissions)
-    throws NotImplemented {
+    throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(this, session, mode,
                 "permissionsDeny", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplemented {
+    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<String>(this, session,
                 mode, "getGroup", new Class[] {});
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplemented {
+    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<String>(this, session,
                 mode, "getOwner", new Class[] {});
     }
 
-    public String[] findAttributes(String... patterns) throws NotImplemented,
-            BadParameter, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, Timeout, NoSuccess {
+    public String[] findAttributes(String... patterns) throws NotImplementedException,
+            BadParameterException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return attributes.findAttributes(patterns);
     }
 
     public Task<String[]> findAttributes(TaskMode mode, String... patterns)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.findAttributes(mode, patterns);
     }
 
-    public String getAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public String getAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.getAttribute(key);
     }
 
     public Task<String> getAttribute(TaskMode mode, String key)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.getAttribute(mode, key);
     }
 
-    public String[] getVectorAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public String[] getVectorAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.getVectorAttribute(key);
     }
 
     public Task<String[]> getVectorAttribute(TaskMode mode, String key)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.getVectorAttribute(mode, key);
     }
 
-    public boolean isReadOnlyAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isReadOnlyAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isReadOnlyAttribute(key);
     }
 
     public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.isReadOnlyAttribute(mode, key);
     }
 
-    public boolean isRemovableAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isRemovableAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isRemovableAttribute(key);
     }
 
     public Task<Boolean> isRemovableAttribute(TaskMode mode, String key)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.isRemovableAttribute(mode, key);
     }
 
-    public boolean isVectorAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isVectorAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isVectorAttribute(key);
     }
 
     public Task<Boolean> isVectorAttribute(TaskMode mode, String key)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.isVectorAttribute(mode, key);
     }
 
-    public boolean isWritableAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isWritableAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isWritableAttribute(key);
     }
 
     public Task<Boolean> isWritableAttribute(TaskMode mode, String key)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.isWritableAttribute(mode, key);
     }
 
-    public String[] listAttributes() throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            Timeout, NoSuccess {
+    public String[] listAttributes() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
         return attributes.listAttributes();
     }
 
-    public Task<String[]> listAttributes(TaskMode mode) throws NotImplemented {
+    public Task<String[]> listAttributes(TaskMode mode) throws NotImplementedException {
         return attributes.listAttributes(mode);
     }
 
-    public void removeAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public void removeAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         attributes.removeAttribute(key);
     }
 
     public Task removeAttribute(TaskMode mode, String key)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.removeAttribute(mode, key);
     }
 
-    public void setAttribute(String key, String value) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, BadParameter, DoesNotExist, Timeout, NoSuccess {
+    public void setAttribute(String key, String value) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
         attributes.setAttribute(key, value);
     }
 
     public Task setAttribute(TaskMode mode, String key, String value)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.setAttribute(mode, key, value);
     }
 
     public void setVectorAttribute(String key, String[] values)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, IncorrectState, BadParameter, DoesNotExist,
-            Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException,
+            TimeoutException, NoSuccessException {
         attributes.setVectorAttribute(key, values);
     }
 
     public Task setVectorAttribute(TaskMode mode, String key, String[] values)
-            throws NotImplemented {
+            throws NotImplementedException {
         return attributes.setVectorAttribute(mode, key, values);
     }
 
-    protected void setValue(String key, String value) throws DoesNotExist,
-            NotImplemented, IncorrectState, BadParameter {
+    protected void setValue(String key, String value) throws DoesNotExistException,
+            NotImplementedException, IncorrectStateException, BadParameterException {
         attributes.setValue(key, value);
     }
     
-    protected void setVectorValue(String key, String[] value) throws DoesNotExist,
-            NotImplemented, IncorrectState, BadParameter {
+    protected void setVectorValue(String key, String[] value) throws DoesNotExistException,
+            NotImplementedException, IncorrectStateException, BadParameterException {
         attributes.setVectorValue(key, value);
     }
 }

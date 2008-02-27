@@ -2,19 +2,19 @@ package org.ogf.saga.spi.job;
 
 import java.util.List;
 
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
-import org.ogf.saga.task.Task;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
 import org.ogf.saga.task.Async;
+import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 
@@ -27,9 +27,9 @@ public interface JobServiceSpiInterface extends Async {
      * @param jd the job description.
      * @return the job.
      */
-    public Job createJob(JobDescription jd) throws NotImplemented,
-           AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-           BadParameter, Timeout, NoSuccess;
+    public Job createJob(JobDescription jd) throws NotImplementedException,
+           AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+           BadParameterException, TimeoutException, NoSuccessException;
     
     /**
      * Runs the specified command on the specified host.
@@ -50,16 +50,16 @@ public interface JobServiceSpiInterface extends Async {
      * @return the job.
      */
     public Job runJob(String commandLine, String host, boolean interactive)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, Timeout, NoSuccess;
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException;
     
     /**
      * Obtains the list of jobs that are currently known to the
      * resource manager.
      * @return a list of job identifications.
      */
-    public List<String> list() throws NotImplemented, AuthenticationFailed,
-           AuthorizationFailed, PermissionDenied, Timeout, NoSuccess;
+    public List<String> list() throws NotImplementedException, AuthenticationFailedException,
+           AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException;
 
     /**
      * Returns the job instance associated with the specified job
@@ -67,17 +67,17 @@ public interface JobServiceSpiInterface extends Async {
      * @param jobId the job identification.
      * @return the job instance.
      */
-    public Job getJob(String jobId) throws NotImplemented,
-           AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-           BadParameter, DoesNotExist, Timeout, NoSuccess;
+    public Job getJob(String jobId) throws NotImplementedException,
+           AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+           BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException;
 
     /**
      * Returns a job instance representing the calling application.
      * @return the job instance.
      */
-    public JobSelf getSelf() throws NotImplemented,
-           AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-           Timeout, NoSuccess;
+    public JobSelf getSelf() throws NotImplementedException,
+           AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+           TimeoutException, NoSuccessException;
 
     /**
      * Creates a task that creates a job instance as specified by the
@@ -86,11 +86,11 @@ public interface JobServiceSpiInterface extends Async {
      * @param mode the task mode.
      * @param jd the job description.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<Job> createJob(TaskMode mode, JobDescription jd)
-        throws NotImplemented;
+        throws NotImplementedException;
     
     /**
      * Creates a task that runs the specified command on the specified host.
@@ -112,18 +112,18 @@ public interface JobServiceSpiInterface extends Async {
      * @return the task.
      */
     public Task<Job> runJob(TaskMode mode, String commandLine, String host,
-            boolean interactive) throws NotImplemented;
+            boolean interactive) throws NotImplementedException;
 
     /**
      * Creates a task that obtains the list of jobs that are currently known
      * to the resource manager.
      * @param mode the task mode.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<List<String>> list(TaskMode mode)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that obtains the job instance associated with the
@@ -131,20 +131,20 @@ public interface JobServiceSpiInterface extends Async {
      * @param mode the task mode.
      * @param jobId the job identification.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<Job> getJob(TaskMode mode, String jobId)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that obtains a job instance representing the calling
      * application.
      * @param mode the task mode.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<JobSelf> getSelf(TaskMode mode)
-        throws NotImplemented;
+        throws NotImplementedException;
 }

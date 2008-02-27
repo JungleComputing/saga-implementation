@@ -1,6 +1,6 @@
 package org.ogf.saga.proxies.file;
 
-import org.ogf.saga.error.BadParameter;
+import org.ogf.saga.error.BadParameterException;
 
 /**
  * This class provides conversion from String to a FALLS pattern.
@@ -62,57 +62,57 @@ public class Falls {
     /**
      * Creates the FALLS pattern information from the specified string.
      * @param s the FALLS pattern as a string.
-     * @exception BadParameter when the string is not recognized as a FALLS
+     * @exception BadParameterException when the string is not recognized as a FALLS
      *  pattern.
      */
-    public Falls(String s) throws BadParameter {
+    public Falls(String s) throws BadParameterException {
         tokenizer = new Tokenizer(s);
         read();
         int tok = tokenizer.nextToken();
         if (tok != Tokenizer.EOS) {
-            throw new BadParameter("Garbage at end of FALLS pattern");
+            throw new BadParameterException("Garbage at end of FALLS pattern");
         }
         check();
         tokenizer = null;
     }
     
-    private Falls(Tokenizer t) throws BadParameter {
+    private Falls(Tokenizer t) throws BadParameterException {
         tokenizer = t;
         read();
         check();
         tokenizer = null;
     }
     
-    private void check() throws BadParameter {
+    private void check() throws BadParameterException {
         if (to < from) {
-            throw new BadParameter("to < from in FALLS pattern");
+            throw new BadParameterException("to < from in FALLS pattern");
         }
         if (stride < (to - from + 1)) {
-            throw new BadParameter("stride too small for specified"
+            throw new BadParameterException("stride too small for specified"
                     + " to and from in FALLS pattern");
         }
         if (rep == 0) {
-            throw new BadParameter("rep = 0 in FALLS pattern");
+            throw new BadParameterException("rep = 0 in FALLS pattern");
         }
     }
     
-    private void getComma() throws BadParameter {
+    private void getComma() throws BadParameterException {
         if (tokenizer.nextToken() != Tokenizer.COMMA) {
-            throw new BadParameter("Comma expected in FALLS pattern");
+            throw new BadParameterException("Comma expected in FALLS pattern");
         } 
     }
 
-    private int getInt() throws BadParameter {
+    private int getInt() throws BadParameterException {
         if (tokenizer.nextToken() != Tokenizer.INTEGER) {
-            throw new BadParameter("Integer expected in FALLS pattern");
+            throw new BadParameterException("Integer expected in FALLS pattern");
         }
         return tokenizer.tokval;
     }
     
-    private void read() throws BadParameter {
+    private void read() throws BadParameterException {
         int tok = tokenizer.nextToken();
         if (tok != Tokenizer.LEFTPAR) {
-            throw new BadParameter("FALLS pattern should start with '('");
+            throw new BadParameterException("FALLS pattern should start with '('");
         }
         from = getInt();
         getComma();
@@ -127,7 +127,7 @@ public class Falls {
             tok = tokenizer.nextToken();
         }
         if (tok != Tokenizer.RIGHTPAR) {
-            throw new BadParameter("')' expected in FALLS pattern");
+            throw new BadParameterException("')' expected in FALLS pattern");
         }
     }
     

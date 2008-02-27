@@ -9,7 +9,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
-import org.ogf.saga.error.NoSuccess;
+import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.impl.AdaptorBase;
 
 /**
@@ -103,13 +103,13 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         = new Hashtable<String, Object>();
     
     AdaptorInvocationHandler(AdaptorList adaptors, Class[] types, Object[] params)
-            throws org.ogf.saga.error.Exception {
+            throws org.ogf.saga.error.SagaException {
 
         if (adaptors == null || adaptors.size() == 0) {
-            throw new NoSuccess("no adaptors could be loaded for this object");
+            throw new NoSuccessException("no adaptors could be loaded for this object");
         }
         
-        org.ogf.saga.error.Exception exception = null; 
+        org.ogf.saga.error.SagaException exception = null; 
 
         for (Adaptor adaptor : adaptors) {
             String adaptorname = adaptor.getAdaptorName();
@@ -129,13 +129,13 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 
                 // keep the most specific exception around. We can throw that
                 // when all adaptors fail.
-                if (t instanceof org.ogf.saga.error.Exception) {
-                    org.ogf.saga.error.Exception e = (org.ogf.saga.error.Exception) t;
+                if (t instanceof org.ogf.saga.error.SagaException) {
+                    org.ogf.saga.error.SagaException e = (org.ogf.saga.error.SagaException) t;
                     if (exception == null || e.compareTo(exception) < 0) {
                         exception = e;
                     }
                 } else if (exception == null) {
-                    exception = new NoSuccess("Got exception from constructor of "
+                    exception = new NoSuccessException("Got exception from constructor of "
                             + adaptor.getShortAdaptorClassName(), t);
                 }
             }
@@ -171,7 +171,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method m, Object[] params)
         throws Throwable {
         
-        org.ogf.saga.error.Exception exception = null;
+        org.ogf.saga.error.SagaException exception = null;
         
         ArrayList<String> adaptornames = adaptorSorter.getOrdering(m);
         boolean first = true;
@@ -213,13 +213,13 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     
                     // keep the most specific exception around. We can throw that
                     // when all adaptors fail.
-                    if (t instanceof org.ogf.saga.error.Exception) {
-                        org.ogf.saga.error.Exception e = (org.ogf.saga.error.Exception) t;
+                    if (t instanceof org.ogf.saga.error.SagaException) {
+                        org.ogf.saga.error.SagaException e = (org.ogf.saga.error.SagaException) t;
                         if (exception == null || e.compareTo(exception) < 0) {
                             exception = e;
                         }
                     } else if (exception == null) {
-                        exception = new NoSuccess("Got exception from " + m.getName()
+                        exception = new NoSuccessException("Got exception from " + m.getName()
                                 + " on " + adaptor.getShortAdaptorClassName(), t);
                     }
 
@@ -238,7 +238,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         
         if (exception == null) {
             // Can this happen??? I don't think so.
-            throw new NoSuccess("no adaptor found for " + m.getName());
+            throw new NoSuccessException("no adaptor found for " + m.getName());
         }
 
         // throw the most specific exception.

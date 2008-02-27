@@ -1,19 +1,18 @@
 package org.ogf.saga.proxies.namespace;
 
-import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
@@ -31,9 +30,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     private boolean inheritedProxy = false;
     
     protected NSEntryWrapper(Session session, URL name, int flags)
-            throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, DoesNotExist, AlreadyExists, Timeout, NoSuccess {        
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, DoesNotExistException, AlreadyExistsException, TimeoutException, NoSuccessException {        
         super(session);
         Object[] parameters = { this, session, name, flags };
         try {
@@ -43,38 +42,38 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
                         org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE },
                         parameters);
-        } catch(org.ogf.saga.error.Exception e) {
-            if (e instanceof NotImplemented) {
-                throw (NotImplemented) e;
+        } catch(org.ogf.saga.error.SagaException e) {
+            if (e instanceof NotImplementedException) {
+                throw (NotImplementedException) e;
             }
-            if (e instanceof IncorrectURL) {
-                throw (IncorrectURL) e;
+            if (e instanceof IncorrectURLException) {
+                throw (IncorrectURLException) e;
             }
-            if (e instanceof AuthenticationFailed) {
-                throw (AuthenticationFailed) e;
+            if (e instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) e;
             }
-            if (e instanceof AuthorizationFailed) {
-                throw (AuthorizationFailed) e;
+            if (e instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) e;
             }
-            if (e instanceof PermissionDenied) {
-                throw (PermissionDenied) e;
+            if (e instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) e;
             }
-            if (e instanceof BadParameter) {
-                throw (BadParameter) e;
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
             }
-            if (e instanceof  AlreadyExists) {
-                throw (AlreadyExists) e;
+            if (e instanceof  AlreadyExistsException) {
+                throw (AlreadyExistsException) e;
             }
-            if (e instanceof DoesNotExist) {
-                throw (DoesNotExist) e;
+            if (e instanceof DoesNotExistException) {
+                throw (DoesNotExistException) e;
             }
-            if (e instanceof Timeout) {
-                throw (Timeout) e;
+            if (e instanceof TimeoutException) {
+                throw (TimeoutException) e;
             }
-            if (e instanceof NoSuccess) {
-                throw (NoSuccess) e;
+            if (e instanceof NoSuccessException) {
+                throw (NoSuccessException) e;
             }
-            throw new NoSuccess("Constructor failed", e);
+            throw new NoSuccessException("Constructor failed", e);
         }
     }
     
@@ -97,253 +96,249 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return clone;
     }
 
-    public void close() throws NotImplemented, IncorrectState, NoSuccess {
+    public void close() throws NotImplementedException, IncorrectStateException, NoSuccessException {
         close(NO_WAIT);
     }
 
-    public void close(float timeoutInSeconds) throws NotImplemented,
-            IncorrectState, NoSuccess {
+    public void close(float timeoutInSeconds) throws NotImplementedException,
+            IncorrectStateException, NoSuccessException {
         proxy.close(timeoutInSeconds);
     }
 
     public Task close(TaskMode mode, float timeoutInSeconds)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.close(mode, timeoutInSeconds);
     }
 
-    public Task close(TaskMode mode) throws NotImplemented {
+    public Task close(TaskMode mode) throws NotImplementedException {
         return close(mode, NO_WAIT);
     }
 
     public Task copy(TaskMode mode, URL target, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.copy(mode, target, flags);
     }
 
-    public Task copy(TaskMode mode, URL target) throws NotImplemented {
+    public Task copy(TaskMode mode, URL target) throws NotImplementedException {
         return copy(mode, target, Flags.NONE.getValue());
     }
 
-    public void copy(URL target, int flags) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
-            NoSuccess, IncorrectURL {
+    public void copy(URL target, int flags) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException, IncorrectURLException {
         proxy.copy(target, flags);
     }
 
-    public void copy(URL target) throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess,
-            IncorrectURL {
+    public void copy(URL target) throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException,
+            IncorrectURLException {
         copy(target, Flags.NONE.getValue());
     }
 
-    public URL getCWD() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    public URL getCWD() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         return proxy.getCWD();
     }
 
-    public Task<URL> getCWD(TaskMode mode) throws NotImplemented {
+    public Task<URL> getCWD(TaskMode mode) throws NotImplementedException {
         return proxy.getCWD(mode);
     }
 
-    public String getGroup() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
+    public String getGroup() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.getGroup();
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplemented {
+    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
         return proxy.getGroup(mode);
     }
 
-    public URL getName() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    public URL getName() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         return proxy.getName();
     }
 
-    public Task<URL> getName(TaskMode mode) throws NotImplemented {
+    public Task<URL> getName(TaskMode mode) throws NotImplementedException {
         return proxy.getName(mode);
     }
 
-    public String getOwner() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
+    public String getOwner() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.getOwner();
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplemented {
+    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
         return proxy.getOwner(mode);
     }
 
-    public ObjectType getType() {
-        return ObjectType.NSENTRY;
-    }
-
-    public URL getURL() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    public URL getURL() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         return proxy.getURL();
     }
 
-    public Task<URL> getURL(TaskMode mode) throws NotImplemented {
+    public Task<URL> getURL(TaskMode mode) throws NotImplementedException {
         return proxy.getURL(mode);
     }
 
-    public boolean isDir() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess {
+    public boolean isDir() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         return proxy.isDir();
     }
 
-    public Task<Boolean> isDir(TaskMode mode) throws NotImplemented {
+    public Task<Boolean> isDir(TaskMode mode) throws NotImplementedException {
         return proxy.isDir(mode);
     }
 
-    public boolean isEntry() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess {
+    public boolean isEntry() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         return proxy.isEntry();
     }
 
-    public Task<Boolean> isEntry(TaskMode mode) throws NotImplemented {
+    public Task<Boolean> isEntry(TaskMode mode) throws NotImplementedException {
         return proxy.isEntry(mode);
     }
 
-    public boolean isLink() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess {
+    public boolean isLink() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         return proxy.isLink();
     }
 
-    public Task<Boolean> isLink(TaskMode mode) throws NotImplemented {
+    public Task<Boolean> isLink(TaskMode mode) throws NotImplementedException {
         return proxy.isLink(mode);
     }
 
     public Task link(TaskMode mode, URL target, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.link(mode, target, flags);
     }
 
-    public Task link(TaskMode mode, URL target) throws NotImplemented {
+    public Task link(TaskMode mode, URL target) throws NotImplementedException {
         return link(mode, target, Flags.NONE.getValue());
     }
 
-    public void link(URL target, int flags) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, Timeout, NoSuccess,
-            IncorrectURL {
+    public void link(URL target, int flags) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException,
+            IncorrectURLException {
         proxy.link(target, flags);
     }
 
-    public void link(URL target) throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, Timeout, NoSuccess, IncorrectURL {
+    public void link(URL target) throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException, IncorrectURLException {
         link(target, Flags.NONE.getValue());
     }
 
     public Task move(TaskMode mode, URL target, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.move(mode, target, flags);
     }
 
-    public Task move(TaskMode mode, URL target) throws NotImplemented {
+    public Task move(TaskMode mode, URL target) throws NotImplementedException {
         return move(mode, target, Flags.NONE.getValue());
     }
 
-    public void move(URL target, int flags) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout,
-            NoSuccess, IncorrectURL {
+    public void move(URL target, int flags) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException, IncorrectURLException {
         proxy.move(target, flags);
     }
 
-    public void move(URL target) throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess,
-            IncorrectURL {
+    public void move(URL target) throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException,
+            IncorrectURLException {
         move(target, Flags.NONE.getValue());
     }
 
     public void permissionsAllow(String id, int permissions, int flags)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, IncorrectState, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException, BadParameterException, TimeoutException, NoSuccessException {
         proxy.permissionsAllow(id, permissions, flags);
     }
 
     public void permissionsAllow(String id, int permissions)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
         proxy.permissionsAllow(id, permissions);
     }
 
     public Task permissionsAllow(TaskMode mode, String id, int permissions,
-            int flags) throws NotImplemented {
+            int flags) throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions, flags);
     }
 
     public Task permissionsAllow(TaskMode mode, String id, int permissions)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions);
     }
 
     public boolean permissionsCheck(String id, int permissions)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
         return proxy.permissionsCheck(id, permissions);
     }
 
     public Task<Boolean> permissionsCheck(TaskMode mode, String id,
-            int permissions) throws NotImplemented {
+            int permissions) throws NotImplementedException {
         return proxy.permissionsCheck(mode, id, permissions);
     }
 
     public void permissionsDeny(String id, int permissions, int flags)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            IncorrectStateException, PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
         proxy.permissionsDeny(id, permissions, flags);
     }
 
     public void permissionsDeny(String id, int permissions)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
         proxy.permissionsDeny(id, permissions);
     }
 
     public Task permissionsDeny(TaskMode mode, String id, int permissions,
-            int flags) throws NotImplemented {
+            int flags) throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions, flags);
     }
 
     public Task permissionsDeny(TaskMode mode, String id, int permissions)
-            throws NotImplemented {
+            throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions);
     }
 
-    public URL readLink() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess {
+    public URL readLink() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         return proxy.readLink();
     }
 
-    public Task<URL> readLink(TaskMode mode) throws NotImplemented {
+    public Task<URL> readLink(TaskMode mode) throws NotImplementedException {
         return proxy.readLink(mode);
     }
 
-    public void remove() throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess {
+    public void remove() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         remove(Flags.NONE.getValue());
     }
 
-    public void remove(int flags) throws NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess {
+    public void remove(int flags) throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         proxy.remove(flags);
     }
 
-    public Task remove(TaskMode mode, int flags) throws NotImplemented {
+    public Task remove(TaskMode mode, int flags) throws NotImplementedException {
         return proxy.remove(mode, flags);
     }
 
-    public Task remove(TaskMode mode) throws NotImplemented {
+    public Task remove(TaskMode mode) throws NotImplementedException {
         return remove(mode, Flags.NONE.getValue());
     }
 

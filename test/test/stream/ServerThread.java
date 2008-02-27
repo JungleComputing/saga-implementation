@@ -5,15 +5,15 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
@@ -37,7 +37,7 @@ public abstract class ServerThread implements Runnable {
 
     private Callback readable = new Callback() {
         public boolean cb(Monitorable mt, Metric metric, Context ctx)
-                throws NotImplemented, AuthorizationFailed {
+                throws NotImplementedException, AuthorizationFailedException {
             logger.debug("Stream Server: Stream is readable [METRIC]");
             return true;
         }
@@ -45,7 +45,7 @@ public abstract class ServerThread implements Runnable {
 
     private Callback writeable = new Callback() {
         public boolean cb(Monitorable mt, Metric metric, Context ctx)
-                throws NotImplemented, AuthorizationFailed {
+                throws NotImplementedException, AuthorizationFailedException {
             logger.debug("Stream Server: Stream is writable [METRIC]");
             return true;
         }
@@ -53,7 +53,7 @@ public abstract class ServerThread implements Runnable {
 
     private Callback clientConnect = new Callback() {
         public boolean cb(Monitorable mt, Metric metric, Context ctx)
-                throws NotImplemented, AuthorizationFailed {
+                throws NotImplementedException, AuthorizationFailedException {
             logger.debug("Stream Server: Client connected [METRIC]");
             return true;
         }
@@ -61,7 +61,7 @@ public abstract class ServerThread implements Runnable {
 
     private Callback stateChanged = new Callback() {
         public boolean cb(Monitorable mt, Metric metric, Context ctx)
-                throws NotImplemented, AuthorizationFailed {
+                throws NotImplementedException, AuthorizationFailedException {
 
             try {
                 logger.debug("Stream Server: State changed --> "
@@ -77,7 +77,7 @@ public abstract class ServerThread implements Runnable {
 
     private Callback exception = new Callback() {
         public boolean cb(Monitorable mt, Metric metric, Context ctx)
-                throws NotImplemented, AuthorizationFailed {
+                throws NotImplementedException, AuthorizationFailedException {
             logger.debug("Stream Server: Stream exception [METRIC]");
             return true;
         }
@@ -85,7 +85,7 @@ public abstract class ServerThread implements Runnable {
 
     private Callback dropped = new Callback() {
         public boolean cb(Monitorable mt, Metric metric, Context ctx)
-                throws NotImplemented, AuthorizationFailed {
+                throws NotImplementedException, AuthorizationFailedException {
             logger.debug("Stream Server: Connection dropped [METRIC]");
             return true;
         }
@@ -130,9 +130,9 @@ public abstract class ServerThread implements Runnable {
         this.stop = true;
     }
 
-    protected abstract void processStream(Stream stream) throws NotImplemented,
-            BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, Timeout, IOException,
-            DoesNotExist, InterruptedException;
+    protected abstract void processStream(Stream stream) throws NotImplementedException,
+            BadParameterException, NoSuccessException, IncorrectStateException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, TimeoutException, IOException,
+            DoesNotExistException, InterruptedException;
 
 }

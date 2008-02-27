@@ -1,17 +1,16 @@
 package org.ogf.saga.impl.context;
 
-import org.ogf.saga.ObjectType;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.SagaError;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
+import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.session.Session;
 
 public class Context extends SagaObjectBase
@@ -19,8 +18,8 @@ public class Context extends SagaObjectBase
 
     private final ContextAttributes attributes;
 
-    Context(String type) throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    Context(String type) throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         super((Session) null);
         
         // Allow for a "preferences" extensible context. This allows for
@@ -34,7 +33,7 @@ public class Context extends SagaObjectBase
             try {
                 attributes.setValue(TYPE, type);
             } catch (Throwable e) {
-                throw new NoSuccess("Oops, could not set TYPE attribute", e);
+                throw new NoSuccessException("Oops, could not set TYPE attribute", e);
             }
             setDefaults();
         }
@@ -49,22 +48,17 @@ public class Context extends SagaObjectBase
         return new Context(this);
     }
 
-    @Override
-    public ObjectType getType() {
-        return ObjectType.CONTEXT;
-    }
-
-    public void setDefaults() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    public void setDefaults() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         String type;
         try {
             type = attributes.getAttribute(TYPE);
-        } catch (DoesNotExist e1) {
-            throw new IncorrectState(
+        } catch (DoesNotExistException e1) {
+            throw new IncorrectStateException(
                     "setDefaults called but TYPE attribute not set");
         } catch (Throwable e) {
             // Should not happen.
-            throw new SagaError("could not get TYPE attribute", e);
+            throw new SagaRuntimeException("could not get TYPE attribute", e);
         }
         try {
             if ("Unknown".equals(type)) {
@@ -86,80 +80,80 @@ public class Context extends SagaObjectBase
             } else if ("preferences".equals(type)) {
                 // nothing
             } else if (!type.equals("")) {
-                throw new NoSuccess("Unrecognized TYPE attribute value: "
+                throw new NoSuccessException("Unrecognized TYPE attribute value: "
                         + type);
             }
-        } catch (DoesNotExist e) {
+        } catch (DoesNotExistException e) {
             // Should not happen.
-        } catch (BadParameter e) {
+        } catch (BadParameterException e) {
             // Should not happen.
         }
     }
 
-    public String[] findAttributes(String... patterns) throws NotImplemented,
-            BadParameter, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, Timeout, NoSuccess {
+    public String[] findAttributes(String... patterns) throws NotImplementedException,
+            BadParameterException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return attributes.findAttributes(patterns);
     }
 
-    public String getAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public String getAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.getAttribute(key);
     }
 
-    public String[] getVectorAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public String[] getVectorAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.getVectorAttribute(key);
     }
 
-    public boolean isReadOnlyAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isReadOnlyAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isReadOnlyAttribute(key);
     }
 
-    public boolean isRemovableAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isRemovableAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isRemovableAttribute(key);
     }
 
-    public boolean isVectorAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isVectorAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isVectorAttribute(key);
     }
 
-    public boolean isWritableAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public boolean isWritableAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isWritableAttribute(key);
     }
 
-    public String[] listAttributes() throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            Timeout, NoSuccess {
+    public String[] listAttributes() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
         return attributes.listAttributes();
     }
 
-    public void removeAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public void removeAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         attributes.removeAttribute(key);
     }
 
-    public void setAttribute(String key, String value) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, BadParameter, DoesNotExist, Timeout, NoSuccess {
+    public void setAttribute(String key, String value) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
         attributes.setAttribute(key, value);
     }
 
     public void setVectorAttribute(String key, String[] values)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, IncorrectState, BadParameter, DoesNotExist,
-            Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException,
+            TimeoutException, NoSuccessException {
         attributes.setVectorAttribute(key, values);
     }
 
@@ -167,8 +161,8 @@ public class Context extends SagaObjectBase
         return attributes.getValue(key);
     }
 
-    void setValue(String key, String value) throws DoesNotExist,
-            NotImplemented, IncorrectState, BadParameter {
+    void setValue(String key, String value) throws DoesNotExistException,
+            NotImplementedException, IncorrectStateException, BadParameterException {
         attributes.setValue(key, value);
     }
 }

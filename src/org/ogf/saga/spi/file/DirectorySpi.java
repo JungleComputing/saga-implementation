@@ -1,25 +1,25 @@
 package org.ogf.saga.spi.file;
 
 import org.ogf.saga.URL;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.Directory;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.file.FileOutputStream;
+import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.DirectoryWrapper;
-import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.spi.namespace.NSDirectorySpi;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -30,84 +30,84 @@ public abstract class DirectorySpi extends NSDirectorySpi implements
     protected int directoryFlags;
 
     public DirectorySpi(DirectoryWrapper wrapper, Session session, URL name, int flags)
-            throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
-            PermissionDenied, AuthorizationFailed, AuthenticationFailed,
-            Timeout, NoSuccess, AlreadyExists {
+            throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
+            TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, session, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
         directoryFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
         if ((directoryFlags | Flags.ALLFILEFLAGS.getValue())
                 != Flags.ALLFILEFLAGS.getValue()) {
-            throw new BadParameter("Illegal flags for Direectory constructor: " + flags);
+            throw new BadParameterException("Illegal flags for Direectory constructor: " + flags);
         }
     }
 
     public Task<Long> getSize(TaskMode mode, URL name, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Long>(wrapper, session, mode,
                 "getSize", new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 
-    public Task<Boolean> isFile(TaskMode mode, URL arg1) throws NotImplemented {
+    public Task<Boolean> isFile(TaskMode mode, URL arg1) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session, mode,
                 "isFile", new Class[] { URL.class }, arg1);
     }
     
     public Directory openDirectory(URL name, int flags)
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         name = resolve(name);
         return FileFactory.createDirectory(session, name, flags);
     }
 
     public Task<Directory> openDirectory(TaskMode mode, URL name, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Directory>(wrapper, session, mode,
                 "openDirectory", new Class[] { URL.class, Integer.TYPE }, name,
                 flags);
     }
     
     public File openFile(URL name, int flags)
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         name = resolve(name);
         return FileFactory.createFile(session, name, flags);
     }
 
 
     public Task<File> openFile(TaskMode mode, URL name, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<File>(wrapper, session, mode,
                 "openFile", new Class[] { URL.class, Integer.TYPE }, name,
                 flags);
     }
     
-    public FileInputStream openFileInputStream(URL name) throws NotImplemented,
-            IncorrectURL, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, AlreadyExists,
-            DoesNotExist, Timeout, NoSuccess {
+    public FileInputStream openFileInputStream(URL name) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         name = resolve(name);
         return FileFactory.createFileInputStream(session, name);
     }
 
     public FileOutputStream openFileOutputStream(URL name, boolean append)
-            throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         name = resolve(name);
         return FileFactory.createFileOutputStream(session, name, append);
     }
 
 
     public Task<FileInputStream> openFileInputStream(TaskMode mode, URL name)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<FileInputStream>(wrapper, session,
                 mode, "openFileInputStream", new Class[] { URL.class }, name);
     }
 
     public Task<FileOutputStream> openFileOutputStream(TaskMode mode, URL name,
-            boolean append) throws NotImplemented {
+            boolean append) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<FileOutputStream>(wrapper, session,
                 mode, "openFileOutputStream", new Class[] { URL.class,
                         Boolean.TYPE }, name, append);

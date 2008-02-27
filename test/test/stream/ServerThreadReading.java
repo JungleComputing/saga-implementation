@@ -5,15 +5,15 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.buffer.BufferFactory;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.stream.Stream;
 
 public class ServerThreadReading extends ServerThread {
@@ -24,10 +24,10 @@ public class ServerThreadReading extends ServerThread {
         super(url);
     }
 
-    protected void processStream(Stream stream) throws NotImplemented,
-            BadParameter, NoSuccess, IncorrectState, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, Timeout, IOException,
-            DoesNotExist, InterruptedException {
+    protected void processStream(Stream stream) throws NotImplementedException,
+            BadParameterException, NoSuccessException, IncorrectStateException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, TimeoutException, IOException,
+            DoesNotExistException, InterruptedException {
         Buffer buffer = BufferFactory.createBuffer();
 
         // Thread.sleep(8000);

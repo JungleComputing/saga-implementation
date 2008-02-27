@@ -7,15 +7,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 
 // Questions:
 // - what exactly should listAttributes list? All attributes that have a value?
@@ -187,9 +187,9 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         return new String[] { pattern.substring(0, index), pattern.substring(index + 1) };
     }
 
-    public String[] findAttributes(String... patterns) throws NotImplemented,
-            BadParameter, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, Timeout, NoSuccess {
+    public String[] findAttributes(String... patterns) throws NotImplementedException,
+            BadParameterException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         PatternConverter[][] matchers = new PatternConverter[patterns.length][];
         
         for (int i = 0; i < patterns.length; i++) {
@@ -225,7 +225,7 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         return result.toArray(new String[result.size()]);
     }
 
-    private AttributeInfo getInfo(String key) throws DoesNotExist, NotImplemented {
+    private AttributeInfo getInfo(String key) throws DoesNotExistException, NotImplementedException {
         AttributeInfo info = attributes.get(key);
         
         if (info == null) {
@@ -233,73 +233,73 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
                 addAttribute(key, AttributeType.STRING, false, false, false, true);
                 info = attributes.get(key);
             } else {
-                throw new DoesNotExist("Attribute " + key + " does not exist");
+                throw new DoesNotExistException("Attribute " + key + " does not exist");
             }
         }
         
         if (info.type == AttributeType.TRIGGER) {
-            throw new DoesNotExist("Cannot get/set value of a Trigger");
+            throw new DoesNotExistException("Cannot get/set value of a Trigger");
         }
         
         if (info.notImplemented) {
-            throw new NotImplemented("Attribute " + key
+            throw new NotImplementedException("Attribute " + key
                     + " not available in this implementation");
         }
         return info;
     }
     
     private AttributeInfo getInfoCheckVector(String key, boolean vector)
-            throws DoesNotExist, NotImplemented, IncorrectState {
+            throws DoesNotExistException, NotImplementedException, IncorrectStateException {
         AttributeInfo info = getInfo(key);
         if (vector != info.vector) {
-            throw new IncorrectState("Attribute " + key
+            throw new IncorrectStateException("Attribute " + key
                     + " is " + (vector ? "not " : "") + "a vector attribute");
         }
         return info;
     }
     
-    public synchronized String getAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public synchronized String getAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         
         return getInfoCheckVector(key, false).value;
     }
 
-    public synchronized String[] getVectorAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public synchronized String[] getVectorAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         
         return getInfoCheckVector(key, true).vectorValue.clone();
     }
 
-    public synchronized boolean isReadOnlyAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public synchronized boolean isReadOnlyAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         
         return getInfo(key).readOnly;
     }
 
-    public synchronized boolean isRemovableAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public synchronized boolean isRemovableAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return getInfo(key).removable;
     }
 
-    public synchronized boolean isVectorAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public synchronized boolean isVectorAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return getInfo(key).vector;
     }
 
-    public synchronized boolean isWritableAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public synchronized boolean isWritableAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return ! getInfo(key).readOnly;
     }
 
-    public synchronized String[] listAttributes() throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            Timeout, NoSuccess {
+    public synchronized String[] listAttributes() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
         HashSet<String> keys = new HashSet<String>();
         for (String key : attributes.keySet()) {
             try {
@@ -314,12 +314,12 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         return keys.toArray(new String[keys.size()]);
     }
 
-    public synchronized void removeAttribute(String key) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            DoesNotExist, Timeout, NoSuccess {
+    public synchronized void removeAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         AttributeInfo info = getInfo(key);
         if (! info.removable) {
-            throw new PermissionDenied("Attribute " + key + " is not removable");
+            throw new PermissionDeniedException("Attribute " + key + " is not removable");
         }
         attributes.remove(key);
     }
@@ -327,7 +327,7 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
     // Set method without checks for readOnly. We must be able to set the
     // attribute, somehow.
     protected synchronized void setValue(String key, String value)
-            throws DoesNotExist, NotImplemented, IncorrectState, BadParameter { 
+            throws DoesNotExistException, NotImplementedException, IncorrectStateException, BadParameterException { 
         AttributeInfo info = getInfoCheckVector(key, false);
         if (info.type == AttributeType.TIME) {
             try {
@@ -344,7 +344,7 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
     // Set method without checks for readOnly. We must be able to set the
     // attribute, somehow.   
     protected synchronized void setVectorValue(String key, String[] values)
-            throws DoesNotExist, NotImplemented, IncorrectState, BadParameter {
+            throws DoesNotExistException, NotImplementedException, IncorrectStateException, BadParameterException {
         AttributeInfo info = getInfoCheckVector(key, true);
         
         values = values.clone();
@@ -379,9 +379,9 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         return null;
     }
     
-    protected void checkValueType(String key, AttributeType type, String value) throws BadParameter {
+    protected void checkValueType(String key, AttributeType type, String value) throws BadParameterException {
         if (value == null) {
-            throw new BadParameter("Attribute value set to null");
+            throw new BadParameterException("Attribute value set to null");
         }
         switch(type) {
         case STRING:
@@ -392,38 +392,38 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
             try {
                 Long.parseLong(value);  
             } catch(NumberFormatException e) {
-                throw new BadParameter("Int-typed attribute set to non-integer " + value);
+                throw new BadParameterException("Int-typed attribute set to non-integer " + value);
             }
             break;
         case FLOAT:
             try {
                 Double.parseDouble(value);
             } catch(NumberFormatException e) {
-                throw new BadParameter("Float-typed attribute set to non-float " + value);
+                throw new BadParameterException("Float-typed attribute set to non-float " + value);
             }
             break;
         case BOOL:
             if (! value.equals(TRUE) && ! value.equals(FALSE)) {
-                throw new BadParameter("Bool-typed attribute set to non-bool " + value);
+                throw new BadParameterException("Bool-typed attribute set to non-bool " + value);
             }
             break;
         case TIME:
             ParsePosition p = new ParsePosition(0);
             dateFormatter.parse(value, p);
             if (p.getErrorIndex() >= 0 || p.getIndex() < value.length()) {
-                throw new BadParameter("Time-values attribute set to non-time " + value);
+                throw new BadParameterException("Time-values attribute set to non-time " + value);
             }
             break;
         }
     }
 
-    public synchronized void setAttribute(String key, String value) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            IncorrectState, BadParameter, DoesNotExist, Timeout, NoSuccess {
+    public synchronized void setAttribute(String key, String value) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
         AttributeInfo info = getInfoCheckVector(key, false);
 
         if (info.readOnly) {
-            throw new PermissionDenied("Attribute " + key + " is readOnly");
+            throw new PermissionDeniedException("Attribute " + key + " is readOnly");
         }
 
         if (info.type == AttributeType.TIME) {
@@ -439,13 +439,13 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
     }
 
     public synchronized void setVectorAttribute(String key, String[] values)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, IncorrectState, BadParameter, DoesNotExist,
-            Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException,
+            TimeoutException, NoSuccessException {
         AttributeInfo info = getInfoCheckVector(key, true);
         
         if (info.readOnly) {
-            throw new PermissionDenied("Attribute " + key + " is readOnly");
+            throw new PermissionDeniedException("Attribute " + key + " is readOnly");
         }
         
         values = values.clone();

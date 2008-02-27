@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.List;
 
 import org.ogf.saga.buffer.Buffer;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
 import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
@@ -26,8 +26,8 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return the size.
      */
     long getSize()
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, IncorrectState, Timeout, NoSuccess;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException;
 
     // POSIX-like I/O
 
@@ -43,9 +43,9 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return the number of bytes read.
      */
     int read(Buffer buffer, int offset, int len)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess, IOException;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException, IOException;
 
     /**
      * Writes up to <code>len</code> bytes from the buffer to the file
@@ -58,9 +58,9 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return the number of bytes written.
      */
     int write(Buffer buffer, int offset, int len)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess, IOException;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException, IOException;
 
     /**
      * Repositions the current file position as requested.
@@ -70,8 +70,8 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return the position after the seek.
      */
     long seek(long offset, SeekMode whence)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, IncorrectState, Timeout, NoSuccess,
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException,
             IOException;
 
     // Scattered I/O
@@ -83,9 +83,9 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * to store it.
      */
     void readV(IOVec[] iovecs)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess, IOException;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException, IOException;
 
     /**
      * Gather/scatter write.
@@ -94,9 +94,9 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * to obtain the data from.
      */
     void writeV(IOVec[] iovecs)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter,
-            IncorrectState, Timeout, NoSuccess, IOException;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException, IOException;
 
     // Pattern-based I/O
 
@@ -106,8 +106,8 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return the size.
      */
     int sizeP(String pattern)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            IncorrectStateException, PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException;
 
     /**
      * Pattern-based read.
@@ -117,9 +117,9 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return number of succesfully read bytes.
      */
     int readP(String pattern, Buffer buffer)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState,
-            Timeout, NoSuccess, IOException;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException,
+            TimeoutException, NoSuccessException, IOException;
 
     /**
      * Pattern-based write.
@@ -129,9 +129,9 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return number of succesfully written bytes.
      */
     int writeP(String pattern, Buffer buffer)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState,
-            Timeout, NoSuccess, IOException;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException,
+            TimeoutException, NoSuccessException, IOException;
 
     // extended I/O
 
@@ -141,8 +141,8 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return list of available modes.
      */
     List<String> modesE()
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, IncorrectState, Timeout, NoSuccess;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException;
 
     /**
      * Determines the storage size required for an extended I/O operation.
@@ -151,8 +151,8 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return the size.
      */
     int sizeE(String emode, String spec)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            IncorrectState, PermissionDenied, BadParameter, Timeout, NoSuccess;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            IncorrectStateException, PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException;
 
     /**
      * Extended read.
@@ -163,9 +163,9 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return the number of successfully read bytes.
      */
     int readE(String emode, String spec, Buffer buffer)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, Timeout,
-            NoSuccess, IOException;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, IOException;
 
     /**
      * Extended write.
@@ -176,9 +176,9 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @return the number of successfully written bytes.
      */
     int writeE(String emode, String spec, Buffer buffer)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, Timeout,
-            NoSuccess, IOException;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, IOException;
 
     //
     // Task versions ..
@@ -191,11 +191,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * This is the task version.
      * @param mode the task mode.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<Long> getSize(TaskMode mode)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     // POSIX-like I/O
 
@@ -209,11 +209,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param len the number of bytes to be read.
      * @param buffer the buffer to read data into.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
-        throws NotImplemented;
+        throws NotImplementedException;
       
     /**
      * Creates a task that writes up to <code>len</code> bytes from the buffer
@@ -224,11 +224,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param len the number of bytes to be written.
      * @param buffer the buffer to write data from.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
-        throws NotImplemented;
+        throws NotImplementedException;
        
     /**
      * Creates a task that repositions the current file position as requested.
@@ -237,11 +237,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param offset offset in bytes to move pointer.
      * @param whence determines from where the offset is relative.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<Long> seek(TaskMode mode, long offset, SeekMode whence)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     // Scattered I/O
 
@@ -251,11 +251,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param iovecs array of IOVecs determining how much to read and where
      * to store it.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task readV(TaskMode mode, IOVec[] iovecs)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that does a gather/scatter write.
@@ -263,11 +263,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param iovecs array of IOVecs determining how much to write and where
      * to obtain the data from.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task writeV(TaskMode mode, IOVec[] iovecs)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     // Pattern-based I/O
 
@@ -277,11 +277,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param mode the task mode.
      * @param pattern to determine size for.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<Integer> sizeP(TaskMode mode, String pattern)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that does a pattern-based read.
@@ -289,11 +289,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param pattern specification for the read operation.
      * @param buffer to store data into.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<Integer> readP(TaskMode mode, String pattern, Buffer buffer)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that does a pattern-based write.
@@ -301,11 +301,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param pattern specification for the write operation.
      * @param buffer to be written.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
-        throws NotImplemented; 
+        throws NotImplementedException; 
 
     // extended I/O
 
@@ -314,11 +314,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * implementation and/or on the server side.
      * @param mode the task mode.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<List<String>> modesE(TaskMode mode)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that determines the storage size required for an
@@ -327,11 +327,11 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param emode extended mode to use.
      * @param spec to determine size for.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<Integer> sizeE(TaskMode mode, String emode, String spec)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task for an extended read.
@@ -340,12 +340,12 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param spec specification of read operation.
      * @param buffer to store the data read.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<Integer> readE(TaskMode mode, String emode, String spec,
             Buffer buffer)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task for an extended write.
@@ -354,10 +354,10 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @param spec specification of write operation.
      * @param buffer data to write.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     Task<Integer> writeE(TaskMode mode, String emode, String spec,
             Buffer buffer)
-        throws NotImplemented;
+        throws NotImplementedException;
 }

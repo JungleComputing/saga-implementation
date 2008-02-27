@@ -6,7 +6,7 @@ import javax.swing.JPasswordField;
 import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
-import org.ogf.saga.error.DoesNotExist;
+import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
@@ -52,7 +52,7 @@ public class TaskCopyTest implements Callback {
                 System.out.println("Metric " + metric.getAttribute(Metric.NAME)
                         + " got triggered, task " + value + " now has state "
                         + t.getState());
-            } catch(DoesNotExist e) {
+            } catch(DoesNotExistException e) {
                 System.out.println("Metric " + metric.getAttribute(Metric.NAME)
                         + " got triggered, task " + value
                         + " does not exist anymore?");

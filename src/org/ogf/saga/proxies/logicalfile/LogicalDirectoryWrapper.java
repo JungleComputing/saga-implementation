@@ -2,20 +2,19 @@ package org.ogf.saga.proxies.logicalfile;
 
 import java.util.List;
 
-import org.ogf.saga.ObjectType;
 import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.logicalfile.LogicalDirectory;
 import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.namespace.Flags;
@@ -30,10 +29,10 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
     private LogicalDirectorySpiInterface proxy;
     
     LogicalDirectoryWrapper(Session session, URL name, int flags)
-            throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, AlreadyExists, DoesNotExist, Timeout,
-            NoSuccess {
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         super(session);
         Object[] parameters = { this, session, name, flags };
         try {
@@ -44,38 +43,38 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
                         Integer.TYPE },
                         parameters);
             super.setProxy(proxy);
-        } catch(org.ogf.saga.error.Exception e) {
-            if (e instanceof NotImplemented) {
-                throw (NotImplemented) e;
+        } catch(org.ogf.saga.error.SagaException e) {
+            if (e instanceof NotImplementedException) {
+                throw (NotImplementedException) e;
             }
-            if (e instanceof IncorrectURL) {
-                throw (IncorrectURL) e;
+            if (e instanceof IncorrectURLException) {
+                throw (IncorrectURLException) e;
             }
-            if (e instanceof AuthenticationFailed) {
-                throw (AuthenticationFailed) e;
+            if (e instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) e;
             }
-            if (e instanceof AuthorizationFailed) {
-                throw (AuthorizationFailed) e;
+            if (e instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) e;
             }
-            if (e instanceof PermissionDenied) {
-                throw (PermissionDenied) e;
+            if (e instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) e;
             }
-            if (e instanceof BadParameter) {
-                throw (BadParameter) e;
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
             }
-            if (e instanceof  AlreadyExists) {
-                throw (AlreadyExists) e;
+            if (e instanceof  AlreadyExistsException) {
+                throw (AlreadyExistsException) e;
             }
-            if (e instanceof DoesNotExist) {
-                throw (DoesNotExist) e;
+            if (e instanceof DoesNotExistException) {
+                throw (DoesNotExistException) e;
             }
-            if (e instanceof Timeout) {
-                throw (Timeout) e;
+            if (e instanceof TimeoutException) {
+                throw (TimeoutException) e;
             }
-            if (e instanceof NoSuccess) {
-                throw (NoSuccess) e;
+            if (e instanceof NoSuccessException) {
+                throw (NoSuccessException) e;
             }
-            throw new NoSuccess("Constructor failed", e);
+            throw new NoSuccessException("Constructor failed", e);
         }
     }
 
@@ -87,150 +86,146 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return clone;
     }
 
-    public List<URL> find(String namePattern, String[] attrPattern, int flags) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
+    public List<URL> find(String namePattern, String[] attrPattern, int flags) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException {
         return proxy.find(namePattern, attrPattern, flags);
     }
 
-    public List<URL> find(String namePattern, String[] attrPattern) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, Timeout, NoSuccess {
+    public List<URL> find(String namePattern, String[] attrPattern) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException {
         return find(namePattern, attrPattern, Flags.RECURSIVE.getValue());
     }
 
-    public Task<List<URL>> find(TaskMode mode, String namePattern, String[] attrPattern, int flags) throws NotImplemented {
+    public Task<List<URL>> find(TaskMode mode, String namePattern, String[] attrPattern, int flags) throws NotImplementedException {
         return proxy.find(mode, namePattern, attrPattern, flags);
     }
 
-    public Task<List<URL>> find(TaskMode mode, String namePattern, String[] attrPattern) throws NotImplemented {
+    public Task<List<URL>> find(TaskMode mode, String namePattern, String[] attrPattern) throws NotImplementedException {
         return find(mode, namePattern, attrPattern, Flags.RECURSIVE.getValue());
     }
 
-    public String[] findAttributes(String... patterns) throws NotImplemented, BadParameter, AuthenticationFailed, AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
+    public String[] findAttributes(String... patterns) throws NotImplementedException, BadParameterException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.findAttributes(patterns);
     }
 
-    public Task<String[]> findAttributes(TaskMode mode, String... patterns) throws NotImplemented {
+    public Task<String[]> findAttributes(TaskMode mode, String... patterns) throws NotImplementedException {
         return proxy.findAttributes(mode, patterns);
     }
 
-    public String getAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public String getAttribute(String key) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.getAttribute(key);
     }
 
-    public Task<String> getAttribute(TaskMode mode, String key) throws NotImplemented {
+    public Task<String> getAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.getAttribute(mode, key);
     }
 
-    public ObjectType getType() {
-        return ObjectType.LOGICALDIRECTORY;
-    }
-
-    public String[] getVectorAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, DoesNotExist, Timeout, NoSuccess {
+    public String[] getVectorAttribute(String key) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.getVectorAttribute(key);
     }
 
-    public Task<String[]> getVectorAttribute(TaskMode mode, String key) throws NotImplemented {
+    public Task<String[]> getVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.getVectorAttribute(mode, key);
     }
 
-    public boolean isReadOnlyAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, DoesNotExist, Timeout, NoSuccess {
+    public boolean isReadOnlyAttribute(String key) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.isReadOnlyAttribute(key);
     }
 
-    public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key) throws NotImplemented {
+    public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isReadOnlyAttribute(mode, key);
     }
 
-    public boolean isRemovableAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, DoesNotExist, Timeout, NoSuccess {
+    public boolean isRemovableAttribute(String key) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.isRemovableAttribute(key);
     }
 
-    public Task<Boolean> isRemovableAttribute(TaskMode mode, String key) throws NotImplemented {
+    public Task<Boolean> isRemovableAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isRemovableAttribute(mode, key);
     }
 
-    public boolean isVectorAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, DoesNotExist, Timeout, NoSuccess {
+    public boolean isVectorAttribute(String key) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.isVectorAttribute(key);
     }
 
-    public Task<Boolean> isVectorAttribute(TaskMode mode, String key) throws NotImplemented {
+    public Task<Boolean> isVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isVectorAttribute(mode, key);
     }
 
-    public boolean isWritableAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, DoesNotExist, Timeout, NoSuccess {
+    public boolean isWritableAttribute(String key) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.isWritableAttribute(key);
     }
 
-    public Task<Boolean> isWritableAttribute(TaskMode mode, String key) throws NotImplemented {
+    public Task<Boolean> isWritableAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isWritableAttribute(mode, key);
     }
 
-    public String[] listAttributes() throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, Timeout, NoSuccess {
+    public String[] listAttributes() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.listAttributes();
     }
 
-    public Task<String[]> listAttributes(TaskMode mode) throws NotImplemented {
+    public Task<String[]> listAttributes(TaskMode mode) throws NotImplementedException {
         return proxy.listAttributes(mode);
     }
-    public Task<LogicalDirectory> openLogicalDir(TaskMode mode, URL name, int flags) throws NotImplemented {
+    public Task<LogicalDirectory> openLogicalDir(TaskMode mode, URL name, int flags) throws NotImplementedException {
         return proxy.openLogicalDir(mode, name, flags);
     }
 
-    public Task<LogicalDirectory> openLogicalDir(TaskMode mode, URL name) throws NotImplemented {
+    public Task<LogicalDirectory> openLogicalDir(TaskMode mode, URL name) throws NotImplementedException {
         return openLogicalDir(mode, name, Flags.NONE.getValue());
     }
 
-    public LogicalDirectory openLogicalDir(URL name, int flags) throws NotImplemented, IncorrectURL, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+    public LogicalDirectory openLogicalDir(URL name, int flags) throws NotImplementedException, IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.openLogicalDir(name, flags);
     }
 
-    public LogicalDirectory openLogicalDir(URL name) throws NotImplemented, IncorrectURL, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+    public LogicalDirectory openLogicalDir(URL name) throws NotImplementedException, IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         return openLogicalDir(name, Flags.NONE.getValue());
     }
 
-    public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name, int flags) throws NotImplemented {
+    public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name, int flags) throws NotImplementedException {
         return proxy.openLogicalFile(mode, name, flags);
     }
 
-    public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name) throws NotImplemented {
+    public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name) throws NotImplementedException {
         return openLogicalFile(mode, name, Flags.NONE.getValue());
     }
 
-    public LogicalFile openLogicalFile(URL name, int flags) throws NotImplemented, IncorrectURL, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+    public LogicalFile openLogicalFile(URL name, int flags) throws NotImplementedException, IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.openLogicalFile(name, flags);
     }
 
-    public LogicalFile openLogicalFile(URL name) throws NotImplemented, IncorrectURL, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, IncorrectState, AlreadyExists, DoesNotExist, Timeout, NoSuccess {
+    public LogicalFile openLogicalFile(URL name) throws NotImplementedException, IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         return openLogicalFile(name, Flags.NONE.getValue());
     }
 
-    public void removeAttribute(String key) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, DoesNotExist, Timeout, NoSuccess {
+    public void removeAttribute(String key) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException, NoSuccessException {
         proxy.removeAttribute(key);
     }
 
-    public Task removeAttribute(TaskMode mode, String key) throws NotImplemented {
+    public Task removeAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.removeAttribute(mode, key);
     }
 
-    public void setAttribute(String key, String value) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, BadParameter, DoesNotExist, Timeout, NoSuccess {
+    public void setAttribute(String key, String value) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
         proxy.setAttribute(key, value);
     }
 
-    public Task setAttribute(TaskMode mode, String key, String value) throws NotImplemented {
+    public Task setAttribute(TaskMode mode, String key, String value) throws NotImplementedException {
         return proxy.setAttribute(mode, key, value);
     }
 
-    public void setVectorAttribute(String key, String[] values) throws NotImplemented, AuthenticationFailed, AuthorizationFailed, PermissionDenied, IncorrectState, BadParameter, DoesNotExist, Timeout, NoSuccess {
+    public void setVectorAttribute(String key, String[] values) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
         proxy.setVectorAttribute(key, values);
     }
 
-    public Task setVectorAttribute(TaskMode mode, String key, String[] values) throws NotImplemented {
+    public Task setVectorAttribute(TaskMode mode, String key, String[] values) throws NotImplementedException {
         return proxy.setVectorAttribute(mode, key, values);
     }
 
-    public boolean isFile(URL name) throws NotImplemented, IncorrectURL, AuthenticationFailed, AuthorizationFailed, PermissionDenied, BadParameter, DoesNotExist, IncorrectState, Timeout, NoSuccess {
+    public boolean isFile(URL name) throws NotImplementedException, IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, DoesNotExistException, IncorrectStateException, TimeoutException, NoSuccessException {
         return proxy.isFile(name);
     }
 
-    public Task<Boolean> isFile(TaskMode mode, URL name) throws NotImplemented {
+    public Task<Boolean> isFile(TaskMode mode, URL name) throws NotImplementedException {
         return proxy.isFile(mode, name);
     }
     

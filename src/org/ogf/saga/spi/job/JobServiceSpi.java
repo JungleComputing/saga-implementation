@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ogf.saga.URL;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.SagaError;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.AdaptorBase;
+import org.ogf.saga.impl.SagaRuntimeException;
+import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
 import org.ogf.saga.job.JobSelf;
 import org.ogf.saga.proxies.job.JobServiceWrapper;
-import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -106,13 +106,13 @@ public abstract class JobServiceSpi extends AdaptorBase implements JobServiceSpi
         return elts;
     }
     
-    public Job runJob(String commandLine, String host, boolean interactive) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, Timeout, NoSuccess {
+    public Job runJob(String commandLine, String host, boolean interactive) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         JobDescription jd = JobFactory.createJobDescription();
         List<String> elts = getCommandLineElements(commandLine);
         if (elts.size() == 0) {
-            throw new BadParameter("Empty command line");
+            throw new BadParameterException("Empty command line");
         }
         try {
             jd.setAttribute(JobDescription.EXECUTABLE, elts.remove(0));
@@ -121,13 +121,13 @@ public abstract class JobServiceSpi extends AdaptorBase implements JobServiceSpi
                 jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS, new String[] {host});
             }
         } catch (Throwable e) {
-            throw new SagaError("Should not happen", e);
+            throw new SagaRuntimeException("Should not happen", e);
         }
         Job job = createJob(jd);
         try {
             job.run();
-        } catch (IncorrectState e) {
-            throw new SagaError("Internal error", e);
+        } catch (IncorrectStateException e) {
+            throw new SagaRuntimeException("Internal error", e);
         }
         return job;
     }
@@ -136,29 +136,29 @@ public abstract class JobServiceSpi extends AdaptorBase implements JobServiceSpi
     // be cloned, and the rm field is immutable.
 
     public Task<Job> createJob(TaskMode mode, JobDescription jd)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Job>(wrapper, session, mode,
                 "createJob", new Class[] { JobDescription.class }, jd);
     }
     
     public Task<Job> runJob(TaskMode mode, String commandLine, String host, boolean interactive)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Job>(wrapper, session, mode,
                 "runJob", new Class[] { String.class, String.class, Boolean.TYPE },
                 commandLine, host, interactive);
     }
     
-    public Task<Job> getJob(TaskMode mode, String jobId) throws NotImplemented {
+    public Task<Job> getJob(TaskMode mode, String jobId) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Job>(wrapper, session, mode,
                 "getJob", new Class[] { String.class }, jobId);
     }
 
-    public Task<JobSelf> getSelf(TaskMode mode) throws NotImplemented {
+    public Task<JobSelf> getSelf(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<JobSelf>(wrapper, session, mode,
                 "getSelf", new Class[] { });
     }
 
-    public Task<List<String>> list(TaskMode mode) throws NotImplemented {
+    public Task<List<String>> list(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<List<String>>(wrapper, session, mode,
                 "list", new Class[] { } );
     }

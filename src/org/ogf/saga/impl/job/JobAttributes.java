@@ -1,9 +1,9 @@
 package org.ogf.saga.impl.job;
 
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NotImplemented;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.attributes.AsyncAttributes;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.job.Job;
@@ -30,13 +30,13 @@ public class JobAttributes extends AsyncAttributes {
         return new JobAttributes(this);
     }
     
-    protected void setValue(String key, String value) throws DoesNotExist, NotImplemented,
-            IncorrectState, BadParameter {
+    protected void setValue(String key, String value) throws DoesNotExistException, NotImplementedException,
+            IncorrectStateException, BadParameterException {
         super.setValue(key, value);
     }
     
-    protected void setVectorValue(String key, String[] values) throws DoesNotExist, NotImplemented,
-            IncorrectState, BadParameter {
+    protected void setVectorValue(String key, String[] values) throws DoesNotExistException, NotImplementedException,
+            IncorrectStateException, BadParameterException {
         super.setVectorValue(key, values);
     }
 }

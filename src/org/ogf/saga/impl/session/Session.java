@@ -3,12 +3,11 @@ package org.ogf.saga.impl.session;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.ogf.saga.ObjectType;
 import org.ogf.saga.context.Context;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.SagaError;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.SagaObjectBase;
+import org.ogf.saga.impl.SagaRuntimeException;
 
 public class Session extends SagaObjectBase
         implements org.ogf.saga.session.Session {
@@ -38,11 +37,11 @@ public class Session extends SagaObjectBase
         }
     }
 
-    public synchronized void addContext(Context context) throws NotImplemented {
+    public synchronized void addContext(Context context) throws NotImplementedException {
         try {
             context = (Context) context.clone();
         } catch(CloneNotSupportedException e) {
-            throw new SagaError("Context.clone() not supported?", e);
+            throw new SagaRuntimeException("Context.clone() not supported?", e);
         }
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
@@ -54,7 +53,7 @@ public class Session extends SagaObjectBase
         contexts.add(context);
     }
 
-    public synchronized void close() throws NotImplemented {
+    public synchronized void close() throws NotImplementedException {
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
                 session.close();
@@ -86,11 +85,11 @@ public class Session extends SagaObjectBase
         return clone;
     }
 
-    public void close(float timeoutInSeconds) throws NotImplemented {
+    public void close(float timeoutInSeconds) throws NotImplementedException {
         close();
     }
 
-    public synchronized Context[] listContexts() throws NotImplemented {
+    public synchronized Context[] listContexts() throws NotImplementedException {
         Context[] c = contexts.toArray(new Context[contexts.size()]);
         for (int i = 0; i < c.length; i++) {
             try {
@@ -103,10 +102,10 @@ public class Session extends SagaObjectBase
     }
 
     public synchronized void removeContext(Context context)
-            throws NotImplemented, DoesNotExist {
+            throws NotImplementedException, DoesNotExistException {
 
         if (!contexts.remove(context)) {
-            throw new DoesNotExist("Element " + context + " does not exist");
+            throw new DoesNotExistException("Element " + context + " does not exist");
         }
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
@@ -115,9 +114,5 @@ public class Session extends SagaObjectBase
                 // ignored
             }
         }
-    }
-
-    public ObjectType getType() {
-        return ObjectType.SESSION;
     }
 }

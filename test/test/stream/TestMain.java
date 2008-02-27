@@ -7,12 +7,12 @@ import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.context.Context;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
@@ -30,7 +30,7 @@ public class TestMain extends TestCase {
 
     private static Callback readable = new Callback() {
         public boolean cb(Monitorable mt, Metric metric, Context ctx)
-                throws NotImplemented, AuthorizationFailed {
+                throws NotImplementedException, AuthorizationFailedException {
             logger.debug("Stream Client: Stream is readable [METRIC]");
             return true;
         }
@@ -57,7 +57,7 @@ public class TestMain extends TestCase {
             stream.connect();
             logger.error("FAIL: connect should throw NoSuccess");
             fail("connect should throw NoSuccess");
-        } catch(NoSuccess e) {
+        } catch(NoSuccessException e) {
             logger.debug("OK: connect threw NoSuccess");
         } catch (Throwable e) {
             logger.error("FAIL: connect should throw NoSuccess, but threw " + e, e);
@@ -71,7 +71,7 @@ public class TestMain extends TestCase {
             stream.connect();
             logger.error("FAIL: connect should now throw IncorrectState");
             fail("connect should now throw IncorrectState");
-        } catch (IncorrectState e) {
+        } catch (IncorrectStateException e) {
             logger.debug("OK: connect threw IncorrectState");
         } catch(Throwable e) {
             logger.error("FAIL: connect should now throw IncorrectState, but threw " + e, e);
@@ -210,7 +210,7 @@ public class TestMain extends TestCase {
                 logger.error("Client: outcome = " + outcome);
                 fail("Client: outcome = " + outcome);
             }
-        } catch(NotImplemented e) {
+        } catch(NotImplementedException e) {
             logger.warn("WARNING: waitFor gave NotImplemented", e);
         } catch (Throwable e) {
             logger.error("Got exception", e);
@@ -284,7 +284,7 @@ public class TestMain extends TestCase {
             service.serve(1.0f);
 
             logger.debug("TEST");
-        } catch (Timeout t) {
+        } catch (TimeoutException t) {
             logger.debug("OK: got timeout exception");
         } catch (Throwable e) {
             logger.error("FAIL: got exception", e);
@@ -313,7 +313,7 @@ public class TestMain extends TestCase {
             stream.getContext();
             logger.error("FAIL: Should have thrown IncorrectState exception");
             fail("getContext should have thrown IncorrectState");
-        } catch (IncorrectState e) {
+        } catch (IncorrectStateException e) {
             logger.debug("OK: Should have thrown IncorrectState exception");
         } catch (Throwable e) {
             logger.error("FAIL: Should have thrown IncorrectState exception", e);
@@ -331,7 +331,7 @@ public class TestMain extends TestCase {
             stream.connect(); // erroneous call changes state to 'Error'
             logger.error("FAIL: connect should have thrown NoSuccess");
             fail("connect should have thrown NoSuccess");
-        } catch (NoSuccess e) {
+        } catch (NoSuccessException e) {
             logger.debug("OK: Should have thrown NoSuccess exception");
         } catch (Throwable e) {
             logger.error("FAIL: Should have thrown NoSuccess exception", e);
@@ -343,7 +343,7 @@ public class TestMain extends TestCase {
                                     // stream wasn't opened
             logger.error("FAIL: getContext should have thrown IncorrectState");
             fail("getContext should have thrown IncorrectState");
-        } catch (IncorrectState e) {
+        } catch (IncorrectStateException e) {
             logger.debug("OK: Should have thrown IncorrectState exception");
         } catch (Throwable e) {
             logger.error("FAIL: Should have thrown IncorrectState exception", e);
@@ -388,7 +388,7 @@ public class TestMain extends TestCase {
         try {
             Thread.sleep(5000);
             stream.write(buffer);
-        } catch (IncorrectState e) {
+        } catch (IncorrectStateException e) {
             logger.debug("OK: Should have thrown IncorrectState -- the server is down");
         } catch (Throwable e) {
             logger.error("FAIL: Should have thrown IncorrectState -- the server is down", e);
@@ -434,7 +434,7 @@ public class TestMain extends TestCase {
             stream.connect();
             logger.error("FAIL: 2nd connect should throw IncorrectState");
             fail("2nd connect should throw IncorrectState");
-        } catch (IncorrectState e) {
+        } catch (IncorrectStateException e) {
             logger.debug("OK: Should detect incorrect state");
         } catch (Throwable e) {
             logger.error("FAIL: 2nd connect should throw IncorrectState", e);
@@ -455,7 +455,7 @@ public class TestMain extends TestCase {
             stream.close();
             logger.error("FAIL: successful close on unconnected stream");
             fail("Successful close on unconnected stream");
-        } catch(IncorrectState e) {
+        } catch(IncorrectStateException e) {
             logger.debug("OK, close on NEW stream threw IncorrectState");
         } catch (Throwable e) {
             logger.error("FAIL: Threw exception", e);
@@ -469,7 +469,7 @@ public class TestMain extends TestCase {
             logger.error("FAIL: Connect should have failed");
             fail("Connect should have failed");
             return;
-        } catch (NoSuccess e) {
+        } catch (NoSuccessException e) {
             logger.debug("OK: Connect not succeeded -- should switch to Error state");
         } catch (Throwable e) {
             logger.error("FAIL: Threw other exception", e);
@@ -508,7 +508,7 @@ public class TestMain extends TestCase {
 
             logger.error("FAIL: Successful; " + nBytes + " bytes read");
             fail("read(b, -223) should throw an exception");
-        } catch (BadParameter e) {
+        } catch (BadParameterException e) {
             logger.debug("OK: BadParameter thrown");
         } catch (Throwable e) {
             logger.debug("FAIL: BadParameter should be thrown", e);
@@ -715,7 +715,7 @@ public class TestMain extends TestCase {
             stream.waitFor(0, 5.0f);
             logger.error("FAIL: Should have thrown IncorrectState");
             fail("waitFor should have thrown IncorrectState");
-        } catch (IncorrectState e) {
+        } catch (IncorrectStateException e) {
             logger.debug("OK: Threw IncorrectState");
         } catch (Throwable e) {
             logger.error("FAIL: Should have thrown IncorrectState", e);

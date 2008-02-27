@@ -2,22 +2,22 @@ package org.ogf.saga.spi.namespace;
 
 import org.apache.log4j.Logger;
 import org.ogf.saga.URL;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.SagaError;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.impl.AdaptorBase;
+import org.ogf.saga.impl.SagaRuntimeException;
+import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
-import org.ogf.saga.impl.AdaptorBase;
-import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -29,9 +29,9 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
     protected URL nameUrl;
 
     public NSEntrySpi(NSEntryWrapper wrapper, Session session, URL name, int flags)
-        throws NotImplemented, IncorrectURL, BadParameter, DoesNotExist,
-            PermissionDenied, AuthorizationFailed, AuthenticationFailed,
-            Timeout, NoSuccess, AlreadyExists {
+        throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
+            TimeoutException, NoSuccessException, AlreadyExistsException {
         super(session, wrapper);
         nameUrl = name.normalize();
         if (name == nameUrl) {
@@ -47,7 +47,7 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameter(
+            throw new BadParameterException(
                     "Flags not allowed for NSEntry constructor: " + flags);
         }
     }
@@ -57,26 +57,26 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
         try {
             clone.nameUrl = new URL(nameUrl.toString());
         } catch (Throwable e) {
-            throw new SagaError("Should not happen", e);
+            throw new SagaRuntimeException("Should not happen", e);
         }
         return clone;
     }
 
-    protected void checkClosed() throws IncorrectState {
+    protected void checkClosed() throws IncorrectStateException {
         if (closed) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Entry already closed!");
             }
-            throw new IncorrectState("NSEntry already closed");
+            throw new IncorrectStateException("NSEntry already closed");
         }
     }
 
-    protected URL resolve(URL url) throws NoSuccess {
+    protected URL resolve(URL url) throws NoSuccessException {
         return nameUrl.resolve(url);
     }
 
-    public void close(float timeoutInSeconds) throws NotImplemented,
-            IncorrectState, NoSuccess {
+    public void close(float timeoutInSeconds) throws NotImplementedException,
+            IncorrectStateException, NoSuccessException {
         closed = true;
     }
 
@@ -91,13 +91,13 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
     }
 
     public Task close(TaskMode mode, float timeoutInSeconds)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "close", new Class[] { Float.TYPE }, timeoutInSeconds);
     }
 
-    public URL getCWD() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    public URL getCWD() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         checkClosed();
         String path = nameUrl.getPath();
         boolean dir = false;
@@ -116,54 +116,54 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
         try {
             newURL = new URL(nameUrl.toString());
             newURL.setPath(path);
-        } catch (BadParameter e) {
-            throw new NoSuccess("Unexpected error", e);
+        } catch (BadParameterException e) {
+            throw new NoSuccessException("Unexpected error", e);
         }
         return newURL;
     }
 
-    public Task<URL> getCWD(TaskMode mode) throws NotImplemented {
+    public Task<URL> getCWD(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<URL>(wrapper, session,
                 mode, "getCWD", new Class[] {});
     }
 
-    public URL getName() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    public URL getName() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         checkClosed();
         String path = nameUrl.getPath();
         String[] s = path.split("/");
 
         try {
             return new URL(s[s.length-1]);
-        } catch (BadParameter e) {
-            throw new NoSuccess("Unexpected error", e);
+        } catch (BadParameterException e) {
+            throw new NoSuccessException("Unexpected error", e);
         }
     }
 
-    public Task<URL> getName(TaskMode mode) throws NotImplemented {
+    public Task<URL> getName(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<URL>(wrapper, session,
                 mode, "getName", new Class[] {});
     }
 
-    public URL getURL() throws NotImplemented, IncorrectState, Timeout,
-            NoSuccess {
+    public URL getURL() throws NotImplementedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         checkClosed();
         try {
             return new URL(nameUrl.normalize().toString());
-        } catch (BadParameter e) {
-            throw new NoSuccess("Unexpected error", e);
+        } catch (BadParameterException e) {
+            throw new NoSuccessException("Unexpected error", e);
         }
     }
 
-    public Task<URL> getURL(TaskMode mode) throws NotImplemented {
+    public Task<URL> getURL(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
                 "getURL", new Class[] {});
     }
 
-    public void copy(URL target, int flags) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, Timeout, NoSuccess,
-            IncorrectURL, DoesNotExist {
+    public void copy(URL target, int flags) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException,
+            IncorrectURLException, DoesNotExistException {
         checkClosed();
         int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
                 .or(Flags.OVERWRITE));
@@ -173,7 +173,7 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameter("Flags not allowed for NSEntry copy: "
+            throw new BadParameterException("Flags not allowed for NSEntry copy: "
                     + flags);
         }
         unresolvedCopy(resolve(target), flags);
@@ -184,41 +184,41 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
     // with respect to the NSDirectory object that invoked this method.
     // SPI implementations should override this method.
     protected abstract void unresolvedCopy(URL target, int flags)
-            throws IncorrectState, NoSuccess, BadParameter, AlreadyExists,
-                IncorrectURL, NotImplemented;
+            throws IncorrectStateException, NoSuccessException, BadParameterException, AlreadyExistsException,
+                IncorrectURLException, NotImplementedException;
 
     public Task copy(TaskMode mode, URL target, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "copy", new Class[] { URL.class, Integer.TYPE }, target, flags);
     }
 
-    public Task<Boolean> isDir(TaskMode mode) throws NotImplemented {
+    public Task<Boolean> isDir(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "isDir", new Class[] { });
     }
 
     public Task<Boolean> isEntry(TaskMode mode)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "isEntry", new Class[] { });
     }
 
-    public Task<Boolean> isLink(TaskMode mode) throws NotImplemented {
+    public Task<Boolean> isLink(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "isLink", new Class[] { });
     }
   
     public Task link(TaskMode mode, URL target, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "link", new Class[] { URL.class, Integer.TYPE }, target, flags);
     }
 
-    public void move(URL target, int flags) throws NotImplemented,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, Timeout, NoSuccess,
-            IncorrectURL, DoesNotExist {
+    public void move(URL target, int flags) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException,
+            IncorrectURLException, DoesNotExistException {
         checkClosed();
         int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
                 .or(Flags.OVERWRITE));
@@ -228,97 +228,97 @@ public abstract class NSEntrySpi extends AdaptorBase implements NSEntrySpiInterf
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameter("Flags not allowed for NSEntry copy: "
+            throw new BadParameterException("Flags not allowed for NSEntry copy: "
                     + flags);
         }
         unresolvedMove(resolve(target), flags);
     }
     
-    protected abstract void unresolvedMove(URL target, int flags) throws IncorrectState,
-            NoSuccess, BadParameter, AlreadyExists, NotImplemented, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, Timeout, IncorrectURL;
+    protected abstract void unresolvedMove(URL target, int flags) throws IncorrectStateException,
+            NoSuccessException, BadParameterException, AlreadyExistsException, NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, TimeoutException, IncorrectURLException;
 
     public Task move(TaskMode mode, URL target, int flags)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "move", new Class[] { URL.class, Integer.TYPE }, target, flags);
     }
     
     public Task permissionsAllow(TaskMode mode, String id, int permissions,
-            int flags) throws NotImplemented {
+            int flags) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsAllow", new Class[] { String.class, Integer.TYPE,
                         Integer.TYPE }, id, permissions, flags);
     }
 
     public Task permissionsDeny(TaskMode mode, String id, int permissions,
-            int flags) throws NotImplemented {
+            int flags) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsDeny", new Class[] { String.class, Integer.TYPE,
                         Integer.TYPE }, id, permissions, flags);
     }
 
-    public Task<URL> readLink(TaskMode mode) throws NotImplemented {
+    public Task<URL> readLink(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
                 "readLink", new Class[] {});
     }
 
-    public Task remove(TaskMode mode, int flags) throws NotImplemented {
+    public Task remove(TaskMode mode, int flags) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
                 "remove", new Class[] { Integer.TYPE }, flags);
     }
 
     public void permissionsAllow(String id, int permissions)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
         try {
             permissionsAllow(id, permissions, Flags.NONE.getValue());
-        } catch (IncorrectState e) {
+        } catch (IncorrectStateException e) {
             // This method cannot throw this, because it implements the method
             // as specified in org.ogf.saga.permissions.Permissions.
-            throw new NoSuccess("Incorrect state", e);
+            throw new NoSuccessException("Incorrect state", e);
         }
     }
 
     public Task permissionsAllow(TaskMode mode, String id, int permissions)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsAllow", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
     public Task<Boolean> permissionsCheck(TaskMode mode, String id,
-            int permissions) throws NotImplemented {
+            int permissions) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session,
                 mode, "permissionsCheck", new Class[] { String.class,
                         Integer.TYPE }, id, permissions);
     }
 
     public void permissionsDeny(String id, int permissions)
-            throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, Timeout, NoSuccess {
+            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
         try {
             permissionsDeny(id, permissions, Flags.NONE.getValue());
-        } catch (IncorrectState e) {
+        } catch (IncorrectStateException e) {
             // This method cannot throw this, because it implements the method
             // as specified in org.ogf.saga.permissions.Permissions.
-            throw new NoSuccess("Incorrect state", e);
+            throw new NoSuccessException("Incorrect state", e);
         }
     }
 
     public Task permissionsDeny(TaskMode mode, String id, int permissions)
-            throws NotImplemented {
+            throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
                 "permissionsDeny", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplemented {
+    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<String>(wrapper, session,
                 mode, "getGroup", new Class[] {});
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplemented {
+    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<String>(wrapper, session,
                 mode, "getOwner", new Class[] {});
     }

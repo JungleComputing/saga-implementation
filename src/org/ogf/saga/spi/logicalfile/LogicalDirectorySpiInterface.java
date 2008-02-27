@@ -4,19 +4,20 @@ import java.util.List;
 
 import org.ogf.saga.URL;
 import org.ogf.saga.attributes.AsyncAttributes;
-import org.ogf.saga.error.AlreadyExists;
-import org.ogf.saga.error.AuthenticationFailed;
-import org.ogf.saga.error.AuthorizationFailed;
-import org.ogf.saga.error.BadParameter;
-import org.ogf.saga.error.DoesNotExist;
-import org.ogf.saga.error.IncorrectState;
-import org.ogf.saga.error.IncorrectURL;
-import org.ogf.saga.error.NoSuccess;
-import org.ogf.saga.error.NotImplemented;
-import org.ogf.saga.error.PermissionDenied;
-import org.ogf.saga.error.Timeout;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.logicalfile.LogicalDirectory;
 import org.ogf.saga.logicalfile.LogicalFile;
+import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -30,9 +31,9 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @return <code>true</code> if the name represents a non-directory entry.
      */
     public boolean isFile(URL name)
-        throws NotImplemented, IncorrectURL, AuthenticationFailed,
-            AuthorizationFailed, PermissionDenied, BadParameter,
-            DoesNotExist, IncorrectState, Timeout, NoSuccess;
+        throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+            DoesNotExistException, IncorrectStateException, TimeoutException, NoSuccessException;
 
     /**
      * Finds entries in the current directory and possibly below, with matching names
@@ -45,9 +46,9 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      */
     public List<URL> find(String namePattern, String[] attrPattern,
             int flags)
-        throws NotImplemented, AuthenticationFailed, AuthorizationFailed,
-            PermissionDenied, BadParameter, IncorrectState, Timeout,
-            NoSuccess;
+        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException;
 
     // openLogicalDir and openLogicalFile: names changed with respect
     // to specs  because of Java restriction: cannot redefine methods with
@@ -60,10 +61,10 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @return the opened directory instance.
      */
     public LogicalDirectory openLogicalDir(URL name, int flags)
-        throws NotImplemented, IncorrectURL, 
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist,
-            Timeout, NoSuccess;
+        throws NotImplementedException, IncorrectURLException, 
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException,
+            TimeoutException, NoSuccessException;
 
     /**
      * Creates a new <code>LogicalFile</code> instance.
@@ -72,10 +73,10 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @return the opened logical file.
      */
     public LogicalFile openLogicalFile(URL name, int flags)
-        throws NotImplemented, IncorrectURL,
-            AuthenticationFailed, AuthorizationFailed, PermissionDenied,
-            BadParameter, IncorrectState, AlreadyExists, DoesNotExist,
-            Timeout, NoSuccess;
+        throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException,
+            TimeoutException, NoSuccessException;
     
     // Task versions ...
    
@@ -85,11 +86,11 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @param mode the task mode.
      * @param name to be tested.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<Boolean> isFile(TaskMode mode, URL name)
-        throws NotImplemented ;
+        throws NotImplementedException ;
 
     /**
      * Creates a task that finds entries in the current directory and below,
@@ -100,12 +101,12 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      *          found.
      * @param flags       flags defining the operation modus.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<List<URL>> find(TaskMode mode, String namePattern,
             String[] attrPattern, int flags)
-        throws NotImplemented;
+        throws NotImplementedException;
 
     /**
      * Creates a task that creates a new <code>LogicalDirectory</code>
@@ -114,12 +115,12 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @param name directory to open.
      * @param flags defining the operation modus.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<LogicalDirectory> openLogicalDir(TaskMode mode, URL name,
             int flags)
-        throws NotImplemented;
+        throws NotImplementedException;
     
     /**
      * Creates a task that creates a new <code>LogicalFile</code> instance.
@@ -127,10 +128,10 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @param name the file to open.
      * @param flags defining the operation modus.
      * @return the task.
-     * @exception NotImplemented is thrown when the task version of this
+     * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
     public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name,
             int flags)
-        throws NotImplemented;    
+        throws NotImplementedException;    
 }
