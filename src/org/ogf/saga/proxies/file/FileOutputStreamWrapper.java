@@ -18,6 +18,8 @@ import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.file.FileOutputStreamSpiInterface;
+import org.ogf.saga.task.Task;
+import org.ogf.saga.task.TaskMode;
 
 public class FileOutputStreamWrapper extends FileOutputStream {
   
@@ -115,6 +117,23 @@ public class FileOutputStreamWrapper extends FileOutputStream {
 
     public void write(int b) throws IOException {
         proxy.write(b);
+    }
+
+    public Task close(TaskMode mode) throws NotImplementedException {
+        return proxy.close(mode);
+    }
+
+    public Task flush(TaskMode mode) throws NotImplementedException {
+        return proxy.flush(mode);
+    }
+
+    public Task write(TaskMode mode, int b) throws NotImplementedException {
+        return proxy.write(mode, b);
+    }
+
+    public Task write(TaskMode mode, byte[] buf, int off, int len)
+            throws NotImplementedException {
+        return proxy.write(mode, buf, off, len);
     }
 
 }

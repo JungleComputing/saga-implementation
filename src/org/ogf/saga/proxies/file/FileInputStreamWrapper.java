@@ -18,6 +18,8 @@ import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.file.FileInputStreamSpiInterface;
+import org.ogf.saga.task.Task;
+import org.ogf.saga.task.TaskMode;
 
 public class FileInputStreamWrapper extends FileInputStream {
     
@@ -128,6 +130,43 @@ public class FileInputStreamWrapper extends FileInputStream {
 
     public long skip(long cnt) throws IOException {
         return proxy.skip(cnt);
+    }
+
+    public Task<Integer> available(TaskMode mode)
+            throws NotImplementedException {
+        return proxy.available(mode);
+    }
+
+    public Task close(TaskMode mode) throws NotImplementedException {
+        return proxy.close(mode);
+    }
+
+    public Task mark(TaskMode mode, int readlimit)
+            throws NotImplementedException {
+        return proxy.mark(mode, readlimit);
+    }
+
+    public Task<Boolean> markSupported(TaskMode mode)
+            throws NotImplementedException {
+        return proxy.markSupported(mode);
+    }
+
+    public Task<Integer> read(TaskMode mode) throws NotImplementedException {
+        return proxy.read(mode);
+    }
+
+    public Task<Integer> read(TaskMode mode, byte[] buf, int off, int len)
+            throws NotImplementedException {
+        return proxy.read(mode, buf, off, len);
+    }
+
+    public Task reset(TaskMode mode) throws NotImplementedException {
+        return proxy.reset(mode);
+    }
+
+    public Task<Long> skip(TaskMode mode, long n)
+            throws NotImplementedException {
+        return proxy.skip(mode, n);
     }
 
 }
