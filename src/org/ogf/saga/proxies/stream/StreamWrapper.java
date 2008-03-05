@@ -1,7 +1,5 @@
 package org.ogf.saga.proxies.stream;
 
-import java.io.IOException;
-
 import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -15,6 +13,7 @@ import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.monitoring.Callback;
@@ -237,7 +236,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.permissionsDeny(mode, id, permissions);
     }
 
-    public int read(Buffer buffer, int len) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+    public int read(Buffer buffer, int len) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return proxy.read(buffer, len);
     }
 
@@ -285,7 +284,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.waitFor(mode, what, timeoutInSeconds);
     }
 
-    public int write(Buffer buffer, int len) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+    public int write(Buffer buffer, int len) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return proxy.write(buffer, len);
     }
 
@@ -301,7 +300,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return close(mode, 0.0F);
     }
 
-    public int read(Buffer buffer) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+    public int read(Buffer buffer) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return read(buffer, -1);
     }
 
@@ -317,7 +316,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return waitFor(mode, what, -1.0F);
     }
 
-    public int write(Buffer buffer) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+    public int write(Buffer buffer) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return write(buffer, -1);
     }
 

@@ -1,7 +1,5 @@
 package org.ogf.saga.spi.stream;
 
-import java.io.IOException;
-
 import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -13,6 +11,7 @@ import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.SagaRuntimeException;
@@ -361,7 +360,7 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
 
     public int read(Buffer buffer) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return read(buffer, -1);
     }
 
@@ -383,7 +382,7 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
 
     public int write(Buffer buffer) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return write(buffer, -1);
     }
 
