@@ -1,6 +1,5 @@
 package org.ogf.saga.proxies.file;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.ogf.saga.URL;
@@ -16,6 +15,7 @@ import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.IOVec;
@@ -108,19 +108,19 @@ public class FileWrapper extends NSEntryWrapper implements File {
 
     public int read(Buffer buffer) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return read(buffer, 0, buffer.getSize());
     }
 
     public int read(Buffer buffer, int len) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return read(buffer, 0, len);
     }
     
     public int read(Buffer buffer, int offset, int len) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return proxy.read(buffer, offset, len);
     }
 
@@ -142,7 +142,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
     public int readE(String emode, String spec, Buffer buffer)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
-            IOException {
+            SagaIOException {
         return proxy.readE(emode, spec, buffer);
     }
 
@@ -153,7 +153,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
 
     public int readP(String pattern, Buffer buffer) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return proxy.readP(pattern, buffer);
     }
 
@@ -164,7 +164,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
 
     public void readV(IOVec[] iovecs) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         proxy.readV(iovecs);
     }
 
@@ -174,7 +174,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
 
     public long seek(long offset, SeekMode whence) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return proxy.seek(offset, whence);
     }
 
@@ -207,19 +207,19 @@ public class FileWrapper extends NSEntryWrapper implements File {
 
     public int write(Buffer buffer) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return write(buffer, 0, -1);
     }
     
     public int write(Buffer buffer, int len) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return write(buffer, 0, len);
     }
 
     public int write(Buffer buffer, int offset, int len) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return proxy.write(buffer, offset, len);
     }
 
@@ -242,7 +242,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
     public int writeE(String emode, String spec, Buffer buffer)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
-            IOException {
+            SagaIOException {
         return proxy.writeE(emode, spec, buffer);
     }
 
@@ -253,7 +253,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
 
     public int writeP(String pattern, Buffer buffer) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         return proxy.writeP(pattern, buffer);
     }
 
@@ -264,7 +264,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
 
     public void writeV(IOVec[] iovecs) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         proxy.writeV(iovecs);
     }
 

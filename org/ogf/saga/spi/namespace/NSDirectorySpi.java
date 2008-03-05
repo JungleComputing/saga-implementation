@@ -1,7 +1,9 @@
 package org.ogf.saga.spi.namespace;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
 import org.ogf.saga.URL;
@@ -15,6 +17,7 @@ import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.attributes.PatternConverter;
@@ -29,6 +32,40 @@ import org.ogf.saga.task.TaskMode;
 
 public abstract class NSDirectorySpi extends NSEntrySpi implements
         NSDirectorySpiInterface {
+    
+    private class DirIterator implements Iterator<URL> {
+        
+        int numEntries;
+        int index = 0;
+        
+        public DirIterator() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
+            numEntries = getNumEntries();
+        }
+
+        public boolean hasNext() {
+            return index < numEntries;
+        }
+
+        public URL next() {
+            if (index >= numEntries) {
+                throw new NoSuchElementException("No more elements");
+            }
+            try {
+                return getEntry(index++);
+            } catch(SagaException e) {
+                NoSuchElementException ex = new NoSuchElementException("got exception");
+                ex.initCause(e);
+                throw ex;
+            }
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("Remove not supported");
+        }
+        
+    }
       
     protected static Logger logger = Logger.getLogger(NSDirectorySpi.class);
     
@@ -37,6 +74,14 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, session, name, flags);
+    }
+    
+    public Iterator<URL> iterator() {
+        try {
+            return new DirIterator();
+        } catch(SagaException e) {
+            throw new RuntimeException("Got SAGA exception", e);
+        }
     }
 
     public Task changeDir(TaskMode mode, URL name) throws NotImplementedException {

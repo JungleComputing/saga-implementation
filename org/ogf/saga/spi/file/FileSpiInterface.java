@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.file;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.ogf.saga.buffer.Buffer;
@@ -11,6 +10,7 @@ import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
@@ -45,7 +45,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
     int read(Buffer buffer, int offset, int len)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException, IOException;
+            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException;
 
     /**
      * Writes up to <code>len</code> bytes from the buffer to the file
@@ -60,7 +60,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
     int write(Buffer buffer, int offset, int len)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException, IOException;
+            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException;
 
     /**
      * Repositions the current file position as requested.
@@ -72,7 +72,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
     long seek(long offset, SeekMode whence)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException,
-            IOException;
+            SagaIOException;
 
     // Scattered I/O
 
@@ -85,7 +85,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
     void readV(IOVec[] iovecs)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException, IOException;
+            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException;
 
     /**
      * Gather/scatter write.
@@ -96,7 +96,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
     void writeV(IOVec[] iovecs)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException, IOException;
+            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException;
 
     // Pattern-based I/O
 
@@ -119,7 +119,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
     int readP(String pattern, Buffer buffer)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException,
-            TimeoutException, NoSuccessException, IOException;
+            TimeoutException, NoSuccessException, SagaIOException;
 
     /**
      * Pattern-based write.
@@ -131,7 +131,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
     int writeP(String pattern, Buffer buffer)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException,
-            TimeoutException, NoSuccessException, IOException;
+            TimeoutException, NoSuccessException, SagaIOException;
 
     // extended I/O
 
@@ -165,7 +165,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
     int readE(String emode, String spec, Buffer buffer)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException,
-            NoSuccessException, IOException;
+            NoSuccessException, SagaIOException;
 
     /**
      * Extended write.
@@ -178,7 +178,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
     int writeE(String emode, String spec, Buffer buffer)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException,
-            NoSuccessException, IOException;
+            NoSuccessException, SagaIOException;
 
     //
     // Task versions ..

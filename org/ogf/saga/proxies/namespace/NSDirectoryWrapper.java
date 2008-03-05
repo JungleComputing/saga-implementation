@@ -1,5 +1,6 @@
 package org.ogf.saga.proxies.namespace;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.ogf.saga.URL;
@@ -742,6 +743,11 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     public Task remove(TaskMode mode, String target)
             throws NotImplementedException {
         return remove(mode, target, Flags.NONE.getValue());
+    }
+
+    public Iterator<URL> iterator() {
+        // TODO Auto-generated method
+        return proxy.iterator();
     }
 
 }

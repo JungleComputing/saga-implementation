@@ -1,7 +1,5 @@
 package org.ogf.saga.spi.stream;
 
-import java.io.IOException;
-
 import org.ogf.saga.URL;
 import org.ogf.saga.attributes.AsyncAttributes;
 import org.ogf.saga.buffer.Buffer;
@@ -14,6 +12,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.monitoring.AsyncMonitorable;
 import org.ogf.saga.permissions.Permissions;
 import org.ogf.saga.stream.StreamService;
@@ -87,7 +86,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @param len the maximum number of bytes to be read.
      * @param buffer the buffer to store into.
      * @return the number of bytes read.
-     * @exception IOException deviation from the SAGA specs: thrown in case
+     * @exception SagaIOException deviation from the SAGA specs: thrown in case
      *     of an error, where the SAGA specs describe a return of a negative
      *     value, corresponding to negatives of the respective ERRNO error
      *     code.
@@ -95,7 +94,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
     public int read(Buffer buffer, int len)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
                PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException,
-               NoSuccessException, IOException;
+               NoSuccessException, SagaIOException;
 
     /**
      * Writes a raw buffer to the stream.
@@ -104,7 +103,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @param len the number of bytes of data in the buffer.
      * @param buffer the data to be sent.
      * @return the number of bytes written.
-     * @exception IOException deviation from the SAGA specs: thrown in case
+     * @exception SagaIOException deviation from the SAGA specs: thrown in case
      *     of an error, where the SAGA specs describe a return of a negative
      *     value, corresponding to negatives of the respective ERRNO error
      *     code.
@@ -112,7 +111,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
     public int write(Buffer buffer, int len)
         throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
                PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException,
-               NoSuccessException, IOException;
+               NoSuccessException, SagaIOException;
 
     //
     // Task versions ...
@@ -206,7 +205,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @param len the number of bytes of data in the buffer.
      * @param buffer the data to be sent.
      * @return the number of bytes written.
-     * @exception IOException deviation from the SAGA specs: thrown in case
+     * @exception SagaIOException deviation from the SAGA specs: thrown in case
      *     of an error.
      * @return the task.
      * @exception NotImplementedException is thrown when the task version of this

@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.file;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
 import org.ogf.saga.impl.SagaRuntimeException;
@@ -65,7 +65,7 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
 
     public void readV(IOVec[] arg0) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         checkIOVecsType(arg0);
         for (IOVec iov : arg0) {
             org.ogf.saga.proxies.file.IOVec iovec = (org.ogf.saga.proxies.file.IOVec) iov;
@@ -77,7 +77,7 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
 
     public void writeV(IOVec[] arg0) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         checkIOVecsType(arg0);
         for (IOVec iov : arg0) {
             org.ogf.saga.proxies.file.IOVec iovec = (org.ogf.saga.proxies.file.IOVec) iov;
@@ -99,7 +99,7 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
     private int readByFallsPattern(Falls falls, Buffer buf, int bufOffset)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         int rep = falls.getRep();
         int from = falls.getFrom();
         int to = falls.getTo();
@@ -121,7 +121,7 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
     
     public int readP(String fallsPattern, Buffer buf) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
 
         Falls falls = fallsCache.get(fallsPattern);
         if (falls == null) {
@@ -169,7 +169,7 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
     private int writeByFallsPattern(Falls falls, Buffer buf, int bufOffset)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         int rep = falls.getRep();
         int from = falls.getFrom();
         int to = falls.getTo();
@@ -191,7 +191,7 @@ public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
     
     public int writeP(String fallsPattern, Buffer buf) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IOException {
+            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         Falls falls = fallsCache.get(fallsPattern);
         if (falls == null) {
             falls = new Falls(fallsPattern);
