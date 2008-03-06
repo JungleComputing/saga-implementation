@@ -20,6 +20,8 @@ import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.stream.StreamSpiInterface;
+import org.ogf.saga.stream.StreamInputStream;
+import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -322,6 +324,22 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
 
     public Task<Integer> write(TaskMode mode, Buffer buffer) throws NotImplementedException {
         return write(mode, buffer, -1);
+    }
+
+    public StreamInputStream getInputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+        return proxy.getInputStream();
+    }
+
+    public Task<StreamInputStream> getInputStream(TaskMode mode) throws NotImplementedException {
+        return proxy.getInputStream(mode);
+    }
+
+    public StreamOutputStream getOutputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+        return proxy.getOutputStream();
+    }
+
+    public Task<StreamOutputStream> getOutputStream(TaskMode mode) throws NotImplementedException {
+        return proxy.getOutputStream(mode);
     }
 
 }

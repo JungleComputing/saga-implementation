@@ -18,6 +18,8 @@ import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.proxies.stream.StreamWrapper;
+import org.ogf.saga.stream.StreamInputStream;
+import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -345,5 +347,15 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
             throws NotImplementedException {
         return attributes.setVectorAttribute(mode, key, values);
     }
-
+    
+    public Task<StreamInputStream> getInputStream(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<StreamInputStream>(this, session, mode,
+                "getInputStream", new Class[] {});
+    }
+    
+    public Task<StreamOutputStream> getOutputStream(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<StreamOutputStream>(this, session, mode,
+                "getOutputStream", new Class[] {});
+    }
+    
 }

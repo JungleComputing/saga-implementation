@@ -15,6 +15,8 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.monitoring.AsyncMonitorable;
 import org.ogf.saga.permissions.Permissions;
+import org.ogf.saga.stream.StreamInputStream;
+import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
@@ -81,6 +83,24 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
 
     // I/O methods
 
+    /**
+     * Obtains an InputStream from the stream.
+     * @return the inputstream.
+     */
+    public StreamInputStream getInputStream() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException, SagaIOException;
+
+    /**
+     * Obtains an OutputStream from the stream.
+     * @return the outputstream.
+     */
+    public StreamOutputStream getOutputStream() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException, SagaIOException;
+    
     /**
      * Reads a raw buffer from the stream.
      * @param len the maximum number of bytes to be read.
@@ -185,6 +205,20 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
 
     // I/O methods
 
+    /**
+     * Creates a task that obtains an OutputStream from the stream.
+     * @return the task.
+     */
+    public Task<StreamInputStream> getInputStream(TaskMode mode)
+            throws NotImplementedException;
+    
+    /**
+     * Creates a task that obtains an OutputStream from the stream.
+     * @return the task.
+     */
+    public Task<StreamOutputStream> getOutputStream(TaskMode mode)
+            throws NotImplementedException;
+    
     /**
      * Creates a task that reads a raw buffer from the stream.
      * @param mode the task mode.
