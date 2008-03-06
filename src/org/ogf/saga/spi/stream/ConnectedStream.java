@@ -18,6 +18,8 @@ import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.stream.StreamInputStream;
+import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamState;
 import org.ogf.saga.task.Task;
@@ -389,5 +391,15 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
     public Task<Integer> write(TaskMode mode, Buffer buffer)
             throws NotImplementedException {
         return write(mode, buffer, -1);
+    }
+    
+    public Task<StreamInputStream> getInputStream(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<StreamInputStream>(this, session, mode,
+                "getInputStream", new Class[] {});
+    }
+    
+    public Task<StreamOutputStream> getOutputStream(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<StreamOutputStream>(this, session, mode,
+                "getOutputStream", new Class[] {});
     }
 }

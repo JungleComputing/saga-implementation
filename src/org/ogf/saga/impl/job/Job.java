@@ -28,7 +28,7 @@ import org.ogf.saga.task.TaskMode;
  * Rather, a JobService SPI can use this class as a base class to construct jobs
  * from.
  */
-public abstract class Job extends org.ogf.saga.impl.task.Task<Object> implements
+public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         org.ogf.saga.job.Job {
 
     private JobAttributes attributes;
@@ -136,16 +136,16 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Object> implements
         throw new NoSuccessException("getObject() called on Job");
     }
     
-    public Object getResult() throws NotImplementedException, IncorrectStateException, TimeoutException,
+    public Void getResult() throws NotImplementedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
         throw new NoSuccessException("getResult() called on Job");
     }  
     
-    public Object get() throws InterruptedException, ExecutionException {
+    public Void get() throws InterruptedException, ExecutionException {
         throw new SagaRuntimeException("get() called on Job");
     }
     
-    public Object get(long timeout, TimeUnit unit) throws InterruptedException,
+    public Void get(long timeout, TimeUnit unit) throws InterruptedException,
             ExecutionException, java.util.concurrent.TimeoutException {
         throw new SagaRuntimeException("get() called on Job");
     }
@@ -155,10 +155,6 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Object> implements
             BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         throw new NoSuccessException("rethrow() called on Job");
-    }
-    
-    public Object call() throws Exception {
-        throw new NoSuccessException("call() called on Job");
     }
     
     // Base implementations.
