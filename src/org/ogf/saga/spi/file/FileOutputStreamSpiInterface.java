@@ -3,6 +3,7 @@ package org.ogf.saga.spi.file;
 import java.io.IOException;
 
 import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -25,14 +26,14 @@ public interface FileOutputStreamSpiInterface {
     
     void flush() throws IOException;
         
-    public Task write(TaskMode mode, int b) throws NotImplementedException;
+    public Task<FileOutputStream, Void> write(TaskMode mode, int b) throws NotImplementedException;
     
-    public Task write(TaskMode mode, byte[] buf, int off, int len)
+    public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf, int off, int len)
             throws NotImplementedException;
     
-    public Task write(TaskMode mode, byte[] buf) throws NotImplementedException;
+    public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf) throws NotImplementedException;
     
-    public Task flush(TaskMode mode) throws NotImplementedException;
+    public Task<FileOutputStream, Void> flush(TaskMode mode) throws NotImplementedException;
     
-    public Task close(TaskMode mode) throws NotImplementedException;
+    public Task<FileOutputStream, Void> close(TaskMode mode) throws NotImplementedException;
 }

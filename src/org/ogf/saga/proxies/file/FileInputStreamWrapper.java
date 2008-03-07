@@ -132,39 +132,39 @@ public class FileInputStreamWrapper extends FileInputStream {
         return proxy.skip(cnt);
     }
 
-    public Task<Integer> available(TaskMode mode)
+    public Task<FileInputStream, Integer> available(TaskMode mode)
             throws NotImplementedException {
         return proxy.available(mode);
     }
 
-    public Task close(TaskMode mode) throws NotImplementedException {
+    public Task<FileInputStream, Void> close(TaskMode mode) throws NotImplementedException {
         return proxy.close(mode);
     }
 
-    public Task mark(TaskMode mode, int readlimit)
+    public Task<FileInputStream, Void> mark(TaskMode mode, int readlimit)
             throws NotImplementedException {
         return proxy.mark(mode, readlimit);
     }
 
-    public Task<Boolean> markSupported(TaskMode mode)
+    public Task<FileInputStream, Boolean> markSupported(TaskMode mode)
             throws NotImplementedException {
         return proxy.markSupported(mode);
     }
 
-    public Task<Integer> read(TaskMode mode) throws NotImplementedException {
+    public Task<FileInputStream, Integer> read(TaskMode mode) throws NotImplementedException {
         return proxy.read(mode);
     }
 
-    public Task<Integer> read(TaskMode mode, byte[] buf, int off, int len)
+    public Task<FileInputStream, Integer> read(TaskMode mode, byte[] buf, int off, int len)
             throws NotImplementedException {
         return proxy.read(mode, buf, off, len);
     }
 
-    public Task reset(TaskMode mode) throws NotImplementedException {
+    public Task<FileInputStream, Void> reset(TaskMode mode) throws NotImplementedException {
         return proxy.reset(mode);
     }
 
-    public Task<Long> skip(TaskMode mode, long n)
+    public Task<FileInputStream, Long> skip(TaskMode mode, long n)
             throws NotImplementedException {
         return proxy.skip(mode, n);
     }

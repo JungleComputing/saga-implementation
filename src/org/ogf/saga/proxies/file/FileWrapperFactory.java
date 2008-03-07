@@ -51,30 +51,30 @@ public class FileWrapperFactory extends FileFactory {
         return new FileOutputStreamWrapper(session, name, append);
     }
 
-    protected Task<Directory> doCreateDirectory(TaskMode mode, Session session,
+    protected Task<FileFactory, Directory> doCreateDirectory(TaskMode mode, Session session,
             URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Directory>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<FileFactory, Directory>(this, session, mode,
                 "doCreateDirectory", new Class[] { Session.class, URL.class,
                         Integer.TYPE }, session, name, flags);
     }
 
-    protected Task<File> doCreateFile(TaskMode mode, Session session, URL name,
+    protected Task<FileFactory, File> doCreateFile(TaskMode mode, Session session, URL name,
             int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<FileFactory, File>(this, session, mode,
                 "doCreateFile", new Class[] { Session.class, URL.class,
                         Integer.TYPE }, session, name, flags);
     }
 
-    protected Task<FileInputStream> doCreateFileInputStream(TaskMode mode,
+    protected Task<FileFactory, FileInputStream> doCreateFileInputStream(TaskMode mode,
             Session session, URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileInputStream>(this, session,
+        return new org.ogf.saga.impl.task.Task<FileFactory, FileInputStream>(this, session,
                 mode, "doCreateFileInputStream", new Class[] { Session.class,
                         URL.class }, session, name);
     }
 
-    protected Task<FileOutputStream> doCreateFileOutputStream(TaskMode mode,
+    protected Task<FileFactory, FileOutputStream> doCreateFileOutputStream(TaskMode mode,
             Session session, URL name, boolean append) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileOutputStream>(this, session,
+        return new org.ogf.saga.impl.task.Task<FileFactory, FileOutputStream>(this, session,
                 mode, "doCreateFileOutputStream", new Class[] { Session.class,
                         URL.class, Boolean.TYPE }, session, name, append);
     }

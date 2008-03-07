@@ -11,12 +11,13 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.monitoring.AsyncMonitorable;
 import org.ogf.saga.permissions.Permissions;
 import org.ogf.saga.stream.Stream;
+import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface StreamServiceSpiInterface extends AsyncMonitorable,
-        Permissions, Async {
+public interface StreamServiceSpiInterface extends AsyncMonitorable<StreamService>,
+        Permissions<StreamService>, Async {
 
     /**
      * Obtains the URL to be used to connect to this server.
@@ -55,7 +56,7 @@ public interface StreamServiceSpiInterface extends AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<URL> getUrl(TaskMode mode)
+    public Task<StreamService, URL> getUrl(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -68,7 +69,7 @@ public interface StreamServiceSpiInterface extends AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Stream> serve(TaskMode mode, float timeoutInSeconds)
+    public Task<StreamService, Stream> serve(TaskMode mode, float timeoutInSeconds)
         throws NotImplementedException;
 
     /**
@@ -79,6 +80,6 @@ public interface StreamServiceSpiInterface extends AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task close(TaskMode mode, float timeoutInSeconds)
+    public Task<StreamService, Void> close(TaskMode mode, float timeoutInSeconds)
         throws NotImplementedException;
 }

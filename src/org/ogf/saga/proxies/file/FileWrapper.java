@@ -84,7 +84,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.getSize();
     }
 
-    public Task<Long> getSize(TaskMode mode) throws NotImplementedException {
+    public Task<File, Long> getSize(TaskMode mode) throws NotImplementedException {
         return proxy.getSize(mode);
     }
 
@@ -102,7 +102,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.modesE();
     }
 
-    public Task<List<String>> modesE(TaskMode mode) throws NotImplementedException {
+    public Task<File, List<String>> modesE(TaskMode mode) throws NotImplementedException {
         return proxy.modesE(mode);
     }
 
@@ -124,17 +124,17 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.read(buffer, offset, len);
     }
 
-    public Task<Integer> read(TaskMode mode, Buffer buffer)
+    public Task<File, Integer> read(TaskMode mode, Buffer buffer)
             throws NotImplementedException {
         return read(mode, buffer, -1);
     }
 
-    public Task<Integer> read(TaskMode mode, Buffer buffer, int len)
+    public Task<File, Integer> read(TaskMode mode, Buffer buffer, int len)
             throws NotImplementedException {
         return read(mode, buffer, 0, len);
     }
     
-    public Task<Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
+    public Task<File, Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
             throws NotImplementedException {
         return proxy.read(mode, buffer, offset, len);
     }
@@ -146,7 +146,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.readE(emode, spec, buffer);
     }
 
-    public Task<Integer> readE(TaskMode mode, String emode, String spec,
+    public Task<File, Integer> readE(TaskMode mode, String emode, String spec,
             Buffer buffer) throws NotImplementedException {
         return proxy.readE(mode, emode, spec, buffer);
     }
@@ -157,7 +157,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.readP(pattern, buffer);
     }
 
-    public Task<Integer> readP(TaskMode mode, String pattern, Buffer buffer)
+    public Task<File, Integer> readP(TaskMode mode, String pattern, Buffer buffer)
             throws NotImplementedException {
         return proxy.readP(mode, pattern, buffer);
     }
@@ -168,7 +168,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         proxy.readV(iovecs);
     }
 
-    public Task readV(TaskMode mode, IOVec[] iovecs) throws NotImplementedException {
+    public Task<File, Void> readV(TaskMode mode, IOVec[] iovecs) throws NotImplementedException {
         return proxy.readV(mode, iovecs);
     }
 
@@ -178,7 +178,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.seek(offset, whence);
     }
 
-    public Task<Long> seek(TaskMode mode, long offset, SeekMode whence)
+    public Task<File, Long> seek(TaskMode mode, long offset, SeekMode whence)
             throws NotImplementedException {
         return proxy.seek(mode, offset, whence);
     }
@@ -189,7 +189,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.sizeE(emode, spec);
     }
 
-    public Task<Integer> sizeE(TaskMode mode, String emode, String spec)
+    public Task<File, Integer> sizeE(TaskMode mode, String emode, String spec)
             throws NotImplementedException {
         return proxy.sizeE(mode, emode, spec);
     }
@@ -200,7 +200,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.sizeP(pattern);
     }
 
-    public Task<Integer> sizeP(TaskMode mode, String pattern)
+    public Task<File, Integer> sizeP(TaskMode mode, String pattern)
             throws NotImplementedException {
         return proxy.sizeP(mode, pattern);
     }
@@ -223,17 +223,17 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.write(buffer, offset, len);
     }
 
-    public Task<Integer> write(TaskMode mode, Buffer buffer)
+    public Task<File, Integer> write(TaskMode mode, Buffer buffer)
             throws NotImplementedException {
         return write(mode, buffer, 0, -1);
     }
 
-    public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
+    public Task<File, Integer> write(TaskMode mode, Buffer buffer, int len)
             throws NotImplementedException {
         return write(mode, buffer, 0, len);
     }
     
-    public Task<Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
+    public Task<File, Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
             throws NotImplementedException {
         return proxy.write(mode, buffer, offset, len);
     }
@@ -246,7 +246,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.writeE(emode, spec, buffer);
     }
 
-    public Task<Integer> writeE(TaskMode mode, String emode, String spec,
+    public Task<File, Integer> writeE(TaskMode mode, String emode, String spec,
             Buffer buffer) throws NotImplementedException {
         return proxy.writeE(mode, emode, spec, buffer);
     }
@@ -257,7 +257,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.writeP(pattern, buffer);
     }
 
-    public Task<Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
+    public Task<File, Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
             throws NotImplementedException {
         return proxy.writeP(mode, pattern, buffer);
     }
@@ -268,7 +268,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         proxy.writeV(iovecs);
     }
 
-    public Task writeV(TaskMode mode, IOVec[] iovecs) throws NotImplementedException {
+    public Task<File, Void> writeV(TaskMode mode, IOVec[] iovecs) throws NotImplementedException {
         return proxy.writeV(mode, iovecs);
     }
 }

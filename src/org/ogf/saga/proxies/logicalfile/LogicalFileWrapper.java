@@ -77,7 +77,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         }
     }
 
-    public Task addLocation(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<LogicalFile, Void> addLocation(TaskMode mode, URL name) throws NotImplementedException {
         return proxy.addLocation(mode, name);
     }
 
@@ -97,7 +97,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         return proxy.findAttributes(patterns);
     }
 
-    public Task<String[]> findAttributes(TaskMode mode, String... patterns) throws NotImplementedException {
+    public Task<LogicalFile, String[]> findAttributes(TaskMode mode, String... patterns) throws NotImplementedException {
         return proxy.findAttributes(mode, patterns);
     }
 
@@ -105,7 +105,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         return proxy.getAttribute(key);
     }
 
-    public Task<String> getAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalFile, String> getAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.getAttribute(mode, key);
     }
 
@@ -113,7 +113,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         return proxy.getVectorAttribute(key);
     }
 
-    public Task<String[]> getVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalFile, String[]> getVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.getVectorAttribute(mode, key);
     }
 
@@ -121,7 +121,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         return proxy.isReadOnlyAttribute(key);
     }
 
-    public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalFile, Boolean> isReadOnlyAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isReadOnlyAttribute(mode, key);
     }
 
@@ -129,7 +129,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         return proxy.isRemovableAttribute(key);
     }
 
-    public Task<Boolean> isRemovableAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalFile, Boolean> isRemovableAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isRemovableAttribute(mode, key);
     }
 
@@ -137,7 +137,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         return proxy.isVectorAttribute(key);
     }
 
-    public Task<Boolean> isVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalFile, Boolean> isVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isVectorAttribute(mode, key);
     }
 
@@ -145,7 +145,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         return proxy.isWritableAttribute(key);
     }
 
-    public Task<Boolean> isWritableAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalFile, Boolean> isWritableAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isWritableAttribute(mode, key);
     }
 
@@ -153,7 +153,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         return proxy.listAttributes();
     }
 
-    public Task<String[]> listAttributes(TaskMode mode) throws NotImplementedException {
+    public Task<LogicalFile, String[]> listAttributes(TaskMode mode) throws NotImplementedException {
         return proxy.listAttributes(mode);
     }
 
@@ -161,7 +161,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         return proxy.listLocations();
     }
 
-    public Task<List<URL>> listLocations(TaskMode mode) throws NotImplementedException {
+    public Task<LogicalFile, List<URL>> listLocations(TaskMode mode) throws NotImplementedException {
         return proxy.listLocations(mode);
     }
 
@@ -169,11 +169,11 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         proxy.removeAttribute(key);
     }
 
-    public Task removeAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalFile, Void> removeAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.removeAttribute(mode, key);
     }
 
-    public Task removeLocation(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<LogicalFile, Void> removeLocation(TaskMode mode, URL name) throws NotImplementedException {
         return proxy.removeLocation(mode, name);
     }
 
@@ -181,11 +181,11 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         proxy.removeLocation(name);
     }
 
-    public Task replicate(TaskMode mode, URL name, int flags) throws NotImplementedException {
+    public Task<LogicalFile, Void> replicate(TaskMode mode, URL name, int flags) throws NotImplementedException {
         return proxy.replicate(mode, name, flags);
     }
 
-    public Task replicate(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<LogicalFile, Void> replicate(TaskMode mode, URL name) throws NotImplementedException {
         return replicate(mode, name, Flags.NONE.getValue());
     }
 
@@ -201,7 +201,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         proxy.setAttribute(key, value);
     }
 
-    public Task setAttribute(TaskMode mode, String key, String value) throws NotImplementedException {
+    public Task<LogicalFile, Void> setAttribute(TaskMode mode, String key, String value) throws NotImplementedException {
         return proxy.setAttribute(mode, key, value);
     }
 
@@ -209,11 +209,11 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         proxy.setVectorAttribute(key, values);
     }
 
-    public Task setVectorAttribute(TaskMode mode, String key, String[] values) throws NotImplementedException {
+    public Task<LogicalFile, Void> setVectorAttribute(TaskMode mode, String key, String[] values) throws NotImplementedException {
         return proxy.setVectorAttribute(mode, key, values);
     }
 
-    public Task updateLocation(TaskMode mode, URL nameOld, URL nameNew) throws NotImplementedException {
+    public Task<LogicalFile, Void> updateLocation(TaskMode mode, URL nameOld, URL nameNew) throws NotImplementedException {
         return proxy.updateLocation(mode, nameOld, nameNew);
     }
 

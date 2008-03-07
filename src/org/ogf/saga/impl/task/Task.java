@@ -33,13 +33,13 @@ import org.ogf.saga.task.TaskMode;
 // The SAGA specifications warn against using threads.
 // However, there is nothing against a default implementation that uses them.
 
-public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
-        implements org.ogf.saga.task.Task<E>, Callable<E> {
+public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
+        implements org.ogf.saga.task.Task<T, E>, Callable<E> {
 
     private static Logger logger = Logger.getLogger(Task.class);
     
     protected State state = State.NEW;
-    private final Object object;
+    private final T object;
     private Throwable exception = null;
     private Metric metric;
     private E result = null;
@@ -53,12 +53,12 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
             10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
     
     // Constructor used for Job.
-    public Task(Session session) throws BadParameterException {
+    public Task(Session session, T object) throws BadParameterException {
         super(session);
-        this.object = this;
+        this.object = object;
     }
     
-    public Task(Task<E> orig) {
+    public Task(Task<T, E> orig) {
         super(orig);
         this.object = orig.object;
         this.state = orig.state;
@@ -80,10 +80,10 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
     }
     
     public Object clone() {
-        return new Task<E>(this);
+        return new Task<T, E>(this);
     }
     
-    public Task(Object object, Session session, TaskMode mode, String methodName,
+    public Task(T object, Session session, TaskMode mode, String methodName,
             Class[] parameterTypes, Object... parameters) {
         
         super(session);
@@ -155,9 +155,9 @@ public class Task<E> extends org.ogf.saga.impl.SagaObjectBase
      * @see org.ogf.saga.task.Task#getObject()
      */
     @SuppressWarnings("unchecked")
-    public <T> T getObject() throws NotImplementedException, TimeoutException,
+    public T getObject() throws NotImplementedException, TimeoutException,
             NoSuccessException {
-        return (T) object;
+        return object;
     }
 
     /*

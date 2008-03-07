@@ -31,9 +31,9 @@ public class JobWrapperFactory extends JobFactory {
         return new JobServiceWrapper(session, rm);
     }
 
-    protected Task<JobService> doCreateJobService(TaskMode mode,
+    protected Task<JobFactory, JobService> doCreateJobService(TaskMode mode,
             Session session, URL rm) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<JobFactory, JobService>(this, session, mode,
                 "doCreateJobService",
                 new Class[] { Session.class, URL.class } ,
                 session, rm);

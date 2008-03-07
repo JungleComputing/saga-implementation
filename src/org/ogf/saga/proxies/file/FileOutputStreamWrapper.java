@@ -119,19 +119,19 @@ public class FileOutputStreamWrapper extends FileOutputStream {
         proxy.write(b);
     }
 
-    public Task close(TaskMode mode) throws NotImplementedException {
+    public Task<FileOutputStream, Void> close(TaskMode mode) throws NotImplementedException {
         return proxy.close(mode);
     }
 
-    public Task flush(TaskMode mode) throws NotImplementedException {
+    public Task<FileOutputStream, Void> flush(TaskMode mode) throws NotImplementedException {
         return proxy.flush(mode);
     }
 
-    public Task write(TaskMode mode, int b) throws NotImplementedException {
+    public Task<FileOutputStream, Void> write(TaskMode mode, int b) throws NotImplementedException {
         return proxy.write(mode, b);
     }
 
-    public Task write(TaskMode mode, byte[] buf, int off, int len)
+    public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf, int off, int len)
             throws NotImplementedException {
         return proxy.write(mode, buf, off, len);
     }

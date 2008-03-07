@@ -113,7 +113,7 @@ public interface DirectorySpiInterface extends NSDirectorySpiInterface {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Long> getSize(TaskMode mode, URL name, int flags)
+    Task<Directory, Long> getSize(TaskMode mode, URL name, int flags)
         throws NotImplementedException;
        
     /**
@@ -125,7 +125,7 @@ public interface DirectorySpiInterface extends NSDirectorySpiInterface {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Boolean> isFile(TaskMode mode, URL name)
+    Task<Directory, Boolean> isFile(TaskMode mode, URL name)
         throws NotImplementedException;
 
     /**
@@ -137,7 +137,7 @@ public interface DirectorySpiInterface extends NSDirectorySpiInterface {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Directory> openDirectory(TaskMode mode, URL name,
+    Task<Directory, Directory> openDirectory(TaskMode mode, URL name,
             int flags)
         throws NotImplementedException;
     
@@ -150,7 +150,7 @@ public interface DirectorySpiInterface extends NSDirectorySpiInterface {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<File> openFile(TaskMode mode, URL name, int flags)
+    Task<Directory, File> openFile(TaskMode mode, URL name, int flags)
         throws NotImplementedException;
        
     /**
@@ -161,7 +161,7 @@ public interface DirectorySpiInterface extends NSDirectorySpiInterface {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<FileInputStream> openFileInputStream(TaskMode mode, URL name)
+    Task<Directory, FileInputStream> openFileInputStream(TaskMode mode, URL name)
         throws NotImplementedException;
     
     /**
@@ -173,6 +173,6 @@ public interface DirectorySpiInterface extends NSDirectorySpiInterface {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<FileOutputStream> openFileOutputStream(TaskMode mode, URL name, boolean append)
+    Task<Directory, FileOutputStream> openFileOutputStream(TaskMode mode, URL name, boolean append)
         throws NotImplementedException;    
 }

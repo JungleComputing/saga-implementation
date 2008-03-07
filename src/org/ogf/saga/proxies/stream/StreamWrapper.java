@@ -82,7 +82,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.addCallback(name, cb);
     }
 
-    public Task<Integer> addCallback(TaskMode mode, String name, Callback cb) throws NotImplementedException {
+    public Task<Stream, Integer> addCallback(TaskMode mode, String name, Callback cb) throws NotImplementedException {
         return proxy.addCallback(mode, name, cb);
     }
 
@@ -90,7 +90,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         proxy.close(timeoutInSeconds);
     }
 
-    public Task close(TaskMode mode, float timeoutInSeconds) throws NotImplementedException {
+    public Task<Stream, Void> close(TaskMode mode, float timeoutInSeconds) throws NotImplementedException {
         return proxy.close(mode, timeoutInSeconds);
     }
 
@@ -98,7 +98,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         proxy.connect();
     }
 
-    public Task connect(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, Void> connect(TaskMode mode) throws NotImplementedException {
         return proxy.connect(mode);
     }
 
@@ -106,7 +106,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.findAttributes(patterns);
     }
 
-    public Task<String[]> findAttributes(TaskMode mode, String... patterns) throws NotImplementedException {
+    public Task<Stream, String[]> findAttributes(TaskMode mode, String... patterns) throws NotImplementedException {
         return proxy.findAttributes(mode, patterns);
     }
 
@@ -114,7 +114,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.getAttribute(key);
     }
 
-    public Task<String> getAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<Stream, String> getAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.getAttribute(mode, key);
     }
 
@@ -122,7 +122,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.getContext();
     }
 
-    public Task<Context> getContext(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, Context> getContext(TaskMode mode) throws NotImplementedException {
         return proxy.getContext(mode);
     }
 
@@ -130,7 +130,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.getGroup();
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, String> getGroup(TaskMode mode) throws NotImplementedException {
         return proxy.getGroup(mode);
     }
 
@@ -138,7 +138,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.getMetric(name);
     }
 
-    public Task<Metric> getMetric(TaskMode mode, String name) throws NotImplementedException {
+    public Task<Stream, Metric> getMetric(TaskMode mode, String name) throws NotImplementedException {
         return proxy.getMetric(mode, name);
     }
 
@@ -146,7 +146,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.getOwner();
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, String> getOwner(TaskMode mode) throws NotImplementedException {
         return proxy.getOwner(mode);
     }
 
@@ -154,7 +154,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.getUrl();
     }
 
-    public Task<URL> getUrl(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, URL> getUrl(TaskMode mode) throws NotImplementedException {
         return proxy.getUrl(mode);
     }
 
@@ -162,7 +162,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.getVectorAttribute(key);
     }
 
-    public Task<String[]> getVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<Stream, String[]> getVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.getVectorAttribute(mode, key);
     }
 
@@ -170,7 +170,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.isReadOnlyAttribute(key);
     }
 
-    public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<Stream, Boolean> isReadOnlyAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isReadOnlyAttribute(mode, key);
     }
 
@@ -178,7 +178,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.isRemovableAttribute(key);
     }
 
-    public Task<Boolean> isRemovableAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<Stream, Boolean> isRemovableAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isRemovableAttribute(mode, key);
     }
 
@@ -186,7 +186,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.isVectorAttribute(key);
     }
 
-    public Task<Boolean> isVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<Stream, Boolean> isVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isVectorAttribute(mode, key);
     }
 
@@ -194,7 +194,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.isWritableAttribute(key);
     }
 
-    public Task<Boolean> isWritableAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<Stream, Boolean> isWritableAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isWritableAttribute(mode, key);
     }
 
@@ -202,7 +202,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.listAttributes();
     }
 
-    public Task<String[]> listAttributes(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, String[]> listAttributes(TaskMode mode) throws NotImplementedException {
         return proxy.listAttributes(mode);
     }
 
@@ -210,7 +210,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.listMetrics();
     }
 
-    public Task<String[]> listMetrics(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, String[]> listMetrics(TaskMode mode) throws NotImplementedException {
         return proxy.listMetrics(mode);
     }
 
@@ -218,7 +218,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         proxy.permissionsAllow(id, permissions);
     }
 
-    public Task permissionsAllow(TaskMode mode, String id, int permissions) throws NotImplementedException {
+    public Task<Stream, Void> permissionsAllow(TaskMode mode, String id, int permissions) throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions);
     }
 
@@ -226,7 +226,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.permissionsCheck(id, permissions);
     }
 
-    public Task<Boolean> permissionsCheck(TaskMode mode, String id, int permissions) throws NotImplementedException {
+    public Task<Stream, Boolean> permissionsCheck(TaskMode mode, String id, int permissions) throws NotImplementedException {
         return proxy.permissionsCheck(mode, id, permissions);
     }
 
@@ -234,7 +234,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         proxy.permissionsDeny(id, permissions);
     }
 
-    public Task permissionsDeny(TaskMode mode, String id, int permissions) throws NotImplementedException {
+    public Task<Stream, Void> permissionsDeny(TaskMode mode, String id, int permissions) throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions);
     }
 
@@ -242,7 +242,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.read(buffer, len);
     }
 
-    public Task<Integer> read(TaskMode mode, Buffer buffer, int len) throws NotImplementedException {
+    public Task<Stream, Integer> read(TaskMode mode, Buffer buffer, int len) throws NotImplementedException {
         return proxy.read(mode, buffer, len);
     }
 
@@ -250,7 +250,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         proxy.removeAttribute(key);
     }
 
-    public Task removeAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<Stream, Void> removeAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.removeAttribute(mode, key);
     }
 
@@ -258,7 +258,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         proxy.removeCallback(name, cookie);
     }
 
-    public Task removeCallback(TaskMode mode, String name, int cookie) throws NotImplementedException {
+    public Task<Stream, Void> removeCallback(TaskMode mode, String name, int cookie) throws NotImplementedException {
         return proxy.removeCallback(mode, name, cookie);
     }
 
@@ -266,7 +266,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         proxy.setAttribute(key, value);
     }
 
-    public Task setAttribute(TaskMode mode, String key, String value) throws NotImplementedException {
+    public Task<Stream, Void> setAttribute(TaskMode mode, String key, String value) throws NotImplementedException {
         return proxy.setAttribute(mode, key, value);
     }
 
@@ -274,7 +274,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         proxy.setVectorAttribute(key, values);
     }
 
-    public Task setVectorAttribute(TaskMode mode, String key, String[] values) throws NotImplementedException {
+    public Task<Stream, Void> setVectorAttribute(TaskMode mode, String key, String[] values) throws NotImplementedException {
         return proxy.setVectorAttribute(mode, key, values);
     }
 
@@ -282,7 +282,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.waitFor(what, timeoutInSeconds);
     }
 
-    public Task<Integer> waitFor(TaskMode mode, int what, float timeoutInSeconds) throws NotImplementedException {
+    public Task<Stream, Integer> waitFor(TaskMode mode, int what, float timeoutInSeconds) throws NotImplementedException {
         return proxy.waitFor(mode, what, timeoutInSeconds);
     }
 
@@ -290,7 +290,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.write(buffer, len);
     }
 
-    public Task<Integer> write(TaskMode mode, Buffer buffer, int len) throws NotImplementedException {
+    public Task<Stream, Integer> write(TaskMode mode, Buffer buffer, int len) throws NotImplementedException {
         return proxy.write(mode, buffer, len);
     }
 
@@ -298,7 +298,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         close(0.0F);
     }
 
-    public Task close(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, Void> close(TaskMode mode) throws NotImplementedException {
         return close(mode, 0.0F);
     }
 
@@ -306,7 +306,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return read(buffer, -1);
     }
 
-    public Task<Integer> read(TaskMode mode, Buffer buffer) throws NotImplementedException {
+    public Task<Stream, Integer> read(TaskMode mode, Buffer buffer) throws NotImplementedException {
         return read(mode, buffer, -1);
     }
 
@@ -314,7 +314,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return waitFor(what, -1.0F);
     }
 
-    public Task<Integer> waitFor(TaskMode mode, int what) throws NotImplementedException {
+    public Task<Stream, Integer> waitFor(TaskMode mode, int what) throws NotImplementedException {
         return waitFor(mode, what, -1.0F);
     }
 
@@ -322,7 +322,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return write(buffer, -1);
     }
 
-    public Task<Integer> write(TaskMode mode, Buffer buffer) throws NotImplementedException {
+    public Task<Stream, Integer> write(TaskMode mode, Buffer buffer) throws NotImplementedException {
         return write(mode, buffer, -1);
     }
 
@@ -330,7 +330,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.getInputStream();
     }
 
-    public Task<StreamInputStream> getInputStream(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, StreamInputStream> getInputStream(TaskMode mode) throws NotImplementedException {
         return proxy.getInputStream(mode);
     }
 
@@ -338,7 +338,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.getOutputStream();
     }
 
-    public Task<StreamOutputStream> getOutputStream(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, StreamOutputStream> getOutputStream(TaskMode mode) throws NotImplementedException {
         return proxy.getOutputStream(mode);
     }
 

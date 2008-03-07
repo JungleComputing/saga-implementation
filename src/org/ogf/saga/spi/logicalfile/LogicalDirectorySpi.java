@@ -21,6 +21,7 @@ import org.ogf.saga.logicalfile.LogicalDirectory;
 import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.logicalfile.LogicalFileFactory;
 import org.ogf.saga.namespace.Flags;
+import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.proxies.logicalfile.LogicalDirectoryWrapper;
 import org.ogf.saga.spi.namespace.NSDirectorySpi;
 import org.ogf.saga.task.Task;
@@ -29,8 +30,9 @@ import org.ogf.saga.task.TaskMode;
 public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         LogicalDirectorySpiInterface {
     
-    private LogicalFileAttributes attributes;  
+    private LogicalDirectoryAttributes attributes;  
     private int logicalFileFlags;
+    protected LogicalDirectoryWrapper wrapper;
     
     private static int checkFlags(int flags) throws BadParameterException {
         int allowed = Flags.ALLNAMESPACEFLAGS.getValue()
@@ -46,13 +48,14 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, session, name, checkFlags(flags) & Flags.ALLNAMESPACEFLAGS.getValue());
-        attributes = new LogicalFileAttributes(wrapper, session, true);
+        this.wrapper = wrapper;
+        attributes = new LogicalDirectoryAttributes(wrapper, session, true);
         logicalFileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
     }
     
     public Object clone() throws CloneNotSupportedException {
         LogicalDirectorySpi clone = (LogicalDirectorySpi) super.clone();
-        clone.attributes = (LogicalFileAttributes) attributes.clone();
+        clone.attributes = (LogicalDirectoryAttributes) attributes.clone();
         return clone;
     }
 
@@ -98,9 +101,9 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return newCandidates;
     }
 
-    public Task<List<URL>> find(TaskMode mode, String namePattern,
+    public Task<LogicalDirectory, List<URL>> find(TaskMode mode, String namePattern,
             String[] attrPattern, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<List<URL>>(
+        return new org.ogf.saga.impl.task.Task<LogicalDirectory, List<URL>>(
                 wrapper, session, mode, "find",
                 new Class[] {String.class, String[].class, Integer.TYPE },
                 namePattern, attrPattern, flags);
@@ -121,9 +124,9 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return LogicalFileFactory.createLogicalDirectory(session, name, flags);
     }
 
-    public Task<LogicalDirectory> openLogicalDir(
+    public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(
             TaskMode mode, URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<LogicalDirectory>(
+        return new org.ogf.saga.impl.task.Task<LogicalDirectory, LogicalDirectory>(
                 wrapper, session, mode, "openLogicalDir",
                 new Class[] {URL.class, Integer.TYPE },
                 name, flags);
@@ -145,9 +148,9 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return LogicalFileFactory.createLogicalFile(session, name, flags);
     }
 
-    public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name, int flags)
+    public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<LogicalFile>(
+        return new org.ogf.saga.impl.task.Task<LogicalDirectory, LogicalFile>(
                 wrapper, session, mode, "openLogicalFile",
                 new Class[] {URL.class, Integer.TYPE },
                 name, flags);
@@ -159,7 +162,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return isEntry(name);
     }
 
-    public Task<Boolean> isFile(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<NSDirectory, Boolean> isFile(TaskMode mode, URL name) throws NotImplementedException {
         return isEntry(mode, name);
     }
 
@@ -169,7 +172,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return attributes.findAttributes(patterns);
     }
 
-    public Task<String[]> findAttributes(TaskMode mode, String... patterns)
+    public Task<LogicalDirectory, String[]> findAttributes(TaskMode mode, String... patterns)
             throws NotImplementedException {
         return attributes.findAttributes(mode, patterns);
     }
@@ -180,7 +183,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return attributes.getAttribute(key);
     }
 
-    public Task<String> getAttribute(TaskMode mode, String key)
+    public Task<LogicalDirectory, String> getAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.getAttribute(mode, key);
     }
@@ -191,7 +194,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return attributes.getVectorAttribute(key);
     }
 
-    public Task<String[]> getVectorAttribute(TaskMode mode, String key)
+    public Task<LogicalDirectory, String[]> getVectorAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.getVectorAttribute(mode, key);
     }
@@ -202,7 +205,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return attributes.isReadOnlyAttribute(key);
     }
 
-    public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key)
+    public Task<LogicalDirectory, Boolean> isReadOnlyAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isReadOnlyAttribute(mode, key);
     }
@@ -213,7 +216,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return attributes.isRemovableAttribute(key);
     }
 
-    public Task<Boolean> isRemovableAttribute(TaskMode mode, String key)
+    public Task<LogicalDirectory, Boolean> isRemovableAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isRemovableAttribute(mode, key);
     }
@@ -224,7 +227,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return attributes.isVectorAttribute(key);
     }
 
-    public Task<Boolean> isVectorAttribute(TaskMode mode, String key)
+    public Task<LogicalDirectory, Boolean> isVectorAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isVectorAttribute(mode, key);
     }
@@ -235,7 +238,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return attributes.isWritableAttribute(key);
     }
 
-    public Task<Boolean> isWritableAttribute(TaskMode mode, String key)
+    public Task<LogicalDirectory, Boolean> isWritableAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isWritableAttribute(mode, key);
     }
@@ -246,7 +249,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return attributes.listAttributes();
     }
 
-    public Task<String[]> listAttributes(TaskMode mode) throws NotImplementedException {
+    public Task<LogicalDirectory, String[]> listAttributes(TaskMode mode) throws NotImplementedException {
         return attributes.listAttributes(mode);
     }
 
@@ -256,7 +259,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         attributes.removeAttribute(key);
     }
 
-    public Task removeAttribute(TaskMode mode, String key)
+    public Task<LogicalDirectory, Void> removeAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.removeAttribute(mode, key);
     }
@@ -267,7 +270,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         attributes.setAttribute(key, value);
     }
 
-    public Task setAttribute(TaskMode mode, String key, String value)
+    public Task<LogicalDirectory, Void> setAttribute(TaskMode mode, String key, String value)
             throws NotImplementedException {
         return attributes.setAttribute(mode, key, value);
     }
@@ -279,7 +282,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         attributes.setVectorAttribute(key, values);
     }
 
-    public Task setVectorAttribute(TaskMode mode, String key, String[] values)
+    public Task<LogicalDirectory, Void> setVectorAttribute(TaskMode mode, String key, String[] values)
             throws NotImplementedException {
         return attributes.setVectorAttribute(mode, key, values);
     }

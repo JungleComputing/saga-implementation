@@ -15,11 +15,12 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttributes  {
+public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttributes<LogicalFile>  {
 
     /**
      * Adds a replica location to the replica set.
@@ -78,7 +79,7 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task addLocation(TaskMode mode, URL name)
+    public Task<LogicalFile, Void> addLocation(TaskMode mode, URL name)
         throws NotImplementedException;
 
     /**
@@ -89,7 +90,7 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task removeLocation(TaskMode mode, URL name)
+    public Task<LogicalFile, Void> removeLocation(TaskMode mode, URL name)
         throws NotImplementedException;
 
     /**
@@ -101,7 +102,7 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task updateLocation(TaskMode mode, URL nameOld, URL nameNew)
+    public Task<LogicalFile, Void> updateLocation(TaskMode mode, URL nameOld, URL nameNew)
         throws NotImplementedException;
 
     /**
@@ -111,7 +112,7 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<List<URL>> listLocations(TaskMode mode)
+    public Task<LogicalFile, List<URL>> listLocations(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -124,6 +125,6 @@ public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttri
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task replicate(TaskMode mode, URL name, int flags)
+    public Task<LogicalFile, Void> replicate(TaskMode mode, URL name, int flags)
     throws NotImplementedException;
 }

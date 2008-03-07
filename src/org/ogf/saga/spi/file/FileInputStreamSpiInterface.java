@@ -3,6 +3,7 @@ package org.ogf.saga.spi.file;
 import java.io.IOException;
 
 import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -33,25 +34,25 @@ public interface FileInputStreamSpiInterface {
     
     boolean markSupported();
        
-    public Task<Integer> read(TaskMode mode) throws NotImplementedException;
+    public Task<FileInputStream, Integer> read(TaskMode mode) throws NotImplementedException;
     
-    public Task<Integer> read(TaskMode mode, byte[] buf, int off, int len)
+    public Task<FileInputStream, Integer> read(TaskMode mode, byte[] buf, int off, int len)
             throws NotImplementedException;
     
-    public Task<Integer> read(TaskMode mode, byte[] buf) throws NotImplementedException;
+    public Task<FileInputStream, Integer> read(TaskMode mode, byte[] buf) throws NotImplementedException;
     
-    public Task<Long> skip(TaskMode mode, long n) throws NotImplementedException;
+    public Task<FileInputStream, Long> skip(TaskMode mode, long n) throws NotImplementedException;
     
-    public Task<Integer> available(TaskMode mode) throws NotImplementedException;
+    public Task<FileInputStream, Integer> available(TaskMode mode) throws NotImplementedException;
     
-    public Task close(TaskMode mode) throws NotImplementedException;
+    public Task<FileInputStream, Void> close(TaskMode mode) throws NotImplementedException;
     
-    public Task mark(TaskMode mode, int readlimit)
+    public Task<FileInputStream, Void> mark(TaskMode mode, int readlimit)
                throws NotImplementedException;
     
-    public Task reset(TaskMode mode) throws NotImplementedException;
+    public Task<FileInputStream, Void> reset(TaskMode mode) throws NotImplementedException;
     
-    public Task<Boolean> markSupported(TaskMode mode)
+    public Task<FileInputStream, Boolean> markSupported(TaskMode mode)
             throws NotImplementedException;
 
 }

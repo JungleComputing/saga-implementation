@@ -146,6 +146,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public AdaptorInvocationHandler(AdaptorInvocationHandler orig, Object wrapper) {
         adaptors = new Hashtable<String, Adaptor>(adaptors);
         adaptorInstantiations = new Hashtable<String, Object>();
@@ -153,6 +154,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             try {
                 AdaptorBase cp = (AdaptorBase)
                         ((AdaptorBase) orig.adaptorInstantiations.get(s)).clone();
+                // This invocation gives a warning if warnings are not suppressed.
+                // And rightly so. But this should be correct.
+                // TODO: can we improve on this ???
                 cp.setWrapper(wrapper);
                 adaptorInstantiations.put(s, cp);
             } catch (CloneNotSupportedException e) {

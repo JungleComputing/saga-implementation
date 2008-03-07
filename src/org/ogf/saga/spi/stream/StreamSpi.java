@@ -18,13 +18,14 @@ import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.proxies.stream.StreamWrapper;
+import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterface {
+public abstract class StreamSpi extends AdaptorBase<Stream> implements StreamSpiInterface {
     
     protected URL url;
     protected StreamAttributes attributes;
@@ -85,69 +86,69 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         }
     }
 
-    public Task close(TaskMode mode, float timeoutInSeconds)
+    public Task<Stream, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, Void>(wrapper, session, mode,
                 "close", new Class[] { Float.TYPE }, timeoutInSeconds);
     }
 
-    public Task connect(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+    public Task<Stream, Void> connect(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<Stream, Void>(wrapper, session, mode,
                 "connect", new Class[] { });
     }
 
-    public Task<Context> getContext(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Context>(wrapper, session, mode,
+    public Task<Stream, Context> getContext(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<Stream, Context>(wrapper, session, mode,
                 "getContext", new Class[] { });
     }
 
-    public Task<URL> getUrl(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<URL>(wrapper, session, mode,
+    public Task<Stream, URL> getUrl(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<Stream, URL>(wrapper, session, mode,
                 "getURL", new Class[] { });
     }
 
-    public Task<Integer> read(TaskMode mode, Buffer buffer, int len)
+    public Task<Stream, Integer> read(TaskMode mode, Buffer buffer, int len)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, Integer>(wrapper, session, mode,
                 "read", new Class[] { Buffer.class, Integer.TYPE },
                 buffer, len);
     }
 
-    public Task<Integer> waitFor(TaskMode mode, int what,
+    public Task<Stream, Integer> waitFor(TaskMode mode, int what,
             float timeoutInSeconds) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, Integer>(wrapper, session, mode,
                 "waitFor", new Class[] { Integer.TYPE, Float.TYPE },
                 what, timeoutInSeconds);
     }
 
-    public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
+    public Task<Stream, Integer> write(TaskMode mode, Buffer buffer, int len)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, Integer>(wrapper, session, mode,
                 "write", new Class[] { Buffer.class, Integer.TYPE },
                 buffer, len);
     }
 
-    public Task<Integer> addCallback(TaskMode mode, String name, Callback cb)
+    public Task<Stream, Integer> addCallback(TaskMode mode, String name, Callback cb)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Integer>(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, Integer>(wrapper, session, mode,
                 "addCallback", new Class[] { String.class, Callback.class },
                 name, cb);
     }
 
-    public Task<org.ogf.saga.monitoring.Metric> getMetric(TaskMode mode, String name)
+    public Task<Stream, org.ogf.saga.monitoring.Metric> getMetric(TaskMode mode, String name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.monitoring.Metric>(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, org.ogf.saga.monitoring.Metric>(wrapper, session, mode,
                 "getMetric", new Class[] { String.class }, name);
     }
 
-    public Task<String[]> listMetrics(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<String[]>(wrapper, session, mode,
+    public Task<Stream, String[]> listMetrics(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<Stream, String[]>(wrapper, session, mode,
                 "listMetrics", new Class[] { });
     }
 
-    public Task removeCallback(TaskMode mode, String name, int cookie)
+    public Task<Stream, Void> removeCallback(TaskMode mode, String name, int cookie)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, Void>(wrapper, session, mode,
                 "removeCallback", new Class[] { String.class, Integer.TYPE },
                 name, cookie);
     }
@@ -196,33 +197,33 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         getMetric(name).removeCallback(cookie);
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<String>(wrapper, session, mode,
+    public Task<Stream, String> getGroup(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<Stream, String>(wrapper, session, mode,
                 "getGroup", new Class[] { });
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<String>(wrapper, session, mode,
+    public Task<Stream, String> getOwner(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<Stream, String>(wrapper, session, mode,
                 "getOwner", new Class[] { });
     }
 
-    public Task permissionsAllow(TaskMode mode, String id, int permissions)
+    public Task<Stream, Void> permissionsAllow(TaskMode mode, String id, int permissions)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, Void>(wrapper, session, mode,
                 "permissionsAllow", new Class[] {String.class, Integer.TYPE},
                 id, permissions);
     }
 
-    public Task<Boolean> permissionsCheck(TaskMode mode, String id,
+    public Task<Stream, Boolean> permissionsCheck(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, Boolean>(wrapper, session, mode,
                 "permissionsCheck", new Class[] {String.class, Integer.TYPE},
                 id, permissions);
     }
 
-    public Task permissionsDeny(TaskMode mode, String id, int permissions)
+    public Task<Stream, Void> permissionsDeny(TaskMode mode, String id, int permissions)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Stream, Void>(wrapper, session, mode,
                 "permissionsDeny", new Class[] {String.class, Integer.TYPE},
                 id, permissions);
     }
@@ -233,7 +234,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         return attributes.findAttributes(patterns);
     }
 
-    public Task<String[]> findAttributes(TaskMode mode, String... patterns)
+    public Task<Stream, String[]> findAttributes(TaskMode mode, String... patterns)
             throws NotImplementedException {
         return attributes.findAttributes(mode, patterns);
     }
@@ -244,7 +245,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         return attributes.getAttribute(key);
     }
 
-    public Task<String> getAttribute(TaskMode mode, String key)
+    public Task<Stream, String> getAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.getAttribute(mode, key);
     }
@@ -255,7 +256,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         return attributes.getVectorAttribute(key);
     }
 
-    public Task<String[]> getVectorAttribute(TaskMode mode, String key)
+    public Task<Stream, String[]> getVectorAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.getVectorAttribute(mode, key);
     }
@@ -266,7 +267,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         return attributes.isReadOnlyAttribute(key);
     }
 
-    public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key)
+    public Task<Stream, Boolean> isReadOnlyAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isReadOnlyAttribute(mode, key);
     }
@@ -277,7 +278,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         return attributes.isRemovableAttribute(key);
     }
 
-    public Task<Boolean> isRemovableAttribute(TaskMode mode, String key)
+    public Task<Stream, Boolean> isRemovableAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isRemovableAttribute(mode, key);
     }
@@ -288,7 +289,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         return attributes.isVectorAttribute(key);
     }
 
-    public Task<Boolean> isVectorAttribute(TaskMode mode, String key)
+    public Task<Stream, Boolean> isVectorAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isVectorAttribute(mode, key);
     }
@@ -299,7 +300,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         return attributes.isWritableAttribute(key);
     }
 
-    public Task<Boolean> isWritableAttribute(TaskMode mode, String key)
+    public Task<Stream, Boolean> isWritableAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isWritableAttribute(mode, key);
     }
@@ -310,7 +311,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         return attributes.listAttributes();
     }
 
-    public Task<String[]> listAttributes(TaskMode mode) throws NotImplementedException {
+    public Task<Stream, String[]> listAttributes(TaskMode mode) throws NotImplementedException {
         return attributes.listAttributes(mode);
     }
 
@@ -320,7 +321,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         attributes.removeAttribute(key);
     }
 
-    public Task removeAttribute(TaskMode mode, String key)
+    public Task<Stream, Void> removeAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.removeAttribute(mode, key);
     }
@@ -331,7 +332,7 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         attributes.setAttribute(key, value);
     }
 
-    public Task setAttribute(TaskMode mode, String key, String value)
+    public Task<Stream, Void> setAttribute(TaskMode mode, String key, String value)
             throws NotImplementedException {
         return attributes.setAttribute(mode, key, value);
     }
@@ -343,18 +344,18 @@ public abstract class StreamSpi extends AdaptorBase implements StreamSpiInterfac
         attributes.setVectorAttribute(key, values);
     }
 
-    public Task setVectorAttribute(TaskMode mode, String key, String[] values)
+    public Task<Stream, Void> setVectorAttribute(TaskMode mode, String key, String[] values)
             throws NotImplementedException {
         return attributes.setVectorAttribute(mode, key, values);
     }
     
-    public Task<StreamInputStream> getInputStream(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamInputStream>(this, session, mode,
+    public Task<Stream, StreamInputStream> getInputStream(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<Stream, StreamInputStream>(wrapper, session, mode,
                 "getInputStream", new Class[] {});
     }
     
-    public Task<StreamOutputStream> getOutputStream(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamOutputStream>(this, session, mode,
+    public Task<Stream, StreamOutputStream> getOutputStream(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<Stream, StreamOutputStream>(wrapper, session, mode,
                 "getOutputStream", new Class[] {});
     }
     
