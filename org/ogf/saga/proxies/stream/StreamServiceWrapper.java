@@ -79,7 +79,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.addCallback(name, cb);
     }
 
-    public Task<Integer> addCallback(TaskMode mode, String name, Callback cb) throws NotImplementedException {
+    public Task<StreamService, Integer> addCallback(TaskMode mode, String name, Callback cb) throws NotImplementedException {
         return proxy.addCallback(mode, name, cb);
     }
 
@@ -87,7 +87,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         proxy.close(timeoutInSeconds);
     }
 
-    public Task close(TaskMode mode, float timeoutInSeconds) throws NotImplementedException {
+    public Task<StreamService, Void> close(TaskMode mode, float timeoutInSeconds) throws NotImplementedException {
         return proxy.close(mode, timeoutInSeconds);
     }
 
@@ -95,7 +95,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.getGroup();
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
+    public Task<StreamService, String> getGroup(TaskMode mode) throws NotImplementedException {
         return proxy.getGroup(mode);
     }
 
@@ -103,7 +103,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.getMetric(name);
     }
 
-    public Task<Metric> getMetric(TaskMode mode, String name) throws NotImplementedException {
+    public Task<StreamService, Metric> getMetric(TaskMode mode, String name) throws NotImplementedException {
         return proxy.getMetric(mode, name);
     }
 
@@ -111,7 +111,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.getOwner();
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
+    public Task<StreamService, String> getOwner(TaskMode mode) throws NotImplementedException {
         return proxy.getOwner(mode);
     }
 
@@ -119,7 +119,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.getUrl();
     }
 
-    public Task<URL> getUrl(TaskMode mode) throws NotImplementedException {
+    public Task<StreamService, URL> getUrl(TaskMode mode) throws NotImplementedException {
         return proxy.getUrl(mode);
     }
 
@@ -127,7 +127,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.listMetrics();
     }
 
-    public Task<String[]> listMetrics(TaskMode mode) throws NotImplementedException {
+    public Task<StreamService, String[]> listMetrics(TaskMode mode) throws NotImplementedException {
         return proxy.listMetrics(mode);
     }
 
@@ -135,7 +135,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         proxy.permissionsAllow(id, permissions);
     }
 
-    public Task permissionsAllow(TaskMode mode, String id, int permissions) throws NotImplementedException {
+    public Task<StreamService, Void> permissionsAllow(TaskMode mode, String id, int permissions) throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions);
     }
 
@@ -143,7 +143,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.permissionsCheck(id, permissions);
     }
 
-    public Task<Boolean> permissionsCheck(TaskMode mode, String id, int permissions) throws NotImplementedException {
+    public Task<StreamService, Boolean> permissionsCheck(TaskMode mode, String id, int permissions) throws NotImplementedException {
         return proxy.permissionsCheck(mode, id, permissions);
     }
 
@@ -151,7 +151,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         proxy.permissionsDeny(id, permissions);
     }
 
-    public Task permissionsDeny(TaskMode mode, String id, int permissions) throws NotImplementedException {
+    public Task<StreamService, Void> permissionsDeny(TaskMode mode, String id, int permissions) throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions);
     }
 
@@ -159,7 +159,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         proxy.removeCallback(name, cookie);
     }
 
-    public Task removeCallback(TaskMode mode, String name, int cookie) throws NotImplementedException {
+    public Task<StreamService, Void> removeCallback(TaskMode mode, String name, int cookie) throws NotImplementedException {
         return proxy.removeCallback(mode, name, cookie);
     }
 
@@ -167,7 +167,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.serve(timeoutInSeconds);
     }
 
-    public Task<Stream> serve(TaskMode mode, float timeoutInSeconds) throws NotImplementedException {
+    public Task<StreamService, Stream> serve(TaskMode mode, float timeoutInSeconds) throws NotImplementedException {
         return proxy.serve(mode, timeoutInSeconds);
     }
     
@@ -175,7 +175,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         close(0.0F);
     }
 
-    public Task close(TaskMode mode) throws NotImplementedException {
+    public Task<StreamService, Void> close(TaskMode mode) throws NotImplementedException {
         return close(mode, 0.0F);
     }
 
@@ -183,7 +183,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return serve(-1.0F);
     }
 
-    public Task<Stream> serve(TaskMode mode) throws NotImplementedException {
+    public Task<StreamService, Stream> serve(TaskMode mode) throws NotImplementedException {
         return serve(mode, -1.0F);
     }
 

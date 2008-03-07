@@ -105,21 +105,21 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         proxy.close(timeoutInSeconds);
     }
 
-    public Task close(TaskMode mode, float timeoutInSeconds)
+    public Task<NSEntry, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
         return proxy.close(mode, timeoutInSeconds);
     }
 
-    public Task close(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, Void> close(TaskMode mode) throws NotImplementedException {
         return close(mode, NO_WAIT);
     }
 
-    public Task copy(TaskMode mode, URL target, int flags)
+    public Task<NSEntry, Void> copy(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
         return proxy.copy(mode, target, flags);
     }
 
-    public Task copy(TaskMode mode, URL target) throws NotImplementedException {
+    public Task<NSEntry, Void> copy(TaskMode mode, URL target) throws NotImplementedException {
         return copy(mode, target, Flags.NONE.getValue());
     }
 
@@ -142,7 +142,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.getCWD();
     }
 
-    public Task<URL> getCWD(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, URL> getCWD(TaskMode mode) throws NotImplementedException {
         return proxy.getCWD(mode);
     }
 
@@ -151,7 +151,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.getGroup();
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, String> getGroup(TaskMode mode) throws NotImplementedException {
         return proxy.getGroup(mode);
     }
 
@@ -160,7 +160,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.getName();
     }
 
-    public Task<URL> getName(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, URL> getName(TaskMode mode) throws NotImplementedException {
         return proxy.getName(mode);
     }
 
@@ -169,7 +169,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.getOwner();
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, String> getOwner(TaskMode mode) throws NotImplementedException {
         return proxy.getOwner(mode);
     }
 
@@ -178,7 +178,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.getURL();
     }
 
-    public Task<URL> getURL(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, URL> getURL(TaskMode mode) throws NotImplementedException {
         return proxy.getURL(mode);
     }
 
@@ -188,7 +188,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.isDir();
     }
 
-    public Task<Boolean> isDir(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, Boolean> isDir(TaskMode mode) throws NotImplementedException {
         return proxy.isDir(mode);
     }
 
@@ -198,7 +198,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.isEntry();
     }
 
-    public Task<Boolean> isEntry(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, Boolean> isEntry(TaskMode mode) throws NotImplementedException {
         return proxy.isEntry(mode);
     }
 
@@ -208,16 +208,16 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.isLink();
     }
 
-    public Task<Boolean> isLink(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, Boolean> isLink(TaskMode mode) throws NotImplementedException {
         return proxy.isLink(mode);
     }
 
-    public Task link(TaskMode mode, URL target, int flags)
+    public Task<NSEntry, Void> link(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
         return proxy.link(mode, target, flags);
     }
 
-    public Task link(TaskMode mode, URL target) throws NotImplementedException {
+    public Task<NSEntry, Void> link(TaskMode mode, URL target) throws NotImplementedException {
         return link(mode, target, Flags.NONE.getValue());
     }
 
@@ -234,12 +234,12 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         link(target, Flags.NONE.getValue());
     }
 
-    public Task move(TaskMode mode, URL target, int flags)
+    public Task<NSEntry, Void> move(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
         return proxy.move(mode, target, flags);
     }
 
-    public Task move(TaskMode mode, URL target) throws NotImplementedException {
+    public Task<NSEntry, Void> move(TaskMode mode, URL target) throws NotImplementedException {
         return move(mode, target, Flags.NONE.getValue());
     }
 
@@ -269,12 +269,12 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         proxy.permissionsAllow(id, permissions);
     }
 
-    public Task permissionsAllow(TaskMode mode, String id, int permissions,
+    public Task<NSEntry, Void> permissionsAllow(TaskMode mode, String id, int permissions,
             int flags) throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions, flags);
     }
 
-    public Task permissionsAllow(TaskMode mode, String id, int permissions)
+    public Task<NSEntry, Void> permissionsAllow(TaskMode mode, String id, int permissions)
             throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions);
     }
@@ -285,7 +285,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.permissionsCheck(id, permissions);
     }
 
-    public Task<Boolean> permissionsCheck(TaskMode mode, String id,
+    public Task<NSEntry, Boolean> permissionsCheck(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
         return proxy.permissionsCheck(mode, id, permissions);
     }
@@ -302,12 +302,12 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         proxy.permissionsDeny(id, permissions);
     }
 
-    public Task permissionsDeny(TaskMode mode, String id, int permissions,
+    public Task<NSEntry, Void> permissionsDeny(TaskMode mode, String id, int permissions,
             int flags) throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions, flags);
     }
 
-    public Task permissionsDeny(TaskMode mode, String id, int permissions)
+    public Task<NSEntry, Void> permissionsDeny(TaskMode mode, String id, int permissions)
             throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions);
     }
@@ -318,7 +318,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.readLink();
     }
 
-    public Task<URL> readLink(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, URL> readLink(TaskMode mode) throws NotImplementedException {
         return proxy.readLink(mode);
     }
 
@@ -334,11 +334,11 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         proxy.remove(flags);
     }
 
-    public Task remove(TaskMode mode, int flags) throws NotImplementedException {
+    public Task<NSEntry, Void> remove(TaskMode mode, int flags) throws NotImplementedException {
         return proxy.remove(mode, flags);
     }
 
-    public Task remove(TaskMode mode) throws NotImplementedException {
+    public Task<NSEntry, Void> remove(TaskMode mode) throws NotImplementedException {
         return remove(mode, Flags.NONE.getValue());
     }
 

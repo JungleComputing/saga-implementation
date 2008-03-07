@@ -12,11 +12,12 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.permissions.Permissions;
 import org.ogf.saga.rpc.Parameter;
+import org.ogf.saga.rpc.RPC;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface RPCSpiInterface extends Async, Permissions {
+public interface RPCSpiInterface extends Async, Permissions<RPC> {
 
     /**
      * Calls the remote procedure.
@@ -54,7 +55,7 @@ public interface RPCSpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task call(TaskMode mode, Parameter... parameters)
+    public Task<RPC, Void> call(TaskMode mode, Parameter... parameters)
         throws NotImplementedException;
 
     /**
@@ -65,6 +66,6 @@ public interface RPCSpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task close(TaskMode mode, float timeoutInSeconds)
+    public Task<RPC, Void> close(TaskMode mode, float timeoutInSeconds)
         throws NotImplementedException;
 }

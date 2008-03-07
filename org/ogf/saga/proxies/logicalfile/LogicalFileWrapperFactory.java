@@ -36,18 +36,18 @@ public class LogicalFileWrapperFactory extends LogicalFileFactory {
     }
     
     @Override
-    protected Task<LogicalDirectory> doCreateLogicalDirectory(TaskMode mode,
+    protected Task<LogicalFileFactory, LogicalDirectory> doCreateLogicalDirectory(TaskMode mode,
             Session session, URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<LogicalDirectory>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<LogicalFileFactory, LogicalDirectory>(this, session, mode,
                 "doCreateLogicalDirectory",
                 new Class[] { Session.class, URL.class, Integer.TYPE},
                 session, name, flags);
     }
 
     @Override
-    protected Task<LogicalFile> doCreateLogicalFile(TaskMode mode,
+    protected Task<LogicalFileFactory, LogicalFile> doCreateLogicalFile(TaskMode mode,
             Session session, URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<LogicalFile>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<LogicalFileFactory, LogicalFile>(this, session, mode,
                 "doCreateLogicalFile",
                 new Class[] { Session.class, URL.class, Integer.TYPE},
                 session, name, flags);

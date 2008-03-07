@@ -18,6 +18,7 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.logicalfile.LogicalDirectory;
 import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.namespace.Flags;
+import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
@@ -94,11 +95,11 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return find(namePattern, attrPattern, Flags.RECURSIVE.getValue());
     }
 
-    public Task<List<URL>> find(TaskMode mode, String namePattern, String[] attrPattern, int flags) throws NotImplementedException {
+    public Task<LogicalDirectory, List<URL>> find(TaskMode mode, String namePattern, String[] attrPattern, int flags) throws NotImplementedException {
         return proxy.find(mode, namePattern, attrPattern, flags);
     }
 
-    public Task<List<URL>> find(TaskMode mode, String namePattern, String[] attrPattern) throws NotImplementedException {
+    public Task<LogicalDirectory, List<URL>> find(TaskMode mode, String namePattern, String[] attrPattern) throws NotImplementedException {
         return find(mode, namePattern, attrPattern, Flags.RECURSIVE.getValue());
     }
 
@@ -106,7 +107,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return proxy.findAttributes(patterns);
     }
 
-    public Task<String[]> findAttributes(TaskMode mode, String... patterns) throws NotImplementedException {
+    public Task<LogicalDirectory, String[]> findAttributes(TaskMode mode, String... patterns) throws NotImplementedException {
         return proxy.findAttributes(mode, patterns);
     }
 
@@ -114,7 +115,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return proxy.getAttribute(key);
     }
 
-    public Task<String> getAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalDirectory, String> getAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.getAttribute(mode, key);
     }
 
@@ -122,7 +123,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return proxy.getVectorAttribute(key);
     }
 
-    public Task<String[]> getVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalDirectory, String[]> getVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.getVectorAttribute(mode, key);
     }
 
@@ -130,7 +131,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return proxy.isReadOnlyAttribute(key);
     }
 
-    public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalDirectory, Boolean> isReadOnlyAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isReadOnlyAttribute(mode, key);
     }
 
@@ -138,7 +139,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return proxy.isRemovableAttribute(key);
     }
 
-    public Task<Boolean> isRemovableAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalDirectory, Boolean> isRemovableAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isRemovableAttribute(mode, key);
     }
 
@@ -146,7 +147,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return proxy.isVectorAttribute(key);
     }
 
-    public Task<Boolean> isVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalDirectory, Boolean> isVectorAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isVectorAttribute(mode, key);
     }
 
@@ -154,7 +155,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return proxy.isWritableAttribute(key);
     }
 
-    public Task<Boolean> isWritableAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalDirectory, Boolean> isWritableAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.isWritableAttribute(mode, key);
     }
 
@@ -162,14 +163,14 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return proxy.listAttributes();
     }
 
-    public Task<String[]> listAttributes(TaskMode mode) throws NotImplementedException {
+    public Task<LogicalDirectory, String[]> listAttributes(TaskMode mode) throws NotImplementedException {
         return proxy.listAttributes(mode);
     }
-    public Task<LogicalDirectory> openLogicalDir(TaskMode mode, URL name, int flags) throws NotImplementedException {
+    public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(TaskMode mode, URL name, int flags) throws NotImplementedException {
         return proxy.openLogicalDir(mode, name, flags);
     }
 
-    public Task<LogicalDirectory> openLogicalDir(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(TaskMode mode, URL name) throws NotImplementedException {
         return openLogicalDir(mode, name, Flags.NONE.getValue());
     }
 
@@ -181,11 +182,11 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return openLogicalDir(name, Flags.NONE.getValue());
     }
 
-    public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name, int flags) throws NotImplementedException {
+    public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode, URL name, int flags) throws NotImplementedException {
         return proxy.openLogicalFile(mode, name, flags);
     }
 
-    public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode, URL name) throws NotImplementedException {
         return openLogicalFile(mode, name, Flags.NONE.getValue());
     }
 
@@ -201,7 +202,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         proxy.removeAttribute(key);
     }
 
-    public Task removeAttribute(TaskMode mode, String key) throws NotImplementedException {
+    public Task<LogicalDirectory, Void> removeAttribute(TaskMode mode, String key) throws NotImplementedException {
         return proxy.removeAttribute(mode, key);
     }
 
@@ -209,7 +210,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         proxy.setAttribute(key, value);
     }
 
-    public Task setAttribute(TaskMode mode, String key, String value) throws NotImplementedException {
+    public Task<LogicalDirectory, Void> setAttribute(TaskMode mode, String key, String value) throws NotImplementedException {
         return proxy.setAttribute(mode, key, value);
     }
 
@@ -217,7 +218,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         proxy.setVectorAttribute(key, values);
     }
 
-    public Task setVectorAttribute(TaskMode mode, String key, String[] values) throws NotImplementedException {
+    public Task<LogicalDirectory, Void> setVectorAttribute(TaskMode mode, String key, String[] values) throws NotImplementedException {
         return proxy.setVectorAttribute(mode, key, values);
     }
 
@@ -225,7 +226,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         return proxy.isFile(name);
     }
 
-    public Task<Boolean> isFile(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<NSDirectory, Boolean> isFile(TaskMode mode, URL name) throws NotImplementedException {
         return proxy.isFile(mode, name);
     }
     

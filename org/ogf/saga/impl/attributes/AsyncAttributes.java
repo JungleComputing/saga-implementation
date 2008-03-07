@@ -5,109 +5,109 @@ import org.ogf.saga.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public class AsyncAttributes extends Attributes implements
-        org.ogf.saga.attributes.AsyncAttributes {
+public class AsyncAttributes<T> extends Attributes implements
+        org.ogf.saga.attributes.AsyncAttributes<T> {
 
     private final Session session;
-    private final Object object;
+    private final T object;
     
-    public AsyncAttributes(Object object, Session session, boolean autoAdd) {
+    public AsyncAttributes(T object, Session session, boolean autoAdd) {
         super(autoAdd);
         this.session = session;
         this.object = object;
     }
     
-    protected AsyncAttributes(AsyncAttributes orig) {
+    protected AsyncAttributes(AsyncAttributes<T> orig) {
         super(orig);
         session = orig.session;
         object = orig.object;
     }
     
     public Object clone() {
-        return new AsyncAttributes(this);
+        return new AsyncAttributes<T>(this);
     }
 
-    public Task<String[]> findAttributes(TaskMode mode, String... patterns)
+    public Task<T, String[]> findAttributes(TaskMode mode, String... patterns)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<String[]>(
+        return new org.ogf.saga.impl.task.Task<T, String[]>(
                 object, session, mode, "findAttributes",
                 new Class[] { String[].class },
                 (Object[]) patterns);
     }
 
-    public Task<String> getAttribute(TaskMode mode, String key)
+    public Task<T, String> getAttribute(TaskMode mode, String key)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<String>(
+        return new org.ogf.saga.impl.task.Task<T, String>(
                     object, session, mode, "getAttribute",
                     new Class[] { String.class },
                     key);
     }
 
-    public Task<String[]> getVectorAttribute(TaskMode mode, String key)
+    public Task<T, String[]> getVectorAttribute(TaskMode mode, String key)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<String[]>(
+        return new org.ogf.saga.impl.task.Task<T, String[]>(
                 object, session, mode, "getVectorAttribute",
                 new Class[] { String.class },
                 key);
     }
 
-    public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key)
+    public Task<T, Boolean> isReadOnlyAttribute(TaskMode mode, String key)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Boolean>(
+        return new org.ogf.saga.impl.task.Task<T, Boolean>(
                 object, session, mode, "isReadOnlyAttribute",
                 new Class[] { String.class },
                 key);
     }
 
-    public Task<Boolean> isRemovableAttribute(TaskMode mode, String key)
+    public Task<T, Boolean> isRemovableAttribute(TaskMode mode, String key)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Boolean>(
+        return new org.ogf.saga.impl.task.Task<T, Boolean>(
                 object, session, mode, "isRemovableAttribute",
                 new Class[] { String.class },
                 key);
     }
 
-    public Task<Boolean> isVectorAttribute(TaskMode mode, String key)
+    public Task<T, Boolean> isVectorAttribute(TaskMode mode, String key)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Boolean>(
+        return new org.ogf.saga.impl.task.Task<T, Boolean>(
                 object, session, mode, "isVectorAttribute",
                 new Class[] { String.class },
                 key);
     }
 
-    public Task<Boolean> isWritableAttribute(TaskMode mode, String key)
+    public Task<T, Boolean> isWritableAttribute(TaskMode mode, String key)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Boolean>(
+        return new org.ogf.saga.impl.task.Task<T, Boolean>(
                 object, session, mode, "isWritableAttribute",
                 new Class[] { String.class },
                 key);
     }
 
-    public Task<String[]> listAttributes(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<String[]>(
+    public Task<T, String[]> listAttributes(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<T, String[]>(
                 object, session, mode, "listAttributes",
                 new Class[] { });
     }
 
-    public Task removeAttribute(TaskMode mode, String key)
+    public Task<T, Void> removeAttribute(TaskMode mode, String key)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(
+        return new org.ogf.saga.impl.task.Task<T, Void>(
                 object, session, mode, "removeAttributes",
                 new Class[] { String.class},
                 key);
     }
 
-    public Task setAttribute(TaskMode mode, String key, String value)
+    public Task<T, Void> setAttribute(TaskMode mode, String key, String value)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(
+        return new org.ogf.saga.impl.task.Task<T, Void>(
                 object, session, mode, "setAttribute",
                 new Class[] { String.class, String.class },
                 key, value);
     }
 
-    public Task setVectorAttribute(TaskMode mode, String key, String[] values)
+    public Task<T, Void> setVectorAttribute(TaskMode mode, String key, String[] values)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(
+        return new org.ogf.saga.impl.task.Task<T, Void>(
                 object, session, mode, "setVectorAttribute",
                 new Class[] { String.class, String[].class },
                 key, (Object) values);

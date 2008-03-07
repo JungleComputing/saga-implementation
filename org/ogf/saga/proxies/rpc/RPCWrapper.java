@@ -76,7 +76,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         proxy.call(parameters);
     }
 
-    public Task call(TaskMode mode, Parameter... parameters)
+    public Task<RPC, Void> call(TaskMode mode, Parameter... parameters)
             throws NotImplementedException {
         return proxy.call(mode, parameters);
     }
@@ -86,7 +86,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         proxy.close(timeoutInSeconds);
     }
 
-    public Task close(TaskMode mode, float timeoutInSeconds)
+    public Task<RPC, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
         return proxy.close(mode, timeoutInSeconds);
     }
@@ -96,7 +96,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         return proxy.getGroup();
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
+    public Task<RPC, String> getGroup(TaskMode mode) throws NotImplementedException {
         return proxy.getGroup(mode);
     }
 
@@ -105,7 +105,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         return proxy.getOwner();
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
+    public Task<RPC, String> getOwner(TaskMode mode) throws NotImplementedException {
         return proxy.getOwner(mode);
     }
 
@@ -115,7 +115,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         proxy.permissionsAllow(id, permissions);
     }
 
-    public Task permissionsAllow(TaskMode mode, String id, int permissions)
+    public Task<RPC, Void> permissionsAllow(TaskMode mode, String id, int permissions)
             throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions);
     }
@@ -126,7 +126,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         return proxy.permissionsCheck(id, permissions);
     }
 
-    public Task<Boolean> permissionsCheck(TaskMode mode, String id,
+    public Task<RPC, Boolean> permissionsCheck(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
         return proxy.permissionsCheck(mode, id, permissions);
     }
@@ -137,7 +137,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         proxy.permissionsDeny(id, permissions);
     }
 
-    public Task permissionsDeny(TaskMode mode, String id, int permissions)
+    public Task<RPC, Void> permissionsDeny(TaskMode mode, String id, int permissions)
             throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions);
     }
@@ -146,7 +146,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         close(0.0F);
     }
 
-    public Task close(TaskMode mode) throws NotImplementedException {
+    public Task<RPC, Void> close(TaskMode mode) throws NotImplementedException {
         return close(mode, 0.0F);
     }
 

@@ -15,6 +15,7 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.monitoring.AsyncMonitorable;
 import org.ogf.saga.permissions.Permissions;
+import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamService;
@@ -22,8 +23,8 @@ import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface StreamSpiInterface extends Async, AsyncMonitorable,
-        AsyncAttributes, Permissions {
+public interface StreamSpiInterface extends Async, AsyncMonitorable<Stream>,
+        AsyncAttributes<Stream>, Permissions<Stream> {
     
     /**
      * Returns a clone.
@@ -148,7 +149,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<URL> getUrl(TaskMode mode)
+    public Task<Stream, URL> getUrl(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -159,7 +160,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Context> getContext(TaskMode mode)
+    public Task<Stream, Context> getContext(TaskMode mode)
         throws NotImplementedException;
 
     // management methods
@@ -173,7 +174,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task connect(TaskMode mode)
+    public Task<Stream, Void> connect(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -188,7 +189,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> waitFor(TaskMode mode, int what,
+    public Task<Stream, Integer> waitFor(TaskMode mode, int what,
             float timeoutInSeconds)
         throws NotImplementedException;
 
@@ -200,7 +201,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task close(TaskMode mode, float timeoutInSeconds)
+    public Task<Stream, Void> close(TaskMode mode, float timeoutInSeconds)
         throws NotImplementedException;
 
     // I/O methods
@@ -209,14 +210,14 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * Creates a task that obtains an OutputStream from the stream.
      * @return the task.
      */
-    public Task<StreamInputStream> getInputStream(TaskMode mode)
+    public Task<Stream, StreamInputStream> getInputStream(TaskMode mode)
             throws NotImplementedException;
     
     /**
      * Creates a task that obtains an OutputStream from the stream.
      * @return the task.
      */
-    public Task<StreamOutputStream> getOutputStream(TaskMode mode)
+    public Task<Stream, StreamOutputStream> getOutputStream(TaskMode mode)
             throws NotImplementedException;
     
     /**
@@ -228,7 +229,7 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> read(TaskMode mode, Buffer buffer, int len)
+    public Task<Stream, Integer> read(TaskMode mode, Buffer buffer, int len)
         throws NotImplementedException;
 
     /**
@@ -245,6 +246,6 @@ public interface StreamSpiInterface extends Async, AsyncMonitorable,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> write(TaskMode mode, Buffer buffer, int len)
+    public Task<Stream, Integer> write(TaskMode mode, Buffer buffer, int len)
         throws NotImplementedException;
 }

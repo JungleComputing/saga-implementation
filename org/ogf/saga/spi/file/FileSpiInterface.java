@@ -12,6 +12,7 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.file.File;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
 import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
@@ -194,7 +195,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Long> getSize(TaskMode mode)
+    Task<File, Long> getSize(TaskMode mode)
         throws NotImplementedException;
 
     // POSIX-like I/O
@@ -212,7 +213,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
+    Task<File, Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
         throws NotImplementedException;
       
     /**
@@ -227,7 +228,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
+    Task<File, Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
         throws NotImplementedException;
        
     /**
@@ -240,7 +241,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Long> seek(TaskMode mode, long offset, SeekMode whence)
+    Task<File, Long> seek(TaskMode mode, long offset, SeekMode whence)
         throws NotImplementedException;
 
     // Scattered I/O
@@ -254,7 +255,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task readV(TaskMode mode, IOVec[] iovecs)
+    Task<File, Void> readV(TaskMode mode, IOVec[] iovecs)
         throws NotImplementedException;
 
     /**
@@ -266,7 +267,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task writeV(TaskMode mode, IOVec[] iovecs)
+    Task<File, Void> writeV(TaskMode mode, IOVec[] iovecs)
         throws NotImplementedException;
 
     // Pattern-based I/O
@@ -280,7 +281,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> sizeP(TaskMode mode, String pattern)
+    Task<File, Integer> sizeP(TaskMode mode, String pattern)
         throws NotImplementedException;
 
     /**
@@ -292,7 +293,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> readP(TaskMode mode, String pattern, Buffer buffer)
+    public Task<File, Integer> readP(TaskMode mode, String pattern, Buffer buffer)
         throws NotImplementedException;
 
     /**
@@ -304,7 +305,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
+    Task<File, Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
         throws NotImplementedException; 
 
     // extended I/O
@@ -317,7 +318,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<List<String>> modesE(TaskMode mode)
+    Task<File, List<String>> modesE(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -330,7 +331,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> sizeE(TaskMode mode, String emode, String spec)
+    Task<File, Integer> sizeE(TaskMode mode, String emode, String spec)
         throws NotImplementedException;
 
     /**
@@ -343,7 +344,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> readE(TaskMode mode, String emode, String spec,
+    Task<File, Integer> readE(TaskMode mode, String emode, String spec,
             Buffer buffer)
         throws NotImplementedException;
 
@@ -357,7 +358,7 @@ public interface FileSpiInterface extends NSEntrySpiInterface  {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    Task<Integer> writeE(TaskMode mode, String emode, String spec,
+    Task<File, Integer> writeE(TaskMode mode, String emode, String spec,
             Buffer buffer)
         throws NotImplementedException;
 }

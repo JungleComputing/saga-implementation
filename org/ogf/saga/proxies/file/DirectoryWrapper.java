@@ -89,12 +89,12 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
         return getSize(name, Flags.NONE.getValue());
     }
 
-    public Task<Long> getSize(TaskMode mode, URL name, int flags)
+    public Task<Directory, Long> getSize(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
         return proxy.getSize(mode, name, flags);
     }
 
-    public Task<Long> getSize(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<Directory, Long> getSize(TaskMode mode, URL name) throws NotImplementedException {
         return getSize(mode, name, Flags.NONE.getValue());
     }
 
@@ -112,16 +112,16 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
         return proxy.isFile(name);
     }
 
-    public Task<Boolean> isFile(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<Directory, Boolean> isFile(TaskMode mode, URL name) throws NotImplementedException {
         return proxy.isFile(mode, name);
     }
 
-    public Task<Directory> openDirectory(TaskMode mode, URL name, int flags)
+    public Task<Directory, Directory> openDirectory(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
         return proxy.openDirectory(mode, name, flags);
     }
 
-    public Task<Directory> openDirectory(TaskMode mode, URL name)
+    public Task<Directory, Directory> openDirectory(TaskMode mode, URL name)
             throws NotImplementedException {
         return openDirectory(mode, name, Flags.READ.getValue());
     }
@@ -140,12 +140,12 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
         return openDirectory(name, Flags.READ.getValue());
     }
 
-    public Task<File> openFile(TaskMode mode, URL name, int flags)
+    public Task<Directory, File> openFile(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
         return proxy.openFile(mode, name, flags);
     }
 
-    public Task<File> openFile(TaskMode mode, URL name) throws NotImplementedException {
+    public Task<Directory, File> openFile(TaskMode mode, URL name) throws NotImplementedException {
         return openFile(mode, name, Flags.READ.getValue());
     }
 
@@ -163,7 +163,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
         return openFile(name, Flags.READ.getValue());
     }
 
-    public Task<FileInputStream> openFileInputStream(TaskMode mode, URL name)
+    public Task<Directory, FileInputStream> openFileInputStream(TaskMode mode, URL name)
             throws NotImplementedException {
         return proxy.openFileInputStream(mode, name);
     }
@@ -175,12 +175,12 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
         return proxy.openFileInputStream(name);
     }
 
-    public Task<FileOutputStream> openFileOutputStream(TaskMode mode, URL name,
+    public Task<Directory, FileOutputStream> openFileOutputStream(TaskMode mode, URL name,
             boolean append) throws NotImplementedException {
         return proxy.openFileOutputStream(mode, name, append);
     }
 
-    public Task<FileOutputStream> openFileOutputStream(TaskMode mode, URL name)
+    public Task<Directory, FileOutputStream> openFileOutputStream(TaskMode mode, URL name)
             throws NotImplementedException {
         return openFileOutputStream(mode, name, false);
     }

@@ -13,6 +13,7 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
+import org.ogf.saga.job.JobService;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -89,7 +90,7 @@ public interface JobServiceSpiInterface extends Async {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Job> createJob(TaskMode mode, JobDescription jd)
+    public Task<JobService, Job> createJob(TaskMode mode, JobDescription jd)
         throws NotImplementedException;
     
     /**
@@ -111,7 +112,7 @@ public interface JobServiceSpiInterface extends Async {
      * @param interactive specifies whether the job is interactive.
      * @return the task.
      */
-    public Task<Job> runJob(TaskMode mode, String commandLine, String host,
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine, String host,
             boolean interactive) throws NotImplementedException;
 
     /**
@@ -122,7 +123,7 @@ public interface JobServiceSpiInterface extends Async {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<List<String>> list(TaskMode mode)
+    public Task<JobService, List<String>> list(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -134,7 +135,7 @@ public interface JobServiceSpiInterface extends Async {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Job> getJob(TaskMode mode, String jobId)
+    public Task<JobService, Job> getJob(TaskMode mode, String jobId)
         throws NotImplementedException;
 
     /**
@@ -145,6 +146,6 @@ public interface JobServiceSpiInterface extends Async {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<JobSelf> getSelf(TaskMode mode)
+    public Task<JobService, JobSelf> getSelf(TaskMode mode)
         throws NotImplementedException;
 }

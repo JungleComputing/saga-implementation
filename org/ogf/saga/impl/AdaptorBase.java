@@ -8,12 +8,13 @@ import org.ogf.saga.impl.session.Session;
  * Also, this is a place-holder for the wrapper class. The wrapper class is
  * needed for metrics and tasks (the Monitorable of a metric callback should
  * be the wrapper object, and the getObject() method of task should return
- * a reference to the wrapper object).
+ * a reference to the wrapper object). The type of the wrapper class is
+ * specified as a generic parameter.
  */
-public abstract class AdaptorBase implements Cloneable {
+public abstract class AdaptorBase<T> implements Cloneable {
     
     /** The wrapper object. */
-    protected Object wrapper;
+    protected T wrapper;
     
     /** The session of the adaptor. */
     protected Session session;
@@ -22,7 +23,7 @@ public abstract class AdaptorBase implements Cloneable {
      * Constructor with the specified wrapper.
      * @param wrapper the wrapper.
      */
-    protected AdaptorBase(Session session, Object wrapper) {
+    protected AdaptorBase(Session session, T wrapper) {
         this.session = session;
         this.wrapper = wrapper;
     }
@@ -44,7 +45,7 @@ public abstract class AdaptorBase implements Cloneable {
      * give multiple copies of the wrapper object (one for each adaptor).
      * @param wrapper the wrapper clone.
      */
-    public void setWrapper(Object wrapper) {
+    public void setWrapper(T wrapper) {
         this.wrapper = wrapper;
     }
 }

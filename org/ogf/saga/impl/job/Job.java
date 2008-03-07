@@ -28,7 +28,7 @@ import org.ogf.saga.task.TaskMode;
  * Rather, a JobService SPI can use this class as a base class to construct jobs
  * from.
  */
-public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
+public abstract class Job extends org.ogf.saga.impl.task.Task<Void, Void> implements
         org.ogf.saga.job.Job {
 
     private JobAttributes attributes;
@@ -43,7 +43,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
     
     public Job(JobDescription jobDescription, Session session)
             throws NotImplementedException, BadParameterException {
-        super(session);
+        super(session, null);
         attributes = new JobAttributes(this, session);
         this.jobDescription = new JobDescription(jobDescription);
 
@@ -132,7 +132,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
     public abstract Object clone();
     
     // Methods from task that are impossible on jobs   
-    public <T> T getObject() throws NotImplementedException, TimeoutException, NoSuccessException {
+    public Void getObject() throws NotImplementedException, TimeoutException, NoSuccessException {
         throw new NoSuccessException("getObject() called on Job");
     }
     
@@ -159,8 +159,8 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
     
     // Base implementations.
 
-    public Task checkpoint(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+    public Task<org.ogf.saga.job.Job, Void> checkpoint(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
                 "checkpoint", new Class[] { });
     }
 
@@ -173,76 +173,76 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         return new JobDescription(jobDescription);
     }
 
-    public Task<org.ogf.saga.job.JobDescription> getJobDescription(TaskMode mode)
+    public Task<org.ogf.saga.job.Job, org.ogf.saga.job.JobDescription> getJobDescription(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.JobDescription>(
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, org.ogf.saga.job.JobDescription>(
                 this, session, mode, "getJobDescription", new Class[] { } );
     }
 
-    public Task<InputStream> getStderr(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<InputStream>(this, session, mode,
+    public Task<org.ogf.saga.job.Job, InputStream> getStderr(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, InputStream>(this, session, mode,
                 "getStderr", new Class[] { });
     }
 
-    public Task<OutputStream> getStdin(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<OutputStream>(this, session, mode,
+    public Task<org.ogf.saga.job.Job, OutputStream> getStdin(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, OutputStream>(this, session, mode,
                 "getStdin", new Class[] { });
     }
 
-    public Task<InputStream> getStdout(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<InputStream>(this, session, mode,
+    public Task<org.ogf.saga.job.Job, InputStream> getStdout(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, InputStream>(this, session, mode,
                 "getStdout", new Class[] { });
     }
 
-    public Task migrate(TaskMode mode, org.ogf.saga.job.JobDescription jd)
+    public Task<org.ogf.saga.job.Job, Void> migrate(TaskMode mode, org.ogf.saga.job.JobDescription jd)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
                 "resume", new Class[] { org.ogf.saga.job.JobDescription.class }, jd);
     }
 
-    public Task resume(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+    public Task<org.ogf.saga.job.Job, Void> resume(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
                 "resume", new Class[] { });
     }
 
-    public Task signal(TaskMode mode, int signum) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+    public Task<org.ogf.saga.job.Job, Void> signal(TaskMode mode, int signum) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
                 "signal", new Class[] { Integer.TYPE }, signum);
     }
 
-    public Task suspend(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+    public Task<org.ogf.saga.job.Job, Void> suspend(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
                 "suspend", new Class[] { });
     }
 
-    public Task permissionsAllow(TaskMode mode, String id, int permissions)
+    public Task<org.ogf.saga.job.Job, Void> permissionsAllow(TaskMode mode, String id, int permissions)
     throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
                 "permissionsAllow", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
-    public Task<Boolean> permissionsCheck(TaskMode mode, String id,
+    public Task<org.ogf.saga.job.Job, Boolean> permissionsCheck(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Boolean>(this, session,
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Boolean>(this, session,
                 mode, "permissionsCheck", new Class[] { String.class,
                 Integer.TYPE }, id, permissions);
     }
 
-    public Task permissionsDeny(TaskMode mode, String id, int permissions)
+    public Task<org.ogf.saga.job.Job, Void> permissionsDeny(TaskMode mode, String id, int permissions)
     throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
                 "permissionsDeny", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
-    public Task<String> getGroup(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<String>(this, session,
+    public Task<org.ogf.saga.job.Job, String> getGroup(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, String>(this, session,
                 mode, "getGroup", new Class[] {});
     }
 
-    public Task<String> getOwner(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<String>(this, session,
+    public Task<org.ogf.saga.job.Job, String> getOwner(TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, String>(this, session,
                 mode, "getOwner", new Class[] {});
     }
 
@@ -252,7 +252,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         return attributes.findAttributes(patterns);
     }
 
-    public Task<String[]> findAttributes(TaskMode mode, String... patterns)
+    public Task<org.ogf.saga.job.Job, String[]> findAttributes(TaskMode mode, String... patterns)
             throws NotImplementedException {
         return attributes.findAttributes(mode, patterns);
     }
@@ -263,7 +263,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         return attributes.getAttribute(key);
     }
 
-    public Task<String> getAttribute(TaskMode mode, String key)
+    public Task<org.ogf.saga.job.Job, String> getAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.getAttribute(mode, key);
     }
@@ -274,7 +274,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         return attributes.getVectorAttribute(key);
     }
 
-    public Task<String[]> getVectorAttribute(TaskMode mode, String key)
+    public Task<org.ogf.saga.job.Job, String[]> getVectorAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.getVectorAttribute(mode, key);
     }
@@ -285,7 +285,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         return attributes.isReadOnlyAttribute(key);
     }
 
-    public Task<Boolean> isReadOnlyAttribute(TaskMode mode, String key)
+    public Task<org.ogf.saga.job.Job, Boolean> isReadOnlyAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isReadOnlyAttribute(mode, key);
     }
@@ -296,7 +296,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         return attributes.isRemovableAttribute(key);
     }
 
-    public Task<Boolean> isRemovableAttribute(TaskMode mode, String key)
+    public Task<org.ogf.saga.job.Job, Boolean> isRemovableAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isRemovableAttribute(mode, key);
     }
@@ -307,7 +307,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         return attributes.isVectorAttribute(key);
     }
 
-    public Task<Boolean> isVectorAttribute(TaskMode mode, String key)
+    public Task<org.ogf.saga.job.Job, Boolean> isVectorAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isVectorAttribute(mode, key);
     }
@@ -318,7 +318,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         return attributes.isWritableAttribute(key);
     }
 
-    public Task<Boolean> isWritableAttribute(TaskMode mode, String key)
+    public Task<org.ogf.saga.job.Job, Boolean> isWritableAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.isWritableAttribute(mode, key);
     }
@@ -329,7 +329,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         return attributes.listAttributes();
     }
 
-    public Task<String[]> listAttributes(TaskMode mode) throws NotImplementedException {
+    public Task<org.ogf.saga.job.Job, String[]> listAttributes(TaskMode mode) throws NotImplementedException {
         return attributes.listAttributes(mode);
     }
 
@@ -339,7 +339,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         attributes.removeAttribute(key);
     }
 
-    public Task removeAttribute(TaskMode mode, String key)
+    public Task<org.ogf.saga.job.Job, Void> removeAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return attributes.removeAttribute(mode, key);
     }
@@ -350,7 +350,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         attributes.setAttribute(key, value);
     }
 
-    public Task setAttribute(TaskMode mode, String key, String value)
+    public Task<org.ogf.saga.job.Job, Void> setAttribute(TaskMode mode, String key, String value)
             throws NotImplementedException {
         return attributes.setAttribute(mode, key, value);
     }
@@ -362,7 +362,7 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void> implements
         attributes.setVectorAttribute(key, values);
     }
 
-    public Task setVectorAttribute(TaskMode mode, String key, String[] values)
+    public Task<org.ogf.saga.job.Job, Void> setVectorAttribute(TaskMode mode, String key, String[] values)
             throws NotImplementedException {
         return attributes.setVectorAttribute(mode, key, values);
     }

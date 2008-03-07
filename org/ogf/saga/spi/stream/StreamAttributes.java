@@ -3,9 +3,10 @@ package org.ogf.saga.spi.stream;
 import org.ogf.saga.impl.attributes.AsyncAttributes;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.stream.Stream;
 
-public class StreamAttributes extends AsyncAttributes {
-    StreamAttributes(Object object, Session session, boolean autoAdd) {
+public class StreamAttributes extends AsyncAttributes<Stream> {
+    StreamAttributes(Stream object, Session session, boolean autoAdd) {
         super(object, session, autoAdd);
     }
     
@@ -17,7 +18,7 @@ public class StreamAttributes extends AsyncAttributes {
         return new StreamAttributes(this);
     }
 
-    StreamAttributes(Object object, Session session) {
+    StreamAttributes(Stream object, Session session) {
         this(object, session, false);
     }
     

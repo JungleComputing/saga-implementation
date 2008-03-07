@@ -70,7 +70,7 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
         return proxy.createJob(jd);
     }
 
-    public Task<Job> createJob(TaskMode mode, JobDescription jd)
+    public Task<JobService, Job> createJob(TaskMode mode, JobDescription jd)
             throws NotImplementedException {
         return proxy.createJob(mode, jd);
     }
@@ -81,7 +81,7 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
         return proxy.getJob(jobId);
     }
 
-    public Task<Job> getJob(TaskMode mode, String jobId) throws NotImplementedException {
+    public Task<JobService, Job> getJob(TaskMode mode, String jobId) throws NotImplementedException {
         return proxy.getJob(mode, jobId);
     }
 
@@ -90,7 +90,7 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
         return proxy.getSelf();
     }
 
-    public Task<JobSelf> getSelf(TaskMode mode) throws NotImplementedException {
+    public Task<JobService, JobSelf> getSelf(TaskMode mode) throws NotImplementedException {
         return proxy.getSelf(mode);
     }
 
@@ -99,7 +99,7 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
         return proxy.list();
     }
 
-    public Task<List<String>> list(TaskMode mode) throws NotImplementedException {
+    public Task<JobService, List<String>> list(TaskMode mode) throws NotImplementedException {
         return proxy.list(mode);
     }
     
@@ -133,20 +133,20 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
         return runJob(commandLine, "", false);
     }
 
-    public Task<Job> runJob(TaskMode mode, String commandLine, String host, boolean interactive)
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine, String host, boolean interactive)
             throws NotImplementedException {
         return proxy.runJob(mode, commandLine, host, interactive);
     }
 
-    public Task<Job> runJob(TaskMode mode, String commandLine, String host) throws NotImplementedException {
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine, String host) throws NotImplementedException {
         return runJob(mode, commandLine, host, false);
     }
 
-    public Task<Job> runJob(TaskMode mode, String commandLine, boolean interactive) throws NotImplementedException {
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine, boolean interactive) throws NotImplementedException {
         return runJob(mode, commandLine, "", interactive);
     }
 
-    public Task<Job> runJob(TaskMode mode, String commandLine) throws NotImplementedException {
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine) throws NotImplementedException {
         return runJob(mode, commandLine, "", false);
     }
     

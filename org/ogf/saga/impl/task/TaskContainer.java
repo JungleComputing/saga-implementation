@@ -137,10 +137,9 @@ public class TaskContainer extends SagaObjectBase implements
         return retval; 
     }
 
-    @SuppressWarnings("unchecked")
-    public synchronized <T> Task<T> getTask(int cookie) throws NotImplementedException, DoesNotExistException,
+    public synchronized Task getTask(int cookie) throws NotImplementedException, DoesNotExistException,
             TimeoutException, NoSuccessException {
-        Task<T> task = tasks.get(cookie);
+        Task task = tasks.get(cookie);
         if (task == null) {
             throw new DoesNotExistException("There is no task for cookie " + cookie);
         }
@@ -159,14 +158,13 @@ public class TaskContainer extends SagaObjectBase implements
         }
         return retval;
     }
-
-    @SuppressWarnings("unchecked")
-    public synchronized <T> Task<T> remove(int cookie) throws NotImplementedException, DoesNotExistException,
+    
+    public synchronized Task remove(int cookie) throws NotImplementedException, DoesNotExistException,
             TimeoutException, NoSuccessException {
         if (logger.isDebugEnabled()) {
             logger.debug("TaskContainer.remove " + cookie);
         }
-        Task<T> task = tasks.remove(cookie);
+        Task task = tasks.remove(cookie);
         if (task == null) {
             throw new DoesNotExistException("There is no task for cookie " + cookie);
         }

@@ -12,6 +12,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.permissions.Permissions;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
@@ -20,7 +21,7 @@ import org.ogf.saga.task.TaskMode;
 /**
  * Part of the SAGA NSEntry interface that has to be implemented by the SPI's.
  */
-public interface NSEntrySpiInterface extends Async, Permissions {  
+public interface NSEntrySpiInterface extends Async, Permissions<NSEntry> {  
     
     /**
      * Returns a clone.
@@ -166,7 +167,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<URL> getURL(TaskMode mode)
+    public Task<NSEntry, URL> getURL(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -177,7 +178,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<URL> getCWD(TaskMode mode)
+    public Task<NSEntry, URL> getCWD(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -187,7 +188,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<URL> getName(TaskMode mode)
+    public Task<NSEntry, URL> getName(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -197,7 +198,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Boolean> isDir(TaskMode mode) throws NotImplementedException;
+    public Task<NSEntry, Boolean> isDir(TaskMode mode) throws NotImplementedException;
 
     /**
      * Creates a task that tests this entry for being a namespace entry.
@@ -209,7 +210,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Boolean> isEntry(TaskMode mode) throws NotImplementedException;
+    public Task<NSEntry, Boolean> isEntry(TaskMode mode) throws NotImplementedException;
 
     /**
      * Creates a task that tests this entry for being a link.
@@ -218,7 +219,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Boolean> isLink(TaskMode mode) throws NotImplementedException;
+    public Task<NSEntry, Boolean> isLink(TaskMode mode) throws NotImplementedException;
     
     /**
      * Creates a task that returns the URL representing the link target.
@@ -228,7 +229,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<URL> readLink(TaskMode mode)
+    public Task<NSEntry, URL> readLink(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -240,7 +241,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task copy(TaskMode mode, URL target, int flags)
+    public Task<NSEntry, Void> copy(TaskMode mode, URL target, int flags)
         throws NotImplementedException;
 
     /**
@@ -253,7 +254,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task link(TaskMode mode, URL target, int flags)
+    public Task<NSEntry, Void> link(TaskMode mode, URL target, int flags)
         throws NotImplementedException;
 
     /**
@@ -266,7 +267,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task move(TaskMode mode, URL target, int flags)
+    public Task<NSEntry, Void> move(TaskMode mode, URL target, int flags)
         throws NotImplementedException;
 
     /**
@@ -277,7 +278,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task remove(TaskMode mode, int flags)
+    public Task<NSEntry, Void> remove(TaskMode mode, int flags)
         throws NotImplementedException;
 
     /**
@@ -290,7 +291,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task close(TaskMode mode, float timeoutInSeconds)
+    public Task<NSEntry, Void> close(TaskMode mode, float timeoutInSeconds)
         throws NotImplementedException;
 
     /**
@@ -305,7 +306,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task permissionsAllow(TaskMode mode, String id,
+    public Task<NSEntry, Void> permissionsAllow(TaskMode mode, String id,
             int permissions, int flags)
         throws NotImplementedException;
 
@@ -321,7 +322,7 @@ public interface NSEntrySpiInterface extends Async, Permissions {
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task permissionsDeny(TaskMode mode, String id,
+    public Task<NSEntry, Void> permissionsDeny(TaskMode mode, String id,
             int permissions, int flags)
         throws NotImplementedException;
 

@@ -28,27 +28,34 @@ public abstract class DirectorySpi extends NSDirectorySpi implements
         DirectorySpiInterface {
     
     protected int directoryFlags;
+    protected DirectoryWrapper wrapper;
 
     public DirectorySpi(DirectoryWrapper wrapper, Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, session, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
+        this.wrapper = wrapper;
         directoryFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
         if ((directoryFlags | Flags.ALLFILEFLAGS.getValue())
                 != Flags.ALLFILEFLAGS.getValue()) {
             throw new BadParameterException("Illegal flags for Direectory constructor: " + flags);
         }
     }
+    
+    public void setWrapper(DirectoryWrapper wrapper) {
+        this.wrapper = wrapper;
+        super.setWrapper(wrapper);
+    }
 
-    public Task<Long> getSize(TaskMode mode, URL name, int flags)
+    public Task<Directory, Long> getSize(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Long>(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Directory, Long>(wrapper, session, mode,
                 "getSize", new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 
-    public Task<Boolean> isFile(TaskMode mode, URL arg1) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Boolean>(wrapper, session, mode,
+    public Task<Directory, Boolean> isFile(TaskMode mode, URL arg1) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<Directory, Boolean>(wrapper, session, mode,
                 "isFile", new Class[] { URL.class }, arg1);
     }
     
@@ -60,9 +67,9 @@ public abstract class DirectorySpi extends NSDirectorySpi implements
         return FileFactory.createDirectory(session, name, flags);
     }
 
-    public Task<Directory> openDirectory(TaskMode mode, URL name, int flags)
+    public Task<Directory, Directory> openDirectory(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<Directory>(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Directory, Directory>(wrapper, session, mode,
                 "openDirectory", new Class[] { URL.class, Integer.TYPE }, name,
                 flags);
     }
@@ -76,9 +83,9 @@ public abstract class DirectorySpi extends NSDirectorySpi implements
     }
 
 
-    public Task<File> openFile(TaskMode mode, URL name, int flags)
+    public Task<Directory, File> openFile(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File>(wrapper, session, mode,
+        return new org.ogf.saga.impl.task.Task<Directory, File>(wrapper, session, mode,
                 "openFile", new Class[] { URL.class, Integer.TYPE }, name,
                 flags);
     }
@@ -100,15 +107,15 @@ public abstract class DirectorySpi extends NSDirectorySpi implements
     }
 
 
-    public Task<FileInputStream> openFileInputStream(TaskMode mode, URL name)
+    public Task<Directory, FileInputStream> openFileInputStream(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileInputStream>(wrapper, session,
+        return new org.ogf.saga.impl.task.Task<Directory, FileInputStream>(wrapper, session,
                 mode, "openFileInputStream", new Class[] { URL.class }, name);
     }
 
-    public Task<FileOutputStream> openFileOutputStream(TaskMode mode, URL name,
+    public Task<Directory, FileOutputStream> openFileOutputStream(TaskMode mode, URL name,
             boolean append) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileOutputStream>(wrapper, session,
+        return new org.ogf.saga.impl.task.Task<Directory, FileOutputStream>(wrapper, session,
                 mode, "openFileOutputStream", new Class[] { URL.class,
                         Boolean.TYPE }, name, append);
     }

@@ -315,7 +315,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task changeDir(TaskMode mode, URL dir) throws NotImplementedException;
+    public Task<NSDirectory, Void> changeDir(TaskMode mode, URL dir) throws NotImplementedException;
 
     /**
      * Creates a task that lists entries in the directory that match
@@ -329,7 +329,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<List<URL>> list(TaskMode mode, String pattern, int flags)
+    public Task<NSDirectory, List<URL>> list(TaskMode mode, String pattern, int flags)
         throws NotImplementedException;
 
     /**
@@ -344,7 +344,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<List<URL>> find(TaskMode mode, String pattern, int flags)
+    public Task<NSDirectory, List<URL>> find(TaskMode mode, String pattern, int flags)
         throws NotImplementedException;
 
     /**
@@ -355,7 +355,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Boolean> exists(TaskMode mode, URL name)
+    public Task<NSDirectory, Boolean> exists(TaskMode mode, URL name)
         throws NotImplementedException;
 
     /**
@@ -366,7 +366,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Boolean> isDir(TaskMode mode, URL name)
+    public Task<NSDirectory, Boolean> isDir(TaskMode mode, URL name)
         throws NotImplementedException;
 
     /**
@@ -377,7 +377,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Boolean> isEntry(TaskMode mode, URL name)
+    public Task<NSDirectory, Boolean> isEntry(TaskMode mode, URL name)
         throws NotImplementedException;
 
     /**
@@ -388,7 +388,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Boolean> isLink(TaskMode mode, URL name)
+    public Task<NSDirectory, Boolean> isLink(TaskMode mode, URL name)
         throws NotImplementedException;
 
     /**
@@ -399,7 +399,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<URL> readLink(TaskMode mode, URL name)
+    public Task<NSDirectory, URL> readLink(TaskMode mode, URL name)
         throws NotImplementedException;
 
     /**
@@ -409,7 +409,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Integer> getNumEntries(TaskMode mode)
+    public Task<NSDirectory, Integer> getNumEntries(TaskMode mode)
         throws NotImplementedException;
 
     /**
@@ -421,7 +421,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<URL> getEntry(TaskMode mode, int entry)
+    public Task<NSDirectory, URL> getEntry(TaskMode mode, int entry)
         throws NotImplementedException;
 
     /**
@@ -435,7 +435,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task copy(TaskMode mode, URL source, URL target, int flags)
+    public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target, int flags)
         throws NotImplementedException;
     
     /**
@@ -449,7 +449,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task copy(TaskMode mode, String source, URL target, int flags)
+    public Task<NSDirectory, Void> copy(TaskMode mode, String source, URL target, int flags)
         throws NotImplementedException;
   
     /**
@@ -463,7 +463,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task link(TaskMode mode, URL source, URL target, int flags)
+    public Task<NSDirectory, Void> link(TaskMode mode, URL source, URL target, int flags)
         throws NotImplementedException;
     
     /**
@@ -477,7 +477,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task link(TaskMode mode, String source, URL target, int flags)
+    public Task<NSDirectory, Void> link(TaskMode mode, String source, URL target, int flags)
         throws NotImplementedException;
    
     /**
@@ -492,7 +492,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task move(TaskMode mode, URL source, URL target, int flags)
+    public Task<NSDirectory, Void> move(TaskMode mode, URL source, URL target, int flags)
         throws NotImplementedException;
     
     
@@ -508,7 +508,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task move(TaskMode mode, String source, URL target, int flags)
+    public Task<NSDirectory, Void> move(TaskMode mode, String source, URL target, int flags)
         throws NotImplementedException;
     
     /**
@@ -520,7 +520,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task remove(TaskMode mode, URL target, int flags)
+    public Task<NSDirectory, Void> remove(TaskMode mode, URL target, int flags)
         throws NotImplementedException;
     
     /**
@@ -532,7 +532,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task remove(TaskMode mode, String target, int flags)
+    public Task<NSDirectory, Void> remove(TaskMode mode, String target, int flags)
         throws NotImplementedException;
     
     /**
@@ -544,7 +544,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task makeDir(TaskMode mode, URL target, int flags)
+    public Task<NSDirectory, Void> makeDir(TaskMode mode, URL target, int flags)
         throws NotImplementedException;
     
     /**
@@ -557,7 +557,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<NSDirectory> openDir(TaskMode mode, URL name, int flags)
+    public Task<NSDirectory, NSDirectory> openDir(TaskMode mode, URL name, int flags)
         throws NotImplementedException;
   
     /**
@@ -569,7 +569,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<NSEntry> open(TaskMode mode, URL name, int flags)
+    public Task<NSDirectory, NSEntry> open(TaskMode mode, URL name, int flags)
         throws NotImplementedException;
 
     /**
@@ -585,7 +585,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task permissionsAllow(TaskMode mode, URL target, String id,
+    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL target, String id,
             int permissions, int flags)
         throws NotImplementedException;
     
@@ -602,7 +602,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task permissionsAllow(TaskMode mode, String target, String id,
+    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, String target, String id,
             int permissions, int flags)
         throws NotImplementedException;
    
@@ -619,7 +619,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task permissionsDeny(TaskMode mode, URL target, String id,
+    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL target, String id,
             int permissions, int flags)
         throws NotImplementedException;
     
@@ -636,7 +636,7 @@ public interface NSDirectorySpiInterface extends NSEntrySpiInterface, Iterable<U
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task permissionsDeny(TaskMode mode, String target, String id,
+    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, String target, String id,
             int permissions, int flags)
         throws NotImplementedException;
 }

@@ -34,17 +34,17 @@ public class NSWrapperFactory extends NSFactory {
         return new NSEntryWrapper(session, name, flags);
     }
     
-    protected Task<NSDirectory> doCreateNSDirectory(TaskMode mode,
+    protected Task<NSFactory, NSDirectory> doCreateNSDirectory(TaskMode mode,
             Session session, URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<NSFactory, NSDirectory>(this, session, mode,
                 "doCreateNSDirectory",
                 new Class[] { Session.class, URL.class, Integer.TYPE},
                 session, name, flags);
     }
 
-    protected Task<NSEntry> doCreateNSEntry(TaskMode mode, Session session,
+    protected Task<NSFactory, NSEntry> doCreateNSEntry(TaskMode mode, Session session,
             URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSEntry>(this, session, mode,
+        return new org.ogf.saga.impl.task.Task<NSFactory, NSEntry>(this, session, mode,
                 "doCreateNSEntry",
                 new Class[] { Session.class, URL.class, Integer.TYPE},
                 session, name, flags);

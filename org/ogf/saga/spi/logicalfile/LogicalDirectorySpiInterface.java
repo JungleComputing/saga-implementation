@@ -22,7 +22,7 @@ import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface LogicalDirectorySpiInterface extends AsyncAttributes,
+public interface LogicalDirectorySpiInterface extends AsyncAttributes<LogicalDirectory>,
         NSDirectorySpiInterface {
     /**
      * Tests the name for being a logical file.
@@ -89,7 +89,7 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<Boolean> isFile(TaskMode mode, URL name)
+    public Task<NSDirectory, Boolean> isFile(TaskMode mode, URL name)
         throws NotImplementedException ;
 
     /**
@@ -104,7 +104,7 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<List<URL>> find(TaskMode mode, String namePattern,
+    public Task<LogicalDirectory, List<URL>> find(TaskMode mode, String namePattern,
             String[] attrPattern, int flags)
         throws NotImplementedException;
 
@@ -118,7 +118,7 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<LogicalDirectory> openLogicalDir(TaskMode mode, URL name,
+    public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(TaskMode mode, URL name,
             int flags)
         throws NotImplementedException;
     
@@ -131,7 +131,7 @@ public interface LogicalDirectorySpiInterface extends AsyncAttributes,
      * @exception NotImplementedException is thrown when the task version of this
      *     method is not implemented.
      */
-    public Task<LogicalFile> openLogicalFile(TaskMode mode, URL name,
+    public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode, URL name,
             int flags)
         throws NotImplementedException;    
 }
