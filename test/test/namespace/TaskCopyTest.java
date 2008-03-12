@@ -77,8 +77,8 @@ public class TaskCopyTest implements Callback {
             String path = url.getPath();
             path = path.substring(path.lastIndexOf('/') + 1);
             
-            Task task = dir.copy(TaskMode.TASK, url, new URL(path), Flags.OVERWRITE.getValue());
-            container.add(task);
+            container.add(dir.copy(TaskMode.TASK, url, new URL(path),
+                    Flags.OVERWRITE.getValue()));
         }
 
         return container;

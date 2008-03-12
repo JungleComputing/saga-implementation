@@ -137,7 +137,7 @@ public class TaskContainer extends SagaObjectBase implements
         return retval; 
     }
 
-    public synchronized Task getTask(int cookie) throws NotImplementedException, DoesNotExistException,
+    public synchronized Task<?,?> getTask(int cookie) throws NotImplementedException, DoesNotExistException,
             TimeoutException, NoSuccessException {
         Task task = tasks.get(cookie);
         if (task == null) {
@@ -146,7 +146,7 @@ public class TaskContainer extends SagaObjectBase implements
         return task;
     }
 
-    public synchronized Task[] getTasks() throws NotImplementedException, TimeoutException, NoSuccessException {
+    public synchronized Task<?,?>[] getTasks() throws NotImplementedException, TimeoutException, NoSuccessException {
         return tasks.values().toArray(new Task[tasks.size()]);
     }
 
@@ -159,7 +159,7 @@ public class TaskContainer extends SagaObjectBase implements
         return retval;
     }
     
-    public synchronized Task remove(int cookie) throws NotImplementedException, DoesNotExistException,
+    public synchronized Task<?,?> remove(int cookie) throws NotImplementedException, DoesNotExistException,
             TimeoutException, NoSuccessException {
         if (logger.isDebugEnabled()) {
             logger.debug("TaskContainer.remove " + cookie);
@@ -195,22 +195,12 @@ public class TaskContainer extends SagaObjectBase implements
         return tasks.size();
     }
 
-    public Task waitFor(WaitMode mode) throws NotImplementedException,
+    public Task<?,?> waitFor(WaitMode mode) throws NotImplementedException,
             IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
         return waitFor(-1.0F, mode);
     }
     
-    public Task waitTasks() throws NotImplementedException,
-            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
-        return waitFor(-1.0F, WaitMode.ALL);
-    }
-
-    public Task waitTasks(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
-        return waitFor(timeoutInSeconds, WaitMode.ALL);       
-    }
-    
-    private Task getFinishedTask(WaitMode mode) throws DoesNotExistException, TimeoutException,
+    private Task<?,?> getFinishedTask(WaitMode mode) throws DoesNotExistException, TimeoutException,
             NotImplementedException, NoSuccessException, IncorrectStateException {
         int running = 0;
         Task[] list = getTasks();
@@ -245,7 +235,7 @@ public class TaskContainer extends SagaObjectBase implements
         return null;     
     }
     
-    public synchronized Task waitFor(float timeoutInSeconds, WaitMode mode)
+    public synchronized Task<?,?> waitFor(float timeoutInSeconds, WaitMode mode)
             throws NotImplementedException, IncorrectStateException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         Task t = getFinishedTask(mode);
