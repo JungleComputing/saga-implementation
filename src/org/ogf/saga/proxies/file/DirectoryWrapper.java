@@ -20,13 +20,13 @@ import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.file.DirectorySpiInterface;
+import org.ogf.saga.spi.file.DirectorySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
-    private DirectorySpiInterface proxy;
+    private DirectorySPI proxy;
 
     DirectoryWrapper(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
@@ -35,8 +35,8 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
         super(session);
         Object[] parameters = { this, session, name, flags };
         try {
-            proxy = (DirectorySpiInterface) SAGAEngine.createAdaptorProxy(
-                    DirectorySpiInterface.class, new Class[] {
+            proxy = (DirectorySPI) SAGAEngine.createAdaptorProxy(
+                    DirectorySPI.class, new Class[] {
                             DirectoryWrapper.class,
                             org.ogf.saga.impl.session.Session.class, URL.class,
                             Integer.TYPE }, parameters);
@@ -100,8 +100,8 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
     public Object clone() throws CloneNotSupportedException {
         DirectoryWrapper clone = (DirectoryWrapper) super.clone();
-        clone.proxy = (DirectorySpiInterface) SAGAEngine.createAdaptorCopy(
-                DirectorySpiInterface.class, proxy, clone);
+        clone.proxy = (DirectorySPI) SAGAEngine.createAdaptorCopy(
+                DirectorySPI.class, proxy, clone);
         clone.setProxy(proxy);
         return clone;
     }

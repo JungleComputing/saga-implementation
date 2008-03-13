@@ -23,12 +23,12 @@ import org.ogf.saga.logicalfile.LogicalFileFactory;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.proxies.logicalfile.LogicalDirectoryWrapper;
-import org.ogf.saga.spi.namespace.NSDirectorySpi;
+import org.ogf.saga.spi.namespace.NSDirectoryAdaptorBase;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
-        LogicalDirectorySpiInterface {
+public abstract class LogicalDirectoryAdaptorBase extends NSDirectoryAdaptorBase implements
+        LogicalDirectorySPI {
     
     private LogicalDirectoryAttributes attributes;  
     private int logicalFileFlags;
@@ -43,7 +43,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
         return flags;
     }
 
-    public LogicalDirectorySpi(LogicalDirectoryWrapper wrapper, Session session, URL name, int flags)
+    public LogicalDirectoryAdaptorBase(LogicalDirectoryWrapper wrapper, Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
@@ -54,7 +54,7 @@ public abstract class LogicalDirectorySpi extends NSDirectorySpi implements
     }
     
     public Object clone() throws CloneNotSupportedException {
-        LogicalDirectorySpi clone = (LogicalDirectorySpi) super.clone();
+        LogicalDirectoryAdaptorBase clone = (LogicalDirectoryAdaptorBase) super.clone();
         clone.attributes = (LogicalDirectoryAttributes) attributes.clone();
         return clone;
     }

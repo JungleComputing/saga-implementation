@@ -11,11 +11,11 @@ import org.ogf.saga.rpc.RPC;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class RPCSpi extends AdaptorBase<RPC> implements RPCSpiInterface {
+public abstract class RPCAdaptorBase extends AdaptorBase<RPC> implements RPCSPI {
     
     protected URL funcName;
 
-    public RPCSpi(Session session, RPC wrapper, URL funcName)
+    public RPCAdaptorBase(Session session, RPC wrapper, URL funcName)
             throws NotImplementedException, BadParameterException, NoSuccessException {
         super(session, wrapper);
         this.funcName = new URL(funcName.toString());

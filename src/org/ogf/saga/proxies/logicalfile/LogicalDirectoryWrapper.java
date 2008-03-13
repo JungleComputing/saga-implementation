@@ -21,13 +21,13 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.logicalfile.LogicalDirectorySpiInterface;
+import org.ogf.saga.spi.logicalfile.LogicalDirectorySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements LogicalDirectory {
     
-    private LogicalDirectorySpiInterface proxy;
+    private LogicalDirectorySPI proxy;
     
     LogicalDirectoryWrapper(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
@@ -37,8 +37,8 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         super(session);
         Object[] parameters = { this, session, name, flags };
         try {
-            proxy = (LogicalDirectorySpiInterface) SAGAEngine.createAdaptorProxy(
-                    LogicalDirectorySpiInterface.class,
+            proxy = (LogicalDirectorySPI) SAGAEngine.createAdaptorProxy(
+                    LogicalDirectorySPI.class,
                     new Class[] { LogicalDirectoryWrapper.class,
                         org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE },
@@ -81,8 +81,8 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
 
     public Object clone() throws CloneNotSupportedException {
         LogicalDirectoryWrapper clone = (LogicalDirectoryWrapper) super.clone();
-        clone.proxy = (LogicalDirectorySpiInterface)
-                SAGAEngine.createAdaptorCopy(LogicalDirectorySpiInterface.class, proxy, clone);
+        clone.proxy = (LogicalDirectorySPI)
+                SAGAEngine.createAdaptorCopy(LogicalDirectorySPI.class, proxy, clone);
         clone.setProxy(clone.proxy);
         return clone;
     }

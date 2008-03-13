@@ -17,7 +17,7 @@ import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface RPCSpiInterface extends Async, Permissions<RPC> {
+public interface RPCSPI extends Async, Permissions<RPC> {
 
     /**
      * Calls the remote procedure.

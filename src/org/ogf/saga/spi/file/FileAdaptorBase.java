@@ -25,17 +25,17 @@ import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.Falls;
 import org.ogf.saga.proxies.file.FileWrapper;
-import org.ogf.saga.spi.namespace.NSEntrySpi;
+import org.ogf.saga.spi.namespace.NSEntryAdaptorBase;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class FileSpi extends NSEntrySpi implements FileSpiInterface {
+public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements FileSPI {
 
     protected int fileFlags;
     protected final HashMap<String, Falls> fallsCache = new HashMap<String, Falls>();
     protected FileWrapper wrapper;
 
-    public FileSpi(FileWrapper wrapper, Session session, URL name, int flags)
+    public FileAdaptorBase(FileWrapper wrapper, Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {

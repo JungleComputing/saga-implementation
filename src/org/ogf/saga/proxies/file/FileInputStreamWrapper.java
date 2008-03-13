@@ -17,7 +17,7 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.file.FileInputStreamSpiInterface;
+import org.ogf.saga.spi.file.FileInputStreamSPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -31,7 +31,7 @@ public class FileInputStreamWrapper extends FileInputStream {
     }
     
     private InputSagaObject sagaObject;
-    private FileInputStreamSpiInterface proxy;
+    private FileInputStreamSPI proxy;
        
     FileInputStreamWrapper(Session session, URL name)
             throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
@@ -39,8 +39,8 @@ public class FileInputStreamWrapper extends FileInputStream {
             AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         Object[] parameters = { this, session, name };
         try {
-            proxy = (FileInputStreamSpiInterface) SAGAEngine.createAdaptorProxy(
-                    FileInputStreamSpiInterface.class,
+            proxy = (FileInputStreamSPI) SAGAEngine.createAdaptorProxy(
+                    FileInputStreamSPI.class,
                     new Class[] { FileInputStreamWrapper.class,
                         org.ogf.saga.impl.session.Session.class, URL.class },
                     parameters);
@@ -87,8 +87,8 @@ public class FileInputStreamWrapper extends FileInputStream {
     public Object clone() throws CloneNotSupportedException {
         FileInputStreamWrapper clone = (FileInputStreamWrapper) super.clone();
         clone.sagaObject = (InputSagaObject) sagaObject.clone();
-        clone.proxy = (FileInputStreamSpiInterface) SAGAEngine.createAdaptorCopy(
-                    FileInputStreamSpiInterface.class, proxy, clone);
+        clone.proxy = (FileInputStreamSPI) SAGAEngine.createAdaptorCopy(
+                    FileInputStreamSPI.class, proxy, clone);
         return clone;
     }
 

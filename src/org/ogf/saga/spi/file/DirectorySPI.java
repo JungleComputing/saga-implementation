@@ -17,11 +17,11 @@ import org.ogf.saga.file.File;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.namespace.NSDirectory;
-import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
+import org.ogf.saga.spi.namespace.NSDirectorySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface DirectorySpiInterface extends NSDirectorySpiInterface {
+public interface DirectorySPI extends NSDirectorySPI {
     // Inspection methods
 
     /**

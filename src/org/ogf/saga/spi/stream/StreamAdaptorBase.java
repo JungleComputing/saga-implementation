@@ -25,7 +25,7 @@ import org.ogf.saga.stream.StreamState;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class StreamSpi extends AdaptorBase<Stream> implements StreamSpiInterface {
+public abstract class StreamAdaptorBase extends AdaptorBase<Stream> implements StreamSPI {
     
     protected URL url;
     protected StreamAttributes attributes;
@@ -35,7 +35,7 @@ public abstract class StreamSpi extends AdaptorBase<Stream> implements StreamSpi
     protected Metric streamException;
     protected Metric streamDropped;
     
-    public StreamSpi(StreamWrapper wrapper, Session session, URL url) throws NotImplementedException,
+    public StreamAdaptorBase(StreamWrapper wrapper, Session session, URL url) throws NotImplementedException,
             BadParameterException {
         super(session, wrapper);
         this.url = url;
@@ -63,7 +63,7 @@ public abstract class StreamSpi extends AdaptorBase<Stream> implements StreamSpi
     }
     
     public Object clone() throws CloneNotSupportedException {
-        StreamSpi clone = (StreamSpi) super.clone();
+        StreamAdaptorBase clone = (StreamAdaptorBase) super.clone();
         try {
             clone.url = new URL(url.toString());
         } catch (Throwable e) {

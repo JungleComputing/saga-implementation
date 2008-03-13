@@ -24,11 +24,11 @@ import org.ogf.saga.proxies.job.JobServiceWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class JobServiceSpi extends AdaptorBase<JobServiceWrapper> implements JobServiceSpiInterface {
+public abstract class JobServiceAdaptorBase extends AdaptorBase<JobServiceWrapper> implements JobServiceSPI {
 
     protected URL rm;
     
-    public JobServiceSpi(JobServiceWrapper wrapper, Session session, URL rm) {
+    public JobServiceAdaptorBase(JobServiceWrapper wrapper, Session session, URL rm) {
         super(session, wrapper);
         this.rm = rm;
     }

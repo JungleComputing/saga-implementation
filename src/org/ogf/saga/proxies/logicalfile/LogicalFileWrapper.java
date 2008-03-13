@@ -19,13 +19,13 @@ import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.logicalfile.LogicalFileSpiInterface;
+import org.ogf.saga.spi.logicalfile.LogicalFileSPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalFile {
     
-    private LogicalFileSpiInterface proxy;
+    private LogicalFileSPI proxy;
     
     LogicalFileWrapper(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, 
@@ -35,8 +35,8 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
         super(session);
         Object[] parameters = { this, session, name, flags };
         try {
-            proxy = (LogicalFileSpiInterface) SAGAEngine.createAdaptorProxy(
-                    LogicalFileSpiInterface.class,
+            proxy = (LogicalFileSPI) SAGAEngine.createAdaptorProxy(
+                    LogicalFileSPI.class,
                     new Class[] { LogicalFileWrapper.class,
                         org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE }, 
@@ -87,8 +87,8 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements LogicalF
 
     public Object clone() throws CloneNotSupportedException {
         LogicalFileWrapper clone = (LogicalFileWrapper) super.clone();
-        clone.proxy = (LogicalFileSpiInterface)
-                SAGAEngine.createAdaptorCopy(LogicalFileSpiInterface.class, proxy, clone);
+        clone.proxy = (LogicalFileSPI)
+                SAGAEngine.createAdaptorCopy(LogicalFileSPI.class, proxy, clone);
         clone.setProxy(clone.proxy);
         return clone;
     }

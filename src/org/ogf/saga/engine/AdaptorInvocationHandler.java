@@ -6,44 +6,57 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.SagaException;
 import org.ogf.saga.impl.AdaptorBase;
 
 /**
- * Takes care of method invocations.
- * Mostly stolen from the javaGAT engine implementation.
+ * This class takes care of forwarding method invocations to the
+ * adaptors. It maintains adaptor lists for each method, with
+ * succesful invocations in front.
+ * Note that each Saga object that has associated adaptors has
+ * its own instance of an <code>AdaptorInvocationHandler</code>.
  */
 public class AdaptorInvocationHandler implements InvocationHandler {
 
-    protected static Logger logger = Logger
+    private static Logger logger = Logger
         .getLogger(AdaptorInvocationHandler.class);
 
     /**
-     *  Maintains lists of adaptors per method.
+     *  Maintains lists of adaptors per method. The lists are
+     *  self-organizing: succesful adaptors are placed in front.
      */
     private static class AdaptorSorter {
         /**
          * List of adaptor class names (Strings) in order of successful
          * execution
          */
-        private LinkedList<String> adaptorlist = new LinkedList<String>();
+        private ArrayList<String> adaptorlist = new ArrayList<String>();
 
         /**
          * List of adaptor class names (Strings) in order of successful
-         * execution per method <methodName, LinkedList>
+         * execution per method <methodName, LinkedList>.
          */
         private HashMap<Method, ArrayList<String>> adaptorMethodList
                 = new HashMap<Method, ArrayList<String>>();
 
+        /**
+         * Adds the specified adaptor name to the adaptor list.
+         * @param adaptorName the adaptor name to add.
+         */
         synchronized void add(String adaptorName) {
             if (!adaptorlist.contains(adaptorName)) {
                 adaptorlist.add(adaptorName);
             }
         }
 
+        /**
+         * Returns the current adaptor ordering for the specified method.
+         * @param method the method that is going to be invoked.
+         * @return the list of adaptor names to try, in that order.
+         */
         synchronized ArrayList<String> getOrdering(Method method) {
             ArrayList<String> l = adaptorMethodList.get(method);
 
@@ -52,12 +65,12 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             }
 
             // We have a list for this particular method. Use that order
-            // first, and append the other adaptorInstantiations at the end (in
+            // first, and append the other adaptors at the end (in
             // order).
             ArrayList<String> result = new ArrayList<String>(l);
 
             for (String s : adaptorlist) {
-                if (!result.contains(s)) {
+                if (!l.contains(s)) {
                     result.add(s);
                 }
             }
@@ -96,26 +109,50 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             = new Hashtable<String, Adaptor>();
     
     /**
-     * The available adaptor instantiations. The keys, again, are class names, the
-     * elements are instantiations.
+     * The available adaptor instantiations. The keys, again, are class names,
+     * the elements are instantiations.
      */
-    private Hashtable<String, Object> adaptorInstantiations
-        = new Hashtable<String, Object>();
+    private Hashtable<String, AdaptorBase> adaptorInstantiations
+            = new Hashtable<String, AdaptorBase>();
     
-    AdaptorInvocationHandler(AdaptorList adaptors, Class[] types, Object[] params)
-            throws org.ogf.saga.error.SagaException {
+    /**
+     * Constructs an <code>AdaptorInvocationHandler</code>, attempting to
+     * instantiate adaptors with the specified parameters on the fly.
+     * @param adaptors the list of adaptor names.
+     * @param types the types of the constructor parameters.
+     * @param params the constructor parameters.
+     * @throws SagaException is thrown when no adaptors could be instantiated
+     *    for some reason. Actually, the most specific exception thrown by
+     *    any of the constructors is thrown.
+     */
+    AdaptorInvocationHandler(AdaptorList adaptors, Class[] types,
+            Object[] params) throws SagaException {
 
+        // Do we have any adaptors?
         if (adaptors == null || adaptors.size() == 0) {
             throw new NoSuccessException("no adaptors could be loaded for this object");
         }
         
-        org.ogf.saga.error.SagaException exception = null; 
+        SagaException exception = null; 
 
         for (Adaptor adaptor : adaptors) {
             String adaptorname = adaptor.getAdaptorName();
 
             try {
-                Object object = initAdaptor(adaptor, types, params);
+                // instantiate the adaptor.
+                if (logger.isDebugEnabled()) {
+                    logger.debug("initAdaptor: trying to instantiate "
+                            + adaptor.getShortAdaptorClassName() + " for type "
+                            + adaptors.getSpiName());
+                }
+                
+                AdaptorBase object = adaptor.instantiate(types, params);
+         
+                if (logger.isInfoEnabled()) {
+                    logger.info("initAdaptor: instantiated "
+                            + adaptor.getShortAdaptorClassName() + " for type "
+                            + adaptors.getSpiName());
+                }
                 this.adaptorInstantiations.put(adaptorname, object);
                 this.adaptors.put(adaptorname, adaptor);
                 adaptorSorter.add(adaptorname);
@@ -129,8 +166,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 
                 // keep the most specific exception around. We can throw that
                 // when all adaptors fail.
-                if (t instanceof org.ogf.saga.error.SagaException) {
-                    org.ogf.saga.error.SagaException e = (org.ogf.saga.error.SagaException) t;
+                if (t instanceof SagaException) {
+                    SagaException e = (SagaException) t;
                     if (exception == null || e.compareTo(exception) < 0) {
                         exception = e;
                     }
@@ -146,17 +183,30 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
     }
     
+    /**
+     * This is a copying constructor, used in case a clone() was invoked
+     * on a Saga object. In that case, the adaptors associated with the
+     * Saga object must be cloned as well. On the other hand, the adaptors
+     * have a reference to the Saga object (the wrapper), and the adaptor
+     * clones must now refer to the clone of the wrapper (they cannot call
+     * clone() on the wrapper object!).
+     * @param orig the adaptor invocation handler to copy.
+     * @param wrapper the clone of the wrapper object.
+     */
     @SuppressWarnings("unchecked")
-    public AdaptorInvocationHandler(AdaptorInvocationHandler orig, Object wrapper) {
+    public AdaptorInvocationHandler(AdaptorInvocationHandler orig,
+            Object wrapper) {
+        
         adaptors = new Hashtable<String, Adaptor>(adaptors);
-        adaptorInstantiations = new Hashtable<String, Object>();
+        
         for (String s : orig.adaptorInstantiations.keySet()) {
             try {
                 AdaptorBase cp = (AdaptorBase)
-                        ((AdaptorBase) orig.adaptorInstantiations.get(s)).clone();
-                // This invocation gives a warning if warnings are not suppressed.
-                // And rightly so. But this should be correct.
-                // TODO: can we improve on this ???
+                        orig.adaptorInstantiations.get(s).clone();
+                // This next invocation gives a compiler warning if warnings are
+                // not suppressed, and rightly so.
+                // But this should be correct.
+                // TODO: can we improve on this and avoid the warning ???
                 cp.setWrapper(wrapper);
                 adaptorInstantiations.put(s, cp);
             } catch (CloneNotSupportedException e) {
@@ -175,17 +225,17 @@ public class AdaptorInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method m, Object[] params)
         throws Throwable {
         
-        org.ogf.saga.error.SagaException exception = null;
+        SagaException exception = null;
         
         ArrayList<String> adaptornames = adaptorSorter.getOrdering(m);
         boolean first = true;
 
-        // try adaptorInstantiations in order of success
+        // Try adaptorInstantiations in order of earlier success.
         for (String adaptorName : adaptornames) {
-            // only try adaptorInstantiations available for this handler
+            // Only try adaptorInstantiations available for this handler
             if (adaptorInstantiations.containsKey(adaptorName)) {
                 Adaptor adaptor = adaptors.get(adaptorName);
-                Object adaptorInstantiation = adaptorInstantiations.get(adaptorName);
+                AdaptorBase adaptorInstantiation = adaptorInstantiations.get(adaptorName);
                 try {
                     if (logger.isDebugEnabled()) {
                         logger.debug("invocation of method " + m.getName()
@@ -217,8 +267,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     
                     // keep the most specific exception around. We can throw that
                     // when all adaptors fail.
-                    if (t instanceof org.ogf.saga.error.SagaException) {
-                        org.ogf.saga.error.SagaException e = (org.ogf.saga.error.SagaException) t;
+                    if (t instanceof SagaException) {
+                        SagaException e = (SagaException) t;
                         if (exception == null || e.compareTo(exception) < 0) {
                             exception = e;
                         }
@@ -247,38 +297,5 @@ public class AdaptorInvocationHandler implements InvocationHandler {
 
         // throw the most specific exception.
         throw exception;
-    }
-
-    /**
-     * Creates an instance of the specified adaptor consistent with the
-     * passed parameters.
-     * 
-     * @param adaptor
-     *            The adaptor to instantiate.
-     * @param types
-     *            The parameter types of the Spi constructor.
-     * @param parameters
-     *            The actual parameters for the Spi Constructor.
-     * @return the instance.
-     */
-    private Object initAdaptor(Adaptor adaptor, Class<?>[] types, Object... parameters)
-            throws Throwable {
-        
-        Object result;
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("initAdaptor: trying to instantiate "
-                    + adaptor.getShortAdaptorClassName() + " for type "
-                    + adaptor.getSpiName());
-        }
-        
-        result = adaptor.instantiate(types, parameters);
- 
-        if (logger.isInfoEnabled()) {
-            logger.info("initAdaptor: instantiated "
-                    + adaptor.getShortAdaptorClassName() + " for type "
-                    + adaptor.getSpiName());
-        }
-        return result;
     }
 }

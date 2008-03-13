@@ -20,13 +20,13 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
+import org.ogf.saga.spi.namespace.NSDirectorySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
-    private NSDirectorySpiInterface proxy;
+    private NSDirectorySPI proxy;
     private boolean inheritedProxy = false;
 
     protected NSDirectoryWrapper(Session session, URL name, int flags)
@@ -38,8 +38,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         super(session);
         Object[] parameters = { this, session, name, flags };
         try {
-            proxy = (NSDirectorySpiInterface) SAGAEngine.createAdaptorProxy(
-                    NSDirectorySpiInterface.class, new Class[] {
+            proxy = (NSDirectorySPI) SAGAEngine.createAdaptorProxy(
+                    NSDirectorySPI.class, new Class[] {
                             NSDirectoryWrapper.class,
                             org.ogf.saga.impl.session.Session.class, URL.class,
                             Integer.TYPE }, parameters);
@@ -83,7 +83,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         super(session);
     }
 
-    protected void setProxy(NSDirectorySpiInterface proxy) {
+    protected void setProxy(NSDirectorySPI proxy) {
         this.proxy = proxy;
         super.setProxy(proxy);
         inheritedProxy = true;
@@ -105,8 +105,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     public Object clone() throws CloneNotSupportedException {
         NSDirectoryWrapper clone = (NSDirectoryWrapper) super.clone();
         if (!inheritedProxy) {
-            clone.proxy = (NSDirectorySpiInterface) SAGAEngine
-                    .createAdaptorCopy(NSDirectorySpiInterface.class, proxy,
+            clone.proxy = (NSDirectorySPI) SAGAEngine
+                    .createAdaptorCopy(NSDirectorySPI.class, proxy,
                             clone);
         }
         return clone;
