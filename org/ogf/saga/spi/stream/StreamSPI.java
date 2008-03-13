@@ -23,7 +23,7 @@ import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface StreamSpiInterface extends Async, AsyncMonitorable<Stream>,
+public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
         AsyncAttributes<Stream>, Permissions<Stream> {
     
     /**

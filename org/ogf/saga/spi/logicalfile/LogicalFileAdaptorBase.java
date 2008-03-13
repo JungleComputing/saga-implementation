@@ -19,12 +19,12 @@ import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.logicalfile.LogicalFileWrapper;
-import org.ogf.saga.spi.namespace.NSEntrySpi;
+import org.ogf.saga.spi.namespace.NSEntryAdaptorBase;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class LogicalFileSpi extends NSEntrySpi implements
-        LogicalFileSpiInterface {
+public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase implements
+        LogicalFileSPI {
     
     protected LogicalFileAttributes attributes;
     protected int logicalFileFlags;
@@ -38,7 +38,7 @@ public abstract class LogicalFileSpi extends NSEntrySpi implements
         return flags;
     }
 
-    public LogicalFileSpi(LogicalFileWrapper wrapper, Session session, URL name, int flags)
+    public LogicalFileAdaptorBase(LogicalFileWrapper wrapper, Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
@@ -49,7 +49,7 @@ public abstract class LogicalFileSpi extends NSEntrySpi implements
     }
     
     public Object clone() throws CloneNotSupportedException {
-        LogicalFileSpi clone = (LogicalFileSpi) super.clone();
+        LogicalFileAdaptorBase clone = (LogicalFileAdaptorBase) super.clone();
         clone.attributes = (LogicalFileAttributes) attributes.clone();        
         return clone;
     }

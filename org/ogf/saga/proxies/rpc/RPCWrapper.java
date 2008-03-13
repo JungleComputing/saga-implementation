@@ -16,13 +16,13 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.rpc.Parameter;
 import org.ogf.saga.rpc.RPC;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.rpc.RPCSpiInterface;
+import org.ogf.saga.spi.rpc.RPCSPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public class RPCWrapper extends SagaObjectBase implements RPC {
     
-    private RPCSpiInterface proxy;
+    private RPCSPI proxy;
 
     public RPCWrapper(Session session, URL funcName)
             throws NotImplementedException, IncorrectURLException,
@@ -32,8 +32,8 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         super(session);
         Object[] parameters = { this, session, funcName };
         try {
-            proxy = (RPCSpiInterface) SAGAEngine.createAdaptorProxy(
-                    RPCSpiInterface.class,
+            proxy = (RPCSPI) SAGAEngine.createAdaptorProxy(
+                    RPCSPI.class,
                     new Class[] { RPCWrapper.class, 
                         org.ogf.saga.impl.session.Session.class, URL.class },
                     parameters);

@@ -10,10 +10,10 @@ import org.ogf.saga.proxies.file.FileOutputStreamWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class FileOutputStreamSpi extends AdaptorBase<FileOutputStreamWrapper> implements
-        FileOutputStreamSpiInterface {
+public abstract class FileOutputStreamAdaptorBase extends AdaptorBase<FileOutputStreamWrapper> implements
+        FileOutputStreamSPI {
     
-    public FileOutputStreamSpi(Session session, FileOutputStreamWrapper wrapper) {
+    public FileOutputStreamAdaptorBase(Session session, FileOutputStreamWrapper wrapper) {
         super(session, wrapper);
     }
 

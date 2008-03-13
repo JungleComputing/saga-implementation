@@ -3,27 +3,23 @@ package org.ogf.saga.engine;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.ogf.saga.impl.AdaptorBase;
+
 /**
  * Information container for a specific adaptor.
  */
 class Adaptor {
-    /** The interface of the api implemented by this adaptor. */
-    private final String spiInterface;
 
     /** The actual class of this adaptor, must be an implementation of spiClass. */
     private final Class<?> adaptorClass;
-       
-    private String shortAdaptorClassName = null;
     
     /**
-     * @param spiInterface
-     *            The interface of the api this adaptor implements.
+     * Constructs an information container for a specific adaptor.
      * @param adaptorClass
      *            The actual class of this adaptor, must be an implementation of
      *            spiClass.
      */
-    Adaptor(String spiInterface, Class<?> adaptorClass) {
-        this.spiInterface = spiInterface;
+    Adaptor(Class<?> adaptorClass) {
         this.adaptorClass = adaptorClass;
     }
     
@@ -35,7 +31,7 @@ class Adaptor {
      * @exception Throwable anything that the constructor throws, or an
      *     error indicating that no suitable constructor was found.
      */
-    Object instantiate(Class<?>[] types, Object[] parameters)
+    AdaptorBase instantiate(Class<?>[] types, Object[] parameters)
             throws Throwable {
         try {
             // Use the specified types to find the constructor that we want.
@@ -45,17 +41,25 @@ class Adaptor {
                 throw new Error("No correct contructor exists in adaptor"
                         + adaptorClass.getName());
             }
-            return ctor.newInstance(parameters);
+            return (AdaptorBase) ctor.newInstance(parameters);
         } catch (InvocationTargetException e) {
             // rethrow original exception
             throw e.getTargetException();
         }
     }
 
+    /**
+     * Obtains the name of the adaptor class.
+     * @return the adaptor class name.
+     */
     String getAdaptorName() {
         return adaptorClass.getName();
     }
 
+    /**
+     * Obtains the adaptor class.
+     * @return the adaptor class.
+     */
     Class<?> getAdaptorClass() {
         return adaptorClass;
     }
@@ -64,18 +68,11 @@ class Adaptor {
         return adaptorClass.getName();
     }
 
-    synchronized String getSpiName() {
-        return spiInterface;
-    }
-
+    /**
+     * Obtains the short name of the adaptor class (without package).
+     * @return the short name of the adaptor class.
+     */
     synchronized String getShortAdaptorClassName() {
-        if (shortAdaptorClassName == null) {
-            shortAdaptorClassName = adaptorClass.getName();
-            int index = shortAdaptorClassName.lastIndexOf(".");
-            if(index > 0) {
-                shortAdaptorClassName = shortAdaptorClassName.substring(index+1);
-            }
-        }
-        return shortAdaptorClassName;
+        return adaptorClass.getSimpleName();
     }
 }

@@ -21,12 +21,12 @@ import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class StreamServiceSpi extends AdaptorBase<StreamServiceWrapper> implements StreamServiceSpiInterface {
+public abstract class StreamServiceAdaptorBase extends AdaptorBase<StreamServiceWrapper> implements StreamServiceSPI {
 
     protected URL url;
     protected Metric clientConnectMetric;
     
-    public StreamServiceSpi(StreamServiceWrapper wrapper, Session session, URL url)
+    public StreamServiceAdaptorBase(StreamServiceWrapper wrapper, Session session, URL url)
             throws NotImplementedException, BadParameterException {
         super(session, wrapper);
         this.url = url;
@@ -36,7 +36,7 @@ public abstract class StreamServiceSpi extends AdaptorBase<StreamServiceWrapper>
     }
     
     public Object clone() throws CloneNotSupportedException {
-        StreamServiceSpi clone = (StreamServiceSpi) super.clone();
+        StreamServiceAdaptorBase clone = (StreamServiceAdaptorBase) super.clone();
         try {
             clone.url = new URL(url.toString());
         } catch (Throwable e) {

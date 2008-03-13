@@ -15,11 +15,11 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
-import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
+import org.ogf.saga.spi.namespace.NSEntrySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface FileSpiInterface extends NSEntrySpiInterface  {
+public interface FileSPI extends NSEntrySPI  {
     
     /**
      * Returns the number of bytes in the file.

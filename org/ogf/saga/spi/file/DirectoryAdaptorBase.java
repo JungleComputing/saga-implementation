@@ -20,17 +20,17 @@ import org.ogf.saga.file.FileOutputStream;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.DirectoryWrapper;
-import org.ogf.saga.spi.namespace.NSDirectorySpi;
+import org.ogf.saga.spi.namespace.NSDirectoryAdaptorBase;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class DirectorySpi extends NSDirectorySpi implements
-        DirectorySpiInterface {
+public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase implements
+        DirectorySPI {
     
     protected int directoryFlags;
     protected DirectoryWrapper wrapper;
 
-    public DirectorySpi(DirectoryWrapper wrapper, Session session, URL name, int flags)
+    public DirectoryAdaptorBase(DirectoryWrapper wrapper, Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {

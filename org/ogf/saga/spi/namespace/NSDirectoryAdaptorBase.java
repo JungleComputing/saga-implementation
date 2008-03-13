@@ -30,8 +30,8 @@ import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class NSDirectorySpi extends NSEntrySpi implements
-        NSDirectorySpiInterface {
+public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implements
+        NSDirectorySPI {
     
     private class DirIterator implements Iterator<URL> {
         
@@ -67,11 +67,11 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
         
     }
       
-    protected static Logger logger = Logger.getLogger(NSDirectorySpi.class);
+    protected static Logger logger = Logger.getLogger(NSDirectoryAdaptorBase.class);
     
     protected NSDirectoryWrapper wrapper;
     
-    protected NSDirectorySpi(NSDirectoryWrapper wrapper, Session session, URL name, int flags)
+    protected NSDirectoryAdaptorBase(NSDirectoryWrapper wrapper, Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
@@ -261,7 +261,7 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
                 String urlPath = url.getPath();
                 if (isDir(url)) {
                     logger.debug("" + urlPath + " is directory");
-                    NSDirectorySpi dir = (NSDirectorySpi) clone();
+                    NSDirectoryAdaptorBase dir = (NSDirectoryAdaptorBase) clone();
                     dir.changeDir(url);
                     List<URL> subdirList = dir.expandWildCards(subPath);
                     dir.close(0);
@@ -320,7 +320,7 @@ public abstract class NSDirectorySpi extends NSEntrySpi implements
                 try {
                     // and if it is a directory then find the pattern
                     if (isDir(u)) {
-                        NSDirectorySpi dir = (NSDirectorySpi) clone();
+                        NSDirectoryAdaptorBase dir = (NSDirectoryAdaptorBase) clone();
                         dir.changeDir(u);
                         List<URL> l = dir.find(pattern, flags);
                         dir.close(0);

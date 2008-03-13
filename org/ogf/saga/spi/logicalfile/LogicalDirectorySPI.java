@@ -18,12 +18,12 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.logicalfile.LogicalDirectory;
 import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.namespace.NSDirectory;
-import org.ogf.saga.spi.namespace.NSDirectorySpiInterface;
+import org.ogf.saga.spi.namespace.NSDirectorySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface LogicalDirectorySpiInterface extends AsyncAttributes<LogicalDirectory>,
-        NSDirectorySpiInterface {
+public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
+        NSDirectorySPI {
     /**
      * Tests the name for being a logical file.
      * Is an alias for {@link NSDirectory#isEntry}.

@@ -15,24 +15,34 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
 import org.apache.log4j.Logger;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.SagaException;
 
 /**
  * This class make the various SAGA adaptors available to SAGA.
  * Some of this code is stolen from the JavaGAT engine implementation.
  * This class also supports cloning of SAGA adaptors, which is
  * required when a SAGA object is cloned.
+ * 
+ * The adaptor jar files are searched in directories that are specified
+ * in the system property <code>saga.adaptor.path</code>. The directories
+ * specified in this list are supposed to have sub-directories with names
+ * that end with "...Adaptor". Each of these subdirectories is supposed to
+ * contain that adaptor jar, and all supporting jar files.
+ * 
+ * A separate class loader is instantiated for each adaptor, to prevent
+ * problems when different adaptors need different versions of some
+ * third-party software.
  */
 public class SAGAEngine {
 
-    /**
-     * This member variable holds reference to the single SAGAEngine.
-     */
+    /** This member variable holds reference to the single SAGAEngine. */
     private static SAGAEngine sagaEngine = null;
 
     private boolean ended = false;
 
     /** Keys are SPI names, elements are AdaptorLists. */
-    private AdaptorSet adaptors;
+    private HashMap<String, AdaptorList> adaptors;
 
     private static Logger logger = Logger.getLogger(SAGAEngine.class);
 
@@ -45,7 +55,7 @@ public class SAGAEngine {
     /** Constructs a default SAGAEngine instance. */
     private SAGAEngine() {
 
-        adaptors = new AdaptorSet();
+        adaptors = new HashMap<String, AdaptorList>();
 
         readJarFiles();
 
@@ -54,7 +64,21 @@ public class SAGAEngine {
         }
 
         if (logger.isInfoEnabled()) {
-            logger.info("\n" + adaptors.toString());
+            StringBuffer buf = new StringBuffer();
+            buf.append("------------LOADED ADAPTORS------------\n");
+            for (AdaptorList l : adaptors.values()) {
+                buf.append("Adaptor type: ");
+                buf.append(l.getSpiName());
+                buf.append(":\n");
+                for (Adaptor a : l) {
+                    buf.append("    ");
+                    buf.append(a);
+                    buf.append("\n");
+                }
+                buf.append("\n");
+            }
+            buf.append("---------------------------------------");
+            logger.info("\n" + buf.toString());
         }
     }
 
@@ -72,24 +96,24 @@ public class SAGAEngine {
     }
 
     /**
-     * Returns a list of adaptors for the specified spiClass.
+     * Returns a list of adaptors for the specified service provider interface.
      * 
-     * @param spiClass
+     * @param spi
      *            the spi class for which to look
      * @return the list of adaptors
+     * @throws NoSuccessException when no adaptors are loaded for this SPI.
      */
-    private AdaptorList getAdaptorList(Class<?> spiClass) {
-        String name = spiClass.getSimpleName().replace("SpiInterface", ""); 
+    private AdaptorList getAdaptorList(Class<?> spi) throws NoSuccessException {
+        String name = spi.getSimpleName().replace("SPI", ""); 
 
-        AdaptorList list = adaptors.getAdaptorList(name);
+        AdaptorList list = adaptors.get(name);
         if (list == null) {
             // no adaptors for this type loaded.
-            if (logger.isInfoEnabled()) {
-                logger.info("getAdaptorList: No adaptors loaded for type "
-                        + name);
-            }
+            logger.error("getAdaptorList: No adaptors loaded for type "
+                    + name);
 
-            throw new Error(
+
+            throw new NoSuccessException (
                     "getAdaptorList: No adaptors loaded for type "
                     + name);
         }
@@ -113,8 +137,9 @@ public class SAGAEngine {
                 String dir = st.nextToken();
 
                 File adaptorRoot = new File(dir);
-                // Now get the adaptor dirs from the adaptor path, adaptor dirs are
-                // of course directories and further will end with "Adaptor".
+                // Now get the adaptor directories from the adaptor path.
+                // Adaptor directories are directories whose name ends
+                // with "Adaptor".
                 File[] adaptorDirs = adaptorRoot.listFiles(new FileFilter() {
                     public boolean accept(File file) {
                         return file.isDirectory()
@@ -122,6 +147,7 @@ public class SAGAEngine {
                     }
                 });
 
+                // Create a separate classloader for each adaptor directory.
                 for (File adaptorDir : adaptorDirs) {
                     try {
                         adaptorClassLoaders.put(adaptorDir.getName(),
@@ -138,65 +164,86 @@ public class SAGAEngine {
         }
     }
 
+    /**
+     * Creates a classloader for a specific adaptor (directory). The
+     * name of the adaptor jar-file must be the same as that of the directory,
+     * i.e., a directory SocketAdaptor must have a SocketAdaptor.jar.
+     * @param adaptorDir the name of the adaptor directory
+     * @return the class loader.
+     * @throws Exception is thrown in case of trouble.
+     */
     private ClassLoader loadDirectory(File adaptorDir) throws Exception {
+        
+        // Construct a file object for the adaptor jar file.
         File adaptorJarFile = new File(adaptorDir.getPath() + File.separator
                 + adaptorDir.getName() + ".jar");
         logger.debug("adaptorJarFile: " + adaptorJarFile.getPath());
         if (!adaptorJarFile.exists()) {
+            // TODO: deal with exceptions better.
             throw new Exception("found adaptor dir '" + adaptorDir.getPath()
                     + "' that doesn't contain an adaptor named '"
                     + adaptorJarFile.getPath() + "'");
         }
-        JarFile adaptorJar = new JarFile(adaptorJarFile, true);
-        Attributes attributes = adaptorJar.getManifest().getMainAttributes();
+
+        // Obtain list of jar files in the specified directory.
         String[] externalJars = adaptorDir.list(new java.io.FilenameFilter() {
             public boolean accept(File file, String name) {
                 return name.endsWith(".jar");
             }
         });
+        
+        // Since we create an URLClassLoader, we want URLS.
         ArrayList<URL> adaptorPathURLs = new ArrayList<URL>();
         adaptorPathURLs.add(adaptorJarFile.toURI().toURL());
         if (externalJars != null) {
             for (String externalJar : externalJars) {
-                adaptorPathURLs.add(new URL(adaptorJarFile.getParentFile()
-                        .toURI().toURL().toString()
-                        + externalJar));
+                if (! externalJar.equals(adaptorJarFile.getName())) {
+                    adaptorPathURLs.add(new URL(adaptorJarFile.getParentFile()
+                            .toURI().toURL().toString()
+                            + externalJar));
+                }
             }
         }
         
         URL[] urls = adaptorPathURLs.toArray(new URL[adaptorPathURLs.size()]);
         
+        // Sort, so that the results are reproducable.
         Arrays.sort(urls, new URLComparator());
 
-        for (URL url : urls) {
-            System.out.println("URL: " + url);
-        }
         URLClassLoader adaptorLoader = new URLClassLoader(urls, this.getClass()
                 .getClassLoader());
         
-        // We've a class loader, now have a look at which adaptors are inside
-        // this jar.
+        // Now we have a class loader.
+        // Next, we find out  which adaptors are inside the adaptor jar.
+        JarFile adaptorJar = new JarFile(adaptorJarFile, true);
+        Attributes attributes = adaptorJar.getManifest().getMainAttributes();
         for (Object key : attributes.keySet()) {
             if (((Attributes.Name) key).toString().endsWith("Spi-class")) {
-                // this is an adaptor!
-
-                // now get the spi name (for 'FileSpi' the spi name is 'File')
+                // This is an adaptor!
+                // Now get the service provider interface name
+                // (for an attribute named 'FileSpi-class' the SPI name is
+                // 'File').
                 String spiName = ((Attributes.Name) key).toString().replace(
                         "Spi-class", "");
+                
+                // A single jar may contain more than one adaptor. In that
+                // case, the list is comma-separated.
                 String[] adaptorClasses = attributes.getValue(
                         (Attributes.Name) key).split(",");
                 for (String adaptorClass : adaptorClasses) {
                     try {
-                        // Thread.currentThread().setContextClassLoader(
-                        //        adaptorLoader);
+                        // Set the context class loader of this thread,
+                        // as some middleware may use the context classloader.
+                        Thread.currentThread().setContextClassLoader(
+                                adaptorLoader);
                         Class<?> clazz = adaptorLoader.loadClass(adaptorClass);
                         
-                        Adaptor a = new Adaptor(spiName, clazz);
-                        AdaptorList s = adaptors.getAdaptorList(spiName);
+                        Adaptor a = new Adaptor(clazz);
+                        AdaptorList s = adaptors.get(spiName);
 
                         if (s == null) {
                             s = new AdaptorList(spiName);
-                            adaptors.add(s);
+                            adaptors.put(spiName, s);
                         }
 
                         s.add(a);
@@ -216,7 +263,10 @@ public class SAGAEngine {
     }
 
     /**
-     * This method should not be called by the user.
+     * This method should not be called by the user. In fact, it is not used
+     * currently. It may be useful when some adaptor uses middleware that
+     * needs to be terminated explicitly. In that case, it may declare a
+     * parameterless static method <code>end</code>.
      */
     public static void end() {
         SAGAEngine engine = getSAGAEngine();
@@ -233,7 +283,7 @@ public class SAGAEngine {
             logger.debug("shutting down SAGA");
         }
 
-        for (AdaptorList l : engine.adaptors) {
+        for (AdaptorList l : engine.adaptors.values()) {
             for (Adaptor a : l) {
                 Class<?> c = a.getAdaptorClass();
 
@@ -252,15 +302,27 @@ public class SAGAEngine {
         }
     }
 
-    // The idea of adaptor class names is the following:
-    // - the name ends with the name of the SPI it is providing, so a
-    //   JobService adaptor should end with "JobService".
-    // - the specific adaptor, f.i. javaGAT, should be in the
-    //   package name, or in the class name as well.
+    /**
+     * Obtains the full name of the specified adaptor from the
+     * specified adaptor list. For instance, if the specified adaptor
+     * is "javagat", and the adaptorlist contains all JobService adaptors,
+     * the result could be, for instance,
+     * "org.ogf.saga.adaptors.javaGAT.job.JobServiceAdaptor".
+     * @param shortName the name indicating the specific adaptor.
+     * @param adaptors the adaptor list.
+     * @return the full name for the specified adaptor,
+     * or <code>null</code> if not found.
+     */
+
     private static String getFullAdaptorName(String shortName,
             AdaptorList adaptors) {
+        // The idea of adaptor class names is the following:
+        // - the name ends with the name of the SPI it is providing, so a
+        //   JobService adaptor should end with "JobServiceAdaptor".
+        // - the specific adaptor, f.i. javaGAT, should be in the
+        //   package name, or in the class name as well.
         for (Adaptor adaptor : adaptors) {
-            String adaptorType = adaptor.getSpiName();
+            String adaptorType = adaptors.getSpiName() + "Adaptor";
             String adaptorName = adaptor.getShortAdaptorClassName();
             if (adaptorName.endsWith(adaptorType)) {
                 if (adaptor.getAdaptorName().toLowerCase().contains(shortName.toLowerCase())) {
@@ -273,6 +335,28 @@ public class SAGAEngine {
         return null;
     }
 
+    /**
+     * Reorders the adaptor list as requested by the user through a
+     * system property. For the JobService adaptors for instance, the user
+     * may set the system property <code>JobService.adaptor.name</code>.
+     * For example:
+     * <br>
+     * <code>
+     * JobService.adaptor.name=javagat,gridsam
+     * </code>
+     * </br>
+     * means that the engine must first try the <code>javagat</code> adaptor,
+     * and then the <code>gridsam</code> adaptor.
+     * <br>
+     * <code>
+     * JobService.adaptor.name=!javagat
+     * </code>
+     * means that the engine must try all available adaptors, except for
+     * <code>javagat</code>.
+     * 
+     * @param adaptors the adaptor list.
+     * @return the resulting adaptor list.
+     */
     private static AdaptorList reorderAdaptorList(AdaptorList adaptors) {
         // parse the orderingString
         // all adaptor names are separated by a ',' and adaptors that should
@@ -289,7 +373,8 @@ public class SAGAEngine {
         String nameString = System.getProperty(adaptorType + ".adaptor.name");
 
         if (logger.isDebugEnabled()) {
-            logger.debug("adaptorType = " + adaptorType + ", nameString = " + (nameString == null ? "(null)" : nameString));
+            logger.debug("Property " + adaptorType + ".adaptor.name = "
+                    + (nameString == null ? "(null)" : nameString));
         }
 	if (nameString == null) {
 	    return result;
@@ -366,12 +451,12 @@ public class SAGAEngine {
      * @param types the types of the constructor parameters.
      * @param tmpParams the actual constructor parameters.
      * @return the proxy object.
-     * @throws org.ogf.saga.error.SagaException when no adaptor could be
+     * @throws SagaException when no adaptor could be
      * created, the most specific exception is thrown.
      */
     public static Object createAdaptorProxy(
             Class<?> interfaceClass, Class[] types, Object[] tmpParams)
-                throws org.ogf.saga.error.SagaException {
+                throws SagaException {
 
         SAGAEngine sagaEngine = SAGAEngine.getSAGAEngine();
 

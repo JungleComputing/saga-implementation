@@ -22,14 +22,14 @@ import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class NSEntrySpi extends AdaptorBase<NSEntryWrapper> implements NSEntrySpiInterface {
+public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper> implements NSEntrySPI {
 
-    private static Logger logger = Logger.getLogger(NSEntrySpi.class);
+    private static Logger logger = Logger.getLogger(NSEntryAdaptorBase.class);
 
     protected boolean closed = false;
     protected URL nameUrl;
 
-    public NSEntrySpi(NSEntryWrapper wrapper, Session session, URL name, int flags)
+    public NSEntryAdaptorBase(NSEntryWrapper wrapper, Session session, URL name, int flags)
         throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
@@ -54,7 +54,7 @@ public abstract class NSEntrySpi extends AdaptorBase<NSEntryWrapper> implements 
     }
     
     public Object clone() throws CloneNotSupportedException {
-        NSEntrySpi clone = (NSEntrySpi) super.clone();
+        NSEntryAdaptorBase clone = (NSEntryAdaptorBase) super.clone();
         try {
             clone.nameUrl = new URL(nameUrl.toString());
         } catch (Throwable e) {

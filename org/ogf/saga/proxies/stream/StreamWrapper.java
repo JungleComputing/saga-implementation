@@ -19,7 +19,7 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.stream.StreamSpiInterface;
+import org.ogf.saga.spi.stream.StreamSPI;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.Stream;
@@ -28,7 +28,7 @@ import org.ogf.saga.task.TaskMode;
 
 public class StreamWrapper extends SagaObjectBase implements Stream {
     
-    private StreamSpiInterface proxy;
+    private StreamSPI proxy;
 
     public StreamWrapper(Session session, URL name)
             throws NotImplementedException, IncorrectURLException, BadParameterException,
@@ -37,8 +37,8 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         super(session);
         Object[] parameters = { this, session, name };
         try {
-            proxy = (StreamSpiInterface) SAGAEngine.createAdaptorProxy(
-                    StreamSpiInterface.class,
+            proxy = (StreamSPI) SAGAEngine.createAdaptorProxy(
+                    StreamSPI.class,
                     new Class[] { StreamWrapper.class,
                         org.ogf.saga.impl.session.Session.class, URL.class },
                     parameters);
@@ -73,8 +73,8 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
 
     public Object clone() throws CloneNotSupportedException {
         StreamWrapper clone = (StreamWrapper) super.clone();
-        clone.proxy = (StreamSpiInterface) SAGAEngine.createAdaptorCopy(
-                    StreamSpiInterface.class, proxy, clone);
+        clone.proxy = (StreamSPI) SAGAEngine.createAdaptorCopy(
+                    StreamSPI.class, proxy, clone);
         return clone;
     }
     

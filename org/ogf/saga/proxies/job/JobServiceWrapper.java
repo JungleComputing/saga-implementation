@@ -19,13 +19,13 @@ import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
 import org.ogf.saga.job.JobService;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.job.JobServiceSpiInterface;
+import org.ogf.saga.spi.job.JobServiceSPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public class JobServiceWrapper extends SagaObjectBase implements JobService {
     
-    private JobServiceSpiInterface proxy;
+    private JobServiceSPI proxy;
 
     public JobServiceWrapper(Session session, URL rm) throws NoSuccessException,
                 TimeoutException, PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
@@ -33,8 +33,8 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
         super(session);
         Object[] parameters = { this, session, rm };
         try {
-            proxy = (JobServiceSpiInterface) SAGAEngine.createAdaptorProxy(
-                    JobServiceSpiInterface.class,
+            proxy = (JobServiceSPI) SAGAEngine.createAdaptorProxy(
+                    JobServiceSPI.class,
                     new Class[] { JobServiceWrapper.class, 
                         org.ogf.saga.impl.session.Session.class, URL.class },
                     parameters);
@@ -105,8 +105,8 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
     
     public Object clone() throws CloneNotSupportedException {
         JobServiceWrapper clone = (JobServiceWrapper) super.clone();
-        clone.proxy = (JobServiceSpiInterface) SAGAEngine.createAdaptorCopy(
-                    JobServiceSpiInterface.class, proxy, clone);
+        clone.proxy = (JobServiceSPI) SAGAEngine.createAdaptorCopy(
+                    JobServiceSPI.class, proxy, clone);
         return clone;
     }
 

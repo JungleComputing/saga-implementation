@@ -10,10 +10,10 @@ import org.ogf.saga.proxies.file.FileInputStreamWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class FileInputStreamSpi extends AdaptorBase<FileInputStreamWrapper> implements
-        FileInputStreamSpiInterface {
+public abstract class FileInputStreamAdaptorBase extends AdaptorBase<FileInputStreamWrapper> implements
+        FileInputStreamSPI {
    
-    public FileInputStreamSpi(Session session, FileInputStreamWrapper wrapper) {
+    public FileInputStreamAdaptorBase(Session session, FileInputStreamWrapper wrapper) {
         super(session, wrapper);
     }
 

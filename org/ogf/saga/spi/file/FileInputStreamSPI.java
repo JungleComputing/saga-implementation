@@ -12,7 +12,7 @@ import org.ogf.saga.task.TaskMode;
  * This interface is used to create a proxy. The SPI should
  * implement this interface.
  */
-public interface FileInputStreamSpiInterface {
+public interface FileInputStreamSPI {
     
     Object clone() throws CloneNotSupportedException;
     

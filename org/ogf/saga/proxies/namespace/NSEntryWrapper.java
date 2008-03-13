@@ -17,7 +17,7 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
+import org.ogf.saga.spi.namespace.NSEntrySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
@@ -26,7 +26,7 @@ import org.ogf.saga.task.TaskMode;
  */
 public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     
-    private NSEntrySpiInterface proxy;
+    private NSEntrySPI proxy;
     private boolean inheritedProxy = false;
     
     protected NSEntryWrapper(Session session, URL name, int flags)
@@ -36,8 +36,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         super(session);
         Object[] parameters = { this, session, name, flags };
         try {
-            proxy = (NSEntrySpiInterface) SAGAEngine.createAdaptorProxy(
-                    NSEntrySpiInterface.class,
+            proxy = (NSEntrySPI) SAGAEngine.createAdaptorProxy(
+                    NSEntrySPI.class,
                     new Class[] { NSEntryWrapper.class,
                         org.ogf.saga.impl.session.Session.class, URL.class,
                         Integer.TYPE },
@@ -81,7 +81,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         super(session);
     }
     
-    protected void setProxy(NSEntrySpiInterface proxy) {
+    protected void setProxy(NSEntrySPI proxy) {
         this.proxy = proxy;
         inheritedProxy = true;
     }
@@ -90,8 +90,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         NSEntryWrapper clone = (NSEntryWrapper) super.clone();
         if (! inheritedProxy) {
             // subclasses should call setProxy again.
-            clone.proxy = (NSEntrySpiInterface)
-                    SAGAEngine.createAdaptorCopy(NSEntrySpiInterface.class, proxy, clone);
+            clone.proxy = (NSEntrySPI)
+                    SAGAEngine.createAdaptorCopy(NSEntrySPI.class, proxy, clone);
         }
         return clone;
     }

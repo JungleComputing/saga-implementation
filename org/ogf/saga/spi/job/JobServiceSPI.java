@@ -19,7 +19,7 @@ import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 
-public interface JobServiceSpiInterface extends Async {
+public interface JobServiceSPI extends Async {
     
     /**
      * Creates a job instance as specified by the job description provided.

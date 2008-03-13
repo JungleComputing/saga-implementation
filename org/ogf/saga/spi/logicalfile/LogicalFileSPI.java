@@ -16,11 +16,11 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.logicalfile.LogicalFile;
-import org.ogf.saga.spi.namespace.NSEntrySpiInterface;
+import org.ogf.saga.spi.namespace.NSEntrySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface LogicalFileSpiInterface extends NSEntrySpiInterface, AsyncAttributes<LogicalFile>  {
+public interface LogicalFileSPI extends NSEntrySPI, AsyncAttributes<LogicalFile>  {
 
     /**
      * Adds a replica location to the replica set.
