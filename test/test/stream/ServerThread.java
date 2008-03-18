@@ -20,7 +20,7 @@ import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamFactory;
 import org.ogf.saga.stream.StreamService;
 
-public abstract class ServerThread implements Runnable {
+public class ServerThread implements Runnable {
 
     private boolean stop = false;
 
@@ -140,9 +140,12 @@ public abstract class ServerThread implements Runnable {
         throwable = e;
     }
 
-    protected abstract void processStream(Stream stream) throws NotImplementedException,
+    protected void processStream(Stream stream) throws NotImplementedException,
             BadParameterException, NoSuccessException, IncorrectStateException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, SagaIOException,
-            DoesNotExistException, InterruptedException;
+            DoesNotExistException, InterruptedException {
+        // The default just keeps the server around for 10 seconds.
+        Thread.sleep(10000);
+    }
 
 }

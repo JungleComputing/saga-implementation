@@ -119,7 +119,7 @@ public class StreamTest extends TestCase {
 
     public void testConnect2() {
 
-        ServerThread server = new ServerThreadOneRead(SERVER_URL);
+        ServerThread server = new ServerThread(SERVER_URL);
         Thread sThread = new Thread(server);
 
         sThread.start();
