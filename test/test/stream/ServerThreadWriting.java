@@ -33,6 +33,7 @@ public class ServerThreadWriting extends ServerThread {
         buffer.setData("Hello World".getBytes());
 
         stream.write(buffer);
+        Thread.sleep(1000);
     }
 
 }

@@ -21,12 +21,12 @@ import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamFactory;
 import org.ogf.saga.stream.StreamService;
 
-public class TestMain extends TestCase {
+public class StreamTest extends TestCase {
 
     private static String SERVER_URL = "tcp://localhost:3333";
     private static final int SERVER_WAIT = 3000;
 
-    private static Logger logger = Logger.getLogger(TestMain.class);
+    private static Logger logger = Logger.getLogger(StreamTest.class);
 
     private static Callback readable = new Callback() {
         public boolean cb(Monitorable mt, Metric metric, Context ctx)
@@ -92,6 +92,27 @@ public class TestMain extends TestCase {
             // ignored
         }
     }
+    
+    private void checkServer(ServerThread server, Thread sThread) {
+        
+        try {
+            sThread.join();
+        } catch (InterruptedException e1) {
+            // ignored
+        }
+        
+        Throwable ex = server.getException();
+        if (ex != null) {
+            logger.error("FAIL: reader got exception", ex);
+            fail("reader got exception " + ex);
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // ignored
+        }
+    }
 
     // connect & disconnect without writing anything
     // while the server is reading
@@ -117,6 +138,8 @@ public class TestMain extends TestCase {
         }
         
         close(stream);
+        
+        checkServer(server, sThread);
     }
 
     // read 1 msg then check if the connection dropped condition is detected...
@@ -134,7 +157,9 @@ public class TestMain extends TestCase {
 
             stream.connect();
         } catch(Throwable e) {
-            e.printStackTrace();
+            logger.error("FAIL: got exception ", e);
+            fail("got exception" + e);
+            return;
         } finally {
             server.stopServer();
         }
@@ -167,6 +192,8 @@ public class TestMain extends TestCase {
             fail("got exception " + e);
         }
         close(stream);
+        
+        checkServer(server, sThread);
     }
 
     // testing the correctness of wait on the client side
@@ -188,6 +215,7 @@ public class TestMain extends TestCase {
         } catch (Throwable e) {
             logger.error("Got exception", e);
             fail("Got exception " + e);
+            return;
         } finally { 
             server.stopServer();
         }
@@ -218,6 +246,7 @@ public class TestMain extends TestCase {
         }
         
         close(stream);
+        checkServer(server, sThread);
     }
 
     // we will try to write more than the reading buffer can store
@@ -236,7 +265,8 @@ public class TestMain extends TestCase {
             Thread.sleep(SERVER_WAIT);
             stream.connect();
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("Got exception", e);
+            fail("Got exception " + e);
         } finally {
             server.stopServer();
         }
@@ -248,9 +278,12 @@ public class TestMain extends TestCase {
             stream.write(buffer);
             stream.write(buffer);
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("FAIL: got exception", e);
+            fail("got exception " + e);
         }
+
         close(stream);
+        checkServer(server, sThread);
     }
 
     // tries to close not opened stream service
@@ -385,8 +418,9 @@ public class TestMain extends TestCase {
             fail("got exception " + e);
         }
         
+        checkServer(server, sThread);       
+      
         try {
-            Thread.sleep(5000);
             stream.write(buffer);
         } catch (IncorrectStateException e) {
             logger.debug("OK: Should have thrown IncorrectState -- the server is down");
@@ -412,7 +446,7 @@ public class TestMain extends TestCase {
 
     public void test12() {
 
-        ServerThread server = new ServerThreadOneRead(SERVER_URL);
+        ServerThread server = new ServerThreadWait(SERVER_URL);
         Thread sThread = new Thread(server);
 
         sThread.start();
@@ -441,6 +475,7 @@ public class TestMain extends TestCase {
             fail("2nd connect should throw IncorrectState, not " + e);
         }
         
+        checkServer(server, sThread);    
         close(stream);
     }
 
@@ -515,6 +550,7 @@ public class TestMain extends TestCase {
             fail("threw wrong exception " + e);
         }
         
+        checkServer(server, sThread);    
         close(stream);
     }
 
@@ -554,6 +590,8 @@ public class TestMain extends TestCase {
             logger.error("FAIL: got exception", e);
             fail("got exception " + e);
         }
+        
+        checkServer(server, sThread);
         close(stream);
     }
 
@@ -587,6 +625,7 @@ public class TestMain extends TestCase {
         } catch (Throwable e) {
             logger.debug("FAIL: Situation was not dealt with properly");
         }
+        checkServer(server, sThread);
         close(stream);
     }
 
@@ -624,6 +663,7 @@ public class TestMain extends TestCase {
         } catch (Exception e) {
             logger.debug("FAIL: Situation was not dealt with properly");
         }
+        checkServer(server, sThread);
         close(stream);
     }
 
@@ -656,6 +696,7 @@ public class TestMain extends TestCase {
             logger.error("FAIL: Situation was not dealt with properly", e);
             fail("got exception " + e);
         }
+        checkServer(server, sThread);
         close(stream);
     }
 
@@ -688,6 +729,7 @@ public class TestMain extends TestCase {
             logger.error("FAIL: waitFor gave exception", e);
             fail("waitFor gave exception " + e);
         }
+        checkServer(server, sThread);
         close(stream);
     }
 
@@ -709,6 +751,7 @@ public class TestMain extends TestCase {
         } finally {
             server.stopServer();
         }
+        checkServer(server, sThread);
         close(stream);
         
         try {

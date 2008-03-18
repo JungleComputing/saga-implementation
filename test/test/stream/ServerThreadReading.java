@@ -36,8 +36,6 @@ public class ServerThreadReading extends ServerThread {
             buffer.setData(new byte[BUFFER_SIZE]);
             int bytesCnt = stream.read(buffer, buffer.getSize());
             logger.debug("Server: Read " + bytesCnt + " bytes");
-            logger.debug("Server: Message content:");
-            logger.debug(new String(buffer.getData()).trim());
         }
     }
 

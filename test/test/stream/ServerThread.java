@@ -29,6 +29,8 @@ public abstract class ServerThread implements Runnable {
     private static Logger logger = Logger.getLogger(ServerThread.class);
 
     private String url;
+    
+    Throwable throwable = null;
 
     public ServerThread(String url) {
         this.url = url;
@@ -115,6 +117,7 @@ public abstract class ServerThread implements Runnable {
             service.close();
         } catch (Throwable e) {
             logger.debug("Caught exception: Aborting server....", e);
+            setException(e);
         } finally {
             try {
                 service.close();
@@ -127,6 +130,14 @@ public abstract class ServerThread implements Runnable {
 
     public void stopServer() {
         this.stop = true;
+    }
+    
+    public synchronized Throwable getException() {
+        return throwable;
+    }
+    
+    private synchronized void setException(Throwable e) {
+        throwable = e;
     }
 
     protected abstract void processStream(Stream stream) throws NotImplementedException,
