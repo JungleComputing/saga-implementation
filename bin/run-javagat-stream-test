@@ -1,0 +1,1 @@
+$SAGA_HOME/bin/run_saga_app -DStreamService.adaptor.name=javagat -DStream.adaptor.name=javagat junit.textui.TestRunner test.stream.StreamTest
