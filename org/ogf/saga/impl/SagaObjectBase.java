@@ -10,7 +10,11 @@ public class SagaObjectBase implements SagaObject {
     
     protected org.ogf.saga.impl.session.Session session;
     private UUID uuid = UUID.randomUUID();
-   
+
+    public SagaObjectBase() {
+        this((Session) null);
+    }
+    
     public SagaObjectBase(Session session) {
         if (session != null
                 && ! (session instanceof org.ogf.saga.impl.session.Session)) {
