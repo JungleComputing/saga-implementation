@@ -34,21 +34,13 @@ public class RPCWrapperFactory extends RPCFactory {
                 session, funcname);
     }
 
-    @Override
-    protected org.ogf.saga.rpc.Parameter doCreateParameter(byte[] data, IOMode mode)
+    protected org.ogf.saga.rpc.Parameter doCreateParameter(Object data, IOMode mode)
             throws BadParameterException, NoSuccessException, NotImplementedException {
         return new Parameter(data, mode);
     }
 
-    @Override
     protected org.ogf.saga.rpc.Parameter doCreateParameter(IOMode mode) throws BadParameterException,
             NoSuccessException, NotImplementedException {
         return new Parameter(mode);
-    }
-
-    @Override
-    protected org.ogf.saga.rpc.Parameter doCreateParameter(int sz, IOMode mode)
-            throws BadParameterException, NoSuccessException, NotImplementedException {
-        return new Parameter(sz, mode);
     }
 }
