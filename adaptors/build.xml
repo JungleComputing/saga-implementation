@@ -1,0 +1,24 @@
+<project name="SAGA" default="build" basedir=".">
+
+    <description>
+	Build file for the Java SAGA adaptors.
+    </description>
+
+    <!-- Global properties -->
+
+    <target name="build" description="build the adaptors">
+	<ant dir="GridsamAdaptor" />
+	<ant dir="JavaGatAdaptor" />
+	<ant dir="SocketAdaptor" />
+
+	<copy todir="lib">
+	    <fileset dir="external">
+		<include name="*.jar"/>
+	    </fileset>
+	</copy>
+    </target>
+
+    <target name="clean" description="clean up">
+	<delete dir="${lib}" />
+    </target>
+</project>
