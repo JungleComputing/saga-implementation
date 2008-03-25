@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="adaptors/SocketAdaptor/src"/>
+	<classpathentry kind="src" path="adaptors/JavaGatAdaptor/src"/>
+	<classpathentry kind="src" path="adaptors/GridsamAdaptor/src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="external/log4j-1.2.13.jar"/>
+	<classpathentry kind="lib" path="external/junit-3.8.2.jar"/>
+	<classpathentry kind="lib" path="adaptors/JavaGatAdaptor/external/GAT-API.jar"/>
+	<classpathentry kind="lib" path="adaptors/GridsamAdaptor/external/gridsam-client.jar"/>
+	<classpathentry kind="lib" path="adaptors/GridsamAdaptor/external/gridsam-schema-2.0.1.jar"/>
+	<classpathentry kind="lib" path="adaptors/GridsamAdaptor/external/xbean-2.1.0.jar"/>
+	<classpathentry kind="lib" path="adaptors/GridsamAdaptor/external/gridsam-core-2.0.1.jar"/>
+	<classpathentry kind="lib" path="adaptors/GridsamAdaptor/external/commons-cli-1.0.jar"/>
+	<classpathentry kind="lib" path="external/saga-api-0.9.jar"/>
+	<classpathentry kind="output" path="tmp-eclipse"/>
+</classpath>
