@@ -10,15 +10,24 @@
 	<ant dir="GridsamAdaptor" />
 	<ant dir="JavaGatAdaptor" />
 	<ant dir="SocketAdaptor" />
-
-	<copy todir="lib">
-	    <fileset dir="external">
-		<include name="*.jar"/>
-	    </fileset>
-	</copy>
     </target>
 
     <target name="clean" description="clean up">
-	<delete dir="${lib}" />
+	<ant dir="GridsamAdaptor" target="clean" />
+	<ant dir="JavaGatAdaptor" target="clean" />
+	<ant dir="SocketAdaptor" target="clean" />
     </target>
+
+    <target name="gridsam" description="build Gridsam adaptors">
+	<ant dir="GridsamAdaptor"/>
+    </target>
+
+    <target name="javagat" description="build JavaGat adaptors">
+	<ant dir="JavaGatAdaptor"/>
+    </target>
+
+    <target name="socket" description="build socket adaptors">
+	<ant dir="SocketAdaptor"/>
+    </target>
+
 </project>

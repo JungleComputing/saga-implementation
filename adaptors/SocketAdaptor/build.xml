@@ -7,7 +7,8 @@
     <!-- Global properties -->
 
     <property name="tmp" location="tmp" />
-    <property name="lib" location="../lib/SocketAdaptor" />
+    <property name="adaptor" value="SocketAdaptor"/>
+    <property name="lib" location="../../lib/adaptors/${adaptor}"/>
 
     <target name="init" depends="clean">
 	<!-- Create the time stamp -->
@@ -19,8 +20,8 @@
     </target>
 
     <path id="external.jars">
-	<fileset dir="../external">
-	    <include name="**/*.jar" />
+	<fileset dir="../../lib">
+	    <include name="*.jar" />
         </fileset>
     </path>
 
@@ -42,7 +43,7 @@
 	<mkdir dir="${lib}" />
 
 	<!-- Create the socket adaptor jar. -->
-	<jar jarfile="${lib}/SocketAdaptor.jar" basedir="${tmp}" includes="**/socket/**/*.class,LICENSE.txt">
+	<jar jarfile="${lib}/${adaptor}.jar" basedir="${tmp}" includes="**/socket/**/*.class,LICENSE.txt">
 	    <manifest>
 		<attribute name="StreamSpi-class" value="org.ogf.saga.adaptors.socket.stream.StreamAdaptor" />
 		<attribute name="StreamServiceSpi-class" value="org.ogf.saga.adaptors.socket.stream.StreamServiceAdaptor" />
@@ -55,7 +56,6 @@
     </target>
 
     <target name="clean" description="clean up">
-	<delete dir="${lib}" />
 	<delete dir="${tmp}" />
     </target>
 </project>

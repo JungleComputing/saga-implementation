@@ -1,23 +1,17 @@
 #!/bin/sh
 
-export OMIICLIENT=$HOME/OMIICLIENT
-
-if [ -z "$SAGA_HOME" ] ; then
-    echo SAGA_HOME variable not set, using $PWD
-    SAGA_HOME=$PWD
-fi
-
-if [ -z "$SAGA_ADAPTORS_HOME" ] ; then
-    echo SAGA_ADAPTORS_HOME variable not set, using $PWD
-    SAGA_ADAPTORS_HOME=$PWD
+if [ -z "$SAGA_LOCATION" ] ; then
+    echo SAGA_LOCATION variable not set, using $PWD
+    SAGA_LOCATION=$PWD
 fi
 
 # ---- do not touch anything below this line ----
 
-SAGA_LIB_LOCATION=$SAGA_HOME/lib
-GAT_LIB_LOCATION=$SAGA_ADAPTORS_HOME/lib/JavaGatAdaptor
+SAGA_LIB_LOCATION=$SAGA_LOCATION/lib
+SAGA_ADAPTOR_LOCATION=$SAGA_LIB_LOCATION/adaptors
+
+GAT_LIB_LOCATION=$SAGA_LOCATION/lib/adaptors/JavaGatAdaptor
 GAT_ADAPTOR_LOCATION=$GAT_LIB_LOCATION/adaptors
-SAGA_ADAPTOR_LOCATION=$SAGA_ADAPTORS_HOME/lib
 
 # Jar-files from library.
 SAGA_CLASSPATH=""
@@ -34,4 +28,4 @@ add_to_saga_classpath () {
 
 add_to_saga_classpath $SAGA_LIB_LOCATION
 
-java -cp "$CLASSPATH:$SAGA_CLASSPATH" $PREFERENCES -Dlog4j.configuration=file:$SAGA_HOME/log4j.properties -Dsaga.adaptor.path=$SAGA_ADAPTOR_LOCATION -Dgat.adaptor.path=$GAT_ADAPTOR_LOCATION -Dsaga.factory=org.ogf.saga.impl.bootstrap.MetaFactory "$@"
+java -cp "$CLASSPATH:$SAGA_CLASSPATH" $PREFERENCES -Dlog4j.configuration=file:$SAGA_LOCATION/log4j.properties -Dsaga.adaptor.path=$SAGA_ADAPTOR_LOCATION -Dgat.adaptor.path=$GAT_ADAPTOR_LOCATION -Dsaga.factory=org.ogf.saga.impl.bootstrap.MetaFactory "$@"

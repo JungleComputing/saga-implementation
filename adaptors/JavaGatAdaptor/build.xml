@@ -8,7 +8,8 @@
 
     
     <property name="tmp" location="tmp" />
-    <property name="lib" location="../lib/JavaGatAdaptor" />
+    <property name="adaptor" value="JavaGatAdaptor"/>
+    <property name="lib" location="../../lib/adaptors/${adaptor}"/>
 
     <target name="init" depends="clean">
 	<!-- Create the time stamp -->
@@ -20,8 +21,8 @@
     </target>
 
     <path id="external.jars">
-	<fileset dir="../external">
-	    <include name="**/*.jar" />
+	<fileset dir="../../lib">
+	    <include name="*.jar" />
         </fileset>
         <fileset dir="external">
 	    <include name="**/*.jar" />
@@ -45,7 +46,7 @@
 
 	<!-- Create the javagat adaptor jar. -->
 	<mkdir dir="${lib}" />
-	<jar jarfile="${lib}/JavaGatAdaptor.jar" basedir="${tmp}" includes="**/javaGAT/**/*.class,LICENSE.txt">
+	<jar jarfile="${lib}/${adaptor}.jar" basedir="${tmp}" includes="**/javaGAT/**/*.class,LICENSE.txt">
 	    <manifest>
 		<attribute name="NSEntrySpi-class" value="org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor" />
 		<attribute name="NSDirectorySpi-class" value="org.ogf.saga.adaptors.javaGAT.namespace.NSDirectoryAdaptor" />
@@ -71,6 +72,5 @@
 
     <target name="clean" description="clean up">
 	<delete dir="${tmp}" />
-	<delete dir="${lib}" />
     </target>
 </project>

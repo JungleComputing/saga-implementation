@@ -39,6 +39,7 @@
 
 	<!-- Copy license, so that it will end up in the jar. -->
 	<copy file="LICENSE.txt" todir="${tmp}"/>
+
     </target>
 
     <target name="build" depends="compile" description="build the JAR file">
@@ -54,10 +55,15 @@
 	<copy todir="lib">
 	    <fileset dir="external"/>
 	</copy>
+
+	<!-- Build adaptors. -->
+	<ant inheritAll="false" dir="adaptors" target="build"/>
     </target>
 
     <target name="clean" description="clean up">
 	<delete dir="${lib}" />
 	<delete dir="${tmp}" />
+	<!-- Clean adaptors. -->
+	<ant inheritAll="false" dir="adaptors" target="clean"/>
     </target>
 </project>
