@@ -7,4 +7,4 @@
 
 . ./paths
 
-$SAGA_HOME/bin/run_saga_app -DJobService.adaptor.name=gridsam test.job.TestJob1
+$SAGA_LOCATION/bin/run_saga_app -DJobService.adaptor.name=gridsam test.job.TestJob1

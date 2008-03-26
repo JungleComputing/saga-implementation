@@ -6,4 +6,4 @@
 
 . ./paths
 
-$SAGA_HOME/bin/run_saga_app -Xmx256M test.file.FileSize file://$HOME/.bashrc
+$SAGA_LOCATION/bin/run_saga_app -Xmx256M test.file.FileSize file://$HOME/.bashrc

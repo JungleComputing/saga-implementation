@@ -2,4 +2,4 @@
 
 . ./paths
 
-$SAGA_HOME/bin/run_saga_app test.job.TestJob
+$SAGA_LOCATION/bin/run_saga_app test.job.TestJob

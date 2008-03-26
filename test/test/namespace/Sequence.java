@@ -55,6 +55,7 @@ class Sequence {
             URL fileUrl = new URL(filename);
             URL newFileUrl = new URL(newFilename);
             URL completeFileUrl = new URL(dir + "/" + filename);
+            URL completeNewFileUrl = new URL(dir + "/" + newFilename);
             
             Session session = SessionFactory.createSession(true);
             String scheme = completeFileUrl.getScheme();
@@ -83,6 +84,7 @@ class Sequence {
             
             // NewFile considered relative to cwd of file.
             file.move(newFileUrl, Flags.NONE.getValue());
+            file = NSFactory.createNSEntry(session, completeNewFileUrl);
             System.out.println("moved '" + filename + "' to '" + newFilename
                     + "'");
             // old file still exists?
