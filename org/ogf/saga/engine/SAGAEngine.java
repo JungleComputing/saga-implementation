@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -43,9 +44,14 @@ public class SAGAEngine {
 
     /** Keys are SPI names, elements are AdaptorLists. */
     private HashMap<String, AdaptorList> adaptors;
+    
+    private static final Properties properties
+            = org.ogf.saga.bootstrap.SagaProperties.getDefaultProperties();
 
     private static Logger logger = Logger.getLogger(SAGAEngine.class);
-
+    
+    private static String sagaLocation = System.getenv("SAGA_LOCATION");
+  
     private static class URLComparator implements Comparator<URL> {
         public int compare(URL u1, URL u2) {
             return u1.toString().compareTo(u2.toString());
@@ -119,6 +125,21 @@ public class SAGAEngine {
         }
         return list;
     }
+    
+    /**
+     * Obtains the value of the specified property. Any occurrence of
+     * the string <code>SAGA_LOCATION</code> is replaced by the actual
+     * value of the environment variable with the same name.
+     * @param s the property name.
+     * @return the value of the property.
+     */
+    public static String getProperty(String s) {
+        String result = properties.getProperty(s);
+        if (sagaLocation != null) {
+            return result.replaceAll("SAGA_LOCATION", sagaLocation);
+        }
+        return result;
+    }
 
     /**
      * This method populates the Map returned from a call to the
@@ -128,7 +149,7 @@ public class SAGAEngine {
         HashMap<String, ClassLoader> adaptorClassLoaders
         = new HashMap<String, ClassLoader>();
 
-        String adaptorPath = System.getProperty("saga.adaptor.path");
+        String adaptorPath = getProperty("saga.adaptor.path");
 
         if (adaptorPath != null) {
             StringTokenizer st = new StringTokenizer(adaptorPath,
