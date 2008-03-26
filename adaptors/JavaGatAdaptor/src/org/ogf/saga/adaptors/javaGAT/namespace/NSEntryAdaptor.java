@@ -486,6 +486,9 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         }
         unresolvedCopy(target, flags);
         remove(flags);
+        /*
+         * Commented out the code below. It is not correct. The NSEntry
+         * on which the move is done still should refer to the old entry.
         closed = false; // todo
         try {
             nameUrl = new URL(target.toString());
@@ -495,6 +498,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
             throw new NoSuccessException(e);
         }
         file = fileImpl.getFileInterface();
+        */
     }
 
     public void permissionsAllow(String id, int permissions, int flags)
