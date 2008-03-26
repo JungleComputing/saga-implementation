@@ -4,6 +4,6 @@
 # so as long as we only have a javaGAT adaptor for File, this only works
 # for local files.
 
-. ./paths
+export SAGA_LOCATION=`cd .. && pwd`
 
 $SAGA_LOCATION/bin/run_saga_app -Xmx256M test.file.FileSize file://$HOME/.bashrc

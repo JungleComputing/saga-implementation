@@ -1,5 +1,5 @@
 #!/bin/sh
 
-. ./paths
+export SAGA_LOCATION=`cd .. && pwd`
 
 $SAGA_LOCATION/bin/run_saga_app -Xmx256M test.namespace.TaskCopyTest ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz http://www.cs.vu.nl/ibis/index.html
