@@ -439,7 +439,8 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
         String id;
         try {
             id = gatJob.getJobID();
-        } catch (GATInvocationException e) {
+        } catch (Throwable e) {
+            // Apparently not provided by JavaGAT adaptor ...`
             id = "" + jobCount ++;
         }
         id = "[" + JobServiceAdaptor.JAVAGAT + "]-[" + id + "]";
