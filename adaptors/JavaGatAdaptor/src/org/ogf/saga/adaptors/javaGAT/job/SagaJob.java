@@ -276,25 +276,6 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
                 File f1 = createFile(s1);
                 File f2 = createFile(s2);
 
-                // Saga interpretes both the source and the destination (whether
-                // stage-in or stage-out) with respect to the location where the
-                // job is run. So, s1 should be an absolute URL, and s2 is
-                // probably local, but could be absolute as well.
-                // NOT TRUE! TODO!
-                if (! s1.isAbsolute()) {
-                    throw new BadParameterException("The "
-                            + (prestage ? "source of a pre-stage"
-                                    : "destination of a post-stage")
-                            + " should be an absolute URL but is not: " + parts[0]);
-                }
-                String host = s1.getHost();
-                if (host == null || host.equals("")) {
-                    throw new BadParameterException("The "
-                            + (prestage ? "source of a pre-stage"
-                                    : "destination of a post-stage")
-                            + " should specify a host: " + parts[0]);
-                }
-                
                 if (prestage) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Add prestage: src = " + s1 + ", dst = " + s2);

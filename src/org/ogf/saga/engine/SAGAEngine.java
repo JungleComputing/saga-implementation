@@ -391,7 +391,7 @@ public class SAGAEngine {
         // retrieve the adaptor type from the cpiClass
         String adaptorType = adaptors.getSpiName();
 
-        String nameString = System.getProperty(adaptorType + ".adaptor.name");
+        String nameString = getProperty(adaptorType + ".adaptor.name");
 
         if (logger.isDebugEnabled()) {
             logger.debug("Property " + adaptorType + ".adaptor.name = "

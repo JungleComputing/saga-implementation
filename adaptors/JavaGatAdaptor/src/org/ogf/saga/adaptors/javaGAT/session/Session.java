@@ -126,6 +126,7 @@ public class Session implements org.ogf.saga.impl.session.AdaptorSessionInterfac
                 try {
                     return new CertificateSecurityContext(
                             new URI(ctxt.getValue(Context.USERKEY)),
+                            new URI(ctxt.getValue(Context.USERCERT)),
                             userId,
                             ctxt.getValue(Context.USERPASS));
                 } catch (URISyntaxException e) {

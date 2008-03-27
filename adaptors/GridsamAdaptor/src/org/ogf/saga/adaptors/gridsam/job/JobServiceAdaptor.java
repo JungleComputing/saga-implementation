@@ -37,6 +37,14 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         } catch (NotImplementedException e) {
             throw new NoSuccessException("Should not happen", e);
         }
+        if (scheme.equals("any")) {
+            scheme = "https";
+            try {
+                this.rm.setScheme(scheme);
+            } catch (Exception e) {
+                throw new NoSuccessException("Should not happen", e);
+            }
+        }
         if ("http".equals(scheme) || "https".equals(scheme)) {
             // this is OK.
         } else {
