@@ -32,7 +32,7 @@
                 <classpath refid="external.jars" />
     	    <compilerarg value="-Xlint:unchecked"/>
     	</javac>
-    	<javac srcdir="test" destdir="${tmp}" debug="on" >
+	<javac srcdir="demo/src" destdir="${tmp}" debug="on" >
                 <classpath refid="external.jars" />
     	    <compilerarg value="-Xlint:unchecked"/>
     	</javac>

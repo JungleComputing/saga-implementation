@@ -609,11 +609,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     public void checkpoint() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        try {
-            gatJob.checkpoint();
-        } catch (GATInvocationException e) {
-            throw new NoSuccessException("checkpoint failed", e);
-        }        
+        throw new NotImplementedException("checkpoint() not implemented: JavaGAT does not support it");     
     }
 
     public InputStream getStderr() throws NotImplementedException, AuthenticationFailedException,
@@ -640,27 +636,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     public void migrate(org.ogf.saga.job.JobDescription jd) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException {
-        JobDescription j = this.jobDescription;
-        if (state != State.SUSPENDED && state != State.RUNNING) {
-            throw new IncorrectStateException("migrate() called when job state was " + state);
-        }
-        try {
-            this.jobDescription = (JobDescription) jd.clone();
-        } catch (CloneNotSupportedException e) {
-            // Should not happen.
-            throw new NoSuccessException("JobDescription does not support clone???", e);
-        }
-
-        HardwareResourceDescription hr = createHardwareResourceDescription();
-        gatJobDescription = new org.gridlab.gat.resources.JobDescription(
-                gatJobDescription.getSoftwareDescription(),
-                hr);
-        try {
-            gatJob.migrate(hr);
-        } catch (GATInvocationException e) {
-            this.jobDescription = j;
-            throw new NoSuccessException("migrate failed", e);
-        }        
+        throw new NotImplementedException("migrate() not implemented: JavaGAT does not support it");
     }
 
     public void resume() throws NotImplementedException, AuthenticationFailedException,
