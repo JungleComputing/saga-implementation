@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import org.ogf.saga.URL;
+import org.ogf.saga.attributes.Attributes;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
@@ -21,6 +22,7 @@ import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.stream.ConnectedStream;
 import org.ogf.saga.stream.Activity;
+import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
@@ -84,6 +86,41 @@ public class ConnectedStreamImpl extends ConnectedStream implements
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
         return url;
+    }
+    
+    private void setSendBufferSize(String sz) throws IOException {
+        if (sz == null || sz.equals("")) {
+            return;
+        }
+        int size = Integer.parseInt(sz);
+        if (size != 0) {
+            socket.setSendBufferSize(size);
+        }
+    }
+    
+    private void setNoDelay(String v) throws IOException {
+        if (v == null || v.equals("")) {
+            return;
+        }
+        socket.setTcpNoDelay(v.equals(Attributes.TRUE));
+    }
+    
+    public void setAttribute(String key, String value) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
+        super.setAttribute(key, value);
+        if (Stream.BUFSIZE.equals(key)) {
+            try {
+                setSendBufferSize(value);
+            } catch(Throwable e) {
+                // ignored
+            }
+        }
+        if (Stream.NODELAY.equals(key)) {
+            try {
+                setNoDelay(value);
+            } catch(Throwable e) {
+                // ignored
+            }
+        }
     }
 
     public int read(Buffer buffer, int len) throws NotImplementedException,

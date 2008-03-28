@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
 import org.ogf.saga.URL;
+import org.ogf.saga.attributes.Attributes;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
@@ -26,6 +27,7 @@ import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.proxies.stream.StreamWrapper;
 import org.ogf.saga.spi.stream.StreamAdaptorBase;
 import org.ogf.saga.stream.Activity;
+import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
@@ -114,6 +116,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
         try {
             socket = new Socket();
+            setCurrentAttributes();
             socket.connect(new InetSocketAddress(url.getHost(), url.getPort()));
 
             StreamStateUtils.setStreamState(streamState, StreamState.OPEN);
@@ -133,9 +136,61 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             onStateChange(StreamState.ERROR);
             throw new NoSuccessException("Incorrect entry information", e);
         }
-
     }
     
+    private void setSendBufferSize(String sz) throws IOException {
+        if (sz == null || sz.equals("")) {
+            return;
+        }
+        int size = Integer.parseInt(sz);
+        if (size != 0) {
+            socket.setSendBufferSize(size);
+        }
+    }
+    
+    private void setNoDelay(String v) throws IOException {
+        if (v == null || v.equals("")) {
+            return;
+        }
+        socket.setTcpNoDelay(v.equals(Attributes.TRUE));
+    }
+    
+    private void setCurrentAttributes() {
+        try {
+            String bufSizeStr = this.getAttribute(Stream.BUFSIZE);
+            setSendBufferSize(bufSizeStr);
+        } catch (Throwable e) {
+            // ignored
+        }
+        try {
+            String v = this.getAttribute(Stream.NODELAY);
+            setNoDelay(v);
+        } catch (Throwable e) {
+            // ignored
+        }
+    }
+    
+    public void setAttribute(String key, String value) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
+        super.setAttribute(key, value);
+        if (socket == null) {
+            return;
+        }
+        if (Stream.BUFSIZE.equals(key)) {
+            try {
+                setSendBufferSize(value);
+            } catch(Throwable e) {
+                // ignored
+            }
+        }
+        if (Stream.NODELAY.equals(key)) {
+            try {
+                setNoDelay(value);
+            } catch(Throwable e) {
+                // ignored
+            }
+        }
+    }
+
     public Context getContext() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
