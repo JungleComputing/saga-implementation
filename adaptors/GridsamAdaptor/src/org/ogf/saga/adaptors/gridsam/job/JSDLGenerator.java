@@ -178,7 +178,9 @@ class JSDLGenerator {
                 arg.setStringValue(argument);
             }
         } catch (Throwable e) {
-            logger.debug("Got exception: ", e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Got ignored exception for ARGUMENTS", e);
+            }
         }
 
         try {
@@ -186,7 +188,9 @@ class JSDLGenerator {
             f = posixAppl.addNewInput();
             f.setStringValue(stdin);
         } catch (Throwable e) {
-            logger.debug("Got ignored exception for INPUT", e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Got ignored exception for INPUT", e);
+            }
         }
 
         try {
@@ -194,7 +198,9 @@ class JSDLGenerator {
             f = posixAppl.addNewOutput();
             f.setStringValue(stdout);
         } catch (Throwable e) {
-            logger.debug("Got ignored exception for OUTPUT", e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Got ignored exception for OUTPUT", e);
+            }
         }
 
         try {
@@ -202,7 +208,9 @@ class JSDLGenerator {
             f = posixAppl.addNewError();
             f.setStringValue(stderr);
         } catch (Throwable e) {
-            logger.debug("Got ignored exception for ERROR", e);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Got ignored exception for ERROR", e);
+            }
         }
 
         try {
@@ -222,16 +230,15 @@ class JSDLGenerator {
                 ev.setStringValue(val);
             }
         } catch (Throwable e) {
-            // ignored
+            if (logger.isDebugEnabled()) {
+                logger.debug("Got ignored exception for ENVIRONMENT", e);
+            }
         }
-
-        logger.debug("posixDoc = " + posixDoc);
 
         XmlCursor c = posixDoc.newCursor();
         c.toStartDoc();
         c.toNextToken();
         c.moveXml(cursor);
-        logger.debug("After moveXml: " + jobDescr);
     }
 
     private void addDataStage(JobDescriptionType jobDescr, String fileName,
