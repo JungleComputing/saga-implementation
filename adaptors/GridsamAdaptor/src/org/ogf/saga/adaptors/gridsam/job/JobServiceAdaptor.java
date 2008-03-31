@@ -29,7 +29,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
     String url;
 
     public JobServiceAdaptor(JobServiceWrapper wrapper, Session session, URL rm) 
-            throws NoSuccessException {
+            throws NoSuccessException, NotImplementedException {
         super(wrapper, session, rm);
         String scheme;
         try {
@@ -37,7 +37,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         } catch (NotImplementedException e) {
             throw new NoSuccessException("Should not happen", e);
         }
-        if (scheme.equals("any")) {
+        if (scheme.equals("any") || scheme.equals("gridsam")) {
             scheme = "https";
             try {
                 this.rm.setScheme(scheme);
@@ -48,7 +48,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         if ("http".equals(scheme) || "https".equals(scheme)) {
             // this is OK.
         } else {
-            throw new NoSuccessException("Wrong scheme for gridsam adaptor");
+            throw new NotImplementedException("Wrong scheme for gridsam adaptor");
         }
         url = rm.toString();
         try {
@@ -82,7 +82,8 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
     }
 
     public JobSelf getSelf() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+            AuthorizationFailedException, PermissionDeniedException, TimeoutException,
+            NoSuccessException {
         // TODO Implement this!
         throw new NotImplementedException("getSelf");
     }

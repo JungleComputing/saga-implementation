@@ -110,7 +110,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         target = resolveToDir(target);
         NSEntryAdaptor sourceEntry = new NSEntryAdaptor(session, source, Flags.NONE.getValue());
         // Don't resolve target with respect to source!!!
-        sourceEntry.unresolvedCopy(target, flags);
+        sourceEntry.nonResolvingCopy(target, flags);
         sourceEntry.close(0.0F);
     }
 
@@ -151,7 +151,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             s = resolveToDir(s);
             NSEntryAdaptor sourceEntry = new NSEntryAdaptor(session, s, Flags.NONE.getValue());
             // Don't resolve target with respect to source!!!
-            sourceEntry.unresolvedCopy(target, flags);
+            sourceEntry.nonResolvingCopy(target, flags);
             sourceEntry.close(0.0F);
         }
     }
@@ -379,7 +379,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
         NSEntryAdaptor sourceEntry = new NSEntryAdaptor(session, source, Flags.NONE.getValue());
         // Don't resolve target with respect to source!!!
-        sourceEntry.unresolvedMove(target, flags);
+        sourceEntry.nonResolvingMove(target, flags);
         sourceEntry.close(0.0F);
     }
     
@@ -429,7 +429,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             NSEntryAdaptor sourceEntry = new NSEntryAdaptor(session, resolveToDir(s),
                     Flags.NONE.getValue());
             // Don't resolve target with respect to source!!!
-            sourceEntry.unresolvedMove(target, flags);
+            sourceEntry.nonResolvingMove(target, flags);
             sourceEntry.close(0.0F);
         }
     }
@@ -543,17 +543,17 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         }
     }
     
-    protected void unresolvedCopy(URL target, int flags) throws IncorrectStateException,
+    protected void nonResolvingCopy(URL target, int flags) throws IncorrectStateException,
             NoSuccessException, BadParameterException, AlreadyExistsException, IncorrectURLException,
             NotImplementedException {
-        entry.unresolvedCopy(target, flags);
+        entry.nonResolvingCopy(target, flags);
     }
 
-    protected void unresolvedMove(URL target, int flags) throws IncorrectStateException,
+    protected void nonResolvingMove(URL target, int flags) throws IncorrectStateException,
             NoSuccessException, BadParameterException, AlreadyExistsException, NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, IncorrectURLException {
-        entry.unresolvedMove(target, flags);
+        entry.nonResolvingMove(target, flags);
     }
 
     public boolean isDir() throws NotImplementedException, AuthenticationFailedException,

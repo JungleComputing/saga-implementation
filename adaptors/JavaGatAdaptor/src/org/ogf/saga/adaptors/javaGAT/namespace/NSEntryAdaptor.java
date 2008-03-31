@@ -259,13 +259,13 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException,
             IncorrectURLException, DoesNotExistException {
-        unresolvedCopy(resolve(target), flags);
+        nonResolvingCopy(resolve(target), flags);
     }
     
     // Copy, without resolving target.
     // It has already been resolved, either with respect to this NSEntry or
     // with respect to the NSDirectory object that invoked this method.
-    protected void unresolvedCopy(URL target, int flags)
+    protected void nonResolvingCopy(URL target, int flags)
             throws IncorrectStateException, NoSuccessException, BadParameterException, AlreadyExistsException,
                 IncorrectURLException, NotImplementedException {
         if (closed) {
@@ -475,16 +475,16 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException,
             IncorrectURLException, DoesNotExistException {
-        unresolvedMove(resolve(target), flags);
+        nonResolvingMove(resolve(target), flags);
     }
     
-    protected void unresolvedMove(URL target, int flags) throws IncorrectStateException,
+    protected void nonResolvingMove(URL target, int flags) throws IncorrectStateException,
             NoSuccessException, BadParameterException, AlreadyExistsException, NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, IncorrectURLException {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed");
         }
-        unresolvedCopy(target, flags);
+        nonResolvingCopy(target, flags);
         remove(flags);
         /*
          * Commented out the code below. It is not correct. The NSEntry

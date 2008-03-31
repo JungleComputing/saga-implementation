@@ -38,7 +38,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
         String scheme = url.getScheme().toLowerCase();
         if (! scheme.equals("any") && !scheme.equals("tcp")) {
-            throw new BadParameterException(
+            throw new NotImplementedException(
                     "Only tcp scheme is supported in socket implementation");
         }
 

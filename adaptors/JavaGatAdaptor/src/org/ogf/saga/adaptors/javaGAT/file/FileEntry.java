@@ -39,16 +39,16 @@ class FileEntry extends NSEntryAdaptor {
         return fileImpl.length();
     }
     
-    protected void unresolvedMove(URL target, int flags) throws IncorrectStateException,
+    protected void nonResolvingMove(URL target, int flags) throws IncorrectStateException,
             NoSuccessException, BadParameterException, AlreadyExistsException, NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, IncorrectURLException {
-        super.unresolvedMove(target, flags);
+        super.nonResolvingMove(target, flags);
     }
     
-    protected void unresolvedCopy(URL target, int flags) throws IncorrectStateException,
+    protected void nonResolvingCopy(URL target, int flags) throws IncorrectStateException,
             NoSuccessException, BadParameterException, AlreadyExistsException, IncorrectURLException,
             NotImplementedException {
-        super.unresolvedCopy(target, flags);
+        super.nonResolvingCopy(target, flags);
     }
 }
