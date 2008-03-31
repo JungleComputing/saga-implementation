@@ -134,7 +134,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
         if (closed) {
-            throw new IncorrectStateException("removeLocation() called on closed LogicalFile");
+            throw new IncorrectStateException("replicate() called on closed LogicalFile");
         }
         if (! Flags.WRITE.isSet(logicalFileFlags) || ! Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException("replicate() called on LogicalFile not opened for reading/writing");
@@ -156,14 +156,17 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         }
         
         // Create directory entry so that we can copy.
-        // TODO: what if this fails?
-        NSDirectory dir = NSFactory.createNSDirectory(
-                session, getCWD(), Flags.NONE.getValue());
+        try {
+            NSDirectory dir = NSFactory.createNSDirectory(
+                    session, getCWD(), Flags.NONE.getValue());
         
-        // Pick the first location. Exceptions passed on to user.
-        // If this fails, the location is not added.
-        dir.copy(array[0], name, flags);
-        dir.close();
+            // Pick the first location. Exceptions passed on to user.
+            // If this fails, the location is not added.
+            dir.copy(array[0], name, flags);
+            dir.close();
+        } catch(Throwable e) {
+            throw new NoSuccessException("Copy failed", e);
+        }
         
         addLocation(name);
         
