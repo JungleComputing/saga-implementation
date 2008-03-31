@@ -25,10 +25,12 @@ import org.ogf.saga.spi.job.JobServiceAdaptorBase;
 public class JobServiceAdaptor extends JobServiceAdaptorBase {
 
     private HashMap<String, SagaJob> jobs = new HashMap<String, SagaJob>();
+
     ClientSideJobManager jobManager;
+
     String url;
 
-    public JobServiceAdaptor(JobServiceWrapper wrapper, Session session, URL rm) 
+    public JobServiceAdaptor(JobServiceWrapper wrapper, Session session, URL rm)
             throws NoSuccessException, NotImplementedException {
         super(wrapper, session, rm);
         String scheme;
@@ -48,7 +50,8 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         if ("http".equals(scheme) || "https".equals(scheme)) {
             // this is OK.
         } else {
-            throw new NotImplementedException("Wrong scheme for gridsam adaptor");
+            throw new NotImplementedException(
+                    "Wrong scheme for gridsam adaptor");
         }
         url = rm.toString();
         try {
@@ -58,22 +61,25 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             throw new NoSuccessException("Could not create job service", e);
         }
     }
-    
+
     public Job createJob(JobDescription jd) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException,
+            NoSuccessException {
         SagaJob job = new SagaJob(this,
                 (org.ogf.saga.impl.job.JobDescription) jd, session);
         return job;
     }
-    
+
     synchronized void addJob(SagaJob job, String id) {
         jobs.put(id, job);
     }
 
-    public synchronized Job getJob(String jobId) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
+    public synchronized Job getJob(String jobId)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         Job job = jobs.get(jobId);
         if (job == null) {
             throw new DoesNotExistException("Job " + jobId + " does not exist");
@@ -81,15 +87,16 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         return job;
     }
 
-    public JobSelf getSelf() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException,
-            NoSuccessException {
+    public JobSelf getSelf() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         // TODO Implement this!
         throw new NotImplementedException("getSelf");
     }
 
-    public List<String> list() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public List<String> list() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return new ArrayList<String>(jobs.keySet());
     }
 }
