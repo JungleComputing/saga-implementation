@@ -177,14 +177,14 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper> imp
             throw new BadParameterException("Flags not allowed for NSEntry copy: "
                     + flags);
         }
-        unresolvedCopy(resolve(target), flags);
+        nonResolvingCopy(resolve(target), flags);
     }
     
     // Copy, without resolving target.
     // It has already been resolved, either with respect to this NSEntry or
     // with respect to the NSDirectory object that invoked this method.
     // SPI implementations should override this method.
-    protected abstract void unresolvedCopy(URL target, int flags)
+    protected abstract void nonResolvingCopy(URL target, int flags)
             throws IncorrectStateException, NoSuccessException, BadParameterException, AlreadyExistsException,
                 IncorrectURLException, NotImplementedException;
 
@@ -232,10 +232,10 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper> imp
             throw new BadParameterException("Flags not allowed for NSEntry copy: "
                     + flags);
         }
-        unresolvedMove(resolve(target), flags);
+        nonResolvingMove(resolve(target), flags);
     }
     
-    protected abstract void unresolvedMove(URL target, int flags) throws IncorrectStateException,
+    protected abstract void nonResolvingMove(URL target, int flags) throws IncorrectStateException,
             NoSuccessException, BadParameterException, AlreadyExistsException, NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, IncorrectURLException;
 
