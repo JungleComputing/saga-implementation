@@ -135,7 +135,7 @@ public class SAGAEngine {
      */
     public static String getProperty(String s) {
         String result = properties.getProperty(s);
-        if (sagaLocation != null) {
+        if (result != null && sagaLocation != null) {
             return result.replaceAll("SAGA_LOCATION", sagaLocation);
         }
         return result;
