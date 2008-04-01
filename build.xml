@@ -6,9 +6,11 @@
 
     <!-- Global properties -->
 
+    <!-- 0.9 because it implements that version of the API. -->
+    <property name="version" value="-0.9" />
     <property name="tmp" location="tmp" />
     <property name="lib" location="lib" />
-    <property name="jar" location="${lib}/saga-engine.jar" />
+    <property name="jar" location="${lib}/saga-impl${version}.jar" />
 
     <target name="init" depends="clean">
 	<!-- Create the time stamp -->

@@ -38,7 +38,7 @@
     	</javac>
 
 	<!-- Copy license, so that it will end up in the jar. -->
-	<copy file="../LICENSE.txt" todir="${tmp}"/>
+	<copy file="../../LICENSE.txt" todir="${tmp}"/>
 
     </target>
 
