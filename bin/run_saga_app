@@ -1,11 +1,9 @@
 #!/bin/sh
 
 if [ -z "$SAGA_LOCATION" ] ; then
-    echo SAGA_LOCATION variable not set, using $PWD
-    SAGA_LOCATION=$PWD
+    echo "please set SAGA_LOCATION to the location of your SAGA installation" 1>&2
+    exit 1
 fi
-
-# ---- do not touch anything below this line ----
 
 # Jar-files from library.
 SAGA_CLASSPATH=""
@@ -22,4 +20,4 @@ add_to_saga_classpath () {
 
 add_to_saga_classpath $SAGA_LOCATION/lib
 
-java -cp "$CLASSPATH:$SAGA_CLASSPATH" -Dlog4j.configuration="file:$SAGA_LOCATION/log4j.properties" "$@"
+java -cp "$SAGA_CLASSPATH:$CLASSPATH" -Dlog4j.configuration="file:$SAGA_LOCATION/log4j.properties" "$@"
