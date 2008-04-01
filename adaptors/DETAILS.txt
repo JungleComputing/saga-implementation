@@ -23,12 +23,13 @@ Package SAGA stream
     waitFor(Activity.WRITE) is not supported. Reason: there is no support
     for it in javaGAT.
     Stream attributes are not supported yet. BLOCKING (or actually,
-    non-blocking) will be supported in the future.
+    non-blocking) may be supported in the future for reads.
 
 - TCP
   The TCP adaptor for the stream package is built on java.net.socket.
   * adaptor for StreamService:
-    accepts URLs with scheme tcp; complete except for permissions.
+    accepts URLs with scheme "tcp" and scheme "any";
+    complete except for permissions.
   * adaptor for Stream:
     STREAM_WRITE metric is not supported. Reason: there is no support for it
     in java.net.sockets.
@@ -59,13 +60,12 @@ Package SAGA job
     JOB_SIGNAL, JOB_CPUTIME, JOB_MEMORYUSE, JOB_VMEMORYUSE, JOB_PERFORMANCE.
     Reason: not supported in JavaGAT.
   * Methods that are not implemented:
-    signal(). There is no support for it in JavaGAT.
+    signal(), checkpoint(), migrate(). There is no support for it in JavaGAT.
   * it should be noted that although the mapping from a SAGA job description
     to a JavaGAT jobdescription is mostly possible, as is the mapping from
     SAGA job methods to JavaGAT job methods, this does not mean that
     JavaGAT adaptors actually implement everything.
 - GridSAM
-  This adaptor has only recently been added.
   * adaptor for JobService.
     getSelf() is not implemented.
     Reason: don't know how to implement, at the moment.
@@ -127,4 +127,5 @@ Package SAGA logicalfile
 Package SAGA RPC
 ----------------
 
-There are no adaptors for this package yet.
+There are no adaptors for this package yet. We are looking into XML-RPC
+and Grid-RPC.

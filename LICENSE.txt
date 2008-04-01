@@ -1,4 +1,4 @@
-Licences for included software may be found in the top level 'licences'
+Licenses for included software may be found in the top level 'licenses'
 directory.
 
 Copyright (c) 2008 Vrije Universiteit, The Netherlands. All rights reserved.
