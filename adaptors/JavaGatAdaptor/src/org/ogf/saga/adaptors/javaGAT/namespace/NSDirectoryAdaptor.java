@@ -10,6 +10,7 @@ import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.io.File;
 import org.gridlab.gat.io.FileInterface;
 import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -29,8 +30,13 @@ import org.ogf.saga.spi.namespace.NSDirectorySPI;
 
 public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         NSDirectorySPI {
-      
+
     static Logger logger = Logger.getLogger(NSDirectoryAdaptor.class);
+    
+    static {
+        Initialize.initialize();
+    }
+    
     protected NSEntryAdaptor entry;
     
     public NSDirectoryAdaptor(NSDirectoryWrapper wrapper, Session session, URL name, int flags)

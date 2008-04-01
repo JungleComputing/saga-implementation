@@ -11,6 +11,7 @@ import org.gridlab.gat.URI;
 import org.gridlab.gat.io.File;
 import org.gridlab.gat.io.FileInterface;
 import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -35,6 +36,10 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
 
     private static Logger logger = Logger.getLogger(NSEntryAdaptor.class);
 
+    static {
+        Initialize.initialize();
+    }
+    
     protected File fileImpl;
     protected FileInterface file;
     protected GATContext gatContext;

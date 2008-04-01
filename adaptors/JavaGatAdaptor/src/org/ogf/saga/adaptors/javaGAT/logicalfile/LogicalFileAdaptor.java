@@ -7,6 +7,7 @@ import java.util.List;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.URI;
 import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -26,6 +27,10 @@ import org.ogf.saga.proxies.logicalfile.LogicalFileWrapper;
 import org.ogf.saga.spi.logicalfile.LogicalFileAdaptorBase;
 
 public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
+
+    static {
+        Initialize.initialize();
+    }
     
     // TODO: clone
     

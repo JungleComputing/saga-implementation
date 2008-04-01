@@ -7,9 +7,6 @@ fi
 
 # ---- do not touch anything below this line ----
 
-SAGA_LIB_LOCATION=$SAGA_LOCATION/lib
-GAT_ADAPTOR_LOCATION=$SAGA_LOCATION/lib/adaptors/JavaGatAdaptor/adaptors
-
 # Jar-files from library.
 SAGA_CLASSPATH=""
 add_to_saga_classpath () {
@@ -23,6 +20,7 @@ add_to_saga_classpath () {
     done
 }
 
-add_to_saga_classpath $SAGA_LIB_LOCATION
+add_to_saga_classpath $SAGA_LOCATION/lib
 
-java -cp "$CLASSPATH:$SAGA_CLASSPATH" -Dlog4j.configuration=file:$SAGA_LOCATION/log4j.properties -Dgat.adaptor.path=$GAT_ADAPTOR_LOCATION "$@"
+# java -cp "$CLASSPATH:$SAGA_CLASSPATH" -Dlog4j.configuration="file:$SAGA_LOCATION/log4j.properties" -Dgat.adaptor.path="$SAGA_LOCATION/lib/adaptors/JavaGatAdaptor/adaptors" "$@"
+java -cp "$CLASSPATH:$SAGA_CLASSPATH" -Dlog4j.configuration="file:$SAGA_LOCATION/log4j.properties" "$@"

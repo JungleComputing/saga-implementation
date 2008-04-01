@@ -11,6 +11,7 @@ import org.gridlab.gat.advert.MetaData;
 import org.gridlab.gat.io.Endpoint;
 import org.gridlab.gat.io.Pipe;
 import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -26,13 +27,17 @@ import org.ogf.saga.stream.Stream;
 
 public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
-    private boolean active = false;
-    private GATContext gatContext;
+    static {
+        Initialize.initialize();
+    }
 
     private static float MINIMAL_TIMEOUT = 0.001f;
 
     private static Logger logger = Logger.getLogger(StreamServiceAdaptor.class);
-
+    
+    private boolean active = false;
+    private GATContext gatContext;
+    
     public StreamServiceAdaptor(StreamServiceWrapper wrapper, Session session, URL url)
             throws NotImplementedException, BadParameterException {
         super(wrapper, session, url);

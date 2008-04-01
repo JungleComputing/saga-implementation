@@ -27,6 +27,7 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.FileWrapper;
 import org.ogf.saga.spi.file.FileAdaptorBase;
 import org.ogf.saga.spi.file.FileSPI;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 
 // Aaarggghh, javagat only has a local RandomAccessFile adaptor!!!
 // So, this is no good, but there is nothing else ...
@@ -38,7 +39,11 @@ import org.ogf.saga.spi.file.FileSPI;
 public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     
     private static Logger logger = Logger.getLogger(FileAdaptor.class);
-
+    
+    static {
+        Initialize.initialize();
+    }
+    
     private int flags;
     private long offset = 0L;
     private RandomAccessFile rf;

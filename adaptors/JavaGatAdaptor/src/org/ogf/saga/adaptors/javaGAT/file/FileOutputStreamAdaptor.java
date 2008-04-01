@@ -20,8 +20,13 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.proxies.file.FileOutputStreamWrapper;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 
 public class FileOutputStreamAdaptor extends org.ogf.saga.spi.file.FileOutputStreamAdaptorBase {
+   
+    static {
+        Initialize.initialize();
+    }
     
     private org.gridlab.gat.io.FileOutputStream out;
 

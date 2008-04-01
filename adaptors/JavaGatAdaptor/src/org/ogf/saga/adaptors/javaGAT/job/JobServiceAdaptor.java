@@ -10,6 +10,7 @@ import org.gridlab.gat.Preferences;
 import org.gridlab.gat.URI;
 import org.gridlab.gat.resources.ResourceBroker;
 import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -26,6 +27,10 @@ import org.ogf.saga.proxies.job.JobServiceWrapper;
 import org.ogf.saga.spi.job.JobServiceAdaptorBase;
 
 public class JobServiceAdaptor extends JobServiceAdaptorBase {
+
+    static {
+        Initialize.initialize();
+    }
     
     final ResourceBroker broker; 
     private final GATContext gatContext;

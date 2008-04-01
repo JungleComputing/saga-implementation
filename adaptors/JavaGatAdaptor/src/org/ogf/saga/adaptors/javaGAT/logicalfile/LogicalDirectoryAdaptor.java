@@ -3,6 +3,7 @@ package org.ogf.saga.adaptors.javaGAT.logicalfile;
 import java.util.List;
 
 import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -20,6 +21,10 @@ import org.ogf.saga.proxies.logicalfile.LogicalDirectoryWrapper;
 import org.ogf.saga.spi.logicalfile.LogicalDirectoryAdaptorBase;
 
 public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
+
+    static {
+        Initialize.initialize();
+    }
     
     private DirectoryEntry entry;
       

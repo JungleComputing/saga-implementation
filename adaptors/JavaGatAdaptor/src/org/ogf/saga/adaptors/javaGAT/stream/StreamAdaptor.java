@@ -12,6 +12,7 @@ import org.gridlab.gat.advert.AdvertService;
 import org.gridlab.gat.io.Endpoint;
 import org.gridlab.gat.io.Pipe;
 import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
@@ -37,6 +38,10 @@ import org.ogf.saga.stream.StreamState;
 
 public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
+    static {
+        Initialize.initialize();
+    }
+    
     private GATContext gatContext;
     private Pipe pipe;
     private boolean wasOpen = false;

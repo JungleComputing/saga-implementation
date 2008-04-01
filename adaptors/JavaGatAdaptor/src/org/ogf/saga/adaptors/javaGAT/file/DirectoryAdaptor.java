@@ -18,10 +18,15 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.DirectoryWrapper;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 
 public class DirectoryAdaptor extends org.ogf.saga.spi.file.DirectoryAdaptorBase {
     
     private static Logger logger = Logger.getLogger(DirectoryAdaptor.class);
+    
+    static {
+        Initialize.initialize();
+    }
     
     DirectoryEntry dir;
     
