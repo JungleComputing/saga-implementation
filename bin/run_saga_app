@@ -22,5 +22,4 @@ add_to_saga_classpath () {
 
 add_to_saga_classpath $SAGA_LOCATION/lib
 
-# java -cp "$CLASSPATH:$SAGA_CLASSPATH" -Dlog4j.configuration="file:$SAGA_LOCATION/log4j.properties" -Dgat.adaptor.path="$SAGA_LOCATION/lib/adaptors/JavaGatAdaptor/adaptors" "$@"
 java -cp "$CLASSPATH:$SAGA_CLASSPATH" -Dlog4j.configuration="file:$SAGA_LOCATION/log4j.properties" "$@"
