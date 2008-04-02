@@ -57,5 +57,8 @@ JavaGAT Preferences.
   JavaGAT has a Preferences object type that allows users to pass information
   on to specific adaptors. SAGA does not have such a mechanism. Therefore,
   a "preferences" context type has been added for the SAGA JavaGAT adaptor.
-
+  For instance, a JavaGAT application may use preferences to select which
+  adaptor to use, very similar to the way a SAGA application can use
+  properties to select which SAGA adaptor to use. See for instance the
+  code in demo/src/demo/job/TestJob.java for an example.
 
