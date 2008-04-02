@@ -1,0 +1,33 @@
+GridSAM Adaptor README
+----------------------
+
+Introduction.
+  The GridSAM adaptor currently solely consists of a JobService adaptor.
+
+Not implemented.
+  The adaptor does not implement all of SAGA:
+    - the following methods are not implemented (will throw a
+      NotImplementedException): getSelf(), signal(), suspend(), resume(),
+      checkpoint(), migrate().
+    - the following JobDescription attributes are not implemented:
+      WORKINGDIRECTORY, INTERACTIVE, JOBCONTACT, JOBSTARTTIME.
+    - post-stage append and pre-stage append is not supported.
+    - the SPMD extensions are not implemented yet in this adaptor.
+    - the following job metrics are not implemented:
+      JOB_SIGNAL, JOB_CPUTIME, JOB_MEMORYUSE, JOB_VMEMORYUSE, JOB_PERFORMANCE.
+    - the following job attributes are not implemented: 
+      TERMSIG.
+
+Using a GridSAM service.
+  When creating the job service, you need to specify an URL to contact
+  the GridSAM service. The adaptor recognizes the following schemes:
+  "https", "gridsam", and "any". The "gridsam" and "any" scheme are
+  translated into a "https" scheme.
+  You need, of course, a certificate for the Gridsam service. Also, you
+  need a file crypto.properties on your classpath. An example is included
+  in the adaptors/GridsamAdaptor directory. You will probably need to adapt
+  some values there, a.o. to refer to your certificate.
+  Also, you need to be aware that the clock of the system on which your
+  application runs does not run more than 5 minutes behind the clock on
+  the server on which the Gridsam service runs, otherwise certificate
+  validation will fail.

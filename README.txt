@@ -82,10 +82,27 @@ Running a Java SAGA application.
   which indicates that it contains a class
   org.ogf.saga.adaptors.gridsam.job.JobServiceAdaptor
   which is a JobService adaptor.
+
+Selecting/deselecting SAGA adaptors.
+  By default, the SAGA engine tries all adaptors that it can find on the
+  saga.adaptor.path list. It is, however, possible to select a specific
+  adaptor, or to not select a specific adaptor. This is accomplished
+  with properties, which can be specified in a saga.properties file or
+  on the run_saga_app command line. Below are some examples:
+
+  StreamService.adaptor.name = socket,javagat
+	this loads both the socket and the javagat adaptor for
+	the StreamService SPI, but no others. Also, the adaptors will
+	be tried in the specified order.
+
+  StreamService.adaptor.name = !socket
+	this will not load the socket adaptor for the StreamService SPI.
   
+Adaptor-specific stuff.
   SAGA offers an API for accessing the Grid, and its implementation(s) use
   various grid middleware to realize this. In an ideal world, SAGA would hide
   all the gruesome details from the user. Unfortunately, the world is not
-  ideal, and some middleware may need user-defined settings, for instance
-  security contexts.
+  ideal, and some middleware may need user-defined settings.
+  Adaptor-specific information can be found in the corresponding adaptor
+  directory, for instance adaptors/GridsamAdaptor/README.txt.
 
