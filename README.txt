@@ -104,5 +104,5 @@ Adaptor-specific stuff.
   all the gruesome details from the user. Unfortunately, the world is not
   ideal, and some middleware may need user-defined settings.
   Adaptor-specific information can be found in the corresponding adaptor
-  directory, for instance adaptors/GridsamAdaptor/README.txt.
+  directory, for instance adaptors/Gridsam/README.txt.
 

@@ -7,27 +7,27 @@
     <!-- Global properties -->
 
     <target name="build" description="build the adaptors">
-	<ant dir="GridsamAdaptor" />
-	<ant dir="JavaGatAdaptor" />
-	<ant dir="SocketAdaptor" />
+	<ant dir="Gridsam" />
+	<ant dir="JavaGat" />
+	<ant dir="Socket" />
     </target>
 
     <target name="clean" description="clean up">
-	<ant dir="GridsamAdaptor" target="clean" />
-	<ant dir="JavaGatAdaptor" target="clean" />
-	<ant dir="SocketAdaptor" target="clean" />
+	<ant dir="Gridsam" target="clean" />
+	<ant dir="JavaGat" target="clean" />
+	<ant dir="Socket" target="clean" />
     </target>
 
     <target name="gridsam" description="build Gridsam adaptors">
-	<ant dir="GridsamAdaptor"/>
+	<ant dir="Gridsam"/>
     </target>
 
     <target name="javagat" description="build JavaGat adaptors">
-	<ant dir="JavaGatAdaptor"/>
+	<ant dir="JavaGat"/>
     </target>
 
     <target name="socket" description="build socket adaptors">
-	<ant dir="SocketAdaptor"/>
+	<ant dir="Socket"/>
     </target>
 
 </project>

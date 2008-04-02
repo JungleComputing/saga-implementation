@@ -16,6 +16,11 @@ import org.ogf.saga.session.SessionFactory;
 public class TestJob implements Callback {
 
     public static void main(String[] args) {
+
+        // Make sure that the SAGA engine picks the javagat adaptor for
+        // JobService.
+        System.setProperty("JobService.adaptor.name", "javaGAT");
+
         try {
             Session session = SessionFactory.createSession(true);
             
@@ -24,32 +29,24 @@ public class TestJob implements Callback {
             Context context = ContextFactory.createContext("preferences");
             // Make sure that javaGAT picks the gridsam adaptor.
             context.setAttribute("ResourceBroker.adaptor.name", "gridsam");
-            // Set a sandbox host for javaGAT, otherwise javagat thinks it is
-            // just localhost. This is only needed because the gridsam server
-            // is reached through a tunnel.
-            context.setAttribute("ResourceBroker.sandbox.host", "ceriel@localhost:4567");
             // Sandbox root must be an absolute path for the javaGAT gridsam
             // adaptor.
             context.setAttribute("ResourceBroker.sandbox.root", "/tmp");
             
             session.addContext(context);
                         
-            // Make sure that the SAGA engine picks the javagat adaptor for
-            // JobService.
-            System.setProperty("JobService.adaptor.name", "javaGAT");
-
             // Create the JobService. Note: the gridsam service is behind a
             // firewall and is reached through an ssh tunnel, which the user
             // must have set up beforehand.
             JobService js = JobFactory.createJobService(new URL(
-                    "https://localhost:18443/gridsam/services/gridsam"));
+                    "https://titan.cs.vu.nl:18443/gridsam/services/gridsam"));
 
             // Create a job description to execute "/bin/uname -a" on
-            // fs0.das3.cs.vu.nl.
+            // titan.cs.vu.nl.
             // The output will be staged out to the current directory.
             JobDescription jd = JobFactory.createJobDescription();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
-                    new String[] { "fs0.das3.cs.vu.nl" });
+                    new String[] { "titan.cs.vu.nl" });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/uname");
             jd.setVectorAttribute(JobDescription.ARGUMENTS,
                     new String[] { "-a" });
