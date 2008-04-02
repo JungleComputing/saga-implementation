@@ -31,11 +31,15 @@
 	<!-- Compile the java code from src into ${tmp} -->
 
     	<javac srcdir="src" destdir="${tmp}" debug="on" >
-                <classpath refid="external.jars" />
+	    <classpath refid="external.jars" />
     	    <compilerarg value="-Xlint:unchecked"/>
     	</javac>
 	<javac srcdir="demo/src" destdir="${tmp}" debug="on" >
-                <classpath refid="external.jars" />
+	    <classpath refid="external.jars" />
+    	    <compilerarg value="-Xlint:unchecked"/>
+    	</javac>
+	<javac srcdir="test/src" destdir="${tmp}" debug="on" >
+	    <classpath refid="external.jars" />
     	    <compilerarg value="-Xlint:unchecked"/>
     	</javac>
 

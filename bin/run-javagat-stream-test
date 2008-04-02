@@ -1,2 +1,2 @@
 #! /bin/sh
-$SAGA_LOCATION/bin/run_saga_app -DStreamService.adaptor.name=javagat -DStream.adaptor.name=javagat junit.textui.TestRunner demo.stream.StreamTest
+$SAGA_LOCATION/bin/run_saga_app -DStreamService.adaptor.name=javagat -DStream.adaptor.name=javagat junit.textui.TestRunner test.stream.StreamTest

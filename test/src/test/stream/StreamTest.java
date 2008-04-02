@@ -1,4 +1,4 @@
-package demo.stream;
+package test.stream;
 
 import junit.framework.TestCase;
 

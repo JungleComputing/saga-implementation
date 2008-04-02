@@ -1,4 +1,4 @@
-package demo.stream;
+package test.stream;
 
 import org.apache.log4j.Logger;
 import org.ogf.saga.URL;
