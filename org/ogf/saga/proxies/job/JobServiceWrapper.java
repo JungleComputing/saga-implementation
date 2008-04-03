@@ -24,21 +24,23 @@ import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public class JobServiceWrapper extends SagaObjectBase implements JobService {
-    
+
     private JobServiceSPI proxy;
 
-    public JobServiceWrapper(Session session, URL rm) throws NoSuccessException,
-                TimeoutException, PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
-                IncorrectURLException, NotImplementedException {
+    public JobServiceWrapper(Session session, URL rm)
+            throws NoSuccessException, TimeoutException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, IncorrectURLException,
+            NotImplementedException {
         super(session);
         Object[] parameters = { this, session, rm };
         try {
-            proxy = (JobServiceSPI) SAGAEngine.createAdaptorProxy(
-                    JobServiceSPI.class,
-                    new Class[] { JobServiceWrapper.class, 
-                        org.ogf.saga.impl.session.Session.class, URL.class },
-                    parameters);
-        } catch(org.ogf.saga.error.SagaException e) {
+            proxy = (JobServiceSPI) SAGAEngine
+                    .createAdaptorProxy(JobServiceSPI.class,
+                            new Class[] { JobServiceWrapper.class,
+                                    org.ogf.saga.impl.session.Session.class,
+                                    URL.class }, parameters);
+        } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {
                 throw (NotImplementedException) e;
             }
@@ -61,12 +63,13 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
                 throw (NoSuccessException) e;
             }
             throw new NoSuccessException("Constructor failed", e);
-        } 
+        }
     }
 
     public Job createJob(JobDescription jd) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException,
+            NoSuccessException {
         return proxy.createJob(jd);
     }
 
@@ -76,80 +79,92 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
     }
 
     public Job getJob(String jobId) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return proxy.getJob(jobId);
     }
 
-    public Task<JobService, Job> getJob(TaskMode mode, String jobId) throws NotImplementedException {
+    public Task<JobService, Job> getJob(TaskMode mode, String jobId)
+            throws NotImplementedException {
         return proxy.getJob(mode, jobId);
     }
 
-    public JobSelf getSelf() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public JobSelf getSelf() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.getSelf();
     }
 
-    public Task<JobService, JobSelf> getSelf(TaskMode mode) throws NotImplementedException {
+    public Task<JobService, JobSelf> getSelf(TaskMode mode)
+            throws NotImplementedException {
         return proxy.getSelf(mode);
     }
 
-    public List<String> list() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public List<String> list() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.list();
     }
 
-    public Task<JobService, List<String>> list(TaskMode mode) throws NotImplementedException {
+    public Task<JobService, List<String>> list(TaskMode mode)
+            throws NotImplementedException {
         return proxy.list(mode);
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
         JobServiceWrapper clone = (JobServiceWrapper) super.clone();
         clone.proxy = (JobServiceSPI) SAGAEngine.createAdaptorCopy(
-                    JobServiceSPI.class, proxy, clone);
+                JobServiceSPI.class, proxy, clone);
         return clone;
     }
 
-    public Job runJob(String commandLine, String host, boolean interactive) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public Job runJob(String commandLine, String host, boolean interactive)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         return proxy.runJob(commandLine, host, interactive);
     }
 
-    public Job runJob(String commandLine, String host) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public Job runJob(String commandLine, String host)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         return runJob(commandLine, host, false);
     }
 
-    public Job runJob(String commandLine, boolean interactive) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public Job runJob(String commandLine, boolean interactive)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         return runJob(commandLine, "", interactive);
     }
 
-    public Job runJob(String commandLine) throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+    public Job runJob(String commandLine) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException,
+            NoSuccessException {
         return runJob(commandLine, "", false);
     }
 
-    public Task<JobService, Job> runJob(TaskMode mode, String commandLine, String host, boolean interactive)
-            throws NotImplementedException {
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine,
+            String host, boolean interactive) throws NotImplementedException {
         return proxy.runJob(mode, commandLine, host, interactive);
     }
 
-    public Task<JobService, Job> runJob(TaskMode mode, String commandLine, String host) throws NotImplementedException {
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine,
+            String host) throws NotImplementedException {
         return runJob(mode, commandLine, host, false);
     }
 
-    public Task<JobService, Job> runJob(TaskMode mode, String commandLine, boolean interactive) throws NotImplementedException {
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine,
+            boolean interactive) throws NotImplementedException {
         return runJob(mode, commandLine, "", interactive);
     }
 
-    public Task<JobService, Job> runJob(TaskMode mode, String commandLine) throws NotImplementedException {
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine)
+            throws NotImplementedException {
         return runJob(mode, commandLine, "", false);
     }
-    
-    
 
 }

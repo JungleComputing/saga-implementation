@@ -21,23 +21,23 @@ import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public class RPCWrapper extends SagaObjectBase implements RPC {
-    
+
     private RPCSPI proxy;
 
     public RPCWrapper(Session session, URL funcName)
             throws NotImplementedException, IncorrectURLException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException
-    {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         super(session);
         Object[] parameters = { this, session, funcName };
         try {
-            proxy = (RPCSPI) SAGAEngine.createAdaptorProxy(
-                    RPCSPI.class,
-                    new Class[] { RPCWrapper.class, 
-                        org.ogf.saga.impl.session.Session.class, URL.class },
-                    parameters);
-        } catch(org.ogf.saga.error.SagaException e) {
+            proxy = (RPCSPI) SAGAEngine
+                    .createAdaptorProxy(RPCSPI.class,
+                            new Class[] { RPCWrapper.class,
+                                    org.ogf.saga.impl.session.Session.class,
+                                    URL.class }, parameters);
+        } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {
                 throw (NotImplementedException) e;
             }
@@ -66,13 +66,14 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
                 throw (NoSuccessException) e;
             }
             throw new NoSuccessException("Constructor failed", e);
-        } 
+        }
     }
 
     public void call(Parameter... parameters) throws NotImplementedException,
-            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, IncorrectStateException, DoesNotExistException,
-            TimeoutException, NoSuccessException {
+            IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         proxy.call(parameters);
     }
 
@@ -91,38 +92,44 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
         return proxy.close(mode, timeoutInSeconds);
     }
 
-    public String getGroup() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getGroup() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.getGroup();
     }
 
-    public Task<RPC, String> getGroup(TaskMode mode) throws NotImplementedException {
+    public Task<RPC, String> getGroup(TaskMode mode)
+            throws NotImplementedException {
         return proxy.getGroup(mode);
     }
 
-    public String getOwner() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getOwner() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.getOwner();
     }
 
-    public Task<RPC, String> getOwner(TaskMode mode) throws NotImplementedException {
+    public Task<RPC, String> getOwner(TaskMode mode)
+            throws NotImplementedException {
         return proxy.getOwner(mode);
     }
 
     public void permissionsAllow(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         proxy.permissionsAllow(id, permissions);
     }
 
-    public Task<RPC, Void> permissionsAllow(TaskMode mode, String id, int permissions)
-            throws NotImplementedException {
+    public Task<RPC, Void> permissionsAllow(TaskMode mode, String id,
+            int permissions) throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions);
     }
 
     public boolean permissionsCheck(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         return proxy.permissionsCheck(id, permissions);
     }
 
@@ -132,17 +139,19 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
     }
 
     public void permissionsDeny(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         proxy.permissionsDeny(id, permissions);
     }
 
-    public Task<RPC, Void> permissionsDeny(TaskMode mode, String id, int permissions)
-            throws NotImplementedException {
+    public Task<RPC, Void> permissionsDeny(TaskMode mode, String id,
+            int permissions) throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions);
     }
 
-    public void close() throws NotImplementedException, IncorrectStateException, NoSuccessException {
+    public void close() throws NotImplementedException,
+            IncorrectStateException, NoSuccessException {
         close(0.0F);
     }
 

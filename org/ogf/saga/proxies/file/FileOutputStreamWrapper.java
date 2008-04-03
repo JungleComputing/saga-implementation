@@ -22,33 +22,34 @@ import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public class FileOutputStreamWrapper extends FileOutputStream {
-  
-    // FileOutputStreamWrapper cannot extend SagaObjectBase, since it already extends
+
+    // FileOutputStreamWrapper cannot extend SagaObjectBase, since it already
+    // extends
     // FileOutputStream. So, we create the base object here.
-    private static class OutputSagaObject extends SagaObjectBase {        
+    private static class OutputSagaObject extends SagaObjectBase {
         OutputSagaObject(Session session) {
             super(session);
         }
     }
-    
+
     private OutputSagaObject sagaObject;
     private FileOutputStreamSPI proxy;
-    
+
     FileOutputStreamWrapper(Session session, URL name, boolean append)
             throws NotImplementedException, IncorrectURLException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, AlreadyExistsException, DoesNotExistException, TimeoutException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         Object[] parameters = { this, session, name, append };
         try {
             proxy = (FileOutputStreamSPI) SAGAEngine.createAdaptorProxy(
-                    FileOutputStreamSPI.class,
-                    new Class[] { FileOutputStreamWrapper.class,
-                        org.ogf.saga.impl.session.Session.class,
-                        URL.class, Boolean.TYPE },
-                    parameters);
+                    FileOutputStreamSPI.class, new Class[] {
+                            FileOutputStreamWrapper.class,
+                            org.ogf.saga.impl.session.Session.class, URL.class,
+                            Boolean.TYPE }, parameters);
             sagaObject = new OutputSagaObject(session);
-        } catch(org.ogf.saga.error.SagaException e) {
+        } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {
                 throw (NotImplementedException) e;
             }
@@ -67,7 +68,7 @@ public class FileOutputStreamWrapper extends FileOutputStream {
             if (e instanceof BadParameterException) {
                 throw (BadParameterException) e;
             }
-            if (e instanceof  AlreadyExistsException) {
+            if (e instanceof AlreadyExistsException) {
                 throw (AlreadyExistsException) e;
             }
             if (e instanceof DoesNotExistException) {
@@ -82,12 +83,12 @@ public class FileOutputStreamWrapper extends FileOutputStream {
             throw new NoSuccessException("Constructor failed", e);
         }
     }
-   
+
     public Object clone() throws CloneNotSupportedException {
         FileOutputStreamWrapper clone = (FileOutputStreamWrapper) super.clone();
         clone.sagaObject = (OutputSagaObject) sagaObject.clone();
         clone.proxy = (FileOutputStreamSPI) SAGAEngine.createAdaptorCopy(
-                    FileOutputStreamSPI.class, proxy, clone);
+                FileOutputStreamSPI.class, proxy, clone);
         return clone;
     }
 
@@ -119,20 +120,23 @@ public class FileOutputStreamWrapper extends FileOutputStream {
         proxy.write(b);
     }
 
-    public Task<FileOutputStream, Void> close(TaskMode mode) throws NotImplementedException {
+    public Task<FileOutputStream, Void> close(TaskMode mode)
+            throws NotImplementedException {
         return proxy.close(mode);
     }
 
-    public Task<FileOutputStream, Void> flush(TaskMode mode) throws NotImplementedException {
+    public Task<FileOutputStream, Void> flush(TaskMode mode)
+            throws NotImplementedException {
         return proxy.flush(mode);
     }
 
-    public Task<FileOutputStream, Void> write(TaskMode mode, int b) throws NotImplementedException {
+    public Task<FileOutputStream, Void> write(TaskMode mode, int b)
+            throws NotImplementedException {
         return proxy.write(mode, b);
     }
 
-    public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf, int off, int len)
-            throws NotImplementedException {
+    public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf,
+            int off, int len) throws NotImplementedException {
         return proxy.write(mode, buf, off, len);
     }
 

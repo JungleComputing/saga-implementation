@@ -105,15 +105,14 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     public Object clone() throws CloneNotSupportedException {
         NSDirectoryWrapper clone = (NSDirectoryWrapper) super.clone();
         if (!inheritedProxy) {
-            clone.proxy = (NSDirectorySPI) SAGAEngine
-                    .createAdaptorCopy(NSDirectorySPI.class, proxy,
-                            clone);
+            clone.proxy = (NSDirectorySPI) SAGAEngine.createAdaptorCopy(
+                    NSDirectorySPI.class, proxy, clone);
         }
         return clone;
     }
 
-    public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target,
+            int flags) throws NotImplementedException {
         return proxy.copy(mode, source, target, flags);
     }
 
@@ -168,8 +167,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         return find(pattern, Flags.RECURSIVE.getValue());
     }
 
-    public Task<NSDirectory, List<URL>> find(TaskMode mode, String pattern, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, List<URL>> find(TaskMode mode, String pattern,
+            int flags) throws NotImplementedException {
         return proxy.find(mode, pattern, flags);
     }
 
@@ -241,8 +240,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         return proxy.isLink(name);
     }
 
-    public Task<NSDirectory, Void> link(TaskMode mode, URL source, URL target, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, Void> link(TaskMode mode, URL source, URL target,
+            int flags) throws NotImplementedException {
         return proxy.link(mode, source, target, flags);
     }
 
@@ -306,8 +305,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         return list(mode, "", flags);
     }
 
-    public Task<NSDirectory, List<URL>> list(TaskMode mode, String pattern, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, List<URL>> list(TaskMode mode, String pattern,
+            int flags) throws NotImplementedException {
         return proxy.list(mode, pattern, flags);
     }
 
@@ -316,7 +315,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         return list(mode, pattern, Flags.NONE.getValue());
     }
 
-    public Task<NSDirectory, List<URL>> list(TaskMode mode) throws NotImplementedException {
+    public Task<NSDirectory, List<URL>> list(TaskMode mode)
+            throws NotImplementedException {
         return list(mode, Flags.NONE.getValue());
     }
 
@@ -348,8 +348,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         makeDir(target, Flags.NONE.getValue());
     }
 
-    public Task<NSDirectory, Void> move(TaskMode mode, URL source, URL target, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, Void> move(TaskMode mode, URL source, URL target,
+            int flags) throws NotImplementedException {
         return proxy.move(mode, source, target, flags);
     }
 
@@ -404,8 +404,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         return open(name, Flags.NONE.getValue());
     }
 
-    public Task<NSDirectory, NSDirectory> openDir(TaskMode mode, URL name, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, NSDirectory> openDir(TaskMode mode, URL name,
+            int flags) throws NotImplementedException {
         return proxy.openDir(mode, name, flags);
     }
 
@@ -432,13 +432,14 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         return openDir(name, Flags.NONE.getValue());
     }
 
-    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL target, String id,
-            int permissions, int flags) throws NotImplementedException {
+    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL target,
+            String id, int permissions, int flags)
+            throws NotImplementedException {
         return proxy.permissionsAllow(mode, target, id, permissions, flags);
     }
 
-    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL target, String id,
-            int permissions) throws NotImplementedException {
+    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL target,
+            String id, int permissions) throws NotImplementedException {
         return permissionsAllow(mode, target, id, permissions, Flags.NONE
                 .getValue());
     }
@@ -459,13 +460,14 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         permissionsAllow(target, id, permissions, Flags.NONE.getValue());
     }
 
-    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL target, String id,
-            int permissions, int flags) throws NotImplementedException {
+    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL target,
+            String id, int permissions, int flags)
+            throws NotImplementedException {
         return proxy.permissionsDeny(mode, target, id, permissions, flags);
     }
 
-    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL target, String id,
-            int permissions) throws NotImplementedException {
+    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL target,
+            String id, int permissions) throws NotImplementedException {
         return permissionsDeny(mode, target, id, permissions, Flags.NONE
                 .getValue());
     }
@@ -533,8 +535,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         proxy.copy(source, target, flags);
     }
 
-    public Task<NSDirectory, Void> copy(TaskMode mode, String source, URL target, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, Void> copy(TaskMode mode, String source,
+            URL target, int flags) throws NotImplementedException {
         return proxy.copy(mode, source, target, flags);
     }
 
@@ -547,8 +549,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         proxy.link(source, target, flags);
     }
 
-    public Task<NSDirectory, Void> link(TaskMode mode, String source, URL target, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, Void> link(TaskMode mode, String source,
+            URL target, int flags) throws NotImplementedException {
         return proxy.link(mode, source, target, flags);
     }
 
@@ -561,8 +563,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         proxy.move(source, target, flags);
     }
 
-    public Task<NSDirectory, Void> move(TaskMode mode, String source, URL target, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, Void> move(TaskMode mode, String source,
+            URL target, int flags) throws NotImplementedException {
         return proxy.move(mode, source, target, flags);
     }
 
@@ -589,8 +591,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         proxy.permissionsAllow(target, id, permissions, flags);
     }
 
-    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, String target, String id,
-            int permissions, int flags) throws NotImplementedException {
+    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode,
+            String target, String id, int permissions, int flags)
+            throws NotImplementedException {
         return proxy.permissionsAllow(mode, target, id, permissions, flags);
     }
 
@@ -617,8 +620,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         proxy.permissionsDeny(target, id, permissions, flags);
     }
 
-    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, String target, String id,
-            int permissions, int flags) throws NotImplementedException {
+    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode,
+            String target, String id, int permissions, int flags)
+            throws NotImplementedException {
         return proxy.permissionsDeny(mode, target, id, permissions, flags);
     }
 
@@ -631,8 +635,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         proxy.remove(target, flags);
     }
 
-    public Task<NSDirectory, Void> remove(TaskMode mode, String target, int flags)
-            throws NotImplementedException {
+    public Task<NSDirectory, Void> remove(TaskMode mode, String target,
+            int flags) throws NotImplementedException {
         return proxy.remove(mode, target, flags);
     }
 
@@ -686,8 +690,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         permissionsAllow(target, id, permissions, Flags.NONE.getValue());
     }
 
-    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, String target, String id,
-            int permissions) throws NotImplementedException {
+    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode,
+            String target, String id, int permissions)
+            throws NotImplementedException {
         return permissionsAllow(mode, target, id, permissions, Flags.NONE
                 .getValue());
 
@@ -701,8 +706,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     }
 
-    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, String target, String id,
-            int permissions) throws NotImplementedException {
+    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode,
+            String target, String id, int permissions)
+            throws NotImplementedException {
         return permissionsDeny(mode, target, id, permissions, Flags.NONE
                 .getValue());
     }

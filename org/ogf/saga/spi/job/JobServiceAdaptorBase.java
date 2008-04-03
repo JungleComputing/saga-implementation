@@ -24,34 +24,39 @@ import org.ogf.saga.proxies.job.JobServiceWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class JobServiceAdaptorBase extends AdaptorBase<JobServiceWrapper> implements JobServiceSPI {
+public abstract class JobServiceAdaptorBase extends
+        AdaptorBase<JobServiceWrapper> implements JobServiceSPI {
 
     protected URL rm;
-    
-    public JobServiceAdaptorBase(JobServiceWrapper wrapper, Session session, URL rm) {
+
+    public JobServiceAdaptorBase(JobServiceWrapper wrapper, Session session,
+            URL rm) {
         super(session, wrapper);
         this.rm = rm;
     }
-    
+
     List<String> getCommandLineElements(String commandLine) {
         ArrayList<String> elts = new ArrayList<String>();
         StringBuffer elt = new StringBuffer();
         boolean escaped = false;
         boolean inString = false;
         boolean sawBytes = false;
-        
+
         // From the Saga specification:
-        // - Elements are delimited by white space, which is either a space or a tab.
+        // - Elements are delimited by white space, which is either a space or a
+        // tab.
         // - A string surrounded by double quotation marks is interpreted as a
-        //   single element, regardless of white space contained within.
-        //   A quoted string can be embedded in an element.
-        // - A double quotation mark preceded by a backslash (\) is interpreted as a
-        //   literal double quotation mark (").
-        // - Backslashes are interpreted literally, unless they immediately precede
-        //   a double quotation mark.
-        
+        // single element, regardless of white space contained within.
+        // A quoted string can be embedded in an element.
+        // - A double quotation mark preceded by a backslash (\) is interpreted
+        // as a
+        // literal double quotation mark (").
+        // - Backslashes are interpreted literally, unless they immediately
+        // precede
+        // a double quotation mark.
+
         for (char c : commandLine.toCharArray()) {
-            switch(c) {
+            switch (c) {
             case ' ':
             case '\t':
                 if (escaped) {
@@ -74,7 +79,7 @@ public abstract class JobServiceAdaptorBase extends AdaptorBase<JobServiceWrappe
                     elt.append(c);
                     escaped = false;
                 } else {
-                    inString = ! inString;
+                    inString = !inString;
                 }
                 break;
             case '\\':
@@ -94,7 +99,7 @@ public abstract class JobServiceAdaptorBase extends AdaptorBase<JobServiceWrappe
                 break;
             }
         }
-        
+
         // Now, elt may have no elements but still represent an argument,
         // for instance when it had "". In this case, sawBytes is true.
         if (sawBytes) {
@@ -106,9 +111,10 @@ public abstract class JobServiceAdaptorBase extends AdaptorBase<JobServiceWrappe
         }
         return elts;
     }
-    
-    public Job runJob(String commandLine, String host, boolean interactive) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+
+    public Job runJob(String commandLine, String host, boolean interactive)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         JobDescription jd = JobFactory.createJobDescription();
         List<String> elts = getCommandLineElements(commandLine);
@@ -117,9 +123,11 @@ public abstract class JobServiceAdaptorBase extends AdaptorBase<JobServiceWrappe
         }
         try {
             jd.setAttribute(JobDescription.EXECUTABLE, elts.remove(0));
-            jd.setVectorAttribute(JobDescription.ARGUMENTS, elts.toArray(new String[elts.size()]));
-            if (host != null && ! "".equals(host)) {
-                jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS, new String[] {host});
+            jd.setVectorAttribute(JobDescription.ARGUMENTS, elts
+                    .toArray(new String[elts.size()]));
+            if (host != null && !"".equals(host)) {
+                jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
+                        new String[] { host });
             }
         } catch (Throwable e) {
             throw new SagaRuntimeException("Should not happen", e);
@@ -132,36 +140,41 @@ public abstract class JobServiceAdaptorBase extends AdaptorBase<JobServiceWrappe
         }
         return job;
     }
-   
+
     // No dedicated clone() method needed. The session field does not have to
     // be cloned, and the rm field is immutable.
 
     public Task<JobService, Job> createJob(TaskMode mode, JobDescription jd)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, Job>(wrapper, session, mode,
-                "createJob", new Class[] { JobDescription.class }, jd);
+        return new org.ogf.saga.impl.task.Task<JobService, Job>(wrapper,
+                session, mode, "createJob",
+                new Class[] { JobDescription.class }, jd);
     }
-    
-    public Task<JobService, Job> runJob(TaskMode mode, String commandLine, String host, boolean interactive)
+
+    public Task<JobService, Job> runJob(TaskMode mode, String commandLine,
+            String host, boolean interactive) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<JobService, Job>(wrapper,
+                session, mode, "runJob", new Class[] { String.class,
+                        String.class, Boolean.TYPE }, commandLine, host,
+                interactive);
+    }
+
+    public Task<JobService, Job> getJob(TaskMode mode, String jobId)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, Job>(wrapper, session, mode,
-                "runJob", new Class[] { String.class, String.class, Boolean.TYPE },
-                commandLine, host, interactive);
-    }
-    
-    public Task<JobService, Job> getJob(TaskMode mode, String jobId) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, Job>(wrapper, session, mode,
-                "getJob", new Class[] { String.class }, jobId);
+        return new org.ogf.saga.impl.task.Task<JobService, Job>(wrapper,
+                session, mode, "getJob", new Class[] { String.class }, jobId);
     }
 
-    public Task<JobService, JobSelf> getSelf(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, JobSelf>(wrapper, session, mode,
-                "getSelf", new Class[] { });
+    public Task<JobService, JobSelf> getSelf(TaskMode mode)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<JobService, JobSelf>(wrapper,
+                session, mode, "getSelf", new Class[] {});
     }
 
-    public Task<JobService, List<String>> list(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, List<String>>(wrapper, session, mode,
-                "list", new Class[] { } );
+    public Task<JobService, List<String>> list(TaskMode mode)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<JobService, List<String>>(
+                wrapper, session, mode, "list", new Class[] {});
     }
 
 }

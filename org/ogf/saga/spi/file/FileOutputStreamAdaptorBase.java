@@ -10,40 +10,45 @@ import org.ogf.saga.proxies.file.FileOutputStreamWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class FileOutputStreamAdaptorBase extends AdaptorBase<FileOutputStreamWrapper> implements
-        FileOutputStreamSPI {
-    
-    public FileOutputStreamAdaptorBase(Session session, FileOutputStreamWrapper wrapper) {
+public abstract class FileOutputStreamAdaptorBase extends
+        AdaptorBase<FileOutputStreamWrapper> implements FileOutputStreamSPI {
+
+    public FileOutputStreamAdaptorBase(Session session,
+            FileOutputStreamWrapper wrapper) {
         super(session, wrapper);
     }
 
     public void write(byte[] b) throws IOException {
-        write(b, 0, b.length);        
+        write(b, 0, b.length);
     }
-    
-    public Task<FileOutputStream, Void> write(TaskMode mode, int b) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileOutputStream, Void>(wrapper, session, mode, "write",
-            new Class[] { Integer.TYPE }, b);
-    }
-    
-    public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf, int off, int len)
+
+    public Task<FileOutputStream, Void> write(TaskMode mode, int b)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileOutputStream, Void>(wrapper, session, mode, "write",
-                new Class[] { byte[].class, Integer.TYPE, Integer.TYPE },
-                buf, off, len);
+        return new org.ogf.saga.impl.task.Task<FileOutputStream, Void>(wrapper,
+                session, mode, "write", new Class[] { Integer.TYPE }, b);
     }
-    
-    public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf) throws NotImplementedException {
+
+    public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf,
+            int off, int len) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<FileOutputStream, Void>(wrapper,
+                session, mode, "write", new Class[] { byte[].class,
+                        Integer.TYPE, Integer.TYPE }, buf, off, len);
+    }
+
+    public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf)
+            throws NotImplementedException {
         return write(mode, buf, 0, buf.length);
     }
-    
-    public Task<FileOutputStream, Void> flush(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileOutputStream, Void>(wrapper, session, mode, "flush",
-                new Class[] { });
+
+    public Task<FileOutputStream, Void> flush(TaskMode mode)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<FileOutputStream, Void>(wrapper,
+                session, mode, "flush", new Class[] {});
     }
-    
-    public Task<FileOutputStream, Void> close(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileOutputStream, Void>(wrapper, session, mode, "close",
-                new Class[] { });
+
+    public Task<FileOutputStream, Void> close(TaskMode mode)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<FileOutputStream, Void>(wrapper,
+                session, mode, "close", new Class[] {});
     }
 }

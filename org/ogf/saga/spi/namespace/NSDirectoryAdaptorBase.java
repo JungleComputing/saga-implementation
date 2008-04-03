@@ -30,17 +30,18 @@ import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implements
-        NSDirectorySPI {
-    
+public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
+        implements NSDirectorySPI {
+
     private class DirIterator implements Iterator<URL> {
-        
+
         int numEntries;
         int index = 0;
-        
-        public DirIterator() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+
+        public DirIterator() throws NotImplementedException,
+                AuthenticationFailedException, AuthorizationFailedException,
+                PermissionDeniedException, IncorrectStateException,
+                TimeoutException, NoSuccessException {
             numEntries = getNumEntries();
         }
 
@@ -54,8 +55,9 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
             }
             try {
                 return getEntry(index++);
-            } catch(SagaException e) {
-                NoSuchElementException ex = new NoSuchElementException("got exception");
+            } catch (SagaException e) {
+                NoSuchElementException ex = new NoSuchElementException(
+                        "got exception");
                 ex.initCause(e);
                 throw ex;
             }
@@ -64,40 +66,46 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
         public void remove() {
             throw new UnsupportedOperationException("Remove not supported");
         }
-        
+
     }
-      
-    protected static Logger logger = Logger.getLogger(NSDirectoryAdaptorBase.class);
-    
+
+    protected static Logger logger = Logger
+            .getLogger(NSDirectoryAdaptorBase.class);
+
     protected NSDirectoryWrapper wrapper;
-    
-    protected NSDirectoryAdaptorBase(NSDirectoryWrapper wrapper, Session session, URL name, int flags)
-            throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
-            PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
-            TimeoutException, NoSuccessException, AlreadyExistsException {
-        super(wrapper, session, name, flags);      
+
+    protected NSDirectoryAdaptorBase(NSDirectoryWrapper wrapper,
+            Session session, URL name, int flags)
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
+        super(wrapper, session, name, flags);
         this.wrapper = wrapper;
     }
-    
+
     public void setWrapper(NSDirectoryWrapper wrapper) {
         this.wrapper = wrapper;
         super.setWrapper(wrapper);
     }
-    
+
     public Iterator<URL> iterator() {
         try {
             return new DirIterator();
-        } catch(SagaException e) {
+        } catch (SagaException e) {
             throw new RuntimeException("Got SAGA exception", e);
         }
     }
 
-    public Task<NSDirectory, Void> changeDir(TaskMode mode, URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "changeDir", new Class[] { URL.class }, name);
+    public Task<NSDirectory, Void> changeDir(TaskMode mode, URL name)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "changeDir", new Class[] { URL.class }, name);
     }
 
-    protected void checkDirCopyFlags(int flags) throws IncorrectStateException, BadParameterException {
+    protected void checkDirCopyFlags(int flags) throws IncorrectStateException,
+            BadParameterException {
         checkClosed();
         int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
                 .or(Flags.OVERWRITE));
@@ -105,54 +113,59 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameterException("Flags not allowed for copy method: "
-                    + flags);
+            throw new BadParameterException(
+                    "Flags not allowed for copy method: " + flags);
         }
     }
 
-    public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target, int flags)
+    public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target,
+            int flags) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "copy", new Class[] { URL.class, URL.class,
+                        Integer.TYPE }, source, target, flags);
+    }
+
+    public Task<NSDirectory, Void> copy(TaskMode mode, String source,
+            URL target, int flags) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "copy", new Class[] { String.class, URL.class,
+                        Integer.TYPE }, source, target, flags);
+    }
+
+    public Task<NSDirectory, Boolean> exists(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "copy", new Class[] { URL.class, URL.class, Integer.TYPE },
-                source, target, flags);
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper,
+                session, mode, "exists", new Class[] { URL.class }, name);
     }
-    
-    public Task<NSDirectory, Void> copy(TaskMode mode, String source, URL target, int flags)
+
+    public Task<NSDirectory, List<URL>> find(TaskMode mode, String pattern,
+            int flags) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, List<URL>>(wrapper,
+                session, mode, "find",
+                new Class[] { String.class, Integer.TYPE }, pattern, flags);
+    }
+
+    public Task<NSDirectory, URL> getEntry(TaskMode mode, int entryNo)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "copy", new Class[] { String.class, URL.class, Integer.TYPE },
-                source, target, flags);
+        return new org.ogf.saga.impl.task.Task<NSDirectory, URL>(wrapper,
+                session, mode, "getEntry", new Class[] { Integer.TYPE },
+                entryNo);
     }
 
-    public Task<NSDirectory, Boolean> exists(TaskMode mode, URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper, session,
-                mode, "exists", new Class[] { URL.class }, name);
-    }
-
-    public Task<NSDirectory, List<URL>> find(TaskMode mode, String pattern, int flags)
+    public Task<NSDirectory, Integer> getNumEntries(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, List<URL>>(wrapper, session,
-                mode, "find", new Class[] { String.class, Integer.TYPE },
-                pattern, flags);
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Integer>(wrapper,
+                session, mode, "getNumEntries", new Class[] {});
     }
 
-    public Task<NSDirectory, URL> getEntry(TaskMode mode, int entryNo) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, URL>(wrapper, session, mode,
-                "getEntry", new Class[] { Integer.TYPE }, entryNo);
+    public Task<NSDirectory, Boolean> isDir(TaskMode mode, URL name)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper,
+                session, mode, "isDir", new Class[] { URL.class }, name);
     }
 
-    public Task<NSDirectory, Integer> getNumEntries(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Integer>(wrapper, session,
-                mode, "getNumEntries", new Class[] {});
-    }
-
-    public Task<NSDirectory, Boolean> isDir(TaskMode mode, URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper, session,
-                mode, "isDir", new Class[] { URL.class }, name);
-    }
-
-    protected URL resolveToDir(URL url)
-        throws NotImplementedException, NoSuccessException, BadParameterException {
+    protected URL resolveToDir(URL url) throws NotImplementedException,
+            NoSuccessException, BadParameterException {
         if (url.isAbsolute()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Absolute URI " + url + " not resolved");
@@ -185,12 +198,14 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
 
         return u;
     }
-    
+
     // list method without the special handling of a single directory.
-    protected List<URL> internalList(String pattern) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IncorrectURLException {
-        
+    protected List<URL> internalList(String pattern)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, IncorrectURLException {
+
         List<URL> resultList = new ArrayList<URL>();
 
         PatternConverter f = new PatternConverter(pattern);
@@ -211,17 +226,18 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
         return resultList;
     }
 
-
-    protected List<URL> expandWildCards(String path) throws NotImplementedException, NoSuccessException,
-            BadParameterException, IncorrectURLException, DoesNotExistException, PermissionDeniedException,
-            AuthorizationFailedException, AuthenticationFailedException, TimeoutException,
-            IncorrectStateException {
+    protected List<URL> expandWildCards(String path)
+            throws NotImplementedException, NoSuccessException,
+            BadParameterException, IncorrectURLException,
+            DoesNotExistException, PermissionDeniedException,
+            AuthorizationFailedException, AuthenticationFailedException,
+            TimeoutException, IncorrectStateException {
 
         if (path.startsWith("/")) {
             throw new BadParameterException("a wildcard path must be relative");
         }
-        
-        // Take the first part of the pattern, up until the first '/'.       
+
+        // Take the first part of the pattern, up until the first '/'.
         int slashIndex = path.indexOf('/');
         String pattern;
         if (slashIndex < 0) {
@@ -229,18 +245,19 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
         } else {
             pattern = path.substring(0, slashIndex);
         }
-        
+
         // List the contents of this directory that matches the pattern.
         List<URL> list = internalList(pattern);
         if (slashIndex < 0) {
             // Done.
             return list;
         }
-        
+
         List<URL> retval = new ArrayList<URL>();
-        String subPath = path.substring(slashIndex+1);
-        
-        // If subPath is now an empty string, the original path ended with a '/',
+        String subPath = path.substring(slashIndex + 1);
+
+        // If subPath is now an empty string, the original path ended with a
+        // '/',
         // so we now filter out the non-directories.
         if (subPath.equals("")) {
             for (URL u : list) {
@@ -248,13 +265,13 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
                     if (isDir(u)) {
                         retval.add(u);
                     }
-                } catch(Throwable e) {
+                } catch (Throwable e) {
                     logger.debug("isDir() gave an exception!", e);
                 }
             }
             return retval;
         }
-        
+
         // The pattern continues, so check sub-directories.
         for (URL url : list) {
             try {
@@ -276,7 +293,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
                 logger.debug("got an exception!", e);
             }
         }
-        
+
         if (logger.isDebugEnabled()) {
             logger.debug("Wildcard " + path + " gave: ");
             for (URL u : retval) {
@@ -285,35 +302,37 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
         }
         return retval;
     }
-    
-    public List<URL> find(String pattern, int flags) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException {
+
+    public List<URL> find(String pattern, int flags)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         checkClosed();
         int allowedFlags = Flags.DEREFERENCE.or(Flags.RECURSIVE);
         if ((allowedFlags | flags) != allowedFlags) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameterException("Flags not allowed for find method: "
-                    + flags);
+            throw new BadParameterException(
+                    "Flags not allowed for find method: " + flags);
         }
-//      first add all files in the current directory that match the pattern
+        // first add all files in the current directory that match the pattern
 
         List<URL> resultList;
 
         try {
             resultList = internalList(pattern);
-        } catch(IncorrectURLException e) {
+        } catch (IncorrectURLException e) {
             throw new BadParameterException("Incorrect pattern", e);
         }
 
-//      then list all files in the current directory if Recursive is set
+        // then list all files in the current directory if Recursive is set
         if (Flags.RECURSIVE.isSet(flags)) {
             List<URL> list;
             try {
                 list = list(".", Flags.NONE.getValue());
-            } catch(IncorrectURLException e) {
+            } catch (IncorrectURLException e) {
                 throw new SagaRuntimeException("Internal error", e);
             }
             for (URL u : list) {
@@ -338,47 +357,51 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
         return resultList;
     }
 
-
-    public Task<NSDirectory, Boolean> isEntry(TaskMode mode, URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper, session,
-                mode, "isEntry", new Class[] { URL.class }, name);
-    }
-
-    public Task<NSDirectory, Boolean> isLink(TaskMode mode, URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper, session,
-                mode, "isLink", new Class[] { URL.class }, name);
-    }
-
-    public Task<NSDirectory, Void> link(TaskMode mode, URL source, URL target, int flags)
+    public Task<NSDirectory, Boolean> isEntry(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "link", new Class[] { URL.class, URL.class, Integer.TYPE },
-                source, target, flags);
-    }
-    
-    public Task<NSDirectory, Void> link(TaskMode mode, String source, URL target, int flags)
-            throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "link", new Class[] { String.class, URL.class, Integer.TYPE },
-                source, target, flags);
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper,
+                session, mode, "isEntry", new Class[] { URL.class }, name);
     }
 
-    public List<URL> list(String pattern, int flags) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, IncorrectURLException {
+    public Task<NSDirectory, Boolean> isLink(TaskMode mode, URL name)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper,
+                session, mode, "isLink", new Class[] { URL.class }, name);
+    }
+
+    public Task<NSDirectory, Void> link(TaskMode mode, URL source, URL target,
+            int flags) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "link", new Class[] { URL.class, URL.class,
+                        Integer.TYPE }, source, target, flags);
+    }
+
+    public Task<NSDirectory, Void> link(TaskMode mode, String source,
+            URL target, int flags) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "link", new Class[] { String.class, URL.class,
+                        Integer.TYPE }, source, target, flags);
+    }
+
+    public List<URL> list(String pattern, int flags)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, IncorrectURLException {
         if (closed) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Directory already closed!");
             }
-            throw new IncorrectStateException("list(): directory already closed");
+            throw new IncorrectStateException(
+                    "list(): directory already closed");
         }
         int allowedFlags = Flags.DEREFERENCE.getValue();
         if ((allowedFlags | flags) != allowedFlags) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameterException("Flags not allowed for list method: "
-                    + flags);
+            throw new BadParameterException(
+                    "Flags not allowed for list method: " + flags);
         }
 
         if ("".equals(pattern)) {
@@ -399,152 +422,167 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase implemen
                 resultList.add(url);
             }
         }
-        
+
         try {
             if (resultList.size() == 1 && isDir(resultList.get(0))) {
                 // Pattern indicates a single directory. In this case, list the
                 // contents of the directory (like "ls").
-                NSDirectory dir = NSFactory.createNSDirectory(session,
-                        nameUrl.resolve(resultList.get(0)),
-                        Flags.NONE.getValue());
+                NSDirectory dir = NSFactory.createNSDirectory(session, nameUrl
+                        .resolve(resultList.get(0)), Flags.NONE.getValue());
                 return dir.list(".", flags);
             }
-        } catch(DoesNotExistException e) {
+        } catch (DoesNotExistException e) {
             throw new SagaRuntimeException("Should not happen", e);
-        } catch(AlreadyExistsException e) {
+        } catch (AlreadyExistsException e) {
             throw new SagaRuntimeException("Should not happen", e);
         }
 
         return resultList;
     }
-    
-    public abstract List<URL> listCurrentDir(int flags) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException;
 
-    public Task<NSDirectory, List<URL>> list(TaskMode mode, String pattern, int flags)
-            throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, List<URL>>(wrapper, session,
-                mode, "list", new Class[] { String.class, Integer.TYPE },
-                pattern, flags);
+    public abstract List<URL> listCurrentDir(int flags)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException;
+
+    public Task<NSDirectory, List<URL>> list(TaskMode mode, String pattern,
+            int flags) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, List<URL>>(wrapper,
+                session, mode, "list",
+                new Class[] { String.class, Integer.TYPE }, pattern, flags);
     }
 
     public void makeDir(URL target, int flags) throws NotImplementedException,
-            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, IncorrectStateException, AlreadyExistsException,
-            DoesNotExistException, TimeoutException, NoSuccessException {
+            IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException,
+            AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         checkClosed();
         int allowedFlags = Flags.CREATEPARENTS.or(Flags.EXCL);
         if ((allowedFlags | flags) != allowedFlags) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameterException("Flags not allowed for makeDir method: "
-                    + flags);
+            throw new BadParameterException(
+                    "Flags not allowed for makeDir method: " + flags);
         }
         target = resolveToDir(target);
-        NSFactory.createNSDirectory(session, target,
-                flags | Flags.CREATE.getValue());
+        NSFactory.createNSDirectory(session, target, flags
+                | Flags.CREATE.getValue());
     }
 
     public Task<NSDirectory, Void> makeDir(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "makeDir", new Class[] { URL.class, Integer.TYPE }, name, flags);
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "makeDir",
+                new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 
-    public Task<NSDirectory, Void> move(TaskMode mode, URL src, URL dest, int flags)
-            throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "move", new Class[] { URL.class, URL.class, Integer.TYPE },
-                src, dest, flags);
-    }
-    
-    public Task<NSDirectory, Void> move(TaskMode mode, String src, URL dest, int flags)
-            throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "move", new Class[] { String.class, URL.class, Integer.TYPE },
-                src, dest, flags);
+    public Task<NSDirectory, Void> move(TaskMode mode, URL src, URL dest,
+            int flags) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "move", new Class[] { URL.class, URL.class,
+                        Integer.TYPE }, src, dest, flags);
     }
 
-    public NSEntry open(URL name, int flags)
-            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
+    public Task<NSDirectory, Void> move(TaskMode mode, String src, URL dest,
+            int flags) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "move", new Class[] { String.class, URL.class,
+                        Integer.TYPE }, src, dest, flags);
+    }
+
+    public NSEntry open(URL name, int flags) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException,
+            AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         checkClosed();
         name = resolveToDir(name);
         return NSFactory.createNSEntry(session, name, flags);
     }
 
-    public Task<NSDirectory, NSEntry> open(TaskMode mode, URL name,
-            int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, NSEntry>(
-                wrapper, session, mode, "open", new Class[] { URL.class,
-                        Integer.TYPE }, name, flags);
+    public Task<NSDirectory, NSEntry> open(TaskMode mode, URL name, int flags)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, NSEntry>(wrapper,
+                session, mode, "open", new Class[] { URL.class, Integer.TYPE },
+                name, flags);
     }
 
     public org.ogf.saga.namespace.NSDirectory openDir(URL name, int flags)
-            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            IncorrectStateException, AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         checkClosed();
         name = resolveToDir(name);
         return NSFactory.createNSDirectory(session, name, flags);
     }
 
-    public Task<NSDirectory, org.ogf.saga.namespace.NSDirectory> openDir(TaskMode mode,
-            URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, org.ogf.saga.namespace.NSDirectory>(
+    public Task<NSDirectory, org.ogf.saga.namespace.NSDirectory> openDir(
+            TaskMode mode, URL name, int flags) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, NSDirectory>(
                 wrapper, session, mode, "openDir", new Class[] { URL.class,
                         Integer.TYPE }, name, flags);
     }
 
-    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL name, String id,
-            int permissions, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "permissionsAllow", new Class[] { URL.class, String.class,
-                        Integer.TYPE, Integer.TYPE }, name, id, permissions,
-                flags);
-    }
-    
-    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, String name, String id,
-            int permissions, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "permissionsAllow", new Class[] { String.class, String.class,
-                        Integer.TYPE, Integer.TYPE }, name, id, permissions,
-                flags);
+    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL name,
+            String id, int permissions, int flags)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "permissionsAllow", new Class[] { URL.class,
+                        String.class, Integer.TYPE, Integer.TYPE }, name, id,
+                permissions, flags);
     }
 
-    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL name, String id,
-            int permissions, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "permissionsDeny", new Class[] { URL.class, String.class,
-                        Integer.TYPE, Integer.TYPE }, name, id, permissions,
-                flags);
+    public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, String name,
+            String id, int permissions, int flags)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "permissionsAllow", new Class[] { String.class,
+                        String.class, Integer.TYPE, Integer.TYPE }, name, id,
+                permissions, flags);
     }
-    
-    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, String name, String id,
-            int permissions, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "permissionsDeny", new Class[] { String.class, String.class,
-                        Integer.TYPE, Integer.TYPE }, name, id, permissions,
-                flags);
-    }   
 
-    public Task<NSDirectory, URL> readLink(TaskMode mode, URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, URL>(wrapper, session, mode,
-                "readlink", new Class[] { URL.class }, name);
+    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL name,
+            String id, int permissions, int flags)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "permissionsDeny", new Class[] { URL.class,
+                        String.class, Integer.TYPE, Integer.TYPE }, name, id,
+                permissions, flags);
+    }
+
+    public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, String name,
+            String id, int permissions, int flags)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "permissionsDeny", new Class[] { String.class,
+                        String.class, Integer.TYPE, Integer.TYPE }, name, id,
+                permissions, flags);
+    }
+
+    public Task<NSDirectory, URL> readLink(TaskMode mode, URL name)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSDirectory, URL>(wrapper,
+                session, mode, "readlink", new Class[] { URL.class }, name);
     }
 
     public Task<NSDirectory, Void> remove(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "remove", new Class[] { URL.class, Integer.TYPE }, name, flags);
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "remove",
+                new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
-    
+
     public Task<NSDirectory, Void> remove(TaskMode mode, String name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper, session, mode,
-                "remove", new Class[] { String.class, Integer.TYPE }, name, flags);
+        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
+                session, mode, "remove", new Class[] { String.class,
+                        Integer.TYPE }, name, flags);
     }
 }

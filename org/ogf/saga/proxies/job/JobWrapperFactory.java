@@ -20,22 +20,22 @@ public class JobWrapperFactory extends JobFactory {
     public JobWrapperFactory() {
     }
 
-    protected JobDescription doCreateJobDescription() throws NotImplementedException,
-            NoSuccessException {
+    protected JobDescription doCreateJobDescription()
+            throws NotImplementedException, NoSuccessException {
         return new JobDescription();
     }
 
     protected JobService doCreateJobService(Session session, URL rm)
-            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return new JobServiceWrapper(session, rm);
     }
 
     protected Task<JobFactory, JobService> doCreateJobService(TaskMode mode,
             Session session, URL rm) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobFactory, JobService>(this, session, mode,
-                "doCreateJobService",
-                new Class[] { Session.class, URL.class } ,
-                session, rm);
+        return new org.ogf.saga.impl.task.Task<JobFactory, JobService>(this,
+                session, mode, "doCreateJobService", new Class[] {
+                        Session.class, URL.class }, session, rm);
     }
 }
