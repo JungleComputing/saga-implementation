@@ -22,31 +22,36 @@ public class NSWrapperFactory extends NSFactory {
 
     protected NSDirectory doCreateNSDirectory(Session session, URL name,
             int flags) throws NotImplementedException, IncorrectURLException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, DoesNotExistException, AlreadyExistsException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            DoesNotExistException, AlreadyExistsException, TimeoutException,
+            NoSuccessException {
         return new NSDirectoryWrapper(session, name, flags);
     }
 
     protected NSEntry doCreateNSEntry(Session session, URL name, int flags)
-            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException, DoesNotExistException,
-            AlreadyExistsException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            DoesNotExistException, AlreadyExistsException, TimeoutException,
+            NoSuccessException {
         return new NSEntryWrapper(session, name, flags);
     }
-    
+
     protected Task<NSFactory, NSDirectory> doCreateNSDirectory(TaskMode mode,
-            Session session, URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSFactory, NSDirectory>(this, session, mode,
-                "doCreateNSDirectory",
-                new Class[] { Session.class, URL.class, Integer.TYPE},
-                session, name, flags);
+            Session session, URL name, int flags)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSFactory, NSDirectory>(this,
+                session, mode, "doCreateNSDirectory", new Class[] {
+                        Session.class, URL.class, Integer.TYPE }, session,
+                name, flags);
     }
 
-    protected Task<NSFactory, NSEntry> doCreateNSEntry(TaskMode mode, Session session,
-            URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSFactory, NSEntry>(this, session, mode,
-                "doCreateNSEntry",
-                new Class[] { Session.class, URL.class, Integer.TYPE},
-                session, name, flags);
+    protected Task<NSFactory, NSEntry> doCreateNSEntry(TaskMode mode,
+            Session session, URL name, int flags)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<NSFactory, NSEntry>(this,
+                session, mode, "doCreateNSEntry", new Class[] { Session.class,
+                        URL.class, Integer.TYPE }, session, name, flags);
     }
 }

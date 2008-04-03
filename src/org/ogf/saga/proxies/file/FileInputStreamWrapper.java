@@ -22,30 +22,32 @@ import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
 public class FileInputStreamWrapper extends FileInputStream {
-    
+
     private static class InputSagaObject extends SagaObjectBase {
-        
+
         InputSagaObject(Session session) {
             super(session);
         }
     }
-    
+
     private InputSagaObject sagaObject;
     private FileInputStreamSPI proxy;
-       
+
     FileInputStreamWrapper(Session session, URL name)
-            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            AlreadyExistsException, DoesNotExistException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         Object[] parameters = { this, session, name };
         try {
-            proxy = (FileInputStreamSPI) SAGAEngine.createAdaptorProxy(
-                    FileInputStreamSPI.class,
-                    new Class[] { FileInputStreamWrapper.class,
-                        org.ogf.saga.impl.session.Session.class, URL.class },
-                    parameters);
+            proxy = (FileInputStreamSPI) SAGAEngine
+                    .createAdaptorProxy(FileInputStreamSPI.class,
+                            new Class[] { FileInputStreamWrapper.class,
+                                    org.ogf.saga.impl.session.Session.class,
+                                    URL.class }, parameters);
             sagaObject = new InputSagaObject(session);
-        } catch(org.ogf.saga.error.SagaException e) {
+        } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {
                 throw (NotImplementedException) e;
             }
@@ -64,7 +66,7 @@ public class FileInputStreamWrapper extends FileInputStream {
             if (e instanceof BadParameterException) {
                 throw (BadParameterException) e;
             }
-            if (e instanceof  AlreadyExistsException) {
+            if (e instanceof AlreadyExistsException) {
                 throw (AlreadyExistsException) e;
             }
             if (e instanceof DoesNotExistException) {
@@ -88,7 +90,7 @@ public class FileInputStreamWrapper extends FileInputStream {
         FileInputStreamWrapper clone = (FileInputStreamWrapper) super.clone();
         clone.sagaObject = (InputSagaObject) sagaObject.clone();
         clone.proxy = (FileInputStreamSPI) SAGAEngine.createAdaptorCopy(
-                    FileInputStreamSPI.class, proxy, clone);
+                FileInputStreamSPI.class, proxy, clone);
         return clone;
     }
 
@@ -137,7 +139,8 @@ public class FileInputStreamWrapper extends FileInputStream {
         return proxy.available(mode);
     }
 
-    public Task<FileInputStream, Void> close(TaskMode mode) throws NotImplementedException {
+    public Task<FileInputStream, Void> close(TaskMode mode)
+            throws NotImplementedException {
         return proxy.close(mode);
     }
 
@@ -151,16 +154,18 @@ public class FileInputStreamWrapper extends FileInputStream {
         return proxy.markSupported(mode);
     }
 
-    public Task<FileInputStream, Integer> read(TaskMode mode) throws NotImplementedException {
+    public Task<FileInputStream, Integer> read(TaskMode mode)
+            throws NotImplementedException {
         return proxy.read(mode);
     }
 
-    public Task<FileInputStream, Integer> read(TaskMode mode, byte[] buf, int off, int len)
-            throws NotImplementedException {
+    public Task<FileInputStream, Integer> read(TaskMode mode, byte[] buf,
+            int off, int len) throws NotImplementedException {
         return proxy.read(mode, buf, off, len);
     }
 
-    public Task<FileInputStream, Void> reset(TaskMode mode) throws NotImplementedException {
+    public Task<FileInputStream, Void> reset(TaskMode mode)
+            throws NotImplementedException {
         return proxy.reset(mode);
     }
 

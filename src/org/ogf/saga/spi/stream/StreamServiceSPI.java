@@ -21,29 +21,36 @@ public interface StreamServiceSPI extends AsyncMonitorable<StreamService>,
 
     /**
      * Obtains the URL to be used to connect to this server.
+     * 
      * @return the URL.
      */
-    public URL getUrl()
-        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-               PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException;
+    public URL getUrl() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException;
 
     /**
-     * Waits for incoming client connections (like an accept of a
-     * serversocket). The returned stream is in OPEN state.
-     * @param timeoutInSeconds the timeout in seconds.
+     * Waits for incoming client connections (like an accept of a serversocket).
+     * The returned stream is in OPEN state.
+     * 
+     * @param timeoutInSeconds
+     *                the timeout in seconds.
      * @return the client connection, or <code>null</code> if the timeout
-     * expires before a client connects.
+     *         expires before a client connects.
      */
-    public Stream serve(float timeoutInSeconds)
-        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-               PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException;
+    public Stream serve(float timeoutInSeconds) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException;
 
     /**
      * Closes a stream service.
-     * @param timeoutInSeconds the timeout in seconds.
+     * 
+     * @param timeoutInSeconds
+     *                the timeout in seconds.
      */
-    public void close(float timeoutInSeconds)
-        throws NotImplementedException, IncorrectStateException, NoSuccessException;
+    public void close(float timeoutInSeconds) throws NotImplementedException,
+            IncorrectStateException, NoSuccessException;
 
     //
     // Task versions ...
@@ -51,35 +58,45 @@ public interface StreamServiceSPI extends AsyncMonitorable<StreamService>,
 
     /**
      * Obtains a task to obtain the URL to be used to connect to this server.
-     * @param mode the task mode.
+     * 
+     * @param mode
+     *                the task mode.
      * @return the task.
-     * @exception NotImplementedException is thrown when the task version of this
-     *     method is not implemented.
+     * @exception NotImplementedException
+     *                    is thrown when the task version of this method is not
+     *                    implemented.
      */
     public Task<StreamService, URL> getUrl(TaskMode mode)
-        throws NotImplementedException;
+            throws NotImplementedException;
 
     /**
-     * Obtains a task that waits for incoming client connections
-     * (like an accept of a serversocket).
-     * The returned stream is in OPEN state.
-     * @param mode the task mode.
-     * @param timeoutInSeconds the timeout in seconds.
+     * Obtains a task that waits for incoming client connections (like an accept
+     * of a serversocket). The returned stream is in OPEN state.
+     * 
+     * @param mode
+     *                the task mode.
+     * @param timeoutInSeconds
+     *                the timeout in seconds.
      * @return the task.
-     * @exception NotImplementedException is thrown when the task version of this
-     *     method is not implemented.
+     * @exception NotImplementedException
+     *                    is thrown when the task version of this method is not
+     *                    implemented.
      */
-    public Task<StreamService, Stream> serve(TaskMode mode, float timeoutInSeconds)
-        throws NotImplementedException;
+    public Task<StreamService, Stream> serve(TaskMode mode,
+            float timeoutInSeconds) throws NotImplementedException;
 
     /**
      * Obtains a task that closes a stream service.
-     * @param mode the task mode.
-     * @param timeoutInSeconds the timeout in seconds.
+     * 
+     * @param mode
+     *                the task mode.
+     * @param timeoutInSeconds
+     *                the timeout in seconds.
      * @return the task.
-     * @exception NotImplementedException is thrown when the task version of this
-     *     method is not implemented.
+     * @exception NotImplementedException
+     *                    is thrown when the task version of this method is not
+     *                    implemented.
      */
     public Task<StreamService, Void> close(TaskMode mode, float timeoutInSeconds)
-        throws NotImplementedException;
+            throws NotImplementedException;
 }

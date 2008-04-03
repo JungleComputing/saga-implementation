@@ -25,113 +25,144 @@ import org.ogf.saga.task.TaskMode;
 public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
         NSDirectorySPI {
     /**
-     * Tests the name for being a logical file.
-     * Is an alias for {@link NSDirectory#isEntry}.
-     * @param name to be tested.
+     * Tests the name for being a logical file. Is an alias for
+     * {@link NSDirectory#isEntry}.
+     * 
+     * @param name
+     *                to be tested.
      * @return <code>true</code> if the name represents a non-directory entry.
      */
-    public boolean isFile(URL name)
-        throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            DoesNotExistException, IncorrectStateException, TimeoutException, NoSuccessException;
+    public boolean isFile(URL name) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, DoesNotExistException,
+            IncorrectStateException, TimeoutException, NoSuccessException;
 
     /**
-     * Finds entries in the current directory and possibly below, with matching names
-     * and matching meta data.
-     * @param namePattern pattern for names of entries to be found.
-     * @param attrPattern  pattern for meta data keys/values of entries to be
-     *          found.
-     * @param flags       flags defining the operation modus.
+     * Finds entries in the current directory and possibly below, with matching
+     * names and matching meta data.
+     * 
+     * @param namePattern
+     *                pattern for names of entries to be found.
+     * @param attrPattern
+     *                pattern for meta data keys/values of entries to be found.
+     * @param flags
+     *                flags defining the operation modus.
      * @return the list of matching entries.
      */
-    public List<URL> find(String namePattern, String[] attrPattern,
-            int flags)
-        throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException,
+    public List<URL> find(String namePattern, String[] attrPattern, int flags)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException;
 
     // openLogicalDir and openLogicalFile: names changed with respect
-    // to specs  because of Java restriction: cannot redefine methods with
+    // to specs because of Java restriction: cannot redefine methods with
     // just a different return type.
 
     /**
      * Creates a new <code>LogicalDirectory</code> instance.
-     * @param name directory to open.
-     * @param flags defining the operation modus.
+     * 
+     * @param name
+     *                directory to open.
+     * @param flags
+     *                defining the operation modus.
      * @return the opened directory instance.
      */
     public LogicalDirectory openLogicalDir(URL name, int flags)
-        throws NotImplementedException, IncorrectURLException, 
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException,
-            TimeoutException, NoSuccessException;
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException;
 
     /**
      * Creates a new <code>LogicalFile</code> instance.
-     * @param name logical file to open.
-     * @param flags defining the operation modus.
+     * 
+     * @param name
+     *                logical file to open.
+     * @param flags
+     *                defining the operation modus.
      * @return the opened logical file.
      */
     public LogicalFile openLogicalFile(URL name, int flags)
-        throws NotImplementedException, IncorrectURLException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, AlreadyExistsException, DoesNotExistException,
-            TimeoutException, NoSuccessException;
-    
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException,
+            DoesNotExistException, TimeoutException, NoSuccessException;
+
     // Task versions ...
-   
+
     /**
-     * Creates a task that tests the name for being a logical file.
-     * Is an alias for {@link NSDirectory#isEntry}.
-     * @param mode the task mode.
-     * @param name to be tested.
+     * Creates a task that tests the name for being a logical file. Is an alias
+     * for {@link NSDirectory#isEntry}.
+     * 
+     * @param mode
+     *                the task mode.
+     * @param name
+     *                to be tested.
      * @return the task.
-     * @exception NotImplementedException is thrown when the task version of this
-     *     method is not implemented.
+     * @exception NotImplementedException
+     *                    is thrown when the task version of this method is not
+     *                    implemented.
      */
     public Task<NSDirectory, Boolean> isFile(TaskMode mode, URL name)
-        throws NotImplementedException ;
+            throws NotImplementedException;
 
     /**
      * Creates a task that finds entries in the current directory and below,
      * with matching names and matching meta data.
-     * @param mode        the task mode.
-     * @param namePattern pattern for names of entries to be found.
-     * @param attrPattern pattern for meta data keys/values of entries to be
-     *          found.
-     * @param flags       flags defining the operation modus.
+     * 
+     * @param mode
+     *                the task mode.
+     * @param namePattern
+     *                pattern for names of entries to be found.
+     * @param attrPattern
+     *                pattern for meta data keys/values of entries to be found.
+     * @param flags
+     *                flags defining the operation modus.
      * @return the task.
-     * @exception NotImplementedException is thrown when the task version of this
-     *     method is not implemented.
+     * @exception NotImplementedException
+     *                    is thrown when the task version of this method is not
+     *                    implemented.
      */
-    public Task<LogicalDirectory, List<URL>> find(TaskMode mode, String namePattern,
-            String[] attrPattern, int flags)
-        throws NotImplementedException;
+    public Task<LogicalDirectory, List<URL>> find(TaskMode mode,
+            String namePattern, String[] attrPattern, int flags)
+            throws NotImplementedException;
 
     /**
      * Creates a task that creates a new <code>LogicalDirectory</code>
      * instance.
-     * @param mode the task mode.
-     * @param name directory to open.
-     * @param flags defining the operation modus.
+     * 
+     * @param mode
+     *                the task mode.
+     * @param name
+     *                directory to open.
+     * @param flags
+     *                defining the operation modus.
      * @return the task.
-     * @exception NotImplementedException is thrown when the task version of this
-     *     method is not implemented.
+     * @exception NotImplementedException
+     *                    is thrown when the task version of this method is not
+     *                    implemented.
      */
-    public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(TaskMode mode, URL name,
-            int flags)
-        throws NotImplementedException;
-    
+    public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(
+            TaskMode mode, URL name, int flags) throws NotImplementedException;
+
     /**
      * Creates a task that creates a new <code>LogicalFile</code> instance.
-     * @param mode the task mode.
-     * @param name the file to open.
-     * @param flags defining the operation modus.
+     * 
+     * @param mode
+     *                the task mode.
+     * @param name
+     *                the file to open.
+     * @param flags
+     *                defining the operation modus.
      * @return the task.
-     * @exception NotImplementedException is thrown when the task version of this
-     *     method is not implemented.
+     * @exception NotImplementedException
+     *                    is thrown when the task version of this method is not
+     *                    implemented.
      */
-    public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode, URL name,
-            int flags)
-        throws NotImplementedException;    
+    public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode,
+            URL name, int flags) throws NotImplementedException;
 }

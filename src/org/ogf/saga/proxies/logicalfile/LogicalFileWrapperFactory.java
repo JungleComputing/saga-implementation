@@ -21,35 +21,40 @@ import org.ogf.saga.task.TaskMode;
 public class LogicalFileWrapperFactory extends LogicalFileFactory {
 
     protected LogicalDirectory doCreateLogicalDirectory(Session session,
-            URL name, int flags) throws NotImplementedException, IncorrectURLException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, DoesNotExistException, AlreadyExistsException, TimeoutException, NoSuccessException {
-            return new LogicalDirectoryWrapper(session, name, flags);
+            URL name, int flags) throws NotImplementedException,
+            IncorrectURLException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, DoesNotExistException,
+            AlreadyExistsException, TimeoutException, NoSuccessException {
+        return new LogicalDirectoryWrapper(session, name, flags);
     }
 
     protected LogicalFile doCreateLogicalFile(Session session, URL name,
             int flags) throws NotImplementedException, IncorrectURLException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, AlreadyExistsException, DoesNotExistException, TimeoutException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-            return new LogicalFileWrapper(session, name, flags);
-    }
-    
-    @Override
-    protected Task<LogicalFileFactory, LogicalDirectory> doCreateLogicalDirectory(TaskMode mode,
-            Session session, URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<LogicalFileFactory, LogicalDirectory>(this, session, mode,
-                "doCreateLogicalDirectory",
-                new Class[] { Session.class, URL.class, Integer.TYPE},
-                session, name, flags);
+        return new LogicalFileWrapper(session, name, flags);
     }
 
     @Override
-    protected Task<LogicalFileFactory, LogicalFile> doCreateLogicalFile(TaskMode mode,
-            Session session, URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<LogicalFileFactory, LogicalFile>(this, session, mode,
-                "doCreateLogicalFile",
-                new Class[] { Session.class, URL.class, Integer.TYPE},
-                session, name, flags);
+    protected Task<LogicalFileFactory, LogicalDirectory> doCreateLogicalDirectory(
+            TaskMode mode, Session session, URL name, int flags)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<LogicalFileFactory, LogicalDirectory>(
+                this, session, mode, "doCreateLogicalDirectory", new Class[] {
+                        Session.class, URL.class, Integer.TYPE }, session,
+                name, flags);
+    }
+
+    @Override
+    protected Task<LogicalFileFactory, LogicalFile> doCreateLogicalFile(
+            TaskMode mode, Session session, URL name, int flags)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<LogicalFileFactory, LogicalFile>(
+                this, session, mode, "doCreateLogicalFile", new Class[] {
+                        Session.class, URL.class, Integer.TYPE }, session,
+                name, flags);
     }
 }

@@ -30,16 +30,18 @@ public class FileWrapper extends NSEntryWrapper implements File {
 
     private FileSPI proxy;
 
-    FileWrapper(Session session, URL name, int flags) throws NotImplementedException,
-            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, AlreadyExistsException, DoesNotExistException,
-            TimeoutException, NoSuccessException {
+    FileWrapper(Session session, URL name, int flags)
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            AlreadyExistsException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         super(session);
 
         Object[] parameters = { this, session, name, flags };
         try {
-            proxy = (FileSPI) SAGAEngine.createAdaptorProxy(
-                    FileSPI.class, new Class[] { FileWrapper.class,
+            proxy = (FileSPI) SAGAEngine.createAdaptorProxy(FileSPI.class,
+                    new Class[] { FileWrapper.class,
                             org.ogf.saga.impl.session.Session.class, URL.class,
                             Integer.TYPE }, parameters);
             super.setProxy(proxy);
@@ -78,49 +80,59 @@ public class FileWrapper extends NSEntryWrapper implements File {
         }
     }
 
-    public long getSize() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public long getSize() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return proxy.getSize();
     }
 
-    public Task<File, Long> getSize(TaskMode mode) throws NotImplementedException {
+    public Task<File, Long> getSize(TaskMode mode)
+            throws NotImplementedException {
         return proxy.getSize(mode);
     }
 
     public Object clone() throws CloneNotSupportedException {
         FileWrapper clone = (FileWrapper) super.clone();
-        clone.proxy = (FileSPI) SAGAEngine.createAdaptorCopy(
-                FileSPI.class, proxy, clone);
+        clone.proxy = (FileSPI) SAGAEngine.createAdaptorCopy(FileSPI.class,
+                proxy, clone);
         clone.setProxy(proxy);
         return clone;
     }
 
-    public List<String> modesE() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public List<String> modesE() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return proxy.modesE();
     }
 
-    public Task<File, List<String>> modesE(TaskMode mode) throws NotImplementedException {
+    public Task<File, List<String>> modesE(TaskMode mode)
+            throws NotImplementedException {
         return proxy.modesE(mode);
     }
 
-    public int read(Buffer buffer) throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+    public int read(Buffer buffer) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
         return read(buffer, 0, buffer.getSize());
     }
 
     public int read(Buffer buffer, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
         return read(buffer, 0, len);
     }
-    
-    public int read(Buffer buffer, int offset, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+
+    public int read(Buffer buffer, int offset, int len)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
         return proxy.read(buffer, offset, len);
     }
 
@@ -133,16 +145,17 @@ public class FileWrapper extends NSEntryWrapper implements File {
             throws NotImplementedException {
         return read(mode, buffer, 0, len);
     }
-    
-    public Task<File, Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
-            throws NotImplementedException {
+
+    public Task<File, Integer> read(TaskMode mode, Buffer buffer, int offset,
+            int len) throws NotImplementedException {
         return proxy.read(mode, buffer, offset, len);
     }
 
     public int readE(String emode, String spec, Buffer buffer)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
-            SagaIOException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
         return proxy.readE(emode, spec, buffer);
     }
 
@@ -151,30 +164,37 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.readE(mode, emode, spec, buffer);
     }
 
-    public int readP(String pattern, Buffer buffer) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+    public int readP(String pattern, Buffer buffer)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
         return proxy.readP(pattern, buffer);
     }
 
-    public Task<File, Integer> readP(TaskMode mode, String pattern, Buffer buffer)
-            throws NotImplementedException {
+    public Task<File, Integer> readP(TaskMode mode, String pattern,
+            Buffer buffer) throws NotImplementedException {
         return proxy.readP(mode, pattern, buffer);
     }
 
     public void readV(IOVec[] iovecs) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
         proxy.readV(iovecs);
     }
 
-    public Task<File, Void> readV(TaskMode mode, IOVec[] iovecs) throws NotImplementedException {
+    public Task<File, Void> readV(TaskMode mode, IOVec[] iovecs)
+            throws NotImplementedException {
         return proxy.readV(mode, iovecs);
     }
 
-    public long seek(long offset, SeekMode whence) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+    public long seek(long offset, SeekMode whence)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
         return proxy.seek(offset, whence);
     }
 
@@ -184,8 +204,9 @@ public class FileWrapper extends NSEntryWrapper implements File {
     }
 
     public int sizeE(String emode, String spec) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, IncorrectStateException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            IncorrectStateException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         return proxy.sizeE(emode, spec);
     }
 
@@ -195,8 +216,9 @@ public class FileWrapper extends NSEntryWrapper implements File {
     }
 
     public int sizeP(String pattern) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, IncorrectStateException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            IncorrectStateException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         return proxy.sizeP(pattern);
     }
 
@@ -206,20 +228,26 @@ public class FileWrapper extends NSEntryWrapper implements File {
     }
 
     public int write(Buffer buffer) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
         return write(buffer, 0, -1);
     }
-    
+
     public int write(Buffer buffer, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
         return write(buffer, 0, len);
     }
 
-    public int write(Buffer buffer, int offset, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+    public int write(Buffer buffer, int offset, int len)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
         return proxy.write(buffer, offset, len);
     }
 
@@ -232,17 +260,17 @@ public class FileWrapper extends NSEntryWrapper implements File {
             throws NotImplementedException {
         return write(mode, buffer, 0, len);
     }
-    
-    public Task<File, Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
-            throws NotImplementedException {
+
+    public Task<File, Integer> write(TaskMode mode, Buffer buffer, int offset,
+            int len) throws NotImplementedException {
         return proxy.write(mode, buffer, offset, len);
     }
 
-    
     public int writeE(String emode, String spec, Buffer buffer)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
-            SagaIOException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
         return proxy.writeE(emode, spec, buffer);
     }
 
@@ -251,24 +279,29 @@ public class FileWrapper extends NSEntryWrapper implements File {
         return proxy.writeE(mode, emode, spec, buffer);
     }
 
-    public int writeP(String pattern, Buffer buffer) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+    public int writeP(String pattern, Buffer buffer)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
         return proxy.writeP(pattern, buffer);
     }
 
-    public Task<File, Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
-            throws NotImplementedException {
+    public Task<File, Integer> writeP(TaskMode mode, String pattern,
+            Buffer buffer) throws NotImplementedException {
         return proxy.writeP(mode, pattern, buffer);
     }
 
     public void writeV(IOVec[] iovecs) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
         proxy.writeV(iovecs);
     }
 
-    public Task<File, Void> writeV(TaskMode mode, IOVec[] iovecs) throws NotImplementedException {
+    public Task<File, Void> writeV(TaskMode mode, IOVec[] iovecs)
+            throws NotImplementedException {
         return proxy.writeV(mode, iovecs);
     }
 }

@@ -21,59 +21,63 @@ public class StreamWrapperFactory extends StreamFactory {
 
     @Override
     protected Stream doCreateStream(Session session, URL name)
-            throws NotImplementedException, IncorrectURLException, BadParameterException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, NoSuccessException {
         return new StreamWrapper(session, name);
     }
 
     @Override
-    protected Task<StreamFactory, Stream> doCreateStream(TaskMode mode, Session session,
-            URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamFactory, Stream>(this, session, mode,
-                "doCreateStream", new Class[] {Session.class, URL.class},
-                session, name);
+    protected Task<StreamFactory, Stream> doCreateStream(TaskMode mode,
+            Session session, URL name) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<StreamFactory, Stream>(this,
+                session, mode, "doCreateStream", new Class[] { Session.class,
+                        URL.class }, session, name);
     }
 
     @Override
     protected StreamService doCreateStreamService(Session session, URL name)
-            throws NotImplementedException, IncorrectURLException, BadParameterException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, NoSuccessException {
         return new StreamServiceWrapper(session, name);
     }
 
     @Override
     protected StreamService doCreateStreamService(Session session)
-            throws NotImplementedException, IncorrectURLException, BadParameterException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, NoSuccessException {
         URL name;
         try {
             name = new URL("");
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             throw new SagaRuntimeException("Should not happen!", e);
         }
         return doCreateStreamService(session, name);
     }
 
     @Override
-    protected Task<StreamFactory, StreamService> doCreateStreamService(TaskMode mode,
-            Session session, URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamFactory, StreamService>(this, session, mode,
-                "doCreateStreamService", new Class[] {Session.class, URL.class},
-                session, name);
+    protected Task<StreamFactory, StreamService> doCreateStreamService(
+            TaskMode mode, Session session, URL name)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<StreamFactory, StreamService>(
+                this, session, mode, "doCreateStreamService", new Class[] {
+                        Session.class, URL.class }, session, name);
     }
 
     @Override
-    protected Task<StreamFactory, StreamService> doCreateStreamService(TaskMode mode,
-            Session session) throws NotImplementedException {
+    protected Task<StreamFactory, StreamService> doCreateStreamService(
+            TaskMode mode, Session session) throws NotImplementedException {
         URL name;
         try {
             name = new URL("");
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             throw new SagaRuntimeException("Should not happen!", e);
         }
-        return doCreateStreamService(mode, session, name);      
+        return doCreateStreamService(mode, session, name);
     }
 }

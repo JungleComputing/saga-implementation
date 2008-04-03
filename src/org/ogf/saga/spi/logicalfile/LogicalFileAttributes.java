@@ -14,9 +14,11 @@ class LogicalFileAttributes extends AsyncAttributes<LogicalFile> {
     LogicalFileAttributes(LogicalFile object, Session session) {
         super(object, session, false);
     }
-    
-    protected void addAttribute(String name, AttributeType type, boolean vector,
-            boolean readOnly, boolean notImplemented, boolean removeable) {
-        super.addAttribute(name, type, vector, readOnly, notImplemented, removeable);
+
+    protected void addAttribute(String name, AttributeType type,
+            boolean vector, boolean readOnly, boolean notImplemented,
+            boolean removeable) {
+        super.addAttribute(name, type, vector, readOnly, notImplemented,
+                removeable);
     }
 }

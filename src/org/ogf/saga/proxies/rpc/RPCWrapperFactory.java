@@ -20,27 +20,29 @@ import org.ogf.saga.task.TaskMode;
 public class RPCWrapperFactory extends RPCFactory {
 
     protected RPC doCreateRPC(Session session, URL funcname)
-            throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException, DoesNotExistException,
-            TimeoutException, NoSuccessException {
+            throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return new RPCWrapper(session, funcname);
     }
 
-    protected Task<RPCFactory, RPC> doCreateRPC(TaskMode mode, Session session, URL funcname)
-            throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<RPCFactory, RPC>(this, session, mode,
-                "doCreateRPC",
-                new Class[] { Session.class, URL.class},
+    protected Task<RPCFactory, RPC> doCreateRPC(TaskMode mode, Session session,
+            URL funcname) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<RPCFactory, RPC>(this, session,
+                mode, "doCreateRPC", new Class[] { Session.class, URL.class },
                 session, funcname);
     }
 
-    protected org.ogf.saga.rpc.Parameter doCreateParameter(Object data, IOMode mode)
-            throws BadParameterException, NoSuccessException, NotImplementedException {
+    protected org.ogf.saga.rpc.Parameter doCreateParameter(Object data,
+            IOMode mode) throws BadParameterException, NoSuccessException,
+            NotImplementedException {
         return new Parameter(data, mode);
     }
 
-    protected org.ogf.saga.rpc.Parameter doCreateParameter(IOMode mode) throws BadParameterException,
-            NoSuccessException, NotImplementedException {
+    protected org.ogf.saga.rpc.Parameter doCreateParameter(IOMode mode)
+            throws BadParameterException, NoSuccessException,
+            NotImplementedException {
         return new Parameter(mode);
     }
 }

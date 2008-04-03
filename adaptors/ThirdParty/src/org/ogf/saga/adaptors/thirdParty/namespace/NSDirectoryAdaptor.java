@@ -33,13 +33,11 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         throw new NotImplementedException();
     }
 
-    @Override
     protected void nonResolvingCopy(URL target, int flags)
             throws NotImplementedException {
         throw new NotImplementedException();
     }
 
-    @Override
     protected void nonResolvingMove(URL target, int flags)
             throws NotImplementedException {
         throw new NotImplementedException();
@@ -119,8 +117,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        ((NSDirectoryWrapper) wrapper).copy(target, flags);
-        ((NSDirectoryWrapper) wrapper).remove();
+        getWrapper().copy(target, flags);
+        getWrapper().remove();
     }
 
     public void permissionsAllow(URL target, String id, int permissions,
