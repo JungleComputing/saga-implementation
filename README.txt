@@ -9,10 +9,6 @@ Introduction.
   for SAGA attributes, SAGA tasks, SAGA monitorable, SAGA buffer,
   SAGA session, SAGA context.
 
-Installation.
-  To install, you need a Java 1.5 and you need "ant".
-  Just call "ant" to install.
-
 Environment variables.
   There is one important environment variable, used by the SAGA scripts,
   and that is SAGA_LOCATION. This should be set and point to the root
@@ -104,5 +100,4 @@ Adaptor-specific stuff.
   all the gruesome details from the user. Unfortunately, the world is not
   ideal, and some middleware may need user-defined settings.
   Adaptor-specific information can be found in the corresponding adaptor
-  directory, for instance adaptors/Gridsam/README.txt.
-
+  doc directory, for instance doc/adaptors/Gridsam/README.txt.

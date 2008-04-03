@@ -1,7 +1,7 @@
 <project name="SAGA" default="build" basedir=".">
 
     <description>
-	Build file for the Java SAGA Engine.
+	Build file for the Java SAGA Implementation.
     </description>
 
     <!-- Global properties -->
@@ -11,6 +11,7 @@
     <property name="tmp" location="tmp" />
     <property name="lib" location="lib" />
     <property name="jar" location="${lib}/saga-impl${version}.jar" />
+    <property name="sources-filename" value="saga-impl${version}-src" />
 
     <target name="init" depends="clean">
 	<!-- Create the time stamp -->
@@ -31,14 +32,6 @@
 	<!-- Compile the java code from src into ${tmp} -->
 
     	<javac srcdir="src" destdir="${tmp}" debug="on" >
-	    <classpath refid="external.jars" />
-    	    <compilerarg value="-Xlint:unchecked"/>
-    	</javac>
-	<javac srcdir="demo/src" destdir="${tmp}" debug="on" >
-	    <classpath refid="external.jars" />
-    	    <compilerarg value="-Xlint:unchecked"/>
-    	</javac>
-	<javac srcdir="test/src" destdir="${tmp}" debug="on" >
 	    <classpath refid="external.jars" />
     	    <compilerarg value="-Xlint:unchecked"/>
     	</javac>
@@ -67,6 +60,12 @@
 
 	<!-- Build adaptors. -->
 	<ant inheritAll="false" dir="adaptors" target="build"/>
+
+	<!-- Build demo. -->
+	<ant inheritAll="false" dir="demo" target="build"/>
+
+	<!-- Build tests. -->
+	<ant inheritAll="false" dir="test" target="build"/>
     </target>
 
     <target name="clean" description="clean up">
@@ -74,5 +73,40 @@
 	<delete dir="${tmp}" />
 	<!-- Clean adaptors. -->
 	<ant inheritAll="false" dir="adaptors" target="clean"/>
+	<!-- Clean demo. -->
+	<ant inheritAll="false" dir="demo" target="clean"/>
+	<!-- Clean tests. -->
+	<ant inheritAll="false" dir="test" target="clean"/>
     </target>
+
+    <target name="zip" depends="build">
+        <delete file="saga-impl${version}.zip" />
+	<delete file="sources/${sources-filename}.zip" />
+
+	<zip destfile="sources/${sources-filename}.zip">
+            <zipfileset dir="src" includes="**/*.java" prefix="${sources-filename}" />
+	    <zipfileset dir="adaptors/Gridsam/src" includes="**/*.java" prefix="${sources-filename}" />
+	    <zipfileset dir="adaptors/JavaGat/src" includes="**/*.java" prefix="${sources-filename}" />
+	    <zipfileset dir="adaptors/Socket/src" includes="**/*.java" prefix="${sources-filename}" />
+            <zipfileset dir="." includes="LICENSE.txt" prefix="${sources-filename}" />
+        </zip>
+
+        <zip destfile="saga-impl${version}.zip">
+            <zipfileset dir="."
+                        prefix="saga-impl${version}"
+			includes="doc/**,lib/**,demo/**,test/**,licenses/**,LICENSE.txt,README.txt,log4j.properties,saga.properties,sources/**" />
+            <zipfileset dir="."
+                        prefix="saga-impl${version}"
+			filemode="755"
+			includes="bin/**" />
+        </zip>
+
+	<delete file="sources/${sources-filename}.zip" />
+    </target>
+
+    <target name="distclean" depends="clean">
+        <delete file="saga-impl${version}.zip" />
+	<delete file="sources/${sources-filename}.zip" />
+    </target>
+    
 </project>

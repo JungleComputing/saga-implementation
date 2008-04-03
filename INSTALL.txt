@@ -1,0 +1,4 @@
+Saga Implementation INSTALL
+---------------------------
+  To install, you need a Java 1.5 and you need "ant".
+  Just call "ant" to install.
