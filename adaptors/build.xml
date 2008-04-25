@@ -10,12 +10,14 @@
 	<ant dir="Gridsam" />
 	<ant dir="JavaGat" />
 	<ant dir="Socket" />
+	<ant dir="XMLRPC" />
     </target>
 
     <target name="clean" description="clean up">
 	<ant dir="Gridsam" target="clean" />
 	<ant dir="JavaGat" target="clean" />
 	<ant dir="Socket" target="clean" />
+	<ant dir="XMLRPC" target="clean" />
     </target>
 
     <target name="gridsam" description="build Gridsam adaptors">
@@ -28,6 +30,10 @@
 
     <target name="socket" description="build socket adaptors">
 	<ant dir="Socket"/>
+    </target>
+
+    <target name="xmlrpc" description="build XMLRPC adaptors">
+	<ant dir="XMLRPC"/>
     </target>
 
 </project>
