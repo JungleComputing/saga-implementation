@@ -9,7 +9,6 @@ import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
-import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
@@ -37,18 +36,5 @@ class FileEntry extends NSEntryAdaptor {
     
     long size() {
         return fileImpl.length();
-    }
-    
-    protected void nonResolvingMove(URL target, int flags) throws IncorrectStateException,
-            NoSuccessException, BadParameterException, AlreadyExistsException, NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, IncorrectURLException {
-        super.nonResolvingMove(target, flags);
-    }
-    
-    protected void nonResolvingCopy(URL target, int flags) throws IncorrectStateException,
-            NoSuccessException, BadParameterException, AlreadyExistsException, IncorrectURLException,
-            NotImplementedException {
-        super.nonResolvingCopy(target, flags);
     }
 }

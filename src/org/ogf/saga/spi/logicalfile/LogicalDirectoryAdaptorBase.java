@@ -71,7 +71,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
 
-        checkClosed();
+        checkNotClosed();
 
         if (!Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
@@ -126,7 +126,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkClosed();
+        checkNotClosed();
 
         if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
@@ -151,7 +151,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
 
-        checkClosed();
+        checkNotClosed();
 
         if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(

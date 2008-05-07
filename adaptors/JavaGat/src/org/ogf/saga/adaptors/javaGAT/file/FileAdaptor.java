@@ -283,17 +283,20 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         }
     }
 
-    protected void nonResolvingCopy(URL target, int flags) throws IncorrectStateException,
-            NoSuccessException, BadParameterException, AlreadyExistsException, IncorrectURLException,
-            NotImplementedException {
-        entry.nonResolvingCopy(target, flags);
+    public void copy(URL target, int flags) throws IncorrectStateException,
+            NoSuccessException, BadParameterException, AlreadyExistsException,
+            IncorrectURLException, NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, DoesNotExistException {
+        entry.copy(target, flags);
     }
 
-    protected void nonResolvingMove(URL target, int flags) throws IncorrectStateException,
-            NoSuccessException, BadParameterException, AlreadyExistsException, NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, IncorrectURLException {
-        entry.nonResolvingMove(target, flags);
+    public void move(URL target, int flags) throws IncorrectStateException,
+            NoSuccessException, BadParameterException, AlreadyExistsException,
+            NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, IncorrectURLException, DoesNotExistException {
+        entry.move(target, flags);
     }
 
     public boolean isDir() throws NotImplementedException, AuthenticationFailedException,

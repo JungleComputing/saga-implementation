@@ -11,6 +11,7 @@
 	<ant dir="JavaGat" />
 	<ant dir="Socket" />
 	<ant dir="XMLRPC" />
+	<ant dir="Generic" />
     </target>
 
     <target name="clean" description="clean up">
@@ -18,6 +19,7 @@
 	<ant dir="JavaGat" target="clean" />
 	<ant dir="Socket" target="clean" />
 	<ant dir="XMLRPC" target="clean" />
+	<ant dir="Generic" target="clean" />
     </target>
 
     <target name="gridsam" description="build Gridsam adaptors">
@@ -34,6 +36,10 @@
 
     <target name="xmlrpc" description="build XMLRPC adaptors">
 	<ant dir="XMLRPC"/>
+    </target>
+
+    <target name="generic" description="build Generic adaptors">
+	<ant dir="generic"/>
     </target>
 
 </project>

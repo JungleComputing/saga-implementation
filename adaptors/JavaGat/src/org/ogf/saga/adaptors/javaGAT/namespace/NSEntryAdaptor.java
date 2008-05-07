@@ -31,15 +31,14 @@ import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.spi.namespace.NSEntryAdaptorBase;
 import org.ogf.saga.spi.namespace.NSEntrySPI;
 
-public class NSEntryAdaptor extends NSEntryAdaptorBase implements
-        NSEntrySPI {
+public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     private static Logger logger = Logger.getLogger(NSEntryAdaptor.class);
 
     static {
         Initialize.initialize();
     }
-    
+
     protected File fileImpl;
     protected FileInterface file;
     protected GATContext gatContext;
@@ -47,32 +46,38 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
     protected URI gatURI;
 
     Attributes attributes = new Attributes();
-    
+
     protected NSEntryAdaptor(Session session, URL name, int flags)
-            throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
-                PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
-                TimeoutException, NoSuccessException, AlreadyExistsException {
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
         this(null, session, name, flags, false);
     }
-    
-    public NSEntryAdaptor(NSEntryWrapper wrapper, Session session, URL name, int flags)
-            throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
-            PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
-            TimeoutException, NoSuccessException, AlreadyExistsException {
+
+    public NSEntryAdaptor(NSEntryWrapper wrapper, Session session, URL name,
+            int flags) throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
         this(wrapper, session, name, flags, false);
     }
 
-    NSEntryAdaptor(NSEntryWrapper wrapper, Session session, URL name, int flags, boolean isDir)
-            throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
-                PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
-                TimeoutException, NoSuccessException, AlreadyExistsException {
+    NSEntryAdaptor(NSEntryWrapper wrapper, Session session, URL name,
+            int flags, boolean isDir) throws NotImplementedException,
+            IncorrectURLException, BadParameterException,
+            DoesNotExistException, PermissionDeniedException,
+            AuthorizationFailedException, AuthenticationFailedException,
+            TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, session, name, flags);
-        
+
         org.ogf.saga.adaptors.javaGAT.session.Session gatSession;
-        
-        synchronized(session) {
-            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session)
-                    session.getAdaptorSession("JavaGAT");
+
+        synchronized (session) {
+            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session) session
+                    .getAdaptorSession("JavaGAT");
             if (gatSession == null) {
                 gatSession = new org.ogf.saga.adaptors.javaGAT.session.Session();
                 session.putAdaptorSession("JavaGAT", gatSession);
@@ -81,7 +86,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
 
         gatContext = gatSession.getGATContext();
         gatURI = cvtToGatURI(nameUrl);
-        
+
         try {
             fileImpl = GAT.createFile(gatContext, gatURI);
             file = fileImpl.getFileInterface();
@@ -91,11 +96,12 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
             }
             throw new NoSuccessException(e);
         }
-        
+
         try {
             isDirectory = file.isDirectory();
-            if (isDirectory && ! isDir) {
-                throw new BadParameterException(name.toString() + " points to directory");
+            if (isDirectory && !isDir) {
+                throw new BadParameterException(name.toString()
+                        + " points to directory");
             }
         } catch (GATInvocationException e) {
             // TODO: isDirectory fails, is a problem for GAT http adaptor.
@@ -108,7 +114,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         }
         try {
             if (!file.exists() && !Flags.CREATE.isSet(flags)) {
-                throw new DoesNotExistException(name.toString() + " does not exist");
+                throw new DoesNotExistException(name.toString()
+                        + " does not exist");
             }
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e);
@@ -116,7 +123,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         try {
             if (file.exists() && Flags.CREATE.isSet(flags)
                     && Flags.EXCL.isSet(flags)) {
-                throw new AlreadyExistsException(name.toString() + " already exists");
+                throw new AlreadyExistsException(name.toString()
+                        + " already exists");
             }
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e);
@@ -146,15 +154,16 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         // below not specified...
         try {
             if (!file.exists() && Flags.CREATE.isSet(flags)) {
-                if (! isDir) {
+                if (!isDir) {
                     if (!file.createNewFile()) {
-                        throw new NoSuccessException("Failed to create new file: "
-                                + name.toString());
+                        throw new NoSuccessException(
+                                "Failed to create new file: " + name.toString());
                     }
                 } else {
                     if (!file.mkdir()) {
-                        throw new NoSuccessException("Failed to create directory: "
-                                + name.toString());
+                        throw new NoSuccessException(
+                                "Failed to create directory: "
+                                        + name.toString());
                     }
                 }
             }
@@ -162,8 +171,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
             throw new NoSuccessException(e);
         }
     }
-    
-    public Object clone()  throws CloneNotSupportedException {
+
+    public Object clone() throws CloneNotSupportedException {
         NSEntryAdaptor clone = (NSEntryAdaptor) super.clone();
         try {
             clone.gatURI = new URI(gatURI.toString());
@@ -173,7 +182,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         // Should we also clone fileImpl? I don't think it is needed.
         return clone;
     }
-    
+
     public static URI cvtToGatURI(URL url) throws NotImplementedException,
             BadParameterException, NoSuccessException {
         try {
@@ -185,7 +194,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
             String path = url.getPath();
             String query = url.getQuery();
             String fragment = url.getFragment();
-            
+
             StringBuffer u = new StringBuffer();
             if (scheme != null) {
                 u.append(scheme);
@@ -203,7 +212,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
                     u.append(port);
                 }
             }
-            
+
             if (scheme != null) {
                 // This is the work-around to obtain uri's that
                 // JavaGAT understands.
@@ -222,9 +231,9 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
                 u.append("#");
                 u.append(fragment);
             }
-            
+
             uri = new URI(u.toString());
-            
+
             if (logger.isDebugEnabled()) {
                 logger.debug("URL " + url + " converted to " + uri);
             }
@@ -233,11 +242,12 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
             throw new BadParameterException(e);
         }
     }
-    
-    protected URL cvtToSagaURL(URI uri) throws NotImplementedException, BadParameterException, NoSuccessException {
+
+    public static URL cvtToSagaURL(URI uri) throws NotImplementedException,
+            BadParameterException, NoSuccessException {
         return new URL(uri.toString()).normalize();
     }
-    
+
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
         closed = true;
@@ -253,26 +263,23 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         }
     }
 
-    public void copy(URL target) throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
-            IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException, IncorrectURLException,
-            DoesNotExistException {
-        copy(target, Flags.NONE.getValue());
-    }
-      
     public void copy(URL target, int flags) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException,
-            IncorrectURLException, DoesNotExistException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, TimeoutException,
+            NoSuccessException, IncorrectURLException, DoesNotExistException {
+        checkNotClosed();
+        checkCopyFlags(flags);
         nonResolvingCopy(resolve(target), flags);
     }
-    
+
     // Copy, without resolving target.
     // It has already been resolved, either with respect to this NSEntry or
     // with respect to the NSDirectory object that invoked this method.
     protected void nonResolvingCopy(URL target, int flags)
-            throws IncorrectStateException, NoSuccessException, BadParameterException, AlreadyExistsException,
-                IncorrectURLException, NotImplementedException {
+            throws IncorrectStateException, NoSuccessException,
+            BadParameterException, AlreadyExistsException,
+            IncorrectURLException, NotImplementedException {
         if (closed) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Entry already closed!");
@@ -287,13 +294,13 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameterException("Flags not allowed for NSEntry copy: "
-                    + flags);
+            throw new BadParameterException(
+                    "Flags not allowed for NSEntry copy: " + flags);
         }
         File targetFile = null;
         try {
             targetFile = GAT.createFile(gatContext, cvtToGatURI(target));
-            
+
             if (logger.isDebugEnabled()) {
                 logger.debug("targetFile: " + targetFile.toGATURI().toString());
             }
@@ -315,7 +322,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         // a 'BadParameter' exception is thrown if the source is not a directory
         // and the 'Recursive' flag is set
 
-        if (! isDirectory && Flags.RECURSIVE.isSet(flags)) {
+        if (!isDirectory && Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
                     "Source is not a directory and recursive flag is set");
         }
@@ -336,7 +343,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
                             .toString()
                             + "/" + file.getName());
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Creating target " + targetChildFile.getName());
+                        logger.debug("Creating target "
+                                + targetChildFile.getName());
                     }
                 } catch (GATObjectCreationException e) {
                     if (logger.isDebugEnabled()) {
@@ -396,13 +404,13 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         }
     }
 
-    public URL getCWD() throws NotImplementedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public URL getCWD() throws NotImplementedException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed");
         }
         String path = nameUrl.getPath();
-        if (! isDirectory) {
+        if (!isDirectory) {
             int i = path.lastIndexOf('/');
             if (i != -1) {
                 path = path.substring(0, i);
@@ -418,8 +426,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         return newURL;
     }
 
-    public URL getName() throws NotImplementedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public URL getName() throws NotImplementedException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed");
         }
@@ -427,14 +435,14 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         String[] s = path.split("/");
 
         try {
-            return new URL(s[s.length-1]);
+            return new URL(s[s.length - 1]);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
         }
     }
 
-    public URL getURL() throws NotImplementedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public URL getURL() throws NotImplementedException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed");
         }
@@ -445,8 +453,9 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         }
     }
 
-    public boolean isDir() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public boolean isDir() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed");
@@ -454,86 +463,85 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         return isDirectory;
     }
 
-    public boolean isEntry() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public boolean isEntry() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed");
         }
-        return ! isDirectory;
+        return !isDirectory;
     }
 
-    public boolean isLink() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public boolean isLink() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("Not Implemented!");
     }
 
     public void link(URL target, int flags) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException,
-            IncorrectURLException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, TimeoutException,
+            NoSuccessException, IncorrectURLException {
         throw new NotImplementedException("Not Implemented!");
     }
-     
+
     public void move(URL target, int flags) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException,
-            IncorrectURLException, DoesNotExistException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, TimeoutException,
+            NoSuccessException, IncorrectURLException, DoesNotExistException {
+        checkNotClosed();
+        checkCopyFlags(flags);
         nonResolvingMove(resolve(target), flags);
     }
-    
-    protected void nonResolvingMove(URL target, int flags) throws IncorrectStateException,
-            NoSuccessException, BadParameterException, AlreadyExistsException, NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, IncorrectURLException {
-        if (closed) {
-            throw new IncorrectStateException("NSEntry already closed");
-        }
+
+    protected void nonResolvingMove(URL target, int flags)
+            throws IncorrectStateException, NoSuccessException,
+            BadParameterException, AlreadyExistsException,
+            NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, IncorrectURLException {
         nonResolvingCopy(target, flags);
         remove(flags);
-        /*
-         * Commented out the code below. It is not correct. The NSEntry
-         * on which the move is done still should refer to the old entry.
-        closed = false; // todo
-        try {
-            nameUrl = new URL(target.toString());
-            gatURI = cvtToGatURI(nameUrl);
-            fileImpl = GAT.createFile(gatContext, gatURI);
-        } catch (GATObjectCreationException e) {
-            throw new NoSuccessException(e);
-        }
-        file = fileImpl.getFileInterface();
-        */
     }
 
     public void permissionsAllow(String id, int permissions, int flags)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, IncorrectStateException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException, TimeoutException,
+            NoSuccessException {
         throw new NotImplementedException("Not implemented!");
     }
 
     public void permissionsDeny(String id, int permissions, int flags)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, IncorrectStateException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException, TimeoutException,
+            NoSuccessException {
         throw new NotImplementedException("Not implemented!");
     }
 
-    public URL readLink() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public URL readLink() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("Not implemented!");
     }
 
-    public void remove(int flags) throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public void remove(int flags) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed");
         }
         int allowedFlags = Flags.DEREFERENCE.or(Flags.RECURSIVE);
         if ((allowedFlags | flags) != allowedFlags) {
-            throw new BadParameterException("Flags not allowed for NSEntry remove: "
-                    + flags);
+            throw new BadParameterException(
+                    "Flags not allowed for NSEntry remove: " + flags);
         }
         if (isDirectory && !Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
@@ -555,8 +563,9 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
     }
 
     public void permissionsAllow(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         try {
             permissionsAllow(id, permissions, Flags.NONE.getValue());
         } catch (IncorrectStateException e) {
@@ -568,14 +577,16 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
     }
 
     public boolean permissionsCheck(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("Not implemented!");
     }
 
     public void permissionsDeny(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         try {
             permissionsDeny(id, permissions, Flags.NONE.getValue());
         } catch (IncorrectStateException e) {
@@ -586,13 +597,15 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements
         }
     }
 
-    public String getGroup() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getGroup() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("Not implemented!");
     }
 
-    public String getOwner() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getOwner() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("Not implemented!");
     }
 }

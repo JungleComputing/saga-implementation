@@ -89,17 +89,20 @@ public class DirectoryAdaptor extends org.ogf.saga.spi.file.DirectoryAdaptorBase
         return isEntry(name);
     }
 
-    protected void nonResolvingCopy(URL target, int flags) throws IncorrectStateException,
-            NoSuccessException, BadParameterException, AlreadyExistsException, IncorrectURLException,
-            NotImplementedException {
-        dir.nonResolvingCopy(target, flags);
+    public void copy(URL target, int flags) throws IncorrectStateException,
+            NoSuccessException, BadParameterException, AlreadyExistsException,
+            IncorrectURLException, NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, DoesNotExistException {
+        dir.copy(target, flags);
     }
 
-    protected void nonResolvingMove(URL target, int flags) throws IncorrectStateException,
-            NoSuccessException, BadParameterException, AlreadyExistsException, NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, IncorrectURLException {
-        dir.nonResolvingMove(target, flags);
+    public void move(URL target, int flags) throws IncorrectStateException,
+            NoSuccessException, BadParameterException, AlreadyExistsException,
+            NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, IncorrectURLException, DoesNotExistException {
+        dir.move(target, flags);
     }
 
     public void changeDir(URL dir) throws NotImplementedException, IncorrectURLException,
