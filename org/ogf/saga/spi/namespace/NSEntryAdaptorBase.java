@@ -26,6 +26,8 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         implements NSEntrySPI {
 
     private static Logger logger = Logger.getLogger(NSEntryAdaptorBase.class);
+    private static final int COPY_FLAGS = Flags.CREATEPARENTS.or(Flags.RECURSIVE
+            .or(Flags.OVERWRITE));
 
     protected boolean closed = false;
     protected URL nameUrl;
@@ -66,7 +68,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         return clone;
     }
 
-    protected void checkClosed() throws IncorrectStateException {
+    protected void checkNotClosed() throws IncorrectStateException {
         if (closed) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Entry already closed!");
@@ -102,7 +104,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public URL getCWD() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        checkClosed();
+        checkNotClosed();
         String path = nameUrl.getPath();
         boolean dir = false;
         try {
@@ -134,7 +136,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public URL getName() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        checkClosed();
+        checkNotClosed();
         String path = nameUrl.getPath();
         String[] s = path.split("/");
 
@@ -153,7 +155,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public URL getURL() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        checkClosed();
+        checkNotClosed();
         try {
             return new URL(nameUrl.normalize().toString());
         } catch (BadParameterException e) {
@@ -166,35 +168,16 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         return new org.ogf.saga.impl.task.Task<NSEntry, URL>(wrapper, session,
                 mode, "getURL", new Class[] {});
     }
-
-    public void copy(URL target, int flags) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, AlreadyExistsException, TimeoutException,
-            NoSuccessException, IncorrectURLException, DoesNotExistException {
-        checkClosed();
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
-                .or(Flags.OVERWRITE));
-        // allowed flags: RECURSIVE, CREATE_PARENTS, OVERWRITE
-        // otherwise: BadParameter();
-        if ((allowedFlags | flags) != allowedFlags) {
+    
+    protected void checkCopyFlags(int flags) throws BadParameterException {
+        if ((COPY_FLAGS | flags) != COPY_FLAGS) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
             throw new BadParameterException(
                     "Flags not allowed for NSEntry copy: " + flags);
         }
-        nonResolvingCopy(resolve(target), flags);
     }
-
-    // Copy, without resolving target.
-    // It has already been resolved, either with respect to this NSEntry or
-    // with respect to the NSDirectory object that invoked this method.
-    // SPI implementations should override this method.
-    protected abstract void nonResolvingCopy(URL target, int flags)
-            throws IncorrectStateException, NoSuccessException,
-            BadParameterException, AlreadyExistsException,
-            IncorrectURLException, NotImplementedException;
 
     public Task<NSEntry, Void> copy(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
@@ -227,33 +210,6 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
                 mode, "link", new Class[] { URL.class, Integer.TYPE }, target,
                 flags);
     }
-
-    public void move(URL target, int flags) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, AlreadyExistsException, TimeoutException,
-            NoSuccessException, IncorrectURLException, DoesNotExistException {
-        checkClosed();
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
-                .or(Flags.OVERWRITE));
-        // allowed flags: RECURSIVE, CREATE_PARENTS, OVERWRITE
-        // otherwise: BadParameter();
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for NSEntry copy: " + flags);
-        }
-        nonResolvingMove(resolve(target), flags);
-    }
-
-    protected abstract void nonResolvingMove(URL target, int flags)
-            throws IncorrectStateException, NoSuccessException,
-            BadParameterException, AlreadyExistsException,
-            NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, IncorrectURLException;
 
     public Task<NSEntry, Void> move(TaskMode mode, URL target, int flags)
             throws NotImplementedException {

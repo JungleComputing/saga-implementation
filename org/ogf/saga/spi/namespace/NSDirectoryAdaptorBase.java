@@ -106,7 +106,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
     protected void checkDirCopyFlags(int flags) throws IncorrectStateException,
             BadParameterException {
-        checkClosed();
+        checkNotClosed();
         int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
                 .or(Flags.OVERWRITE));
         if ((allowedFlags | flags) != allowedFlags) {
@@ -308,7 +308,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        checkClosed();
+        checkNotClosed();
         int allowedFlags = Flags.DEREFERENCE.or(Flags.RECURSIVE);
         if ((allowedFlags | flags) != allowedFlags) {
             if (logger.isDebugEnabled()) {
@@ -444,7 +444,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
-            NoSuccessException;
+            NoSuccessException, IncorrectURLException;
 
     public Task<NSDirectory, List<URL>> list(TaskMode mode, String pattern,
             int flags) throws NotImplementedException {
@@ -459,7 +459,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        checkClosed();
+        checkNotClosed();
         int allowedFlags = Flags.CREATEPARENTS.or(Flags.EXCL);
         if ((allowedFlags | flags) != allowedFlags) {
             if (logger.isDebugEnabled()) {
@@ -500,7 +500,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        checkClosed();
+        checkNotClosed();
         name = resolveToDir(name);
         return NSFactory.createNSEntry(session, name, flags);
     }
@@ -518,7 +518,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkClosed();
+        checkNotClosed();
         name = resolveToDir(name);
         return NSFactory.createNSDirectory(session, name, flags);
     }
