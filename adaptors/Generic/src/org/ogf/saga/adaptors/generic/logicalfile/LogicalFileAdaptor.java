@@ -34,7 +34,7 @@ import org.ogf.saga.spi.logicalfile.LogicalFileAdaptorBase;
  * (the list of replicas) in a Saga NSEntry object.
  * As such, it uses other SAGA packages (namespace and file)
  * for its implementation.
- * It recognizes the schemes "lfn", "file", and "any".
+ * It recognizes the schemes "file" and "any".
  */
 public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
@@ -54,11 +54,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         super(wrapper, session, url, flags);
         
         // Check scheme.
-        String scheme = url.getScheme();
-        if (! "lfn".equals(scheme) && ! "file".equals(scheme)
-                && ! "any".equals(scheme)) {
-            throw new NotImplementedException("Unknown scheme");
-        }
+        checkScheme(url);
         
         // Set scheme for underlying file.
         fileURL = new URL(url.toString());
@@ -84,6 +80,13 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
                 throw new NoSuccessException("Exception while reading " + fileURL,
                         e);
             }
+        }
+    }
+   
+    static void checkScheme(URL url) throws NotImplementedException {
+        String scheme = url.getScheme();
+        if (! "file".equals(scheme) && ! "any".equals(scheme)) {
+            throw new NotImplementedException("Unknown scheme");
         }
     }
 
@@ -285,6 +288,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             IncorrectURLException, NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, DoesNotExistException {
+        checkScheme(target);
         entry.copy(target, flags);
     }
 
@@ -293,6 +297,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, IncorrectURLException, DoesNotExistException {
+        checkScheme(target);
         entry.move(target, flags);
     }
 
@@ -322,6 +327,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException {
+        checkScheme(target);
         entry.link(target, flags);
     }
 
