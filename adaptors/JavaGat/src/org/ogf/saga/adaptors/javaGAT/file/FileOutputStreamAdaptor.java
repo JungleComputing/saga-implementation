@@ -29,7 +29,7 @@ public class FileOutputStreamAdaptor extends org.ogf.saga.spi.file.FileOutputStr
     }
     
     private org.gridlab.gat.io.FileOutputStream out;
-
+    
     public FileOutputStreamAdaptor(FileOutputStreamWrapper wrapper, Session session,
             URL source, boolean append) 
             throws NotImplementedException, IncorrectURLException, AuthenticationFailedException,
@@ -70,7 +70,7 @@ public class FileOutputStreamAdaptor extends org.ogf.saga.spi.file.FileOutputStr
     }
     
     public void close() throws IOException {
-            if (out != null) {
+        if (out != null) {
             out.close();
         }
         out = null;

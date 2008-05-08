@@ -22,7 +22,7 @@ import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.proxies.file.FileInputStreamWrapper;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 
-class FileInputStreamAdaptor extends org.ogf.saga.spi.file.FileInputStreamAdaptorBase {
+public class FileInputStreamAdaptor extends org.ogf.saga.spi.file.FileInputStreamAdaptorBase {
 
     static {
         Initialize.initialize();

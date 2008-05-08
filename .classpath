@@ -20,5 +20,6 @@
 	<classpathentry kind="lib" path="adaptors/JavaGat/external/GAT-API.jar"/>
 	<classpathentry kind="lib" path="adaptors/XMLRPC/external/xmlrpc-client-3.1.jar"/>
 	<classpathentry kind="lib" path="adaptors/XMLRPC/external/xmlrpc-common-3.1.jar"/>
+	<classpathentry kind="lib" path="adaptors/XMLRPC/external/xmlrpc-server-3.1.jar"/>
 	<classpathentry kind="output" path="tmp-eclipse"/>
 </classpath>
