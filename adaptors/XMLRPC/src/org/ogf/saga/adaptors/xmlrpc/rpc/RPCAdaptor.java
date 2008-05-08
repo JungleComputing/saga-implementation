@@ -6,6 +6,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.ogf.saga.URL;
+import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -17,9 +18,9 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.proxies.rpc.RPCWrapper;
 import org.ogf.saga.rpc.IOMode;
 import org.ogf.saga.rpc.Parameter;
-import org.ogf.saga.rpc.RPC;
 import org.ogf.saga.spi.rpc.RPCAdaptorBase;
 
 public class RPCAdaptor extends RPCAdaptorBase {
@@ -32,7 +33,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
     
     private boolean closed = false;
     
-    public RPCAdaptor(Session session, RPC wrapper, URL funcName)
+    public RPCAdaptor(RPCWrapper wrapper, Session session, URL funcName)
             throws NotImplementedException, BadParameterException,
             NoSuccessException, DoesNotExistException {
         super(session, wrapper, funcName);
@@ -49,7 +50,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
         url.setScheme("http");
         url.setHost(getHost());
         url.setPort(getPort());
-        url.setPath("xmlrpc");
+        url.setPath("/xmlrpc");
         
         func = getFunc();
         
@@ -58,23 +59,32 @@ public class RPCAdaptor extends RPCAdaptorBase {
         } catch (MalformedURLException e) {
             throw new NoSuccessException("internal error", e);
         }
+        String extensions = SAGAEngine.getProperty(
+                "saga.adaptor.xmlrpc.enableExtensions");
+        if ("".equals(extensions) || "true".equals(extensions)
+                || "1".equals(extensions)) {
+            // Note: this requires the apache xmlrpc server.
+            config.setEnabledForExtensions(true);
+        }
         // config.setEnabledForExceptions(true);
         client.setConfig(config);
         
         // validate method name
+        boolean ok = false;
         try {
-            boolean ok = false;
-            Object[] methods = (Object[]) client.execute("system.methodHelp", new Object[]{});
+            Object[] methods = (Object[]) client.execute("system.listMethods", new Object[]{});
             for (Object o : methods) {
                 if (o.equals(func)) {
                     ok = true;
                 }
             }
-            if (! ok) {
-                throw new DoesNotExistException("Server not support function " + func);
-            }
         } catch (Throwable e) {
-            // ignored. Cannot test func name.
+            // system.listMethods does not seem to be supported.
+            // Ignored. Cannot test func name.
+            ok = true;
+        }
+        if (! ok) {
+            throw new DoesNotExistException("Server not support function " + func);
         }
     }
     
@@ -92,11 +102,12 @@ public class RPCAdaptor extends RPCAdaptorBase {
     }
     
     private String getFunc() {
-        String name = "system.methodHelp";
+        String name = "system.listMethods";
         try {
             String n = funcName.getPath();
             if (n != null) {
-                name = n;
+                // Skip the first '/'.
+                name = n.substring(1);
             }
         } catch(Throwable e) {
             // ignored

@@ -44,8 +44,8 @@ public class MetaFactory implements SagaFactory {
         return new org.ogf.saga.proxies.namespace.NSWrapperFactory();
     }
 
-    public RPCFactory createRPCFactory() {   
-        throw new Error("RPC factory not implemented");
+    public RPCFactory createRPCFactory() {
+        return new org.ogf.saga.proxies.rpc.RPCWrapperFactory();
     }
 
     public SessionFactory createSessionFactory() {
