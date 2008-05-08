@@ -26,6 +26,10 @@
 	<fileset dir="../lib">
             <include name="*.jar" />
         </fileset>
+	<!-- needed for demo xmlrpc server -->
+	<fileset dir="../adaptors/XMLRPC/external">
+            <include name="*.jar" />
+        </fileset>
     </path>
 
     <target name="compile" depends="init" description="compile the source ">

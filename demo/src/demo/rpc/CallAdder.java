@@ -9,7 +9,7 @@ import org.ogf.saga.rpc.RPCFactory;
 public class CallAdder {
     public static void main(String[] args) {
         try {
-            URL url = new URL("any://titan.cs.vu.nl:8080/Calculator.add");
+            URL url = new URL("any://localhost:8080/Calculator.add");
             RPC rpc = RPCFactory.createRPC(url);
             Parameter param1 = RPCFactory.createParameter(new Integer(10));
             Parameter param2 = RPCFactory.createParameter(new Integer(20));
