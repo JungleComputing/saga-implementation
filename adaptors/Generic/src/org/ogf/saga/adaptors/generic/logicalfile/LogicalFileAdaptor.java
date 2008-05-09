@@ -33,18 +33,16 @@ import org.ogf.saga.spi.logicalfile.LogicalFileAdaptorBase;
  * This LogicalFile adaptor actually stores its contents
  * (the list of replicas) in a Saga NSEntry object.
  * As such, it uses other SAGA packages (namespace and file)
- * for its implementation.
- * It recognizes the schemes "file" and "any".
+ * for its implementation. The recognized schemes are the schemes
+ * of the file and namespace packages.
  */
 public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
     private NSEntry entry;
 
     private HashSet<URL> urls = new HashSet<URL>();
-    
-    private final URL fileURL;
-    
-   public LogicalFileAdaptor(LogicalFileWrapper wrapper, Session session,
+       
+    public LogicalFileAdaptor(LogicalFileWrapper wrapper, Session session,
             URL url, int flags) throws NotImplementedException,
             IncorrectURLException, BadParameterException,
             DoesNotExistException, PermissionDeniedException,
@@ -53,19 +51,12 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
                
         super(wrapper, session, url, flags);
         
-        // Check scheme.
-        checkScheme(url);
-        
-        // Set scheme for underlying file.
-        fileURL = new URL(url.toString());
-        fileURL.setScheme("file");
-        
-        entry = NSFactory.createNSEntry(session, fileURL,
+        entry = NSFactory.createNSEntry(session, url,
                 flags & Flags.ALLNAMESPACEFLAGS.getValue());
     
         if (Flags.READ.isSet(flags)) {
             BufferedReader in = new BufferedReader(new InputStreamReader(
-                    FileFactory.createFileInputStream(session, fileURL)));
+                    FileFactory.createFileInputStream(session, url)));
             try {
                 for (;;) {
                     String s = in.readLine();
@@ -81,25 +72,18 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
                         } catch(Throwable ex) {
                             // ignored
                         }
-                        throw new NoSuccessException("" + fileURL + " contains " + s
+                        throw new NoSuccessException("" + url + " contains " + s
                                 + ", which does not seem to be an URL");
                     }
                 }
                 in.close();
             } catch (IOException e) {
-                throw new NoSuccessException("Exception while reading " + fileURL,
+                throw new NoSuccessException("Exception while reading " + url,
                         e);
             }
         }
     }
    
-    static void checkScheme(URL url) throws NotImplementedException {
-        String scheme = url.getScheme();
-        if (! "file".equals(scheme) && ! "any".equals(scheme)) {
-            throw new NotImplementedException("Unknown scheme");
-        }
-    }
-
     public Object clone() throws CloneNotSupportedException {
         LogicalFileAdaptor clone = (LogicalFileAdaptor) super.clone();
         clone.entry = (NSEntry) entry.clone();
@@ -281,7 +265,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                    FileFactory.createFileOutputStream(session, fileURL)));
+                    FileFactory.createFileOutputStream(session, nameUrl)));
             for (URL u : urls) {
                 out.write(u.toString());
                 out.newLine();
@@ -298,7 +282,6 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             IncorrectURLException, NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, DoesNotExistException {
-        checkScheme(target);
         entry.copy(target, flags);
     }
 
@@ -307,7 +290,6 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, IncorrectURLException, DoesNotExistException {
-        checkScheme(target);
         entry.move(target, flags);
     }
 
@@ -337,7 +319,6 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException {
-        checkScheme(target);
         entry.link(target, flags);
     }
 
