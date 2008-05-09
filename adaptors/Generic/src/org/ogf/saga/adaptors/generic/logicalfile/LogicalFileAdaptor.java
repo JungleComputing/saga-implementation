@@ -72,8 +72,18 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
                     if (s == null) {
                         break;
                     }
-                    URL u = new URL(s);
-                    urls.add(u);
+                    try {
+                        URL u = new URL(s);
+                        urls.add(u);
+                    } catch(Throwable e) {
+                        try {
+                            in.close();
+                        } catch(Throwable ex) {
+                            // ignored
+                        }
+                        throw new NoSuccessException("" + fileURL + " contains " + s
+                                + ", which does not seem to be an URL");
+                    }
                 }
                 in.close();
             } catch (IOException e) {
