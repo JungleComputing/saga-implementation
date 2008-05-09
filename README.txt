@@ -92,7 +92,9 @@ Selecting/deselecting SAGA adaptors.
 	be tried in the specified order.
 
   StreamService.adaptor.name = !socket
-	this will not load the socket adaptor for the StreamService SPI.
+	this will load all StreamService adaptors, except for the socket
+	adaptor.
+	
   
 Adaptor-specific stuff.
   SAGA offers an API for accessing the Grid, and its implementation(s) use
