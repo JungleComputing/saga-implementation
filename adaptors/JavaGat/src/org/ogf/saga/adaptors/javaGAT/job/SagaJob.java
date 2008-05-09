@@ -13,8 +13,8 @@ import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.URI;
 import org.gridlab.gat.io.File;
 import org.gridlab.gat.monitoring.MetricDefinition;
+import org.gridlab.gat.monitoring.MetricEvent;
 import org.gridlab.gat.monitoring.MetricListener;
-import org.gridlab.gat.monitoring.MetricValue;
 import org.gridlab.gat.resources.HardwareResourceDescription;
 import org.gridlab.gat.resources.SoftwareDescription;
 import org.gridlab.gat.resources.SoftwareResourceDescription;
@@ -461,7 +461,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
         }
     }
     
-    public synchronized void processMetricEvent(MetricValue val) {
+    public synchronized void processMetricEvent(MetricEvent val) {
         int gatState = gatJob.getState();
         if (gatState == savedState) {
             return;
