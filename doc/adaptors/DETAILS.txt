@@ -117,15 +117,18 @@ Package SAGA file
 Package SAGA logicalfile
 ------------------------
 
-- JavaGAT
+- Generic
   * adaptor for LogicalFile
-    Needs to be partly rewritten since GAT logicalfiles don't do what
-    this adaptor expects. I thought that the GAT logicalfile adaptor
-    would create a file or some non-volatile storage for it, but it actually
-    depends on the user to do so.
+    This adaptor uses the SAGA file and namespace packages to store the
+    contents of the logicalfile. A logicalfile is just a file containing
+    a list of URLs.
+  * adaptor for LogicalDirectory
+    Built on top of the SAGA namespace package.
 
 Package SAGA RPC
 ----------------
-
-There are no adaptors for this package yet. We are looking into XML-RPC
-and Grid-RPC.
+- XMLRPC
+  * adaptor for RPC
+    This adaptor implements the RPC package on XMLRPC. It is built on top
+    of the Apache XMLRPC client library. Limitation: at most one OUT
+    parameter is supported.
