@@ -162,7 +162,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             // ignored
         }
         try {
-            sd.addAttribute("jobType", getV(JobDescription.SPMDVARIATION));
+            sd.addAttribute("job.type", getV(JobDescription.SPMDVARIATION));
         } catch(Throwable e) {
             // ignored
         }
@@ -173,7 +173,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
 
         try {
             // What to do if PROCESSESPERHOST is set but NUMBEROFPROCESSES is not???
-            sd.addAttribute("hostCount", 
+            sd.addAttribute("host.count", 
                     Integer.parseInt(getV(JobDescription.NUMBEROFPROCESSES))
                     / Integer.parseInt(getV(JobDescription.PROCESSESPERHOST)));
         } catch(Throwable e) {
@@ -190,17 +190,17 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             // ignored
         }
         try {
-            sd.addAttribute("minMemory", getV(JobDescription.TOTALPHYSICALMEMORY));
+            sd.addAttribute("memory.min", getV(JobDescription.TOTALPHYSICALMEMORY));
         } catch(Throwable e) {
             // ignored
         }
         try {
-            sd.addAttribute("maxCPUTime", getV(JobDescription.TOTALCPUTIME));
+            sd.addAttribute("cputime.max", getV(JobDescription.TOTALCPUTIME));
         } catch(Throwable e) {
             // ignored
         }
         try {
-            sd.addAttribute("saveState", 
+            sd.addAttribute("save.state", 
                     ("True".equals(getV(JobDescription.CLEANUP)) ? "false" : "true"));
         } catch(Throwable e) {
             // ignored
