@@ -25,8 +25,8 @@ Using a GridSAM service.
   translated into a "https" scheme.
   You need, of course, a certificate for the Gridsam service. Also, you
   need a file crypto.properties on your classpath. An example is included
-  in the adaptors/GridsamAdaptor directory. You will probably need to adapt
-  some values there, a.o. to refer to your certificate.
+  in this directory. You will probably need to adapt some values there,
+  a.o. to refer to your certificate.
   Also, you need to be aware that the clock of the system on which your
   application runs does not run more than 5 minutes behind the clock on
   the server on which the Gridsam service runs, otherwise certificate

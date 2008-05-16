@@ -1,0 +1,116 @@
+\documentclass[a4paper,10pt]{article}
+
+%\usepackage{graphicx}
+\usepackage{url}
+\usepackage{times}
+
+\begin{document}
+
+\title{JAVA SAGA User's Guide}
+
+\author{Ceriel J.H. Jacobs}
+
+\maketitle
+
+\section{Introduction}
+
+This short manual describes the steps required to compile
+and run an application that uses this Java SAGA implementation.
+The reader is referred to the
+Java SAGA language binding document, the Java SAGA javadoc for the
+Java language bindings for SAGA, and to the SAGA specification,
+to find out how to write such an application. The current release also
+contains some demo programs.
+
+\subsection{Compiling an application for SAGA}
+
+The only thing that is particular to compiling an application for
+Java SAGA is that the SAGA api jar-file must be on the classpath.
+The command
+\noindent
+{\small
+\begin{verbatim}
+javac -classpath <path to the SAGA API jar-file>
+\end{verbatim}
+}
+\noindent
+will do the trick. In this release, the SAGA API jar-file can be found
+in the \texttt{lib} directory, its name is \texttt{saga-api-1.0.jar}.
+
+Of course, it is also possible to use the \texttt{ant} program.
+See for instance the \texttt{build.xml} in the \texttt{demo} directory.
+
+\subsection{Running a Java SAGA application}
+
+We will now show how to run an example SAGA application.
+The instructions below assume that the SAGA\_LOCATION
+environment variable is set to the location of this SAGA release.
+
+We will use the \texttt{demo.namespace.ListTest} example here.
+This application lists the directory as specified by the first
+program argument with different patterns. The Java SAGA release
+has a \texttt{run\_saga\_app} utility script, provided for
+convenience. 
+On a unix-like system it can be used to run the application as follows:
+
+\noindent
+{\small
+\begin{verbatim}
+$ $SAGA_LOCATION/bin/run_saga_app demo.namespace.ListTest \
+    ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
+\end{verbatim}
+}
+\noindent
+
+On a windows system this looks as follows:
+
+\noindent
+{\small
+\begin{verbatim}
+C:\DOCUME~1\Temp> "%SAGA_LOCATION%"\bin\run_saga_app demo.namespace.ListTest
+    ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
+\end{verbatim}
+}
+\noindent
+
+Note the absence as well as presence of quoting! Also, the
+command is split into multiple lines for readability.
+This should be just a single line.
+
+---------- TODO ---------------
+
+As said, the \texttt{run\_saga\_app} script is only provided for convenience.
+To run the application without \texttt{run\_saga\_app}, the following command
+can be used:
+
+\noindent
+{\small
+\begin{verbatim}
+$ java \
+    -cp \
+    $SAGA_LOCATION/lib/saga-demo.jar:$SAGA_LOCATION/lib/saga-api-1.0.jar: \
+    -Dibis.implementation.path=$IPL_HOME/lib \
+    -Dibis.server.address=localhost \
+    -Dibis.pool.name=test \
+    -Dlog4j.configuration=file:$IPL_HOME/log4j.properties \
+    ibis.ipl.examples.Hello
+\end{verbatim}
+}
+\noindent
+
+In this case, we use the \texttt{ibis.implementation.path} property to supply Ibis
+with the jar files of the Ibis implementations. Alternatively, they
+could also all be added to the class path.
+
+
+\section{Further Reading}
+
+The Ibis web page \url{http://www.cs.vu.nl/ibis} lists all
+the documentation and software available for Ibis, including papers, and
+slides of presentations.
+
+For detailed information on developing an Ibis application see the
+Programmers Manual, available in the docs directory of the Ibis
+distribution.
+
+\end{document}
