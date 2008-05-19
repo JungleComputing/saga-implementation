@@ -235,8 +235,15 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             // Only try adaptorInstantiations available for this handler
             if (adaptorInstantiations.containsKey(adaptorName)) {
                 Adaptor adaptor = adaptors.get(adaptorName);
+                ClassLoader loader = Thread.currentThread().getContextClassLoader();
                 AdaptorBase adaptorInstantiation = adaptorInstantiations.get(adaptorName);
                 try {
+                    // Set context classloader before calling constructor.
+                    // Some adaptors may need this because some libraries
+                    // explicitly
+                    // use the context classloader. (jaxrpc).
+                    Thread.currentThread().setContextClassLoader(
+                            adaptor.adaptorClass.getClassLoader());
                     if (logger.isDebugEnabled()) {
                         logger.debug("invocation of method " + m.getName()
                                 + " on " + adaptor.getShortAdaptorClassName()
@@ -282,6 +289,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                                 + adaptor.getShortAdaptorClassName()
                                 + " failed: " + t, t);
                     }
+                } finally {
+                    Thread.currentThread().setContextClassLoader(loader);
                 }
             }
         }

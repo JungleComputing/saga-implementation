@@ -11,7 +11,7 @@ import org.ogf.saga.impl.AdaptorBase;
 class Adaptor {
 
     /** The actual class of this adaptor, must be an implementation of spiClass. */
-    private final Class<?> adaptorClass;
+    final Class<?> adaptorClass;
     
     /**
      * Constructs an information container for a specific adaptor.
@@ -33,6 +33,12 @@ class Adaptor {
      */
     AdaptorBase instantiate(Class<?>[] types, Object[] parameters)
             throws Throwable {
+        // Set context classloader before calling constructor.
+        // Some adaptors may need this because some libraries explicitly
+        // use the context classloader. (jaxrpc).
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(
+                adaptorClass.getClassLoader());
         try {
             // Use the specified types to find the constructor that we want.
             Constructor<?> ctor = adaptorClass.getConstructor(types);
@@ -45,6 +51,8 @@ class Adaptor {
         } catch (InvocationTargetException e) {
             // rethrow original exception
             throw e.getTargetException();
+        } finally {
+            Thread.currentThread().setContextClassLoader(loader);
         }
     }
 
