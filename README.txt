@@ -2,8 +2,8 @@ SagaEngine README
 -----------------
 
 Introduction.
-  This is release 0.9 of the SAGA Java implementation, which implements
-  release 0.9 of the Java SAGA language bindings.
+  This is release 1.0 of the SAGA Java implementation, which implements
+  release 1.0 of the Java SAGA language bindings.
   A SAGA engine takes care of dynamically selecting and loading SAGA adaptors,
   and contains base classes for adaptors, and default implementations
   for SAGA attributes, SAGA tasks, SAGA monitorable, SAGA buffer,
@@ -13,20 +13,20 @@ Environment variables.
   There is one important environment variable, used by the SAGA scripts,
   and that is SAGA_LOCATION. This should be set and point to the root
   directory of your SAGA installation. So, if you installed the SAGA
-  implementation in $HOME/workspace/saga-impl-0.9, then you should have
+  implementation in $HOME/workspace/saga-impl-1.0, then you should have
   
-  SAGA_LOCATION=$HOME/workspace/saga-impl-0.9.
+  SAGA_LOCATION=$HOME/workspace/saga-impl-1.0.
   
   On MacOS-X, Linux, Solaris, and other Unix systems, this can be accomplished
   by adding the line
-      export SAGA_LOCATION=$HOME/workspace/saga-impl-0.9
+      export SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
   or
-      set SAGA_LOCATION=$HOME/workspace/saga-impl-0.9
+      set SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
   for CSH users to your .bashrc, .profile, or .cshrc file (whichever gets
   executed when you log in to your system).
   
   On Windows 2000 or Windows XP you may have installed it in, for instance,
-      c:\Program Files\saga-impl-0.9
+      c:\Program Files\saga-impl-1.0
   You can set the SAGA_LOCATION variable to this path by going to the
   Control Panel, System, the "Advanced" tab, Environment variables,
   add it there and reboot your system.
@@ -36,14 +36,14 @@ Writing a Java SAGA application.
   find out how to do this mostly by yourself. However, the "demo" directory
   has some small applications that will help you to get a feel for it. And,
   of course, there is the javadoc. Point your favorite browser to
-  $SAGA_LOCATION/doc/saga-api-0.9/index.html. This documentation is also
+  $SAGA_LOCATION/doc/saga-api-1.0/index.html. This documentation is also
   on-line at http://saga.cct.lsu.edu/java/apidoc/index.html.
 
 Compiling a Java SAGA application.
-  To compile your Java SAGA application, you need to have saga-api-0.9.jar in
+  To compile your Java SAGA application, you need to have saga-api-1.0.jar in
   your classpath. So:
   
-      javac -classpath $SAGA_LOCATION/lib/saga-api-0.9.jar <yourappl>.java
+      javac -classpath $SAGA_LOCATION/lib/saga-api-1.0.jar <yourappl>.java
   
   Of course, your application may have other dependencies,
   or more than one .java file.
