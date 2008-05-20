@@ -1,11 +1,11 @@
 An adaptor must implement the corresponding Service Provider Interface (SPI).
-These interfaces can be found in ../src/org/ogf/saga/spi/<package>.
-For instance, the JobService SPI can be found in
-../src/org/ogf/saga/spi/job/JobServiceSPI.java.
+These interfaces live in the org.ogf.saga.spi.<package> packages.
+For instance, the classname of the JobService SPI is
+org.ogf.saga.spi.job.JobServiceSPI.
 
 A base class that could be used for a JobService adaptor implementation
-is found in the same directory:
-../src/org/ogf/saga/spi/job/JobServiceAdaptorBase.java.
+is found in the same package:
+org.ogf.saga.spi.job.JobServiceAdaptorBase.
 Each SPI has a corresponding base class. These base classes contain
 implementations for methods that can be implemented in an adaptor-independent
 way. They contain, for instance, implementations for the Async versions
@@ -15,7 +15,7 @@ a more efficient implementation is possible for the adaptor at hand.
 
 It is not required to use this SPI-specific base class. The only thing that
 is required is that the adaptor extends 
-../src/org/ogf/saga/impl/AdaptorBase.java. The SAGA engine needs this for
+org.ogf.saga.impl.AdaptorBase. The SAGA engine needs this for
 proper clone() implementation.
 
 The adaptor implementation ultimately has to provide implementations for

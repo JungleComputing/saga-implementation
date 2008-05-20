@@ -77,40 +77,65 @@ Note the absence as well as presence of quoting! Also, the
 command is split into multiple lines for readability.
 This should be just a single line.
 
----------- TODO ---------------
-
 As said, the \texttt{run\_saga\_app} script is only provided for convenience.
-To run the application without \texttt{run\_saga\_app}, the following command
-can be used:
+To run the application without \texttt{run\_saga\_app},
+with Java 6 the following command can be used:
 
 \noindent
 {\small
 \begin{verbatim}
 $ java \
-    -cp \
-    $SAGA_LOCATION/lib/saga-demo.jar:$SAGA_LOCATION/lib/saga-api-1.0.jar: \
-    -Dibis.implementation.path=$IPL_HOME/lib \
-    -Dibis.server.address=localhost \
-    -Dibis.pool.name=test \
-    -Dlog4j.configuration=file:$IPL_HOME/log4j.properties \
-    ibis.ipl.examples.Hello
+    -cp $SAGA_LOCATION/lib/'*' \
+    -Dlog4j.configuration=file:$SAGA_LOCATION/log4j.properties \
+    demo.namespace.ListTest \
+    ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
 \end{verbatim}
 }
 \noindent
 
-In this case, we use the \texttt{ibis.implementation.path} property to supply Ibis
-with the jar files of the Ibis implementations. Alternatively, they
-could also all be added to the class path.
+Note the quoting, which is significant because the shell should not expand
+the '*'s.
+
+On a windows system the command would be:
+
+\noindent
+{\small
+\begin{verbatim}
+C:\DOCUME~1\Temp> java
+    -cp "%SAGA_LOCATION%"\lib\'*'
+    -Dlog4j.configuration=file:"%SAGA_LOCATION%"\log4j.properties \
+    ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
+\end{verbatim}
+}
+\noindent
+
+When using Java 1.5, the classpath must specify all jar files in the lib
+directory.
+
+\subsubsection{Properties}
+
+The SAGA implementation recognizes a number of system properties, which
+are either provided to the SAGA engine by means of a \texttt{saga.properties}
+file, or by means of the \texttt{-D} option of Java.
+The \texttt{saga.properties} file is searched for in the classpath and in
+the current directory. If both are present, values specified in the one
+in the current directory override values specified in the one in the
+classpath. Also, values specified on the command line override both.
+
+An important property is the \texttt{saga.factory} property, which
+indicates the factory class that creates the factories fo the SAGA
+packages. Its value is \texttt{org.ogf.saga.impl.bootstrap.MetaFactory}
+(see the saga.properties file in the SAGA\_LOCATION directory), and
+should not be changed, unless you have another SAGA implementation to try.
+
+Another important property is the \texttt{saga.adaptor.path},
+which tells the SAGA engine where to find the adaptors.
+Its default value is \texttt{SAGA\_LOCATION/lib/adaptors}, 
+This is a path, which may either be specified in the "unix" way
+(with '/' and ':'), or in the system-dependent way.
 
 
-\section{Further Reading}
 
-The Ibis web page \url{http://www.cs.vu.nl/ibis} lists all
-the documentation and software available for Ibis, including papers, and
-slides of presentations.
 
-For detailed information on developing an Ibis application see the
-Programmers Manual, available in the docs directory of the Ibis
-distribution.
 
 \end{document}

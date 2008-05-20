@@ -3,7 +3,7 @@ JavaGAT adaptor README
 
 Introduction.
   The JavaGAT adaptor actually consists of several adaptors:
-  it has implementations for streams, namespace, file, logicalfile, job.
+  it has implementations for streams, namespace, file, job.
 
 Not implemented.
   Permissions are not implemented, there is no support for it in JavaGAT.
@@ -47,11 +47,6 @@ Not implemented.
     Permissions are not implemented.
     FileInputStream and FileOutputStream are built in top of the
     corresponding JavaGAT versions, for which several adaptors are available.
-  LogicalFile:
-    Needs to be partly rewritten since GAT logicalfiles don't do what
-    this adaptor expects. I thought that the GAT logicalfile adaptor
-    would create a file or some non-volatile storage for it, but it actually
-    depends on the user to do so. TODO!!!
 
 JavaGAT Preferences.
   JavaGAT has a Preferences object type that allows users to pass information
