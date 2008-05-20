@@ -130,13 +130,20 @@ public class SAGAEngine {
      * Obtains the value of the specified property. Any occurrence of
      * the string <code>SAGA_LOCATION</code> is replaced by the actual
      * value of the environment variable with the same name.
+     * Occurrences of a '/' are replaced by a file separator.
      * @param s the property name.
      * @return the value of the property.
      */
     public static String getProperty(String s) {
         String result = properties.getProperty(s);
-        if (result != null && sagaLocation != null) {
-            return result.replaceAll("SAGA_LOCATION", sagaLocation);
+        if (s.endsWith(".path")) {
+            if (result != null && sagaLocation != null) {
+                result = result.replaceAll("SAGA_LOCATION", sagaLocation);
+            }
+            if (result != null) {
+                result = result.replaceAll("/", File.separator);
+                result = result.replaceAll(":", File.pathSeparator);
+            }
         }
         return result;
     }
