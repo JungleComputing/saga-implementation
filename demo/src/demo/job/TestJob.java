@@ -55,6 +55,9 @@ public class TestJob implements Callback {
             // Get hostname and current directory for poststage target.
             String host = java.net.InetAddress.getLocalHost()
                     .getCanonicalHostName();
+            // Note: this does not work on windows, which gives a
+            // directory string like c:\...\...., which does not give
+            // a valid url.
             String dir = System.getProperty("user.dir");
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
                     new String[] { "file://" + host + dir

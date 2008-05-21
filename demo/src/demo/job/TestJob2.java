@@ -31,7 +31,7 @@ public class TestJob2 implements Callback {
             // Make sure that javaGAT picks the wsgt4 adaptor.
             context.setAttribute("ResourceBroker.adaptor.name", "wsgt4new");
             context.setAttribute("wsgt4.factory.type", "SGE");
-            context.setAttribute("File.adaptor.name", "Local,GridFTP");
+            // context.setAttribute("File.adaptor.name", "Local,GridFTP");
             
             session.addContext(context);
                         
