@@ -8,49 +8,121 @@
 
 \title{JAVA SAGA User's Guide}
 
-\author{Ceriel J.H. Jacobs}
-
 \maketitle
 
 \section{Introduction}
 
-This short manual describes the steps required to compile
+This short guide describes the steps required to compile
 and run an application that uses this Java SAGA implementation.
-The reader is referred to the
-Java SAGA language binding document, the Java SAGA javadoc for the
-Java language bindings for SAGA, and to the SAGA specification,
-to find out how to write such an application. The current release also
-contains some demo programs.
+It also discusses some issues that are specific for this
+Java SAGA implementation.
+For information on how to write a SAGA application, the reader is referred
+to the Java SAGA language binding document, the Java SAGA javadoc for the
+Java language bindings for SAGA, and to the SAGA specification.
+This release contains some demo programs in the \texttt{demo}
+directory that will help the reader get a feel for it.
 
-\subsection{Compiling an application for SAGA}
+\section{Environment variables}
 
-The only thing that is particular to compiling an application for
-Java SAGA is that the SAGA api jar-file must be on the classpath.
-The command
+There is one important environment variable, used by the SAGA scripts,
+and that is \texttt{SAGA\_LOCATION}. This should be set and point to the root
+directory of your SAGA installation. So, if you installed the SAGA
+implementation in 
+
 \noindent
 {\small
 \begin{verbatim}
-javac -classpath <path to the SAGA API jar-file>
+$HOME/workspace/saga-impl-1.0
 \end{verbatim}
 }
 \noindent
-will do the trick. In this release, the SAGA API jar-file can be found
-in the \texttt{lib} directory, its name is \texttt{saga-api-1.0.jar}.
+
+then you should have
+
+\noindent
+{\small
+\begin{verbatim}
+SAGA_LOCATION=$HOME/workspace/saga-impl-1.0.
+\end{verbatim}
+}
+\noindent
+
+On MacOS-X, Linux, Solaris, and other Unix systems, this can be accomplished
+by adding the line
+\noindent
+{\small
+\begin{verbatim}
+export SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
+\end{verbatim}
+}
+\noindent
+or
+\noindent
+{\small
+\begin{verbatim}
+set SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
+\end{verbatim}
+}
+\noindent
+for CSH users to your .bashrc, .profile, or .cshrc file (whichever gets
+executed when you log in to your system).
+
+On Windows 2000 or Windows XP you may have installed it in, for instance,
+\noindent
+{\small
+\begin{verbatim}
+c:\Program Files\saga-impl-1.0
+\end{verbatim}
+}
+\noindent
+You can set the \texttt{SAGA\_LOCATION} variable to this path by going to the
+Control Panel, System, the "Advanced" tab, Environment variables,
+add it there and reboot your system.
+
+\section{Compiling an application for SAGA}
+
+The only thing that is particular to compiling an application for
+Java SAGA is that the SAGA api jar-file must be on the classpath.
+In this release, the SAGA API jar-file can be found
+in the \texttt{lib} directory, its name is \texttt{saga-api-1.0.jar}, so
+the command
+\noindent
+{\small
+\begin{verbatim}
+javac -classpath $SAGA_LOCATION/lib/saga-api-1.0.jar \
+    <yourapplication>
+\end{verbatim}
+}
+\noindent
+will do the trick on Unix-like systems. On windows,
+\noindent
+{\small
+\begin{verbatim}
+javac -classpath "%SAGA_LOCATION%"\lib\saga-api-1.0.jar
+    <yourapplication>
+\end{verbatim}
+}
+\noindent
+would be the command to use (the command is split into two lines for
+readability, the actual command is a single line).
 
 Of course, it is also possible to use the \texttt{ant} program.
-See for instance the \texttt{build.xml} in the \texttt{demo} directory.
+See for instance \texttt{build.xml} in the \texttt{demo} directory.
 
-\subsection{Running a Java SAGA application}
+\section{Running a Java SAGA application}
 
 We will now show how to run an example SAGA application.
-The instructions below assume that the SAGA\_LOCATION
+Again, the instructions below assume that the SAGA\_LOCATION
 environment variable is set to the location of this SAGA release.
 
 We will use the \texttt{demo.namespace.ListTest} example here.
 This application lists the directory as specified by the first
-program argument with different patterns. The Java SAGA release
-has a \texttt{run\_saga\_app} utility script, provided for
-convenience. 
+program argument with different patterns, as specified by the
+remaining arguments.
+The Java SAGA release contains a simple \texttt{run\_saga\_app} utility script.
+This script creates a list of jar-files to put in the classpath (the
+ones in the \texttt{lib} sub-directory of \texttt{SAGA\_LOCATION}),
+and then calls java with the specified arguments.
 On a unix-like system it can be used to run the application as follows:
 
 \noindent
@@ -67,8 +139,9 @@ On a windows system this looks as follows:
 \noindent
 {\small
 \begin{verbatim}
-C:\DOCUME~1\Temp> "%SAGA_LOCATION%"\bin\run_saga_app demo.namespace.ListTest
-    ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
+C:\DOCUME~1\Temp> "%SAGA_LOCATION%"\bin\run_saga_app
+    demo.namespace.ListTest
+    ftp://ftp.cs.vu.nl/pub/ceriel "*" "*.gz" "{L,M}*" "*tar*"
 \end{verbatim}
 }
 \noindent
@@ -77,7 +150,6 @@ Note the absence as well as presence of quoting! Also, the
 command is split into multiple lines for readability.
 This should be just a single line.
 
-As said, the \texttt{run\_saga\_app} script is only provided for convenience.
 To run the application without \texttt{run\_saga\_app},
 with Java 6 the following command can be used:
 
@@ -94,7 +166,8 @@ $ java \
 \noindent
 
 Note the quoting, which is significant because the shell should not expand
-the '*'s.
+the '*'s. Also, an initialization file is specified for the logger used in the
+SAGA implementation.
 
 On a windows system the command would be:
 
@@ -102,17 +175,120 @@ On a windows system the command would be:
 {\small
 \begin{verbatim}
 C:\DOCUME~1\Temp> java
-    -cp "%SAGA_LOCATION%"\lib\'*'
-    -Dlog4j.configuration=file:"%SAGA_LOCATION%"\log4j.properties \
-    ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
+    -cp "%SAGA_LOCATION%\lib\*"
+    -Dlog4j.configuration=file:"%SAGA_LOCATION%"\log4j.properties
+    demo.namespace.ListTest
+    ftp://ftp.cs.vu.nl/pub/ceriel "*" "*.gz" "{L,M}*" "*tar*"
 \end{verbatim}
 }
 \noindent
 
-When using Java 1.5, the classpath must specify all jar files in the lib
-directory.
+When using Java 1.5, the classpath must specify all jar files in the
+\texttt{lib} directory. This is not shown here.
 
-\subsubsection{Properties}
+\section{Adaptors}
+
+For most of the SAGA packages, the implementation depends on so-called
+adaptors. An adaptor basically implements a SAGA package on a specific
+middleware (Globus, Gridsam, sockets, \ldots).
+During startup, the SAGA implementation examines which adaptors are
+available (this mechanism is discussed in the next section), and loads
+these. When a SAGA object is created, a corresponding set of adaptors
+is instantiated, and when a
+method is invoked on this object, this invocation is dynamically
+dispatched to one or more of these adaptors, until one succeeds
+or all adaptors fail.
+
+The adaptors implement a specific Service Provider Interface,
+corresponding to a particular interface of the Java SAGA language bindings.
+The \texttt{doc} directory contains a \texttt{adaptors} subdirectory
+with documentation on the currently available adaptors.
+
+\subsection{Adaptor-specific stuff}
+
+SAGA offers an API for accessing the Grid, and its implementation(s) use
+various grid middleware to realize this. In an ideal world, SAGA would hide
+all the gruesome details from the user. Unfortunately, the world is not
+ideal, and some middleware may need user-defined settings.
+Adaptor-specific information can be found in the corresponding adaptor
+doc directory, for instance
+\noindent
+{\small
+\begin{verbatim}
+doc/adaptors/Gridsam/README.txt
+\end{verbatim}
+}
+\noindent
+on a unix system, or
+\noindent
+{\small
+\begin{verbatim}
+doc\adaptors\Gridsam\README.txt
+\end{verbatim}
+}
+\noindent
+on a windows system.
+
+This SAGA implementation provides two mechanisms for adaptor-specific
+settings.
+One is by means of system properties, discussed in the
+next section, which provides a mechanism for system-wide settings.
+This is the preferred method for global settings.
+The other is a special \texttt{preferences} SAGA context.
+Such a context can be added to a specific SAGA session, and since SAGA
+supports the use of multiple sessions, different adaptor instantiations
+can have different settings if they have different sessions.
+
+For example, the \texttt{demo.job.TestJob2} class has the following:
+{\small
+\begin{verbatim}
+// Create a preferences context for JavaGAT.
+// The "preferences" context is special: it is extensible.
+Context context = ContextFactory.createContext("preferences");
+
+// Make sure that javaGAT picks the wsgt4 adaptor.
+context.setAttribute("ResourceBroker.adaptor.name", "wsgt4new");
+context.setAttribute("wsgt4.factory.type", "SGE");
+session.addContext(context);
+\end{verbatim}
+}
+\noindent
+This sets some preferences that are specific for the JavaGAT adaptor:
+it instructs JavaGAT to use its \texttt{wsgt4new} ResourceBroker adaptor
+(which is the Web Services Globus4 adaptor), and instructs this
+ResourceBroker adaptor to use the \texttt{SGE} scheduler.
+
+The adaptor-specific documentation discusses all adaptor-specific
+settings.
+
+\subsection{Security}
+
+Where needed, the user may create security contexts, and either add them
+to the default session or create a special session for them.
+Currently, the following security context types are recognized:
+
+\begin{description}
+
+\item[\texttt{ftp}]
+The \texttt{ftp} context has the following default attributes:
+\texttt{USERID} with value \texttt{anonymous} and \texttt{USERPASS} with
+value \texttt{anonymous@localhost}.
+
+\item[\texttt{ssh} and \texttt{sftp}]
+The \texttt{ssh} and \texttt{sftp} know about the default SSH keys.
+
+\item[\texttt{globus} and \texttt{gridftp}]
+The \texttt{globus} and \texttt{gridftp} obtain the default user key
+and certificate from a \texttt{.globus} sub-directory of the users' home
+directory, so it sets the \texttt{USERKEY} attribute to \texttt{userkey.pem}
+in that directory, and sets the \texttt{USERCERT} attribute to
+\texttt{usercert.pem} in that directory.
+
+\end{description}
+
+Of course, the user is free to specify different values for the attributes.
+
+\section{Properties}
 
 The SAGA implementation recognizes a number of system properties, which
 are either provided to the SAGA engine by means of a \texttt{saga.properties}
@@ -124,18 +300,105 @@ classpath. Also, values specified on the command line override both.
 
 An important property is the \texttt{saga.factory} property, which
 indicates the factory class that creates the factories fo the SAGA
-packages. Its value is \texttt{org.ogf.saga.impl.bootstrap.MetaFactory}
+packages.
+Its value is
+\noindent
+{\small
+\begin{verbatim}
+org.ogf.saga.impl.bootstrap.MetaFactory
+\end{verbatim}
+}
+\noindent
 (see the saga.properties file in the SAGA\_LOCATION directory), and
 should not be changed, unless you have another SAGA implementation to try.
 
 Another important property is the \texttt{saga.adaptor.path},
 which tells the SAGA engine where to find the adaptors.
-Its default value is \texttt{SAGA\_LOCATION/lib/adaptors}, 
-This is a path, which may either be specified in the "unix" way
-(with '/' and ':'), or in the system-dependent way.
+Its default value is \texttt{SAGA\_LOCATION/lib/adaptors}.
+This property is interpreted is a path, which may either be specified in the
+"unix" way (with '/' and ':'), or in the system-dependent way.
 
+All properties with names ending in \texttt{.path} are subjected to
+the following replacements: all occurrences of the string
+\texttt{SAGA\_LOCATION} are replaced with the value of the
+\texttt{SAGA\_LOCATION} environment variable, all occurrences
+of '/' are replaced with the system-dependent separator character,
+and all occurences of ':' are replaced with the system-dependent
+path separator character. This allows for a system-independent way
+of specifying paths in a \texttt{saga.properties} file.
 
+For the structure of an adaptor directory see the \texttt{adaptors}
+sub-directory of \texttt{lib}.
+In short, each adaptor has its own subdirectory, named
+\texttt{<adaptorname>Adaptor},
+in which a jar-file
+\texttt{<adaptorname>Adaptor.jar}
+exists, and which also contains
+all supporting jar-files.
+The manifest of
+\texttt{<adaptorname>Adaptor.jar} specifies which adaptors actually
+are implemented by this jar-file. For instance, 
+the manifest of \texttt{GridsamAdaptor.jar} specifies:
 
+\noindent
+{\small
+\begin{verbatim}
+JobServiceSpi-class: org.ogf.saga.adaptors.gridsam.job.JobServiceAdaptor
+\end{verbatim}
+}
+\noindent
 
+which indicates that it contains a class
+\noindent
+{\small
+\begin{verbatim}
+org.ogf.saga.adaptors.gridsam.job.JobServiceAdaptor
+\end{verbatim}
+}
+\noindent
+which is an implementation of the \texttt{JobService}
+Service Provicer Interface.
+
+\section{Determining which SAGA adaptors to use}
+
+By default, the SAGA engine tries all adaptors that it can find on the list
+specified by the \texttt{saga.adaptor.path} property.
+It is, however, possible to select a specific
+adaptor, or to not select a specific adaptor. This is accomplished
+with properties, which can be specified in a \texttt{saga.properties} file or
+on the \texttt{run\_saga\_app} or \texttt{java} command line.
+Below are some examples:
+
+\begin{description}
+
+\item[\texttt{StreamService.adaptor.name=socket,javagat}]
+this loads both the socket and the javagat adaptor for
+the StreamService SPI, but no others. Also, the adaptors will
+be tried in the specified order.
+
+\item[\texttt{StreamService.adaptor.name=!socket}]
+this will load all StreamService adaptors, except for the socket
+adaptor.
+
+\end{description}
+
+\section{Further reading}
+
+First of all, there is the SAGA defining document:
+GFD-R-P.90 (SAGA Core API) standard as defined by the
+Open Grid Form (\url{http://forge.ogf.org/sf/docman/do/downloadDocument/projects.saga-core-wg/docman.root.drafts/doc13771}).
+
+Then, there are the Java Language bindings for SAGA, which
+are described in \url{http://saga.cct.lsu.edu/images/SAGA/publications/saga_core_java_binding.pdf}. This document is also included in the
+\texttt{doc} directory of this release.
+
+For the Java language bindings, detailed javadoc is available
+in the \texttt{doc} directory. Just point your favorite webbrowser
+to the \texttt{saga-api-1.0} sub-directory.
+
+Last but not least, SAGA has its own website,
+which can be found at \url{http://saga.cct.lsu.edu},
+and which has pointers to mailing lists, other SAGA implementations,
+and more documentation. Also, new releases will be announced there.
 
 \end{document}
