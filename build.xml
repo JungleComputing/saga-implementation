@@ -6,7 +6,7 @@
 
     <!-- Global properties -->
 
-    <property name="version" value="-1.0" />
+    <property name="version" value="-1.0rc1" />
     <property name="tmp" location="tmp" />
     <property name="lib" location="lib" />
     <property name="jar" location="${lib}/saga-impl${version}.jar" />
