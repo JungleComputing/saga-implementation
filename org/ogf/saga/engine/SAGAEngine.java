@@ -127,10 +127,14 @@ public class SAGAEngine {
     }
     
     /**
-     * Obtains the value of the specified property. Any occurrence of
+     * Obtains the value of the specified property.
+     * If the property name ends with ".path", any occurrence of
      * the string <code>SAGA_LOCATION</code> is replaced by the actual
-     * value of the environment variable with the same name.
-     * Occurrences of a '/' are replaced by a file separator.
+     * value of the environment variable with the same name,
+     * occurrences of a '/' are replaced by a file separator, and
+     * occurrences of a ':' are replaced by a ';', unless they are
+     * followed by a '\' (in this case they are assumed to separate
+     * a drive indicator from the rest of the path).
      * @param s the property name.
      * @return the value of the property.
      */
@@ -138,11 +142,13 @@ public class SAGAEngine {
         String result = properties.getProperty(s);
         if (s.endsWith(".path")) {
             if (result != null && sagaLocation != null) {
-                result = result.replaceAll("SAGA_LOCATION", sagaLocation);
+                result = result.replace("SAGA_LOCATION", sagaLocation);
             }
             if (result != null) {
-                result = result.replaceAll("/", File.separator);
-                result = result.replaceAll(":", File.pathSeparator);
+                result = result.replace("/", File.separator);
+                result = result.replace(":\\", "___SOME___SPECIAL___SEQUENCE___");
+                result = result.replace(":", File.pathSeparator);
+                result = result.replace("___SOME___SPECIAL___SEQUENCE___", ":\\");
             }
         }
         return result;
@@ -157,12 +163,15 @@ public class SAGAEngine {
         = new HashMap<String, ClassLoader>();
 
         String adaptorPath = getProperty("saga.adaptor.path");
+        
+        logger.debug("Adaptor path = " + adaptorPath);
 
         if (adaptorPath != null) {
             StringTokenizer st = new StringTokenizer(adaptorPath,
                     File.pathSeparator);
             while (st.hasMoreTokens()) {
                 String dir = st.nextToken();
+                logger.debug("readJarFiles: dir = " + dir);
 
                 File adaptorRoot = new File(dir);
                 // Now get the adaptor directories from the adaptor path.
