@@ -6,8 +6,7 @@
 
     <!-- Global properties -->
 
-    <!-- 0.9 because it implements that version of the API. -->
-    <property name="version" value="-0.9" />
+    <property name="version" value="-1.0" />
     <property name="tmp" location="tmp" />
     <property name="lib" location="lib" />
     <property name="jar" location="${lib}/saga-impl${version}.jar" />
@@ -68,6 +67,10 @@
 	<ant inheritAll="false" dir="test" target="build"/>
     </target>
 
+    <target name="doc" description="Create manuals">
+        <ant dir="doc" inheritAll="false" />
+    </target>
+
     <target name="clean" description="clean up">
 	<delete dir="${lib}" />
 	<delete dir="${tmp}" />
@@ -77,9 +80,11 @@
 	<ant inheritAll="false" dir="demo" target="clean"/>
 	<!-- Clean tests. -->
 	<ant inheritAll="false" dir="test" target="clean"/>
+	<!-- Clean doc. -->
+	<ant inheritAll="false" dir="doc" target="clean"/>
     </target>
 
-    <target name="zip" depends="build">
+    <target name="zip" depends="build,doc">
         <delete file="saga-impl${version}.zip" />
 	<delete file="sources/${sources-filename}.zip" />
 
@@ -88,13 +93,16 @@
 	    <zipfileset dir="adaptors/Gridsam/src" includes="**/*.java" prefix="${sources-filename}" />
 	    <zipfileset dir="adaptors/JavaGat/src" includes="**/*.java" prefix="${sources-filename}" />
 	    <zipfileset dir="adaptors/Socket/src" includes="**/*.java" prefix="${sources-filename}" />
+	    <zipfileset dir="adaptors/XMLRPC/src" includes="**/*.java" prefix="${sources-filename}" />
+	    <zipfileset dir="adaptors/Generic/src" includes="**/*.java" prefix="${sources-filename}" />
             <zipfileset dir="." includes="LICENSE.txt" prefix="${sources-filename}" />
         </zip>
 
         <zip destfile="saga-impl${version}.zip">
             <zipfileset dir="."
                         prefix="saga-impl${version}"
-			includes="doc/**,lib/**,demo/**,test/**,licenses/**,LICENSE.txt,README.txt,log4j.properties,saga.properties,sources/**" />
+			includes="doc/**,lib/**,demo/**,test/**,licenses/**,LICENSE.txt,README.txt,log4j.properties,saga.properties,sources/**"
+			excludes="doc/build.xml,doc/usersguide.tex"/>
             <zipfileset dir="."
                         prefix="saga-impl${version}"
 			filemode="755"

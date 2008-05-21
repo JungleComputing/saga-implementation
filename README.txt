@@ -1,5 +1,5 @@
-SagaEngine README
------------------
+Java SAGA README
+----------------
 
 Introduction.
   This is release 1.0 of the SAGA Java implementation, which implements
@@ -39,67 +39,6 @@ Writing a Java SAGA application.
   $SAGA_LOCATION/doc/saga-api-1.0/index.html. This documentation is also
   on-line at http://saga.cct.lsu.edu/java/apidoc/index.html.
 
-Compiling a Java SAGA application.
-  To compile your Java SAGA application, you need to have saga-api-1.0.jar in
-  your classpath. So:
-  
-      javac -classpath $SAGA_LOCATION/lib/saga-api-1.0.jar <yourappl>.java
-  
-  Of course, your application may have other dependencies,
-  or more than one .java file.
-
-Running a Java SAGA application.
-  A simple script to run a SAGA application lives in bin/run_saga_app.
-  This script creates a list of jar-files to put in the classpath (the
-  ones in $SAGA_LOCATION/lib), and then calls java.
-  
-  SAGA uses some properties, which may be set in a file saga.properties,
-  which must be on your classpath or in the current directory. Any
-  settings in a user-defined saga.properties file override the defaults,
-  and in addition, any system property specified with the -D flag to java
-  overrides ones provided in a saga.properties file.
-  
-  The most important such property is probably the
-    saga.adaptor.path
-  property, which is used to determine where the SAGA engine is to find the
-  SAGA adaptors. saga.adaptor.path should be set to a path, a list of
-  directories, which each contain directories for the adaptors.
-  The default value of saga.adaptor.path (specified in the saga.properties
-  file) is $SAGA_LOCATION/lib/adaptors.
-  For the structure of an adaptor directory see the lib/adaptors directory.
-  In short, each adaptor has its own subdirectory, named <adaptorname>Adaptor,
-  in which a jar-file <adaptorname>Adaptor.jar exists, and which also contains
-  all supporting jar-files.
-  The manifest of <adaptorname>Adaptor.jar specifies which adaptors actually
-  are implemented by this adaptor. For instance, GridsamAdaptor.jar has:
-  
-      JobServiceSpi-class: org.ogf.saga.adaptors.gridsam.job.JobServiceAdaptor
-  
-  which indicates that it contains a class
-  org.ogf.saga.adaptors.gridsam.job.JobServiceAdaptor
-  which is a JobService adaptor.
-
-Selecting/deselecting SAGA adaptors.
-  By default, the SAGA engine tries all adaptors that it can find on the
-  saga.adaptor.path list. It is, however, possible to select a specific
-  adaptor, or to not select a specific adaptor. This is accomplished
-  with properties, which can be specified in a saga.properties file or
-  on the run_saga_app command line. Below are some examples:
-
-  StreamService.adaptor.name = socket,javagat
-	this loads both the socket and the javagat adaptor for
-	the StreamService SPI, but no others. Also, the adaptors will
-	be tried in the specified order.
-
-  StreamService.adaptor.name = !socket
-	this will load all StreamService adaptors, except for the socket
-	adaptor.
-	
-  
-Adaptor-specific stuff.
-  SAGA offers an API for accessing the Grid, and its implementation(s) use
-  various grid middleware to realize this. In an ideal world, SAGA would hide
-  all the gruesome details from the user. Unfortunately, the world is not
-  ideal, and some middleware may need user-defined settings.
-  Adaptor-specific information can be found in the corresponding adaptor
-  doc directory, for instance doc/adaptors/Gridsam/README.txt.
+Compiling and running a Java SAGA application.
+  See doc/usersguide.pdf for information on how to compile and run a Java
+  SAGA application.
