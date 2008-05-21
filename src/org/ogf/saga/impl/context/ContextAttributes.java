@@ -55,4 +55,11 @@ class ContextAttributes extends Attributes {
     protected String getValue(String key) {
         return super.getValue(key);
     }
+
+    public void setValueIfEmpty(String userid, String string)
+            throws DoesNotExistException, NotImplementedException,
+            IncorrectStateException, BadParameterException {
+        super.setValueIfEmpty(userid, string);
+
+    }
 }

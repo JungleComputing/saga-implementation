@@ -1,5 +1,7 @@
 package org.ogf.saga.impl.context;
 
+import java.io.File;
+
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -65,8 +67,8 @@ public class Context extends SagaObjectBase
                 // nothing
             } else if ("ftp".equals(type)) {
                 // Default is anonymous
-                setValue(Context.USERID, "anonymous");
-                setValue(Context.USERPASS, "anonymous@localhost");
+                setValueIfEmpty(Context.USERID, "anonymous");
+                setValueIfEmpty(Context.USERPASS, "anonymous@localhost");
             } else if ("ssh".equals(type) || "sftp".equals(type)) {
                 // setValue(Context.USERID, "");
                 // setValue(Context.USERPASS, "");
@@ -74,8 +76,10 @@ public class Context extends SagaObjectBase
             } else if ("globus".equals(type) || "gridftp".equals(type)) {
                 // Default: taken from .globus dir in user home.
                 String home = System.getProperty("user.home");
-                setValue(Context.USERKEY, home + "/.globus/userkey.pem");
-                setValue(Context.USERCERT, home + "/.globus/usercert.pem");
+                setValueIfEmpty(Context.USERKEY, home + File.separator
+                        + ".globus" + File.separator + "userkey.pem");
+                setValueIfEmpty(Context.USERCERT, home + File.separator
+                        + ".globus" + File.separator + "usercert.pem");
                 // attributes.setValue(Context.USERPASS, "");
             } else if ("preferences".equals(type)) {
                 // nothing
@@ -88,6 +92,12 @@ public class Context extends SagaObjectBase
         } catch (BadParameterException e) {
             // Should not happen.
         }
+    }
+
+    private void setValueIfEmpty(String userid, String string)
+            throws DoesNotExistException, NotImplementedException,
+            IncorrectStateException, BadParameterException {
+        attributes.setValueIfEmpty(userid, string);
     }
 
     public String[] findAttributes(String... patterns) throws NotImplementedException,

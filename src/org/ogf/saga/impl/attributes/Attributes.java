@@ -484,4 +484,22 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         keys = attribs.findAttributes(new String[] { "t{i,k}?"});
         System.out.println("Found " + keys.length + " keys, should be 0");
     }
+
+    public void setValueIfEmpty(String key, String value)
+            throws DoesNotExistException, NotImplementedException,
+            IncorrectStateException, BadParameterException {
+        AttributeInfo info = getInfoCheckVector(key, false);
+        if ("".equals(info.value)) {
+            if (info.type == AttributeType.TIME) {
+                try {
+                    long v = Long.parseLong(value);
+                    value = dateFormat(new Date(v));
+                } catch (NumberFormatException e) {
+                    // ignored. checkValueType will check the format.
+                }
+            }
+            checkValueType(key, info.type, value);
+            info.value = value;
+        }
+    }
 }
