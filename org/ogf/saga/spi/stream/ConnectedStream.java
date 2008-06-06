@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.stream;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -18,12 +17,14 @@ import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.monitoring.Metric;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
-import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamState;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public abstract class ConnectedStream extends SagaObjectBase implements Stream {
 
@@ -210,7 +211,7 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
     public Object clone() throws CloneNotSupportedException {
         StreamAdaptorBase clone = (StreamAdaptorBase) super.clone();
         try {
-            clone.url = new URL(url.toString());
+            clone.url = URLFactory.createURL(url.toString());
         } catch (Throwable e) {
             // Should not happen.
             throw new CloneNotSupportedException("Oops");

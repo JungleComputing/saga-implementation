@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -29,6 +28,8 @@ import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
         implements NSDirectorySPI {
@@ -184,7 +185,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             return u;
         }
 
-        URL u = new URL(nameUrl.toString());
+        URL u = URLFactory.createURL(nameUrl.toString());
         path = u.getPath();
         if ("".equals(path)) {
             path = ".";
@@ -218,7 +219,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
                 }
             }
         } else {
-            URL url = new URL(pattern);
+            URL url = URLFactory.createURL(pattern);
             if (exists(url)) {
                 resultList.add(url);
             }

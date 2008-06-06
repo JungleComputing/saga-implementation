@@ -1,6 +1,5 @@
 package org.ogf.saga.proxies.stream;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -16,6 +15,8 @@ import org.ogf.saga.stream.StreamFactory;
 import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class StreamWrapperFactory extends StreamFactory {
 
@@ -53,7 +54,7 @@ public class StreamWrapperFactory extends StreamFactory {
             TimeoutException, NoSuccessException {
         URL name;
         try {
-            name = new URL("");
+            name = URLFactory.createURL("");
         } catch (Throwable e) {
             throw new SagaRuntimeException("Should not happen!", e);
         }
@@ -74,7 +75,7 @@ public class StreamWrapperFactory extends StreamFactory {
             TaskMode mode, Session session) throws NotImplementedException {
         URL name;
         try {
-            name = new URL("");
+            name = URLFactory.createURL("");
         } catch (Throwable e) {
             throw new SagaRuntimeException("Should not happen!", e);
         }

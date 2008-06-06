@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.namespace;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -17,6 +16,7 @@ import org.ogf.saga.permissions.Permissions;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 /**
  * Part of the SAGA NSEntry interface that has to be implemented by the SPI's.

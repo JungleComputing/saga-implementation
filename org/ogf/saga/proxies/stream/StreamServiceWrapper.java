@@ -1,6 +1,5 @@
 package org.ogf.saga.proxies.stream;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -21,6 +20,7 @@ import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public class StreamServiceWrapper extends SagaObjectBase implements
         StreamService {

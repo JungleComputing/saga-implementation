@@ -3,7 +3,6 @@ package org.ogf.saga.spi.file;
 import java.util.HashMap;
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -15,8 +14,8 @@ import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
-import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.error.SagaIOException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
@@ -28,6 +27,7 @@ import org.ogf.saga.proxies.file.FileWrapper;
 import org.ogf.saga.spi.namespace.NSEntryAdaptorBase;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
         FileSPI {

@@ -2,7 +2,6 @@ package org.ogf.saga.spi.namespace;
 
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -18,6 +17,7 @@ import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
     /**
