@@ -11,7 +11,6 @@ import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.advert.AdvertService;
 import org.gridlab.gat.io.Endpoint;
 import org.gridlab.gat.io.Pipe;
-import org.ogf.saga.URL;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -35,6 +34,7 @@ import org.ogf.saga.stream.Activity;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
+import org.ogf.saga.url.URL;
 
 public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 

@@ -3,7 +3,6 @@ package org.ogf.saga.spi.logicalfile;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.attributes.Attributes;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -26,6 +25,7 @@ import org.ogf.saga.proxies.logicalfile.LogicalDirectoryWrapper;
 import org.ogf.saga.spi.namespace.NSDirectoryAdaptorBase;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public abstract class LogicalDirectoryAdaptorBase extends
         NSDirectoryAdaptorBase implements LogicalDirectorySPI {

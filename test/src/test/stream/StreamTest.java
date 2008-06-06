@@ -3,7 +3,6 @@ package test.stream;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
-import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.context.Context;
@@ -20,6 +19,7 @@ import org.ogf.saga.stream.Activity;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamFactory;
 import org.ogf.saga.stream.StreamService;
+import org.ogf.saga.url.URLFactory;
 
 public class StreamTest extends TestCase {
 
@@ -38,7 +38,7 @@ public class StreamTest extends TestCase {
     
     private Stream createStream() {
         try {
-            return StreamFactory.createStream(new URL(SERVER_URL));
+            return StreamFactory.createStream(URLFactory.createURL(SERVER_URL));
         } catch(Throwable e) {
             logger.error("FAIL: createStream failed", e);
             fail();
@@ -292,8 +292,8 @@ public class StreamTest extends TestCase {
 
         try {
 
-            StreamService service = StreamFactory.createStreamService(new URL(
-                    SERVER_URL));
+            StreamService service = StreamFactory.createStreamService(
+                    URLFactory.createURL(SERVER_URL));
 
             service.close();
         } catch (Throwable e) {
@@ -312,7 +312,7 @@ public class StreamTest extends TestCase {
 
         try {
 
-            service = StreamFactory.createStreamService(new URL(SERVER_URL));
+            service = StreamFactory.createStreamService(URLFactory.createURL(SERVER_URL));
 
             service.serve(1.0f);
 

@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -22,6 +21,8 @@ import org.ogf.saga.proxies.rpc.RPCWrapper;
 import org.ogf.saga.rpc.IOMode;
 import org.ogf.saga.rpc.Parameter;
 import org.ogf.saga.spi.rpc.RPCAdaptorBase;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class RPCAdaptor extends RPCAdaptorBase {
  
@@ -46,7 +47,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
             throw new NotImplementedException("Unrecognized scheme: " + scheme);
         }
         
-        URL url = new URL(funcName.toString());
+        URL url = URLFactory.createURL(funcName.toString());
         url.setScheme("http");
         url.setHost(getHost());
         url.setPort(getPort());

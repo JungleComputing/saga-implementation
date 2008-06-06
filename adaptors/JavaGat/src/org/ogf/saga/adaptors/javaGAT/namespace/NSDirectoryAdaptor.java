@@ -9,7 +9,6 @@ import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.io.File;
 import org.gridlab.gat.io.FileInterface;
-import org.ogf.saga.URL;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -27,6 +26,8 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.spi.namespace.NSDirectoryAdaptorBase;
 import org.ogf.saga.spi.namespace.NSDirectorySPI;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         NSDirectorySPI {
@@ -219,7 +220,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             throw new DoesNotExistException("Invalid index: " + entryNo);
         }
         try {
-            return new URL(resultFiles[entryNo].toGATURI().toString());
+            return URLFactory.createURL(resultFiles[entryNo].toGATURI().toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException(e);
         }
@@ -366,7 +367,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         if (resultFiles != null) {
             for (File resultFile : resultFiles) {
                 try {
-                    resultList.add(new URL(resultFile.getFileInterface()
+                    resultList.add(URLFactory.createURL(resultFile.getFileInterface()
                             .getName()));
                 } catch (GATInvocationException e) {
                     throw new NoSuccessException(e);

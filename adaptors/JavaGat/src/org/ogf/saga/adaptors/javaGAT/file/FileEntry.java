@@ -2,7 +2,6 @@ package org.ogf.saga.adaptors.javaGAT.file;
 
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.URI;
-import org.ogf.saga.URL;
 import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -15,6 +14,7 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.url.URL;
 
 // Make protected fields from NSEntry available for this package.
 class FileEntry extends NSEntryAdaptor {

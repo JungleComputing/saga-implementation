@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.rpc;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
@@ -10,6 +9,8 @@ import org.ogf.saga.rpc.Parameter;
 import org.ogf.saga.rpc.RPC;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public abstract class RPCAdaptorBase extends AdaptorBase<RPC> implements RPCSPI {
 
@@ -19,7 +20,7 @@ public abstract class RPCAdaptorBase extends AdaptorBase<RPC> implements RPCSPI 
             throws NotImplementedException, BadParameterException,
             NoSuccessException {
         super(session, wrapper);
-        this.funcName = new URL(funcName.toString());
+        this.funcName = URLFactory.createURL(funcName.toString());
     }
 
     public Task<RPC, Void> call(TaskMode mode, Parameter... parameters)

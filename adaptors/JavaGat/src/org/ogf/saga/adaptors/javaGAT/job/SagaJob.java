@@ -19,7 +19,6 @@ import org.gridlab.gat.resources.HardwareResourceDescription;
 import org.gridlab.gat.resources.SoftwareDescription;
 import org.gridlab.gat.resources.SoftwareResourceDescription;
 import org.gridlab.gat.security.SecurityContext;
-import org.ogf.saga.URL;
 import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -34,6 +33,8 @@ import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.job.JobDescription;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.task.State;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 /**
  * This is an implementation of the SAGA Job SPI on top of the JavaGAT.
@@ -247,8 +248,8 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
                 URI s1 = null;
                 URI s2 = null;
                 try {
-                    s1 = NSEntryAdaptor.cvtToGatURI(new URL(parts[0]));
-                    s2 = NSEntryAdaptor.cvtToGatURI(new URL(parts[1]));
+                    s1 = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(parts[0]));
+                    s2 = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(parts[1]));
                 } catch (BadParameterException e) {
                     throw e;
                 }
@@ -361,7 +362,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     
     private URI getURI(String s) throws NoSuccessException, BadParameterException  {
         try {
-            URL url = new URL(getV(s)); 
+            URL url = URLFactory.createURL(getV(s)); 
             return NSEntryAdaptor.cvtToGatURI(url);
         } catch(BadParameterException e) {
             throw e;

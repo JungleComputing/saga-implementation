@@ -5,13 +5,14 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 // Run this for instance with: 
 // $SAGA_HOME/bin/run_saga_app test.namespace.ListTest \
@@ -32,7 +33,7 @@ public class ListTest {
 
     public static void main(String[] args) {
         try {
-            URL directory = new URL(args[0]);
+            URL directory = URLFactory.createURL(args[0]);
             
             Session session = SessionFactory.createSession(true);
             

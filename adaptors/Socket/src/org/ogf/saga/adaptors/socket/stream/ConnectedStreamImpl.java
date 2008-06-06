@@ -3,7 +3,6 @@ package org.ogf.saga.adaptors.socket.stream;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.attributes.Attributes;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -26,6 +25,7 @@ import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
+import org.ogf.saga.url.URL;
 
 public class ConnectedStreamImpl extends ConnectedStream implements
         ErrorInterface {

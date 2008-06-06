@@ -3,7 +3,7 @@ package org.ogf.saga.adaptors.javaGAT.file;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -18,7 +18,7 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.DirectoryWrapper;
-import org.ogf.saga.adaptors.javaGAT.util.Initialize;
+import org.ogf.saga.url.URL;
 
 public class DirectoryAdaptor extends org.ogf.saga.spi.file.DirectoryAdaptorBase {
     

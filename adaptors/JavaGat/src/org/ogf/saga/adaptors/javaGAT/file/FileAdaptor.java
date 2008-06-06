@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.io.RandomAccessFile;
-import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -27,7 +27,7 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.FileWrapper;
 import org.ogf.saga.spi.file.FileAdaptorBase;
 import org.ogf.saga.spi.file.FileSPI;
-import org.ogf.saga.adaptors.javaGAT.util.Initialize;
+import org.ogf.saga.url.URL;
 
 // Aaarggghh, javagat only has a local RandomAccessFile adaptor!!!
 // So, this is no good, but there is nothing else ...

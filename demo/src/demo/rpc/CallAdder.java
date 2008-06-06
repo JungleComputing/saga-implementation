@@ -1,15 +1,16 @@
 package demo.rpc;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.rpc.IOMode;
 import org.ogf.saga.rpc.Parameter;
 import org.ogf.saga.rpc.RPC;
 import org.ogf.saga.rpc.RPCFactory;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class CallAdder {
     public static void main(String[] args) {
         try {
-            URL url = new URL("any://localhost:8080/Calculator.add");
+            URL url = URLFactory.createURL("any://localhost:8080/Calculator.add");
             RPC rpc = RPCFactory.createRPC(url);
             Parameter param1 = RPCFactory.createParameter(new Integer(10));
             Parameter param2 = RPCFactory.createParameter(new Integer(20));

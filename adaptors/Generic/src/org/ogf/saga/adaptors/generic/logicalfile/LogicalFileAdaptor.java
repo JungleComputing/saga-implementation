@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -28,6 +27,8 @@ import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.proxies.logicalfile.LogicalFileWrapper;
 import org.ogf.saga.spi.logicalfile.LogicalFileAdaptorBase;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 /**
  * This LogicalFile adaptor actually stores its contents
@@ -64,7 +65,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
                         break;
                     }
                     try {
-                        URL u = new URL(s);
+                        URL u = URLFactory.createURL(s);
                         urls.add(u);
                     } catch(Throwable e) {
                         try {

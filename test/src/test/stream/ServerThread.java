@@ -1,7 +1,6 @@
 package test.stream;
 
 import org.apache.log4j.Logger;
-import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -11,14 +10,15 @@ import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
-import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.error.SagaIOException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamFactory;
 import org.ogf.saga.stream.StreamService;
+import org.ogf.saga.url.URLFactory;
 
 public class ServerThread implements Runnable {
 
@@ -95,7 +95,7 @@ public class ServerThread implements Runnable {
     public void run() {
         StreamService service = null;
         try {
-            service = StreamFactory.createStreamService(new URL(url));
+            service = StreamFactory.createStreamService(URLFactory.createURL(url));
             service.getMetric(StreamService.STREAMSERVER_CLIENTCONNECT)
                     .addCallback(clientConnect);
             while (!stop) {

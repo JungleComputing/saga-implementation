@@ -3,13 +3,14 @@ package demo.file;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class FileSize {
 
@@ -41,7 +42,7 @@ public class FileSize {
 
         // Create session and add some contexts
         Session session = SessionFactory.createSession();
-        URL url = new URL(args[0]);
+        URL url = URLFactory.createURL(args[0]);
         String scheme = url.getScheme();
         if ("ftp".equals(scheme)) {
             // FTP context. Default is anonymous.
@@ -54,7 +55,8 @@ public class FileSize {
         }
         
         // Create file object, determine size.
-        File file = FileFactory.createFile(session, new URL(args[0]));
+        File file = FileFactory.createFile(session,
+                URLFactory.createURL(args[0]));
         System.out.println("URL " + args[0] + " has " + file.getSize() + " bytes");
         file.close();
         

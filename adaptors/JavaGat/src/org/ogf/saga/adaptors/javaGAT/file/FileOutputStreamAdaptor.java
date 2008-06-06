@@ -6,8 +6,8 @@ import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.URI;
-import org.ogf.saga.URL;
 import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -20,7 +20,7 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.proxies.file.FileOutputStreamWrapper;
-import org.ogf.saga.adaptors.javaGAT.util.Initialize;
+import org.ogf.saga.url.URL;
 
 public class FileOutputStreamAdaptor extends org.ogf.saga.spi.file.FileOutputStreamAdaptorBase {
    

@@ -3,7 +3,6 @@ package demo.namespace;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.error.DoesNotExistException;
@@ -21,6 +20,8 @@ import org.ogf.saga.task.TaskContainer;
 import org.ogf.saga.task.TaskFactory;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.task.WaitMode;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 /**
  * A small test for TaskContainers (and copy()).
@@ -65,7 +66,7 @@ public class TaskCopyTest implements Callback {
     }
     
     private static TaskContainer createTasks(Session session, URL[] urls) throws Exception {
-        NSDirectory dir = NSFactory.createNSDirectory(session, new URL("tmp"), Flags.CREATE.getValue());
+        NSDirectory dir = NSFactory.createNSDirectory(session, URLFactory.createURL("tmp"), Flags.CREATE.getValue());
         
         // Create task container with callbacks.
         TaskContainer container = TaskFactory.createTaskContainer();
@@ -77,7 +78,7 @@ public class TaskCopyTest implements Callback {
             String path = url.getPath();
             path = path.substring(path.lastIndexOf('/') + 1);
             
-            container.add(dir.copy(TaskMode.TASK, url, new URL(path),
+            container.add(dir.copy(TaskMode.TASK, url, URLFactory.createURL(path),
                     Flags.OVERWRITE.getValue()));
         }
 
@@ -90,7 +91,7 @@ public class TaskCopyTest implements Callback {
         URL[] urls = new URL[args.length];
 
         for (int i = 0; i < args.length; i++) {
-            urls[i] = new URL(args[i]);
+            urls[i] = URLFactory.createURL(args[i]);
         }
 
         // Create an ftp context.

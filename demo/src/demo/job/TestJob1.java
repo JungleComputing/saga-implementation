@@ -1,6 +1,5 @@
 package demo.job;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
@@ -9,6 +8,7 @@ import org.ogf.saga.job.JobService;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
+import org.ogf.saga.url.URLFactory;
 
 // This test is for the SAGA gridsam adaptor. The user must have
 // started an ftp server on port 12345, on the submitting machine, beforehand.
@@ -21,7 +21,7 @@ public class TestJob1 implements Callback {
             System.setProperty("JobService.adaptor.name", "gridsam");
 
             // Create the JobService. Gridsam service lives on titan.cs.vu.nl.
-            JobService js = JobFactory.createJobService(new URL(
+            JobService js = JobFactory.createJobService(URLFactory.createURL(
                     "https://titan.cs.vu.nl:18443/gridsam/services/gridsam"));
 
             // Create a job description to execute "/bin/uname -a" on

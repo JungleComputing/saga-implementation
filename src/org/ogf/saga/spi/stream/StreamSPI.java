@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.stream;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.attributes.AsyncAttributes;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -11,8 +10,8 @@ import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
-import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.error.SagaIOException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.monitoring.AsyncMonitorable;
 import org.ogf.saga.permissions.Permissions;
 import org.ogf.saga.stream.Stream;
@@ -22,6 +21,7 @@ import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
         AsyncAttributes<Stream>, Permissions<Stream> {

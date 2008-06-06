@@ -1,6 +1,5 @@
 package demo.job;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.job.Job;
@@ -12,6 +11,7 @@ import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
+import org.ogf.saga.url.URLFactory;
 
 public class TestJob implements Callback {
 
@@ -38,7 +38,7 @@ public class TestJob implements Callback {
             // Create the JobService. Note: the gridsam service is behind a
             // firewall and is reached through an ssh tunnel, which the user
             // must have set up beforehand.
-            JobService js = JobFactory.createJobService(new URL(
+            JobService js = JobFactory.createJobService(URLFactory.createURL(
                     "https://titan.cs.vu.nl:18443/gridsam/services/gridsam"));
 
             // Create a job description to execute "/bin/uname -a" on

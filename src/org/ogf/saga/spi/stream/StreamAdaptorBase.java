@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.stream;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -24,6 +23,8 @@ import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public abstract class StreamAdaptorBase extends AdaptorBase<Stream> implements
         StreamSPI {
@@ -68,7 +69,7 @@ public abstract class StreamAdaptorBase extends AdaptorBase<Stream> implements
     public Object clone() throws CloneNotSupportedException {
         StreamAdaptorBase clone = (StreamAdaptorBase) super.clone();
         try {
-            clone.url = new URL(url.toString());
+            clone.url = URLFactory.createURL(url.toString());
         } catch (Throwable e) {
             // Should not happen.
             throw new CloneNotSupportedException("Oops");

@@ -13,6 +13,7 @@ import org.ogf.saga.rpc.RPCFactory;
 import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.stream.StreamFactory;
 import org.ogf.saga.task.TaskFactory;
+import org.ogf.saga.url.URLFactory;
 
 public class MetaFactory implements SagaFactory {
 
@@ -58,5 +59,9 @@ public class MetaFactory implements SagaFactory {
 
     public TaskFactory createTaskFactory() throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskFactory();
+    }
+
+    public URLFactory createURLFactory() throws NotImplementedException {
+        return new org.ogf.saga.impl.url.URLFactory();
     }
 }

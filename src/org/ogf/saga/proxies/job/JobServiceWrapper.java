@@ -2,7 +2,6 @@ package org.ogf.saga.proxies.job;
 
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -22,6 +21,7 @@ import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.job.JobServiceSPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public class JobServiceWrapper extends SagaObjectBase implements JobService {
 

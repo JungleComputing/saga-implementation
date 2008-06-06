@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.file;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -23,6 +22,7 @@ import org.ogf.saga.proxies.file.DirectoryWrapper;
 import org.ogf.saga.spi.namespace.NSDirectoryAdaptorBase;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
         implements DirectorySPI {

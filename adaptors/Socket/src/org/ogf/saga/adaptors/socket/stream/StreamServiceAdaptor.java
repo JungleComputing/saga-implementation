@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -20,6 +19,7 @@ import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.proxies.stream.StreamServiceWrapper;
 import org.ogf.saga.spi.stream.StreamServiceAdaptorBase;
 import org.ogf.saga.stream.Stream;
+import org.ogf.saga.url.URL;
 
 public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 

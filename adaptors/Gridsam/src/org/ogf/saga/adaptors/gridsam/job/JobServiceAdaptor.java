@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.icenigrid.gridsam.client.common.ClientSideJobManager;
 import org.icenigrid.gridsam.core.ConfigurationException;
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -21,6 +20,7 @@ import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
 import org.ogf.saga.proxies.job.JobServiceWrapper;
 import org.ogf.saga.spi.job.JobServiceAdaptorBase;
+import org.ogf.saga.url.URL;
 
 public class JobServiceAdaptor extends JobServiceAdaptorBase {
 

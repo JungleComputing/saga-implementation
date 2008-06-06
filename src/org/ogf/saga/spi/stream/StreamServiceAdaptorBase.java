@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.stream;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -20,6 +19,8 @@ import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public abstract class StreamServiceAdaptorBase extends
         AdaptorBase<StreamServiceWrapper> implements StreamServiceSPI {
@@ -41,7 +42,7 @@ public abstract class StreamServiceAdaptorBase extends
         StreamServiceAdaptorBase clone = (StreamServiceAdaptorBase) super
                 .clone();
         try {
-            clone.url = new URL(url.toString());
+            clone.url = URLFactory.createURL(url.toString());
         } catch (Throwable e) {
             throw new SagaRuntimeException("Should not happen", e);
         }

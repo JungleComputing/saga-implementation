@@ -1,6 +1,7 @@
 package org.ogf.saga.adaptors.javaGAT.stream;
 
 import java.net.SocketTimeoutException;
+
 import org.apache.log4j.Logger;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
@@ -10,7 +11,6 @@ import org.gridlab.gat.advert.AdvertService;
 import org.gridlab.gat.advert.MetaData;
 import org.gridlab.gat.io.Endpoint;
 import org.gridlab.gat.io.Pipe;
-import org.ogf.saga.URL;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -24,6 +24,7 @@ import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.proxies.stream.StreamServiceWrapper;
 import org.ogf.saga.spi.stream.StreamServiceAdaptorBase;
 import org.ogf.saga.stream.Stream;
+import org.ogf.saga.url.URL;
 
 public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 

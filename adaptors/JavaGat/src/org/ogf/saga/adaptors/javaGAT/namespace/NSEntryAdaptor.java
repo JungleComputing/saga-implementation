@@ -10,7 +10,6 @@ import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.URI;
 import org.gridlab.gat.io.File;
 import org.gridlab.gat.io.FileInterface;
-import org.ogf.saga.URL;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -30,6 +29,8 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.spi.namespace.NSEntryAdaptorBase;
 import org.ogf.saga.spi.namespace.NSEntrySPI;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
@@ -245,7 +246,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     public static URL cvtToSagaURL(URI uri) throws NotImplementedException,
             BadParameterException, NoSuccessException {
-        return new URL(uri.toString()).normalize();
+        return URLFactory.createURL(uri.toString()).normalize();
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
@@ -418,7 +419,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         }
         URL newURL = null;
         try {
-            newURL = new URL(nameUrl.toString());
+            newURL = URLFactory.createURL(nameUrl.toString());
             newURL.setPath(path);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
@@ -435,7 +436,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         String[] s = path.split("/");
 
         try {
-            return new URL(s[s.length - 1]);
+            return URLFactory.createURL(s[s.length - 1]);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
         }
@@ -447,7 +448,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             throw new IncorrectStateException("NSEntry already closed");
         }
         try {
-            return new URL(nameUrl.normalize().toString());
+            return URLFactory.createURL(nameUrl.normalize().toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
         }

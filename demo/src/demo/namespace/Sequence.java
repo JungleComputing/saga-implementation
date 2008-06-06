@@ -5,7 +5,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.file.FileFactory;
@@ -16,6 +15,8 @@ import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 class Sequence {
 
@@ -52,10 +53,10 @@ class Sequence {
         String message = args[3];
               
         try {
-            URL fileUrl = new URL(filename);
-            URL newFileUrl = new URL(newFilename);
-            URL completeFileUrl = new URL(dir + "/" + filename);
-            URL completeNewFileUrl = new URL(dir + "/" + newFilename);
+            URL fileUrl = URLFactory.createURL(filename);
+            URL newFileUrl = URLFactory.createURL(newFilename);
+            URL completeFileUrl = URLFactory.createURL(dir + "/" + filename);
+            URL completeNewFileUrl = URLFactory.createURL(dir + "/" + newFilename);
             
             Session session = SessionFactory.createSession(true);
             String scheme = completeFileUrl.getScheme();
@@ -67,7 +68,7 @@ class Sequence {
             }
 
             NSDirectory parentDir = NSFactory.createNSDirectory(session,
-                    new URL(dir), Flags.CREATE.or(Flags.CREATEPARENTS));
+                    URLFactory.createURL(dir), Flags.CREATE.or(Flags.CREATEPARENTS));
             FileOutputStream stream = FileFactory.createFileOutputStream(session, completeFileUrl);
             stream.write(message.getBytes());
             stream.close();
