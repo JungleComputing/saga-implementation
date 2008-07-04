@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Creates a logicalfile called "lf", initially containing
+# ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz, and then creates a replica
+# in `pwd`/copy.
+# Afterwards, "lf" should contain two entries.
+
+export SAGA_LOCATION=`cd .. && pwd`
+
+$SAGA_LOCATION/bin/run_saga_app demo.logicalfile.LogicalFileCopy lf `pwd`/copy
