@@ -201,15 +201,10 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
         name = name.normalize();
 
-        URL[] array = urls.toArray(new URL[urls.size()]);
-        if (array.length == 0) {
-            throw new IncorrectStateException(
-                    "replicate() called on empty LogicalFile");
-        }
-
+        URL url = getClosestURL(name);
         // Create entry so that we can copy.
         try {
-            NSEntry e = NSFactory.createNSEntry(session, array[0],
+            NSEntry e = NSFactory.createNSEntry(session, url,
                     Flags.NONE.getValue());
 
             // Pick the first location. Exceptions passed on to user.
@@ -261,6 +256,45 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         doAdd(nameNew);
         write();
     }
+    
+    private URL getClosestURL(URL location) throws IncorrectStateException, NotImplementedException {
+        if (urls == null || urls.size() == 0) {
+            throw new IncorrectStateException("No files in logical file '"
+                    + nameUrl + "' to compare with");
+        }
+//      first check: same hostname
+        for (URL file : urls) {
+            if (file.getHost().equalsIgnoreCase(location.getHost())) {
+                return file;
+            }
+        }
+//      check for same suffix. The more parts of the suffix are the same, the
+//      closer the location
+        String locationPart = location.getHost();
+        while (locationPart.contains(".")) {
+            int position = locationPart.indexOf(".");
+            for (URL file : urls) {
+                if (file.getHost().endsWith(locationPart.substring(position))) {
+                    return file;
+                }
+            }
+            // assuming the a hostname never ends with a dot "."
+            locationPart = locationPart.substring(position + 1);
+        }
+        int separatorPosition = location.getHost().indexOf(".");
+        if (separatorPosition > 0) {
+            for (URL file : urls) {
+                if (file.getHost().endsWith(
+                        location.getHost().substring(separatorPosition))) {
+                    return file;
+                }
+            }
+        }
+        URL[] array = urls.toArray(new URL[urls.size()]);
+//      return first
+        return array[0];
+    }
+
     
     private void write() throws NoSuccessException {
         
