@@ -18,6 +18,7 @@ import org.gridlab.gat.monitoring.MetricListener;
 import org.gridlab.gat.resources.HardwareResourceDescription;
 import org.gridlab.gat.resources.SoftwareDescription;
 import org.gridlab.gat.resources.SoftwareResourceDescription;
+import org.gridlab.gat.resources.Job.JobState;
 import org.gridlab.gat.security.SecurityContext;
 import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -57,7 +58,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     private org.gridlab.gat.resources.Job gatJob = null;
     private final GATContext gatContext;
     private org.gridlab.gat.resources.JobDescription gatJobDescription;
-    private int savedState = -1;
+    private JobState savedState = JobState.UNKNOWN;
     
     private static int jobCount = 0;
     
@@ -463,7 +464,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     }
     
     public synchronized void processMetricEvent(MetricEvent val) {
-        int gatState = gatJob.getState();
+        JobState gatState = gatJob.getState();
         if (gatState == savedState) {
             return;
         }
@@ -484,20 +485,20 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             logger.debug("state = " + gatState);
         }
         switch(gatState) {
-        case org.gridlab.gat.resources.Job.ON_HOLD:
+        case ON_HOLD:
             setState(State.SUSPENDED);
             setDetail("ON_HOLD");
             break;
 
-        case org.gridlab.gat.resources.Job.POST_STAGING:
+        case POST_STAGING:
             setDetail("POST_STAGING");
             break;
 
-        case org.gridlab.gat.resources.Job.PRE_STAGING:
+        case PRE_STAGING:
             setDetail("PRE_STAGING");
             break;
 
-        case org.gridlab.gat.resources.Job.RUNNING:
+        case RUNNING:
             if (info != null) {
                 Long l = (Long) info.get("starttime");
                 String s = (String) info.get("hostname");
@@ -518,7 +519,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             }
             setDetail("RUNNING");
             break;
-        case org.gridlab.gat.resources.Job.SCHEDULED:
+        case SCHEDULED:
             setDetail("SCHEDULED");
             if (info != null) {
                 Long l = (Long) info.get("submissiontime");
@@ -533,7 +534,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             
             break;  
 
-        case org.gridlab.gat.resources.Job.STOPPED:
+        case STOPPED:
             setDetail("STOPPED");
             if (state == State.RUNNING) {
                 setState(State.DONE);
@@ -558,7 +559,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             
             break;
 
-        case org.gridlab.gat.resources.Job.SUBMISSION_ERROR:
+        case SUBMISSION_ERROR:
             setDetail("SUBMISSION_ERROR");
             setException(new NoSuccessException("Submission error"));
             setState(State.FAILED);
