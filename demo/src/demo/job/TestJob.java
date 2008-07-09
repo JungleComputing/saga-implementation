@@ -11,6 +11,7 @@ import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
+import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
 public class TestJob implements Callback {
@@ -20,7 +21,16 @@ public class TestJob implements Callback {
         // Make sure that the SAGA engine picks the javagat adaptor for
         // JobService.
         System.setProperty("JobService.adaptor.name", "javaGAT");
+        
+        String serverURL = "https://titan.cs.vu.nl:18443/gridsam/services/gridsam";
 
+        if (args.length > 1) {
+            System.err.println("Usage: java demo.job.TestJob [<serverURL>]");
+            System.exit(1);
+        } else if (args.length == 1) {
+            serverURL = args[0];
+        }
+        
         try {
             Session session = SessionFactory.createSession(true);
             
@@ -34,19 +44,19 @@ public class TestJob implements Callback {
             context.setAttribute("ResourceBroker.sandbox.root", "/tmp");
             
             session.addContext(context);
+            
+            URL url = URLFactory.createURL(serverURL);
                         
-            // Create the JobService. Note: the gridsam service is behind a
-            // firewall and is reached through an ssh tunnel, which the user
-            // must have set up beforehand.
-            JobService js = JobFactory.createJobService(URLFactory.createURL(
-                    "https://titan.cs.vu.nl:18443/gridsam/services/gridsam"));
+            // Create the JobService.
+            JobService js = JobFactory.createJobService(url);
 
             // Create a job description to execute "/bin/uname -a" on
-            // titan.cs.vu.nl.
+            // the server host.
             // The output will be staged out to the current directory.
             JobDescription jd = JobFactory.createJobDescription();
+            String serverHost = url.getHost();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
-                    new String[] { "titan.cs.vu.nl" });
+                    new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/uname");
             jd.setVectorAttribute(JobDescription.ARGUMENTS,
                     new String[] { "-a" });

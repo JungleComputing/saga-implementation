@@ -8,6 +8,7 @@ import org.ogf.saga.job.JobService;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
+import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
 // This test is for the SAGA gridsam adaptor. The user must have
@@ -16,20 +17,33 @@ import org.ogf.saga.url.URLFactory;
 public class TestJob1 implements Callback {
 
     public static void main(String[] args) {
+        
+        String serverURL = "https://titan.cs.vu.nl:18443/gridsam/services/gridsam";
+
+        if (args.length > 1) {
+            System.err.println("Usage: java demo.job.TestJob1 [<serverURL>]");
+            System.exit(1);
+        } else if (args.length == 1) {
+            serverURL = args[0];
+        }
+        
         try {
             // Make sure the gridsam adaptor is selected.
             System.setProperty("JobService.adaptor.name", "gridsam");
+            
+            URL url = URLFactory.createURL(serverURL);
 
-            // Create the JobService. Gridsam service lives on titan.cs.vu.nl.
-            JobService js = JobFactory.createJobService(URLFactory.createURL(
-                    "https://titan.cs.vu.nl:18443/gridsam/services/gridsam"));
+            // Create the JobService. Gridsam service assumed on specified url.
+            JobService js = JobFactory.createJobService(url);
 
             // Create a job description to execute "/bin/uname -a" on
-            // titan.cs.vu.nl.
+            // host of specified url.
             // The output will be staged out to the current directory.
             JobDescription jd = JobFactory.createJobDescription();
+            
+            String serverHost = url.getHost();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
-                    new String[] { "titan.cs.vu.nl" });
+                    new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/uname");
             jd.setVectorAttribute(JobDescription.ARGUMENTS,
                     new String[] { "-a" });

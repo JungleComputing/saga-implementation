@@ -21,6 +21,15 @@ public class TestJob2 implements Callback {
         // JobService.
         System.setProperty("JobService.adaptor.name", "javaGAT");
 
+        String serverURL = "https://fs0.das3.cs.vu.nl";
+
+        if (args.length > 1) {
+            System.err.println("Usage: java demo.job.TestJob [<serverURL>]");
+            System.exit(1);
+        } else if (args.length == 1) {
+            serverURL = args[0];
+        }
+        
         try {
             Session session = SessionFactory.createSession(true);
             
@@ -37,7 +46,7 @@ public class TestJob2 implements Callback {
                         
             // Create the JobService.
             JobService js = JobFactory.createJobService(URLFactory.createURL(
-                    "https://fs0.das3.cs.vu.nl"));
+                    serverURL));
 
             // Create a job: /bin/hostname executed on 10 nodes.
             JobDescription jd = JobFactory.createJobDescription();
