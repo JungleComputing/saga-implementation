@@ -2,8 +2,9 @@ Java SAGA README
 ----------------
 
 Introduction.
-  This is release 1.0rc2 of the SAGA Java implementation, which implements
-  release 1.0rc2 of the Java SAGA language bindings.
+  This is release 1.0rc3 of the SAGA Java implementation, which implements
+  release 1.0rc2 of the Java SAGA language bindings. Yes, 1.0rc2 of the
+  language bindings! The bindings have not changed.
   A SAGA engine takes care of dynamically selecting and loading SAGA adaptors,
   and contains base classes for adaptors, and default implementations
   for SAGA attributes, SAGA tasks, SAGA monitorable, SAGA buffer,
@@ -13,20 +14,20 @@ Environment variables.
   There is one important environment variable, used by the SAGA scripts,
   and that is SAGA_LOCATION. This should be set and point to the root
   directory of your SAGA installation. So, if you installed the SAGA
-  implementation in $HOME/workspace/saga-impl-1.0rc2, then you should have
+  implementation in $HOME/workspace/saga-impl-1.0rc3, then you should have
   
-  SAGA_LOCATION=$HOME/workspace/saga-impl-1.0rc2.
+  SAGA_LOCATION=$HOME/workspace/saga-impl-1.0rc3.
   
   On MacOS-X, Linux, Solaris, and other Unix systems, this can be accomplished
   by adding the line
-      export SAGA_LOCATION=$HOME/workspace/saga-impl-1.0rc2
+      export SAGA_LOCATION=$HOME/workspace/saga-impl-1.0rc3
   or
-      set SAGA_LOCATION=$HOME/workspace/saga-impl-1.0rc2
+      set SAGA_LOCATION=$HOME/workspace/saga-impl-1.0rc3
   for CSH users to your .bashrc, .profile, or .cshrc file (whichever gets
   executed when you log in to your system).
   
   On Windows 2000 or Windows XP you may have installed it in, for instance,
-      c:\Program Files\saga-impl-1.0rc2
+      c:\Program Files\saga-impl-1.0rc3
   You can set the SAGA_LOCATION variable to this path by going to the
   Control Panel, System, the "Advanced" tab, Environment variables,
   add it there and reboot your system.

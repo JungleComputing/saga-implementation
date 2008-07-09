@@ -1,3 +1,10 @@
+1.0rc3 (???)
+   This release fixes some problems in release 1.0rc2. Notably:
+   - a wrong version was included for some demo applications;
+   - there was a problem with the JavaGAT adaptor for GridSAM: JavaGAT
+     sandboxes did not work properly;
+   - there were some other problems with the JavaGAT GridSAM adaptor as well.
+
 1.0rc2 (9 June 2008)
    This release reflects a change in the Java Language Bindings, which adds
    an URLFactory, so that SAGA implementations can provide their own URL
