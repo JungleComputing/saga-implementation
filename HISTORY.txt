@@ -1,9 +1,9 @@
-1.0rc3 (???)
+1.0rc3 (11 July 2008)
    This release fixes some problems in release 1.0rc2. Notably:
    - a wrong version was included for some demo applications;
    - there was a problem with the JavaGAT adaptor for GridSAM: JavaGAT
      sandboxes did not work properly;
-   - there were some other problems with the JavaGAT GridSAM adaptor as well.
+   - SAGA Gridsam adaptor made to work with Java 6.
 
 1.0rc2 (9 June 2008)
    This release reflects a change in the Java Language Bindings, which adds
