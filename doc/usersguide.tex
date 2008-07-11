@@ -327,6 +327,13 @@ and all occurences of ':' are replaced with the system-dependent
 path separator character. This allows for a system-independent way
 of specifying paths in a \texttt{saga.properties} file.
 
+Another important property, which can \emph{only} be set on the
+command line, is the \texttt{java.endorsed.dirs} property. Currently,
+the Gridsam adaptor only works with Java 6 if you set this property
+to \texttt{\$SAGA\_LOCATION/lib/adaptors/GridsamAdaptor/endorsed}.
+The \texttt{run\_saga\_app} script takes care of this, but if yoy don't
+use this script, beware.
+
 For the structure of an adaptor directory see the \texttt{adaptors}
 sub-directory of \texttt{lib}.
 In short, each adaptor has its own subdirectory, named
