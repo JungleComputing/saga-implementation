@@ -20,4 +20,7 @@ add_to_saga_classpath () {
 
 add_to_saga_classpath $SAGA_LOCATION/lib
 
-java -cp "$SAGA_CLASSPATH:$CLASSPATH" -Dlog4j.configuration="file:$SAGA_LOCATION/log4j.properties" "$@"
+java \
+    -cp "$SAGA_CLASSPATH:$CLASSPATH" \
+    -Dlog4j.configuration="file:$SAGA_LOCATION/log4j.properties" \
+    "$@"
