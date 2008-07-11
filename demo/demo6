@@ -7,4 +7,6 @@
 
 export SAGA_LOCATION=`cd .. && pwd`
 
-$SAGA_LOCATION/bin/run_saga_app -DJobService.adaptor.name=gridsam demo.job.TestJob1
+$SAGA_LOCATION/bin/run_saga_app \
+    -DJobService.adaptor.name=gridsam \
+    demo.job.TestJob1
