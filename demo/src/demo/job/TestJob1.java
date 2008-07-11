@@ -66,7 +66,11 @@ public class TestJob1 implements Callback {
         } catch (Throwable e) {
             System.out.println("Got exception " + e);
             e.printStackTrace();
-            e.getCause().printStackTrace();
+            e = e.getCause();
+            if (e != null) {
+                System.out.println("Cause = " + e);
+                e.printStackTrace();
+            }
         }
     }
 

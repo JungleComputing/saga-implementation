@@ -60,6 +60,13 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
 
     private JobState savedState = null;
 
+    /**
+     * Some methods of this class are called directly, not through a
+     * Saga engine dispatcher. Therefore, these methods have to set
+     * the context classloader.
+     */
+    private static ClassLoader loader = SagaJob.class.getClassLoader();
+
     public SagaJob(JobServiceAdaptor service, JobDescription jobDescription,
             Session session) throws NotImplementedException,
             BadParameterException, NoSuccessException {
@@ -74,15 +81,29 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
 
         JobInstance jobInstance;
 
-        try {
-            jobInstance = service.jobManager.submitJob(jobDefinitionDocument,
-                    true);
-            // Unfortunately, notification is not yet supported!!
-            // So, we use a polling thread instead.
-            // service.jobManager.registerChangeListener(jobInstance.getID(),
-            // this);
-        } catch (Throwable e1) {
-            throw new NoSuccessException("Job submission failed", e1);
+        synchronized(this) {
+            // Take care of axis.ClientConfigFile system property: it may
+            // be set by some Globus adaptor, but GridSAM cannot stand that.
+            // So, save and restore it.
+            String saved = System.getProperty("axis.ClientConfigFile");
+            if (saved != null) {
+                System.clearProperty("axis.ClientConfigFile");
+            }
+
+            try {
+                jobInstance = service.jobManager.submitJob(jobDefinitionDocument,
+                        true);
+                // Unfortunately, notification is not yet supported!!
+                // So, we use a polling thread instead.
+                // service.jobManager.registerChangeListener(jobInstance.getID(),
+                // this);
+            } catch (Throwable e1) {
+                throw new NoSuccessException("Job submission failed", e1);
+            } finally {
+                if (saved != null) {
+                    System.setProperty("axis.ClientConfigFile", saved);
+                }
+            }
         }
 
         jobID = jobInstance.getID();
@@ -99,6 +120,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
         // registerChangeListener.
         pollingThread = new PollingThread(this);
         pollingThread.setDaemon(true);
+        pollingThread.setContextClassLoader(loader);
     }
 
     private SagaJob(SagaJob orig) {
@@ -119,12 +141,16 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
         if (isDone()) {
             return;
         }
+        ClassLoader saved = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(loader);
         try {
             service.jobManager.terminateJob(jobID);
         } catch (Throwable e) {
             logger.error("unable to cancel job with id " + jobID, e);
             throw new NoSuccessException("unable to cancel job with id "
                     + jobID, e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(saved);
         }
         setState(State.CANCELED);
     }
@@ -166,15 +192,33 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
 
         setState(State.RUNNING);
 
-        pollingThread.start();
-        try {
-            service.jobManager.startJob(jobID);
-        } catch (Throwable e1) {
-            setState(State.FAILED);
-            stopped = true; // finishes polling thread.
-            throw new NoSuccessException("Job start failed");
-        }
+        ClassLoader savedLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(loader);
 
+        synchronized(this) {
+            // Take care of axis.ClientConfigFile system property: it may
+            // be set by some Globus adaptor, but GridSAM cannot stand that.
+            // So, save and restore it.
+            String saved = System.getProperty("axis.ClientConfigFile");
+            if (saved != null) {
+                System.clearProperty("axis.ClientConfigFile");
+            }
+
+            pollingThread.start();
+
+            try {
+                service.jobManager.startJob(jobID);
+            } catch (Throwable e1) {
+                setState(State.FAILED);
+                stopped = true; // finishes polling thread.
+                throw new NoSuccessException("Job start failed", e1);
+            } finally {
+                if (saved != null) {
+                    System.setProperty("axis.ClientConfigFile", saved);
+                }
+                Thread.currentThread().setContextClassLoader(savedLoader);
+            }
+        }
     }
 
     private void setDetail(String s) {
@@ -416,12 +460,25 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             while (true) {
                 // update the manager state of the job
                 JobInstance jobInstance;
-                try {
-                    jobInstance = parent.service.jobManager
-                            .findJobInstance(parent.jobID);
-                } catch (Throwable e) {
-                    logger.error("got exception", e);
-                    throw new RuntimeException(e);
+                // Take care of axis.ClientConfigFile system property: it may
+                // be set by some Globus adaptor, but GridSAM cannot stand that.
+                // So, save and restore it.
+                synchronized(parent) {
+                    String saved = System.getProperty("axis.ClientConfigFile");
+                    if (saved != null) {
+                        System.clearProperty("axis.ClientConfigFile");
+                    }
+                    try {
+                        jobInstance = parent.service.jobManager
+                                .findJobInstance(parent.jobID);
+                    } catch (Throwable e) {
+                        logger.error("got exception", e);
+                        throw new RuntimeException(e);
+                    } finally {
+                        if (saved != null) {
+                            System.setProperty("axis.ClientConfigFile", saved);
+                        }
+                    }
                 }
                 if (logger.isDebugEnabled()) {
                     StringBuilder props = new StringBuilder();
