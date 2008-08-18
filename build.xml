@@ -102,11 +102,15 @@
             <zipfileset dir="."
                         prefix="saga-impl${version}"
 			includes="doc/**,lib/**,demo/**,test/**,licenses/**,LICENSE.txt,README.txt,log4j.properties,saga.properties,sources/**"
-			excludes="doc/build.xml,doc/usersguide.tex"/>
+			excludes="doc/build.xml,doc/usersguide.tex,demo/demo?"/>
             <zipfileset dir="."
                         prefix="saga-impl${version}"
 			filemode="755"
 			includes="bin/**" />
+            <zipfileset dir="."
+                        prefix="saga-impl${version}"
+			filemode="755"
+			includes="demo/demo?" />
         </zip>
 
 	<delete file="sources/${sources-filename}.zip" />
