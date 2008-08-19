@@ -70,6 +70,20 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
         this.gatContext = gatContext;
         gatJobDescription = new org.gridlab.gat.resources.JobDescription(
                 createSoftwareDescription(), createHardwareResourceDescription());
+        try {
+            int count = Integer.parseInt(getV(JobDescription.NUMBEROFPROCESSES));
+            gatJobDescription.setProcessCount(count);
+        } catch(Throwable e) {
+            // ignored
+        }
+
+        try {
+            int hostCount = Integer.parseInt(getV(JobDescription.NUMBEROFPROCESSES)) /  Integer.parseInt(getV(JobDescription.PROCESSESPERHOST));
+            // What to do if PROCESSESPERHOST is set but NUMBEROFPROCESSES is not???
+            gatJobDescription.setResourceCount(hostCount);
+        } catch(Throwable e) {
+            // ignored
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("Created gatJobDescription " + gatJobDescription);
         }
@@ -159,11 +173,6 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             // ignored
         }
         try {
-            sd.addAttribute("count", getV(JobDescription.NUMBEROFPROCESSES));
-        } catch(Throwable e) {
-            // ignored
-        }
-        try {
             sd.addAttribute("job.type", getV(JobDescription.SPMDVARIATION));
         } catch(Throwable e) {
             // ignored
@@ -173,14 +182,6 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
         // notImplemented(JobDescription.JOBCONTACT);
         // notImplemented(JobDescription.JOBSTARTTIME);
 
-        try {
-            // What to do if PROCESSESPERHOST is set but NUMBEROFPROCESSES is not???
-            sd.addAttribute("host.count", 
-                    Integer.parseInt(getV(JobDescription.NUMBEROFPROCESSES))
-                    / Integer.parseInt(getV(JobDescription.PROCESSESPERHOST)));
-        } catch(Throwable e) {
-            // ignored
-        }
         try {
             sd.addAttribute("directory", getV(JobDescription.WORKINGDIRECTORY));
         } catch(Throwable e) {
