@@ -7,6 +7,7 @@ import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.FileFactory;
+import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.url.URL;
@@ -56,7 +57,7 @@ public class FileSize {
         
         // Create file object, determine size.
         File file = FileFactory.createFile(session,
-                URLFactory.createURL(args[0]));
+                URLFactory.createURL(args[0]), Flags.NONE.getValue());
         System.out.println("URL " + args[0] + " has " + file.getSize() + " bytes");
         file.close();
         
