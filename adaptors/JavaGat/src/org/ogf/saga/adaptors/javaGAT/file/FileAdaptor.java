@@ -63,40 +63,42 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         this.flags = flags;
         
         // Determine read/write
-        String rfflags = "r";
+        String rfflags = null;
+        if (Flags.READ.isSet(flags)) {
+            rfflags = "r";
+        }
         if (Flags.WRITE.isSet(flags)) {
             rfflags = "rw";
         }
         
-        // Open the file.
-        try {
-            rf = GAT.createRandomAccessFile(entry.getGatContext(), entry.getGatURI(),
-                    rfflags);
-        } catch (GATObjectCreationException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("GAT.createRandomAccessFile failed");
+        if (rfflags != null) {
+            // Open the file, if needed.
+            try {
+                rf = GAT.createRandomAccessFile(entry.getGatContext(), entry.getGatURI(),
+                        rfflags);
+            } catch (GATObjectCreationException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("GAT.createRandomAccessFile failed");
+                }
             }
         }
-        
-        // Deal with append
-        if (Flags.APPEND.isSet(flags)) {
-            if (Flags.TRUNCATE.isSet(flags)) {
-                throw new BadParameterException("TRUNCATE and APPEND?");
-            }
-        }
-        
+           
         if (rf != null) {
             // Truncate if needed.
             if (Flags.TRUNCATE.isSet(flags)) {
-                if (! Flags.WRITE.isSet(flags)) {
-                    throw new BadParameterException("TRUNCATE but no WRITE?");
-                }
                 try {
                     rf.setLength(0L);
                 } catch(IOException e) {
                     throw new NoSuccessException("Truncate failed", e);
                 }
-            }
+            } else if (Flags.APPEND.isSet(flags)) {
+                offset = entry.size();
+                try {
+                    rf.seek(offset);
+                } catch (IOException e) {
+                    throw new NoSuccessException("Append failed", e);
+                }                                
+            }            
         } else {
             if (Flags.READ.isSet(flags)) {
                 if (Flags.WRITE.isSet(flags)) {
@@ -106,6 +108,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             } else if (Flags.WRITE.isSet(flags)) {
                 boolean append = Flags.APPEND.isSet(flags);
                 out = entry.getOutputStream(append);
+                offset = entry.size();
             }
         }
     }
