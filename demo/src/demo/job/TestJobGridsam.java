@@ -1,7 +1,6 @@
 package demo.job;
 
 import org.ogf.saga.context.Context;
-import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
@@ -9,51 +8,39 @@ import org.ogf.saga.job.JobService;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
-import org.ogf.saga.session.Session;
-import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
-public class TestJob implements Callback {
+// This test is for the SAGA gridsam adaptor. The user must have
+// started an ftp server on port 12345, on the submitting machine, beforehand.
+
+public class TestJobGridsam implements Callback {
 
     public static void main(String[] args) {
-
-        // Make sure that the SAGA engine picks the javagat adaptor for
-        // JobService.
-        System.setProperty("JobService.adaptor.name", "javaGAT");
         
         String serverURL = "https://titan.cs.vu.nl:18443/gridsam/services/gridsam";
 
         if (args.length > 1) {
-            System.err.println("Usage: java demo.job.TestJob [<serverURL>]");
+            System.err.println("Usage: java demo.job.TestJob1 [<serverURL>]");
             System.exit(1);
         } else if (args.length == 1) {
             serverURL = args[0];
         }
         
         try {
-            Session session = SessionFactory.createSession(true);
-            
-            // Create a preferences context for JavaGAT.
-            // The "preferences" context is special: it is extensible.
-            Context context = ContextFactory.createContext("preferences");
-            // Make sure that javaGAT picks the gridsam adaptor.
-            context.setAttribute("ResourceBroker.adaptor.name", "gridsam");
-            // Sandbox root must be an absolute path for the javaGAT gridsam
-            // adaptor.
-            context.setAttribute("ResourceBroker.sandbox.root", "/tmp");
-            
-            session.addContext(context);
+            // Make sure the gridsam adaptor is selected.
+            System.setProperty("JobService.adaptor.name", "gridsam");
             
             URL url = URLFactory.createURL(serverURL);
-                        
-            // Create the JobService.
+
+            // Create the JobService. Gridsam service assumed on specified url.
             JobService js = JobFactory.createJobService(url);
 
             // Create a job description to execute "/bin/uname -a" on
-            // the server host.
+            // host of specified url.
             // The output will be staged out to the current directory.
             JobDescription jd = JobFactory.createJobDescription();
+            
             String serverHost = url.getHost();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
                     new String[] { serverHost });
@@ -62,27 +49,28 @@ public class TestJob implements Callback {
                     new String[] { "-a" });
             jd.setAttribute(JobDescription.OUTPUT, "uname.out");
             
-            // Get hostname and current directory for poststage target.
+            // Get hostname for poststage target.
             String host = java.net.InetAddress.getLocalHost()
                     .getCanonicalHostName();
-            // Note: this does not work on windows, which gives a
-            // directory string like c:\...\...., which does not give
-            // a valid url.
-            String dir = System.getProperty("user.dir");
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                    new String[] { "file://" + host + dir
-                            + "/uname.out < uname.out" });
+                    new String[] { "ftp://" + host
+                            + ":12345/uname.out < uname.out" });
 
             // Create the job, run it, and wait for it.
             Job job = js.createJob(jd);
-            job.addCallback(Job.JOB_STATE, new TestJob());
-            job.addCallback(Job.JOB_STATEDETAIL, new TestJob());
+            job.addCallback(Job.JOB_STATE, new TestJobGridsam());
+            job.addCallback(Job.JOB_STATEDETAIL, new TestJobGridsam());
             job.run();
             job.waitFor();
+            System.out.println("Exit status = " + job.getAttribute(Job.EXITCODE));
         } catch (Throwable e) {
             System.out.println("Got exception " + e);
             e.printStackTrace();
-            e.getCause().printStackTrace();
+            e = e.getCause();
+            if (e != null) {
+                System.out.println("Cause = " + e);
+                e.printStackTrace();
+            }
         }
     }
 

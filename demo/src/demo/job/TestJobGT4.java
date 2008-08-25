@@ -13,7 +13,7 @@ import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.url.URLFactory;
 
-public class TestJob2 implements Callback {
+public class TestJobGT4 implements Callback {
 
     public static void main(String[] args) {
 
@@ -59,8 +59,8 @@ public class TestJob2 implements Callback {
 
             // Create the job, run it, and wait for it.
             Job job = js.createJob(jd);
-            job.addCallback(Job.JOB_STATE, new TestJob2());
-            job.addCallback(Job.JOB_STATEDETAIL, new TestJob2());
+            job.addCallback(Job.JOB_STATE, new TestJobGT4());
+            job.addCallback(Job.JOB_STATEDETAIL, new TestJobGT4());
             job.run();
             job.waitFor();
         } catch (Throwable e) {
