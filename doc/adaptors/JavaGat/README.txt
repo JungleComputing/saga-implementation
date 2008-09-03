@@ -56,4 +56,4 @@ JavaGAT Preferences.
   adaptor to use, very similar to the way a SAGA application can use
   properties to select which SAGA adaptor to use. See for instance the
   code in demo/src/demo/job/TestJob2.java for an example.
-  The file JavaGat-doc/preferences.html describes the available preferences.
+  The file JavaGat-doc/javagat.properties describes the available preferences.
