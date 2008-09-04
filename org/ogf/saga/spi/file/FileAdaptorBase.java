@@ -74,7 +74,7 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
             
             // Sanity check 3: append and not write?
             if (Flags.APPEND.isSet(fileFlags)) {
-                throw new BadParameterException("TRUNCATE and not WRITE?");
+                throw new BadParameterException("APPEND and not WRITE?");
             }
         }
     }
