@@ -18,12 +18,17 @@ import test.misc.AdaptorTestResult;
 import test.misc.AdaptorTestResultEntry;
 
 public class JobAdaptorTest {
+    
+    private static final String DIR = "/tmp/saga-test-data";
 
     /**
      * @param args
-     *     first argument names the adaptor tested,
-     *     second argument gives an URL for the server,
+     *     first argument names the JobService adaptor tested, i.e. "javagat", "gridsam";
+     *     second argument gives an URL for the server;
      *     third argument gives an URL for the "data" sub-directory on THIS host.
+     * Note: Some adaptors may require services running on THIS host. For instance,
+     * to use the gridsam adaptor, you should run an ftp server that can write to the
+     * "data" sub-directory.
      */
     public static void main(String[] args) {
         System.setProperty("JobService.adaptor.name", args[0]);
@@ -149,7 +154,7 @@ public class JobAdaptorTest {
         String result;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new java.io.FileInputStream("data/stdout")));
+                    new java.io.FileInputStream(DIR + "/stdout")));
             result = reader.readLine();
             reader.close();
         } catch (Exception e) {
@@ -194,7 +199,7 @@ public class JobAdaptorTest {
         String result;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new java.io.FileInputStream("data/stderr")));
+                    new java.io.FileInputStream(DIR + "/stderr")));
             result = reader.readLine();
             reader.close();
         } catch (Exception e) {
@@ -242,7 +247,7 @@ public class JobAdaptorTest {
         String result;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new java.io.FileInputStream("data/stdout")));
+                    new java.io.FileInputStream(DIR + "/stdout")));
             result = reader.readLine();
             reader.close();
         } catch (Exception e) {
@@ -284,7 +289,7 @@ public class JobAdaptorTest {
  
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(
-                new java.io.File("data/flap.txt").exists(), (stop - start), null);
+                new java.io.File(DIR + "/flap.txt").exists(), (stop - start), null);
 
     }
 
@@ -322,7 +327,7 @@ public class JobAdaptorTest {
         boolean success = false;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new java.io.FileInputStream("data/stdout")));
+                    new java.io.FileInputStream(DIR + "/stdout")));
             while (true) {
                 String result = reader.readLine();
                 if (result == null) {
