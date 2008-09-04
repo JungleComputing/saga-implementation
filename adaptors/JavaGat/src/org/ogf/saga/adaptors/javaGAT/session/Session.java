@@ -106,8 +106,10 @@ public class Session implements org.ogf.saga.impl.session.AdaptorSessionInterfac
     SecurityContext cvt2GATSecurityContext(Context ctxt) {
         String type = ctxt.getValue(Context.TYPE);
         if ("ftp".equals(type)) {
-            return new PasswordSecurityContext(ctxt.getValue(Context.USERID),
+            SecurityContext c = new PasswordSecurityContext(ctxt.getValue(Context.USERID),
                     ctxt.getValue(Context.USERPASS));
+            c.addNote("adaptors", "ftp");
+            return c;
         } else if ("globus".equals(type) || "gridftp".equals(type)) {
             try {
                 return new CertificateSecurityContext(

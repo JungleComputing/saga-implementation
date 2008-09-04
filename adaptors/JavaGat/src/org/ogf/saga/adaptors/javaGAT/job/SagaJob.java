@@ -465,7 +465,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     }
     
     public synchronized void processMetricEvent(MetricEvent val) {
-        JobState gatState = gatJob.getState();
+        JobState gatState =  (JobState) val.getValue();
         if (gatState == savedState) {
             return;
         }
