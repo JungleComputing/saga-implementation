@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# This script runs the SAGA logicalfile test for the generic adaptor.
+# The servers are listed below, and should be replaced by your own
+# servers.
+
+GENERIC_SERVERS=localhost,titan.cs.vu.nl
+
+export SAGA_LOCATION=`cd .. && pwd`
+
+$SAGA_LOCATION/bin/run_saga_app -Xmx256M \
+    test.logicalfile.LogicalFileAdaptorTest generic $GENERIC_SERVERS
