@@ -9,4 +9,4 @@ JAVAGAT_SERVER=fs0.das3.cs.vu.nl
 export SAGA_LOCATION=`cd .. && pwd`
 
 $SAGA_LOCATION/bin/run_saga_app -Xmx256M \
-    test.file.FileOutputStreamAdaptorTest javagat $JAVAGAT_SERVER
+    test.file.FileInputStreamAdaptorTest javagat $JAVAGAT_SERVER
