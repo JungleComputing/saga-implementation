@@ -179,6 +179,10 @@ public class SAGAEngine {
                 logger.debug("readJarFiles: dir = " + dir);
 
                 File adaptorRoot = new File(dir);
+                if (! adaptorRoot.isDirectory()) {
+                    logger.debug("Specified path " + dir + " is not a directory");
+                    continue;
+                }
                 // Now get the adaptor directories from the adaptor path.
                 // Adaptor directories are directories whose name ends
                 // with "Adaptor".
@@ -190,15 +194,18 @@ public class SAGAEngine {
                 });
 
                 // Create a separate classloader for each adaptor directory.
-                for (File adaptorDir : adaptorDirs) {
-                    try {
-                        adaptorClassLoaders.put(adaptorDir.getName(),
-                                loadDirectory(adaptorDir));
-                    } catch (Exception e) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Unable to load adaptor '"
-                                    + adaptorDir.getName() + "': " + e);
-                            e.printStackTrace();
+                if (adaptorDirs != null) {
+                    for (File adaptorDir : adaptorDirs) {
+                
+                        try {
+                            adaptorClassLoaders.put(adaptorDir.getName(),
+                                    loadDirectory(adaptorDir));
+                        } catch (Exception e) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Unable to load adaptor '"
+                                        + adaptorDir.getName() + "': " + e);
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
