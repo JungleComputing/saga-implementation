@@ -280,7 +280,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
     protected void nonResolvingCopy(URL target, int flags)
             throws IncorrectStateException, NoSuccessException,
             BadParameterException, AlreadyExistsException,
-            IncorrectURLException, NotImplementedException {
+            IncorrectURLException, NotImplementedException, DoesNotExistException {
         if (closed) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Entry already closed!");
@@ -383,13 +383,12 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                 }
             }
         } else {
-            // TODO below commented to get the demo work. Check the
-            // getParentFile from the LocalFileAdaptor
-            /*
-             * if (!targetParentFile.exists()) { if (logger.isDebugEnabled()) {
-             * logger.debug("targetParentFile does not exist!"); } throw new
-             * DoesNotExist("Target parent file does not exist"); }
-             */
+            if (!targetParentFile.exists()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("targetParentFile does not exist!");
+                }
+                throw new DoesNotExistException("Target parent file does not exist");
+            }
         }
         // if the target already exists, it will be overwritten if the
         // 'Overwrite' flag is set, otherwise it is an 'AlreadyExists'
@@ -504,7 +503,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             BadParameterException, AlreadyExistsException,
             NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, IncorrectURLException {
+            TimeoutException, IncorrectURLException, DoesNotExistException {
         nonResolvingCopy(target, flags);
         remove(flags);
     }
