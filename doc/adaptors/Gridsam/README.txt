@@ -27,6 +27,9 @@ Using a GridSAM service.
   need a file crypto.properties on your classpath. An example is included
   in this directory. You will probably need to adapt some values there,
   a.o. to refer to your certificate.
+  You also may need a HTTP-proxy.properties file in your classpath, otherwise
+  you get some warning about this. However, this does not seem to harm
+  the functionality of the Gridsam adaptor for SAGA.
   Also, you need to be aware that the clock of the system on which your
   application runs does not run more than 5 minutes behind the clock on
   the server on which the Gridsam service runs, otherwise certificate
