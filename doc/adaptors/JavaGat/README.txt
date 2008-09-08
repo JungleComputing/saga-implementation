@@ -4,6 +4,7 @@ JavaGAT adaptor README
 Introduction.
   The JavaGAT adaptor actually consists of several adaptors:
   it has implementations for streams, namespace, file, job.
+  The JavaGAT version supplied is version 2.0.1.
 
 Not implemented.
   Permissions are not implemented, there is no support for it in JavaGAT.
