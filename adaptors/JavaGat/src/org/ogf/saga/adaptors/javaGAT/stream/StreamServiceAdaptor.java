@@ -112,7 +112,6 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             Pipe pipe = serverSide.listen(invocationTimeout);
             clientConnectMetric.internalFire();
             return new ConnectedStreamImpl(session, url, pipe);
-
         } catch (GATObjectCreationException e) {
             throw new NoSuccessException("Errors in GAT", e);
         } catch (GATInvocationException e) {

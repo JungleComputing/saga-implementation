@@ -18,7 +18,7 @@ import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamFactory;
 import org.ogf.saga.stream.StreamService;
-import org.ogf.saga.url.URLFactory;
+import org.ogf.saga.url.URL;
 
 public class ServerThread implements Runnable {
 
@@ -28,11 +28,11 @@ public class ServerThread implements Runnable {
 
     private static Logger logger = Logger.getLogger(ServerThread.class);
 
-    private String url;
+    private URL url;
     
     Throwable throwable = null;
 
-    public ServerThread(String url) {
+    public ServerThread(URL url) {
         this.url = url;
     }
 
@@ -95,7 +95,7 @@ public class ServerThread implements Runnable {
     public void run() {
         StreamService service = null;
         try {
-            service = StreamFactory.createStreamService(URLFactory.createURL(url));
+            service = StreamFactory.createStreamService(url);
             service.getMetric(StreamService.STREAMSERVER_CLIENTCONNECT)
                     .addCallback(clientConnect);
             while (!stop) {
