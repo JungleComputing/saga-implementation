@@ -108,7 +108,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         try {
             advertService = GAT.createAdvertService(gatContext);
             Endpoint serverSide = GAT.createEndpoint(gatContext);
-            advertService.add(serverSide, new MetaData(), url.getURL());
+            advertService.add(serverSide, new MetaData(), url.getString());
             Pipe pipe = serverSide.listen(invocationTimeout);
             clientConnectMetric.internalFire();
             return new ConnectedStreamImpl(session, url, pipe);
@@ -140,7 +140,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             throw new NoSuccessException(e);
         } finally {
             try {
-                advertService.delete(url.getURL());
+                advertService.delete(url.getString());
             } catch (Throwable e) {
                 // ignored
             }

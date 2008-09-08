@@ -134,7 +134,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             throw e;
         }
 
-        String path = url.getURL();
+        String path = url.getString();
         try {
             AdvertService advService = GAT.createAdvertService(gatContext);
             Endpoint remoteEndPoint = (Endpoint) advService

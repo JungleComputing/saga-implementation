@@ -136,7 +136,7 @@ public class JobAdaptorTest {
                     new String[] { "test", "1", "2", "3"});
             jd.setAttribute(JobDescription.OUTPUT, "stdout");
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                    new String[] { du.getURL() + " < stdout" });
+                    new String[] { du.getString() + " < stdout" });
             js = JobFactory.createJobService(url);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
@@ -181,7 +181,7 @@ public class JobAdaptorTest {
                     new String[] { "floep"});
             jd.setAttribute(JobDescription.ERROR, "stderr");
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                    new String[] { du.getURL() + " < stderr"});
+                    new String[] { du.getString() + " < stderr"});
             js = JobFactory.createJobService(url);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
@@ -229,7 +229,7 @@ public class JobAdaptorTest {
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
                     new String[] {
                         "ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz > floep",
-                        du.getURL() + " < stdout"});
+                        du.getString() + " < stdout"});
             js = JobFactory.createJobService(url);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
@@ -272,7 +272,7 @@ public class JobAdaptorTest {
             jd.setVectorAttribute(JobDescription.ARGUMENTS, new String[] { "flap.txt"});
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
                     new String[] {
-                        du.getURL() + " < flap.txt"});
+                        du.getString() + " < flap.txt"});
             js = JobFactory.createJobService(url);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
@@ -307,7 +307,7 @@ public class JobAdaptorTest {
             jd.setAttribute(JobDescription.EXECUTABLE, "/usr/bin/env");
             jd.setAttribute(JobDescription.OUTPUT, "stdout");
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                    new String[] { du.getURL() + " < stdout"});
+                    new String[] { du.getString() + " < stdout"});
             jd.setVectorAttribute(JobDescription.ENVIRONMENT,
                     new String[] { "SAGA_TEST_KEY=blablabla"});
             js = JobFactory.createJobService(url);

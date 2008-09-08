@@ -33,12 +33,8 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
     public JobServiceAdaptor(JobServiceWrapper wrapper, Session session, URL rm)
             throws NoSuccessException, NotImplementedException {
         super(wrapper, session, rm);
-        String scheme;
-        try {
-            scheme = rm.getScheme();
-        } catch (NotImplementedException e) {
-            throw new NoSuccessException("Should not happen", e);
-        }
+        String scheme = rm.getScheme();
+
         if (scheme.equals("any") || scheme.equals("gridsam")) {
             scheme = "https";
             try {
