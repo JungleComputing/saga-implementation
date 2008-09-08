@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.NoSuccessException;
-import org.ogf.saga.error.NotImplementedException;
 
 /**
  * URL class as specified by SAGA. The java.net.URL class is not usable because
@@ -22,8 +21,7 @@ public class URL implements org.ogf.saga.url.URL {
      * @exception BadParameterException
      *                is thrown when there is a syntax error in the parameter.
      */
-    public URL(String url) throws NotImplementedException,
-            BadParameterException, NoSuccessException {
+    public URL(String url) throws BadParameterException, NoSuccessException {
         try {
             u = new URI(url);
         } catch (URISyntaxException e) {
@@ -36,10 +34,9 @@ public class URL implements org.ogf.saga.url.URL {
     }
 
     /* (non-Javadoc)
-     * @see org.ogf.saga.url.URL#setURL(java.lang.String)
+     * @see org.ogf.saga.url.URL#setString(java.lang.String)
      */
-    public void setURL(String url) throws NotImplementedException,
-            BadParameterException {
+    public void setString(String url) throws BadParameterException {
         try {
             u = new URI(url);
         } catch (URISyntaxException e) {
@@ -48,24 +45,23 @@ public class URL implements org.ogf.saga.url.URL {
     }
 
     /* (non-Javadoc)
-     * @see org.ogf.saga.url.URL#getURL()
+     * @see org.ogf.saga.url.URL#getString()
      */
-    public String getURL() throws NotImplementedException {
+    public String getString() {
         return toString();
     }
 
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#getFragment()
      */
-    public String getFragment() throws NotImplementedException {
+    public String getFragment() {
         return u.getFragment();
     }
 
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#setFragment(java.lang.String)
      */
-    public void setFragment(String fragment) throws NotImplementedException,
-            BadParameterException {
+    public void setFragment(String fragment) throws BadParameterException {
         try {
             u = new URI(u.getScheme(), u.getUserInfo(), u.getHost(), u
                     .getPort(), u.getPath(), u.getQuery(), fragment);
@@ -77,15 +73,14 @@ public class URL implements org.ogf.saga.url.URL {
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#getHost()
      */
-    public String getHost() throws NotImplementedException {
+    public String getHost() {
         return u.getHost();
     }
 
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#setHost(java.lang.String)
      */
-    public void setHost(String host) throws NotImplementedException,
-            BadParameterException {
+    public void setHost(String host) throws BadParameterException {
         try {
             u = new URI(u.getScheme(), u.getUserInfo(), host, u.getPort(), u
                     .getPath(), u.getQuery(), u.getFragment());
@@ -97,15 +92,14 @@ public class URL implements org.ogf.saga.url.URL {
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#getPath()
      */
-    public String getPath() throws NotImplementedException {
+    public String getPath() {
         return u.getPath();
     }
 
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#setPath(java.lang.String)
      */
-    public void setPath(String path) throws NotImplementedException,
-            BadParameterException {
+    public void setPath(String path) throws BadParameterException {
         try {
             u = new URI(u.getScheme(), u.getUserInfo(), u.getHost(), u
                     .getPort(), path, u.getQuery(), u.getFragment());
@@ -117,15 +111,14 @@ public class URL implements org.ogf.saga.url.URL {
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#getPort()
      */
-    public int getPort() throws NotImplementedException {
+    public int getPort() {
         return u.getPort();
     }
 
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#setPort(int)
      */
-    public void setPort(int port) throws NotImplementedException,
-            BadParameterException {
+    public void setPort(int port) throws BadParameterException {
         try {
             u = new URI(u.getScheme(), u.getUserInfo(), u.getHost(), port, u
                     .getPath(), u.getQuery(), u.getFragment());
@@ -137,15 +130,14 @@ public class URL implements org.ogf.saga.url.URL {
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#getQuery()
      */
-    public String getQuery() throws NotImplementedException {
+    public String getQuery() {
         return u.getQuery();
     }
 
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#setQuery(java.lang.String)
      */
-    public void setQuery(String query) throws NotImplementedException,
-            BadParameterException {
+    public void setQuery(String query) throws BadParameterException {
         try {
             u = new URI(u.getScheme(), u.getUserInfo(), u.getHost(), u
                     .getPort(), u.getPath(), query, u.getFragment());
@@ -157,15 +149,14 @@ public class URL implements org.ogf.saga.url.URL {
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#getScheme()
      */
-    public String getScheme() throws NotImplementedException {
+    public String getScheme() {
         return u.getScheme();
     }
 
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#setScheme(java.lang.String)
      */
-    public void setScheme(String scheme) throws NotImplementedException,
-            BadParameterException {
+    public void setScheme(String scheme) throws BadParameterException {
         try {
             u = new URI(scheme, u.getUserInfo(), u.getHost(), u.getPort(), u
                     .getPath(), u.getQuery(), u.getFragment());
@@ -177,15 +168,14 @@ public class URL implements org.ogf.saga.url.URL {
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#getUserInfo()
      */
-    public String getUserInfo() throws NotImplementedException {
+    public String getUserInfo() {
         return u.getUserInfo();
     }
 
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#setUserInfo(java.lang.String)
      */
-    public void setUserInfo(String userInfo) throws NotImplementedException,
-            BadParameterException {
+    public void setUserInfo(String userInfo) throws BadParameterException {
         try {
             u = new URI(u.getScheme(), userInfo, u.getHost(), u.getPort(), u
                     .getPath(), u.getQuery(), u.getFragment());
@@ -197,8 +187,8 @@ public class URL implements org.ogf.saga.url.URL {
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#translate(java.lang.String)
      */
-    public org.ogf.saga.url.URL translate(String scheme) throws NotImplementedException,
-            BadParameterException, NoSuccessException {
+    public org.ogf.saga.url.URL translate(String scheme) throws BadParameterException,
+            NoSuccessException {
         try {
             URI url = new URI(scheme, u.getUserInfo(), u.getHost(),
                     u.getPort(), u.getPath(), u.getQuery(), u.getFragment());
