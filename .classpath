@@ -10,7 +10,6 @@
 	<classpathentry kind="src" path="demo/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="external/log4j-1.2.13.jar"/>
-	<classpathentry kind="lib" path="external/junit-3.8.2.jar"/>
 	<classpathentry kind="lib" path="adaptors/Gridsam/external/commons-cli-1.0.jar"/>
 	<classpathentry kind="lib" path="adaptors/Gridsam/external/gridsam-client.jar"/>
 	<classpathentry kind="lib" path="adaptors/Gridsam/external/gridsam-core-2.0.1.jar"/>

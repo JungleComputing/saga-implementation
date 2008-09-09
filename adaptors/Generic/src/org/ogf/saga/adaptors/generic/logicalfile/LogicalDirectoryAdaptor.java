@@ -159,7 +159,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
         entry.permissionsAllow(target, id, permissions, flags);
     }
 
@@ -167,7 +167,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException {
+            NoSuccessException, IncorrectURLException {
         entry.permissionsDeny(target, id, permissions, flags);
     }
 
@@ -296,7 +296,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
         entry.permissionsAllow(target, id, permissions, flags);
     }
 
@@ -304,7 +304,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException {
+            NoSuccessException, IncorrectURLException {
         entry.permissionsDeny(target, id, permissions, flags);
     }
 
