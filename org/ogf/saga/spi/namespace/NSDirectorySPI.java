@@ -352,12 +352,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      *                the permissions to enable.
      * @param flags
      *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @throws IncorrectURLException 
      */
     public void permissionsAllow(URL target, String id, int permissions,
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException;
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException;
 
     /**
      * Allows the specified permissions for the specified id. An id of "*"
@@ -371,12 +372,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      *                the permissions to enable.
      * @param flags
      *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @throws IncorrectURLException 
      */
     public void permissionsAllow(String target, String id, int permissions,
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException;
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException;
 
     /**
      * Denies the specified permissions for the specified id. An id of "*"
@@ -390,12 +392,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      *                the permissions to disable.
      * @param flags
      *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @throws IncorrectURLException 
      */
     public void permissionsDeny(URL target, String id, int permissions,
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException;
+            NoSuccessException, IncorrectURLException;
 
     /**
      * Denies the specified permissions for the specified id. An id of "*"
@@ -409,12 +412,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      *                the permissions to disable.
      * @param flags
      *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @throws IncorrectURLException 
      */
     public void permissionsDeny(String target, String id, int permissions,
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException;
+            NoSuccessException, IncorrectURLException;
 
     //
     // Task versions ...
