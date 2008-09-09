@@ -13,7 +13,7 @@ import test.misc.AdaptorTestResultEntry;
 public class FileOutputStreamAdaptorTest {
 
     public static void main(String[] args) {
-        System.setProperty("fileoutputstream.adaptor.name", args[0]);
+        System.setProperty("FileOutputStream.adaptor.name", args[0]);
         FileOutputStreamAdaptorTest a = new FileOutputStreamAdaptorTest();
         a.test(args[0], args[1]).print();
     }

@@ -15,7 +15,8 @@ import test.misc.AdaptorTestResultEntry;
 public class FileInputStreamAdaptorTest {
 
     public static void main(String[] args) {
-        System.setProperty("fileinputstream.adaptor.name", args[0]);
+        System.setProperty("FileInputStream.adaptor.name", args[0]);
+        System.setProperty("JobService.adaptor.name", "javagat");
         FileInputStreamAdaptorTest a = new FileInputStreamAdaptorTest();
         a.test(args[0], args[1]).print();
     }

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# This script runs the SAGA nsentry test for the javagat adaptor.
+# The server is listed below, and should be replaced by your own
+# server.
+
+JAVAGAT_SERVER=titan.cs.vu.nl
+
+export SAGA_LOCATION=`cd .. && pwd`
+
+$SAGA_LOCATION/bin/run_saga_app -Xmx256M \
+    test.namespace.NSEntryAdaptorTest javagat $JAVAGAT_SERVER
