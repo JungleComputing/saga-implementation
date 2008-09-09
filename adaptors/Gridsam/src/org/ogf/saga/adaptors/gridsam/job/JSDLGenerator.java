@@ -96,7 +96,7 @@ class JSDLGenerator {
             hosts = getVec(JobDescription.CANDIDATEHOSTS);
         } catch (Throwable e) {
             if (logger.isDebugEnabled()) {
-                logger.debug("did not found any properties to use."
+                logger.debug("did not find any properties to use."
                         + " Not adding <Resources> tag");
             }
             return;
