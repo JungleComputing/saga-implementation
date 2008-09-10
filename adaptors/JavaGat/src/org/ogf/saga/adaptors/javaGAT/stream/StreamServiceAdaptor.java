@@ -7,10 +7,12 @@ import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.GATObjectCreationException;
+import org.gridlab.gat.URI;
 import org.gridlab.gat.advert.AdvertService;
 import org.gridlab.gat.advert.MetaData;
 import org.gridlab.gat.io.Endpoint;
 import org.gridlab.gat.io.Pipe;
+import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -25,6 +27,7 @@ import org.ogf.saga.proxies.stream.StreamServiceWrapper;
 import org.ogf.saga.spi.stream.StreamServiceAdaptorBase;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
@@ -42,7 +45,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
     public StreamServiceAdaptor(StreamServiceWrapper wrapper, Session session, URL url)
             throws NotImplementedException, BadParameterException {
         super(wrapper, session, url);
-        initializeGatContext();
+        gatContext = StreamAdaptor.initializeGatContext(session);
         active = true;
     }
 
@@ -50,21 +53,6 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         StreamServiceAdaptor clone = (StreamServiceAdaptor) super.clone();
         clone.gatContext = (GATContext) this.gatContext.clone();
         return clone;
-    }
-
-    private void initializeGatContext() {
-        org.ogf.saga.adaptors.javaGAT.session.Session gatSession;
-
-        synchronized (session) {
-            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session) session
-                    .getAdaptorSession("JavaGAT");
-            if (gatSession == null) {
-                gatSession = new org.ogf.saga.adaptors.javaGAT.session.Session();
-                session.putAdaptorSession("JavaGAT", gatSession);
-            }
-        }
-
-        gatContext = gatSession.getGATContext();
     }
 
     // if a stream_service was never opened (i.e.
@@ -105,10 +93,14 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             invocationTimeout = (int) (timeoutInSeconds * 1000);
         
         AdvertService advertService = null;
+        URI db = null;
         try {
+            db = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(
+                    StreamAdaptor.getAdvertName(gatContext)));
             advertService = GAT.createAdvertService(gatContext);
             Endpoint serverSide = GAT.createEndpoint(gatContext);
             advertService.add(serverSide, new MetaData(), url.getString());
+            advertService.exportDataBase(db);
             Pipe pipe = serverSide.listen(invocationTimeout);
             clientConnectMetric.internalFire();
             return new ConnectedStreamImpl(session, url, pipe);
@@ -137,9 +129,12 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             }
             // we have no other clues
             throw new NoSuccessException(e);
+        } catch (BadParameterException e) {
+            throw new NoSuccessException("Incorrect URL for javagat advert service?", e);
         } finally {
             try {
                 advertService.delete(url.getString());
+                advertService.exportDataBase(db);
             } catch (Throwable e) {
                 // ignored
             }
