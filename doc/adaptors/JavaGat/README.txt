@@ -18,9 +18,10 @@ Not implemented.
   Streams:
     The JavaGAT adaptor for the stream package is built on JavaGAT EndPoint
     and JavaGAT Pipe. The adaptor implementation also depends on the JavaGAT
-    advertService. Unfortunately, at the moment only a local advertService
-    is available for JavaGAT, which means that this streams adaptor only
-    works locally. This will probably change in the future.
+    advertService. This advert service relies on a file, whose url may
+    be supplied to the Streams adaptor by means of the preferences, see below.
+    The attribute "streams.javagat.advert" should be set to the required URL.
+    There is a default but that works only locally: "file://$HOME/.GatAdvertDB".
     The StreamService adaptor is complete, exept for permissions.
     The Stream adaptor does not support the STREAM_WRITE metric and
     waitFor(Activity.WRITE). Also, Stream attributes are not supported yet.
