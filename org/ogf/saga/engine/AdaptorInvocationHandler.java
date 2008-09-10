@@ -8,8 +8,19 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
+import org.ogf.saga.error.AlreadyExistsException;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaException;
+import org.ogf.saga.error.SagaIOException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.AdaptorBase;
 
 /**
@@ -20,7 +31,42 @@ import org.ogf.saga.impl.AdaptorBase;
  * its own instance of an <code>AdaptorInvocationHandler</code>.
  */
 public class AdaptorInvocationHandler implements InvocationHandler {
+ 
+    //
+    // Note, this is NOT the order mentioned in the SAGA specs! That one determines which
+    // exception an adaptor method should throw. But, when an implementation tries several
+    // adaptors for a method, and one adaptor gives NotImplemented and another gives
+    // DoesNotExist, to the user, the latter is more specific. So, an attempt is made
+    // here to determine an order to use in a Saga implementation that uses multiple
+    // adaptors.
+    private static Class[] exceptionClasses = {
+        AlreadyExistsException.class,
+        DoesNotExistException.class,
+        SagaIOException.class,
+        IncorrectStateException.class,
+        TimeoutException.class,
+        AuthenticationFailedException.class,
+        AuthorizationFailedException.class,
+        PermissionDeniedException.class,
+        BadParameterException.class,
+        IncorrectURLException.class,
+        NoSuccessException.class,
+        NotImplementedException.class,
+    };
 
+    private static SagaException compare(SagaException e1, SagaException e2) {
+        for (Class c : exceptionClasses) {
+            if (c.isInstance(e1)) {
+                return e1;
+            }
+            if (c.isInstance(e2)) {
+                return e2;
+            }
+        }
+        // Something wrong?
+        return e1;
+    }
+    
     private static Logger logger = Logger
         .getLogger(AdaptorInvocationHandler.class);
 
@@ -276,8 +322,10 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     // when all adaptors fail.
                     if (t instanceof SagaException) {
                         SagaException e = (SagaException) t;
-                        if (exception == null || e.compareTo(exception) < 0) {
+                        if (exception == null) {
                             exception = e;
+                        } else {
+                            exception = compare(exception, e);
                         }
                     } else if (exception == null) {
                         exception = new NoSuccessException("Got exception from " + m.getName()
