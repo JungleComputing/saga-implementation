@@ -12,7 +12,6 @@ import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.URI;
 import org.gridlab.gat.io.File;
-import org.gridlab.gat.monitoring.MetricDefinition;
 import org.gridlab.gat.monitoring.MetricEvent;
 import org.gridlab.gat.monitoring.MetricListener;
 import org.gridlab.gat.resources.HardwareResourceDescription;
@@ -428,13 +427,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
               
         setState(State.RUNNING);
         try {
-            // gatJob = service.broker.submitJob(gatJobDescription, this, "job.status");
-            // Does not work properly yet (javaGAT), but the code below has a race.
-            
-            gatJob = service.broker.submitJob(gatJobDescription);
-            MetricDefinition md = gatJob.getMetricDefinitionByName("job.status");
-            gatJob.addMetricListener(this, md.createMetric(null));
-
+            gatJob = service.broker.submitJob(gatJobDescription, this, "job.status");
         } catch (GATInvocationException e) {
             setState(State.FAILED);
             throw new NoSuccessException("Job.run() failed", e);
