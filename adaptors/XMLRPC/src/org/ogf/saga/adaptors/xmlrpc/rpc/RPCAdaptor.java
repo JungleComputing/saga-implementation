@@ -36,7 +36,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
     
     public RPCAdaptor(RPCWrapper wrapper, Session session, URL funcName)
             throws NotImplementedException, BadParameterException,
-            NoSuccessException, DoesNotExistException {
+            NoSuccessException, DoesNotExistException, IncorrectURLException {
         super(session, wrapper, funcName);
         String scheme = funcName.getScheme();
         if ("any".equals(scheme)) {
@@ -44,7 +44,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
         } else if ("xmlrpc".equals(scheme)) {
             // OK
         } else {
-            throw new NotImplementedException("Unrecognized scheme: " + scheme);
+            throw new IncorrectURLException("Unrecognized scheme: " + scheme);
         }
         
         URL url = URLFactory.createURL(funcName.toString());

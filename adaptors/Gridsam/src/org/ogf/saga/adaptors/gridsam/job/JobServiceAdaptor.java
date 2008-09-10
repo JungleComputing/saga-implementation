@@ -10,6 +10,7 @@ import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
@@ -31,7 +32,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
     String url;
 
     public JobServiceAdaptor(JobServiceWrapper wrapper, Session session, URL rm)
-            throws NoSuccessException, NotImplementedException {
+            throws NoSuccessException, NotImplementedException, IncorrectURLException {
         super(wrapper, session, rm);
         String scheme = rm.getScheme();
 
@@ -46,7 +47,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         if ("http".equals(scheme) || "https".equals(scheme)) {
             // this is OK.
         } else {
-            throw new NotImplementedException(
+            throw new IncorrectURLException(
                     "Wrong scheme for gridsam adaptor");
         }
         url = rm.toString();

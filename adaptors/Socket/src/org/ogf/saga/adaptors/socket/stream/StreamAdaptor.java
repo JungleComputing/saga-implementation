@@ -15,6 +15,7 @@ import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
@@ -46,14 +47,14 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     private static Logger logger = Logger.getLogger(StreamAdaptor.class);
 
     public StreamAdaptor(StreamWrapper wrapper, Session session, URL url)
-            throws NotImplementedException, BadParameterException {
+            throws NotImplementedException, BadParameterException, IncorrectURLException {
         super(wrapper, session, url);
 
         // check URL
 
         String scheme = url.getScheme().toLowerCase();
         if (! scheme.equals("any") && !scheme.equals("tcp"))
-            throw new BadParameterException(
+            throw new IncorrectURLException(
                     "Only tcp scheme is supported in socket implementation");
     }
 
