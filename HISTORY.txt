@@ -2,7 +2,11 @@
    This release contains a new version of the JavaGAT, which now includes
    a glite adaptor for the Job (in JavaGAT terms: ResourceBroker) package.
    This release incorporates the changes that were required to make it run with the
-   new JavaGAT (which has a few API changes). Also, 
+   new JavaGAT (which has a few API changes). Also, the engine now orders
+   exceptions as obtained from adaptors differently. If one adaptor throws
+   NotImplemented, and another throws DoesNotExist, the user presumably wants
+   to see DoesNotExist, and not NotImplemented (as would be the case if the
+   ordering of the SAGA specs whould be obeyed).
    
 1.0rc3 (11 July 2008)
    This release fixes some problems in release 1.0rc2. Notably:
