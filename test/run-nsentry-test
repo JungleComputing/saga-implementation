@@ -4,7 +4,7 @@
 # The server is listed below, and should be replaced by your own
 # server.
 
-JAVAGAT_SERVER=titan.cs.vu.nl
+JAVAGAT_SERVER=fs0.das3.cs.vu.nl
 
 export SAGA_LOCATION=`cd .. && pwd`
 
