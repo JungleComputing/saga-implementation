@@ -8,7 +8,6 @@ import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.GATObjectCreationException;
-import org.gridlab.gat.Preferences;
 import org.gridlab.gat.URI;
 import org.gridlab.gat.advert.AdvertService;
 import org.gridlab.gat.io.Endpoint;
@@ -18,6 +17,7 @@ import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
+import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -380,9 +380,9 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     }
     
     static String getAdvertName(GATContext gatContext) {
-        Preferences prefs = gatContext.getPreferences();
-        if (prefs.containsKey("streams.javagat.advert")) {
-            return (String) prefs.get("streams.javagat.advert");
+        String s = SAGAEngine.getProperty("saga.adaptor.javagat.advertService");
+        if (s != null) {
+            return s;
         }
         return "file://" + System.getProperty("user.home") + "/.GatAdvertDB";
     }
