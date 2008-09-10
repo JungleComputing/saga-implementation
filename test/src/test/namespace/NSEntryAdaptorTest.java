@@ -34,7 +34,6 @@ public class NSEntryAdaptorTest {
         AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor,
                 host);
 
-        URL url;
         try {
             Session session = SessionFactory.createSession(true);
             
@@ -106,7 +105,7 @@ public class NSEntryAdaptorTest {
 
     private AdaptorTestResultEntry existTest(String u, boolean correctValue) {
         long start = System.currentTimeMillis();
-        NSEntry entry = null;
+
         URL url;
         try {
             url = URLFactory.createURL(u);
@@ -114,7 +113,7 @@ public class NSEntryAdaptorTest {
             return new AdaptorTestResultEntry(false, 0, e);
         }
         try {
-            entry = NSFactory.createNSEntry(url);
+            NSFactory.createNSEntry(url);
             if (! correctValue) {
                 return new AdaptorTestResultEntry(false, 0, 
                         new Exception("Should throw DoesNotExist"));

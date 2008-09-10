@@ -776,7 +776,7 @@ public class StreamAdaptorTest {
         try {
             Buffer b = BufferFactory.createBuffer();
 
-            int nBytes = stream.read(b, -223);
+            stream.read(b, -223);
 
             e1 = new AdaptorTestResultEntry(false, 0, new Exception("Should throw BadParameter"));
 
