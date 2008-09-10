@@ -21,6 +21,7 @@ public class NSEntryAdaptorTest {
 
     public static void main(String[] args) {
         System.setProperty("NSEntry.adaptor.name", args[0]);
+        System.setProperty("NSDirectory.adaptor.name", args[0]);
         System.setProperty("JobService.adaptor.name", "javagat");
         NSEntryAdaptorTest a = new NSEntryAdaptorTest();
         a.test(args[0], args[1]).print();
@@ -44,35 +45,35 @@ public class NSEntryAdaptorTest {
             e.printStackTrace(System.err);
             System.exit(1);
         }
-        adaptorTestResult.put("exists: absolute existing file", existTest(
+        adaptorTestResult.put("exists: absolute existing file     ", existTest(
                 "any://" + host + "/tmp/Saga-test-exists-file", true));
-        adaptorTestResult.put("exists: absolute existing dir", existTest(
+        adaptorTestResult.put("exists: absolute existing dir      ", existDirTest(
                 "any://" + host + "/tmp/Saga-test-exists-dir", true));
-        adaptorTestResult.put("exists: absolute non-existing file", existTest(
+        adaptorTestResult.put("exists: absolute non-existing file ", existTest(
                 "any://" + host + "/tmp/Saga-test-exists-fake", false));
 
-        adaptorTestResult.put("exists: relative existing file", existTest(
+        adaptorTestResult.put("exists: relative existing file     ", existTest(
                 "/tmp/Saga-test-exists-file", true));
-        adaptorTestResult.put("exists: absolute existing dir", existTest(
+        adaptorTestResult.put("exists: absolute existing dir      ", existDirTest(
                 "/tmp/Saga-test-exists-dir", true));
-        adaptorTestResult.put("exists: absolute non-existing file", existTest(
+        adaptorTestResult.put("exists: absolute non-existing file ", existTest(
                 "/tmp/Saga-test-exists-fake", false));
 
-        adaptorTestResult.put("copy: absolute existing file", copyTest(
+        adaptorTestResult.put("copy: absolute existing file       ", copyTest(
                 "any://" + host + "/tmp/Saga-test-exists-file",
                 "any://" + host + "/tmp/Saga-test-exists-file.copy"));
-        adaptorTestResult.put("copy: relative existing file", copyTest(
+        adaptorTestResult.put("copy: relative existing file       ", copyTest(
                 "/tmp/Saga-test-exists-file", "/tmp/Saga-test-exists-file.copy"));
 
-        adaptorTestResult.put("remove: absolute existing file", removeTest(
+        adaptorTestResult.put("remove: absolute existing file     ", removeTest(
                 "any://" + host + "/tmp/Saga-test-exists-file.copy"));
-        adaptorTestResult.put("remove: relative existing file", removeTest(
+        adaptorTestResult.put("remove: relative existing file     ", removeTest(
                 "/tmp/Saga-test-exists-file.copy"));
 
-        adaptorTestResult.put("move: absolute existing file", moveTest(
+        adaptorTestResult.put("move: absolute existing file       ", moveTest(
                 "any://" + host + "/tmp/Saga-test-exists-file",
                 "any://" + host + "/tmp/Saga-test-exists-file.copy"));
-        adaptorTestResult.put("move: relative existing file", moveTest(
+        adaptorTestResult.put("move: relative existing file       ", moveTest(
                 "/tmp/Saga-test-exists-file", "/tmp/Saga-test-exists-file.copy"));
 
         run(host, "nsentry-adaptor-test-clean.sh");
@@ -114,6 +115,33 @@ public class NSEntryAdaptorTest {
         }
         try {
             NSFactory.createNSEntry(url);
+            if (! correctValue) {
+                return new AdaptorTestResultEntry(false, 0, 
+                        new Exception("Should throw DoesNotExist"));
+            }
+        } catch (DoesNotExistException e) {
+            if (correctValue) {
+                return new AdaptorTestResultEntry(false, 0, e);
+            }
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, e);
+        }
+        long stop = System.currentTimeMillis();
+        return new AdaptorTestResultEntry(true, (stop - start), null);
+    }
+    
+
+    private AdaptorTestResultEntry existDirTest(String u, boolean correctValue) {
+        long start = System.currentTimeMillis();
+
+        URL url;
+        try {
+            url = URLFactory.createURL(u);
+        } catch(Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, e);
+        }
+        try {
+            NSFactory.createNSDirectory(url);
             if (! correctValue) {
                 return new AdaptorTestResultEntry(false, 0, 
                         new Exception("Should throw DoesNotExist"));
