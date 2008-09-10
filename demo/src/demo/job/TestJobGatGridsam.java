@@ -25,7 +25,7 @@ public class TestJobGatGridsam implements Callback {
         String serverURL = "https://titan.cs.vu.nl:18443/gridsam/services/gridsam";
 
         if (args.length > 1) {
-            System.err.println("Usage: java demo.job.TestJobGridsam [<serverURL>]");
+            System.err.println("Usage: java demo.job.TestJobGatGridsam [<serverURL>]");
             System.exit(1);
         } else if (args.length == 1) {
             serverURL = args[0];
