@@ -103,6 +103,16 @@ public class NSEntryAdaptorTest {
             System.exit(1);
         }
     }
+    
+    private void doClose(NSEntry e) {
+        try {
+            if (e != null) {
+                e.close();
+            }
+        } catch(Throwable ex) {
+            // ignored
+        }
+    }
 
     private AdaptorTestResultEntry existTest(String u, boolean correctValue) {
         long start = System.currentTimeMillis();
@@ -113,8 +123,10 @@ public class NSEntryAdaptorTest {
         } catch(Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
         }
+        
+        NSEntry entry = null;
         try {
-            NSFactory.createNSEntry(url);
+            entry = NSFactory.createNSEntry(url);
             if (! correctValue) {
                 return new AdaptorTestResultEntry(false, 0, 
                         new Exception("Should throw DoesNotExist"));
@@ -125,6 +137,8 @@ public class NSEntryAdaptorTest {
             }
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
+        } finally {
+            doClose(entry);
         }
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
@@ -140,8 +154,9 @@ public class NSEntryAdaptorTest {
         } catch(Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
         }
+        NSEntry entry = null;
         try {
-            NSFactory.createNSDirectory(url);
+            entry = NSFactory.createNSDirectory(url);
             if (! correctValue) {
                 return new AdaptorTestResultEntry(false, 0, 
                         new Exception("Should throw DoesNotExist"));
@@ -152,6 +167,8 @@ public class NSEntryAdaptorTest {
             }
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
+        } finally {
+            doClose(entry);
         }
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
@@ -168,14 +185,13 @@ public class NSEntryAdaptorTest {
         }
         try {
             entry = NSFactory.createNSEntry(url);
+            entry.remove();
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
+        } finally {
+            doClose(entry);
         }
-        try {
-            entry.remove();
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0, e);
-        }
+
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
     }
@@ -193,21 +209,20 @@ public class NSEntryAdaptorTest {
 
         try {
             entry = NSFactory.createNSEntry(url1);
-        } catch (Throwable e) {
-            return new AdaptorTestResultEntry(false, 0, e);
-        }
-
-        try {
             entry.copy(url2);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
+        } finally {
+            doClose(entry);
         }
-
+        entry = null;
         try {
             entry = NSFactory.createNSEntry(url2);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0,
                     new Exception("Copy does not seem to exist?", e));
+        } finally {
+            doClose(entry);
         }
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
@@ -226,23 +241,22 @@ public class NSEntryAdaptorTest {
 
         try {
             entry = NSFactory.createNSEntry(url1);
-        } catch (Throwable e) {
-            return new AdaptorTestResultEntry(false, 0, e);
-        }
-
-        try {
             entry.move(url2);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
+        } finally {
+            doClose(entry);
         }
-
+        entry = null;
         try {
             entry = NSFactory.createNSEntry(url2);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0,
                     new Exception("Destination does not seem to exist?", e));
+        } finally {
+            doClose(entry);
         }
-
+        entry = null;
         try {
             entry = NSFactory.createNSEntry(url1);
             return new AdaptorTestResultEntry(false, 0,
@@ -252,6 +266,8 @@ public class NSEntryAdaptorTest {
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0,
                     new Exception("wrong exception", e));
+        } finally {
+            doClose(entry);
         }
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
