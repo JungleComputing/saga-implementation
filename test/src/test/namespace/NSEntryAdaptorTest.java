@@ -29,22 +29,26 @@ public class NSEntryAdaptorTest {
 
     public AdaptorTestResult test(String adaptor, String host) {
 
+        try {
+            Session session = SessionFactory.createSession(true);
+            
+            Context ftpContext = ContextFactory.createContext("ftp");
+            session.addContext(ftpContext);
+            Context preferences  = ContextFactory.createContext("preferences");
+            preferences.setAttribute("resourcebroker.adaptor.name", "sshtrilead,local");
+            session.addContext(preferences);
+        } catch (Throwable e) {
+            System.err.println("Could not create session");
+            e.printStackTrace(System.err);
+            System.exit(1);
+        }
+        
         run(host, "nsentry-adaptor-test-init.sh");
         run("localhost", "nsentry-adaptor-test-init.sh");
 
         AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor,
                 host);
 
-        try {
-            Session session = SessionFactory.createSession(true);
-            
-            Context ftpContext = ContextFactory.createContext("ftp");
-            session.addContext(ftpContext);
-        } catch (Throwable e) {
-            System.err.println("Could not create session");
-            e.printStackTrace(System.err);
-            System.exit(1);
-        }
         adaptorTestResult.put("exists: absolute existing file     ", existTest(
                 "any://" + host + "/tmp/Saga-test-exists-file", true));
         adaptorTestResult.put("exists: absolute existing dir      ", existDirTest(
@@ -93,6 +97,7 @@ public class NSEntryAdaptorTest {
                      new String[] {script});
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
                     new String[] { script + " > " + script });
+            jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS, new String[] {host});
             URL url = URLFactory.createURL("any://" + host);
             js = JobFactory.createJobService(url);
             Job job = js.createJob(jd);

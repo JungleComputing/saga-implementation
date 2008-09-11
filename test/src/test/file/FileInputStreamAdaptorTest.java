@@ -1,11 +1,15 @@
 package test.file;
 
+import org.ogf.saga.context.Context;
+import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.file.FileInputStream;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
 import org.ogf.saga.job.JobService;
+import org.ogf.saga.session.Session;
+import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
@@ -22,6 +26,18 @@ public class FileInputStreamAdaptorTest {
     }
 
     public AdaptorTestResult test(String adaptor, String host) {
+        
+        try {
+            Session session = SessionFactory.createSession(true);
+            
+            Context preferences  = ContextFactory.createContext("preferences");
+            preferences.setAttribute("resourcebroker.adaptor.name", "sshtrilead,local");
+            session.addContext(preferences);
+        } catch (Throwable e) {
+            System.err.println("Could not create session");
+            e.printStackTrace(System.err);
+            System.exit(1);
+        }
 
         run(host, "fileinputstream-adaptor-test-init.sh");
 
