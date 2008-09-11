@@ -32,7 +32,7 @@ import org.ogf.saga.task.State;
  * attributes JobDescription.INTERACTIVE, JobDescription.THREADSPERPROCESS.
  * JobDescription.JOBCONTACT, JobDescription.JOBSTARTTIME, the Job attribute
  * Job.EXECUTIONHOSTS, the Job Metrics JOB_CPUTIME, JOB_MEMORYUSE,
- * JOB_VMEMORYUSE, JOB_PERFORMANCE. TODO: update this list. In addition, the
+ * JOB_VMEMORYUSE, JOB_PERFORMANCE. In addition, the
  * method {@link #signal(int)} cannot be implemented.
  */
 
