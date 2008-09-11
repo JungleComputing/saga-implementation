@@ -28,7 +28,7 @@ Not implemented.
     waitFor(Activity.WRITE). Also, Stream attributes are not supported yet.
   Jobs:
     The JavaGAT adaptor for the job package is built on JavaGAT Resources,
-    for which various adaptors are available: ssh, globus, gridsam, to name
+    for which various adaptors are available: ssh, globus, gridsam, glite, to name
     a few.
     The following methods are not implemented: getSelf(),  signal(),
     checkpoint(), migrate().
@@ -46,7 +46,10 @@ Not implemented.
     from the base implementation, which translates the patterns into
     seeks and contiguous reads/writes, which probably is very slow.
     The File adaptor is built on the JavaGAT RandomAccessFile. Unfortunately,
-    currently only a local adaptor is available for that.
+    currently only a local adaptor is available for that. If a RandomAccessFile
+    cannot be used, the adaptor creates a FileInputStream or FileOutputStream
+    and uses their methods to implement its own. BUT: FileInputStream only
+    supports forward seeks, and FileOutputStream does not support seeks at all.
     Permissions are not implemented.
     FileInputStream and FileOutputStream are built in top of the
     corresponding JavaGAT versions, for which several adaptors are available.
