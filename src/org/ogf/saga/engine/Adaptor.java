@@ -72,6 +72,10 @@ class Adaptor {
         return adaptorClass;
     }
     
+    /**
+     * Returns the name of the adaptor class.
+     * @return the name.
+     */
     public String toString() {
         return adaptorClass.getName();
     }
