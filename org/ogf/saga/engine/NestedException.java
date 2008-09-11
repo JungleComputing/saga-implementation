@@ -49,16 +49,8 @@ class NestedException extends Exception {
      *                the exception that is caused by the adaptor
      */
     public void add(String adaptor, SagaException t) {
-        String shortName = null;
-        int pos = adaptor.lastIndexOf(".");
-        if (pos < 0) {
-            shortName = adaptor;
-        } else {
-            shortName = adaptor.substring(pos + 1);
-        }
-
         exceptions.add(t);
-        adaptors.add(shortName);
+        adaptors.add(adaptor);
     }
 
     /**
@@ -110,7 +102,7 @@ class NestedException extends Exception {
         for (int i = 0; i < exceptions.size(); i++) {
             res.append("[" + adaptors.get(i) + "] ");
             StringWriter writer = new StringWriter();
-            exceptions.get(i).printStackTrace(new PrintWriter(writer));
+            exceptions.get(i).printStackTrace(new PrintWriter(writer, true));
             res.append(writer.toString());
             res.append("\n");
         }
