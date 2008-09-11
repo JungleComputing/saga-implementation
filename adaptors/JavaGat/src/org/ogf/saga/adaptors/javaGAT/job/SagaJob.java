@@ -419,13 +419,15 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     }
 
     @Override
-    public synchronized void run() throws NotImplementedException, IncorrectStateException,
+    public void run() throws NotImplementedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        if (state != State.NEW) {
-            throw new IncorrectStateException("run() called on job in state " + state);
+        synchronized(this) {
+            if (state != State.NEW) {
+                throw new IncorrectStateException("run() called on job in state " + state);
+            }
+
+            setState(State.RUNNING);
         }
-              
-        setState(State.RUNNING);
         try {
             gatJob = service.broker.submitJob(gatJobDescription, this, "job.status");
         } catch (GATInvocationException e) {
