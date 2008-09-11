@@ -234,9 +234,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     if (nested == null) {
                         nested = new NestedException();
                     }
-                    nested.add(adaptor.getShortAdaptorClassName(), e);
+                    nested.add(adaptors.getSpiName(), e);
                     if (exception == null) {
-                        nested = new NestedException();
                         exception = e;
                     } else {
                         multiple = true;
@@ -244,8 +243,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     }
                 } else if (exception == null) {
                     exception = new NoSuccessException("Got exception from constructor of "
-                            + adaptor.getShortAdaptorClassName(), t);
-                    nested.add(adaptor.getShortAdaptorClassName(), exception);
+                            + adaptorname, t);
+                    nested.add(adaptors.getSpiName(), exception);
                 }
             }
         }
@@ -254,7 +253,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             if (multiple) {
                 try {
                    Constructor c = exception.getClass().getConstructor(String.class, Throwable.class);
-                   exception = (SagaException) c.newInstance(exception.getMessage(), nested);
+                   SagaException ex = (SagaException) c.newInstance(exception.getMessage(), nested);
+                   ex.setStackTrace(exception.getStackTrace());
+                   exception = ex;
                 } catch(Throwable e) {
                     // O well, we tried ...
                     logger.debug("Creation of nested exception failed");
@@ -361,9 +362,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                         if (nested == null) {
                             nested = new NestedException();
                         }
-                        nested.add(adaptor.getShortAdaptorClassName(), e);
+                        nested.add(adaptorName, e);
                         if (exception == null) {
-                            nested = new NestedException();
                             exception = e;
                         } else {
                             multiple = true;
@@ -371,8 +371,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                         }
                     } else if (exception == null) {
                         exception = new NoSuccessException("Got exception from constructor of "
-                                + adaptor.getShortAdaptorClassName(), t);
-                        nested.add(adaptor.getShortAdaptorClassName(), exception);
+                                + adaptorName, t);
+                        nested.add(adaptorName, exception);
                     }
 
                     if (logger.isDebugEnabled()) {
@@ -398,7 +398,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         if (multiple) {
             try {
                Constructor c = exception.getClass().getConstructor(String.class, Throwable.class);
-               exception = (SagaException) c.newInstance(exception.getMessage(), nested);
+               SagaException ex = (SagaException) c.newInstance(exception.getMessage(), nested);
+               ex.setStackTrace(exception.getStackTrace());
+               exception = ex;
             } catch(Throwable e) {
                 // O well, we tried ...
                 logger.debug("Creation of nested exception failed");
