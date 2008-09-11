@@ -32,13 +32,17 @@ import org.ogf.saga.impl.AdaptorBase;
  */
 public class AdaptorInvocationHandler implements InvocationHandler {
  
-    //
-    // Note, this is NOT the order mentioned in the SAGA specs! That one determines which
-    // exception an adaptor method should throw. But, when an implementation tries several
-    // adaptors for a method, and one adaptor gives NotImplemented and another gives
-    // DoesNotExist, to the user, the latter is more specific. So, an attempt is made
-    // here to determine an order to use in a Saga implementation that uses multiple
-    // adaptors.
+    /**
+     * Order of importance in exceptions, from high to low. If all adaptors give an
+     * exception on a method invocation, this list determines which exception is actually
+     * passed on to the user.
+     * Note, this is NOT the order mentioned in the SAGA specs! That one determines which
+     * exception an adaptor method should throw. But, when an implementation tries several
+     * adaptors for a method, and one adaptor gives NotImplemented and another gives
+     * DoesNotExist, to the user, the latter is more specific. So, an attempt is made
+     * here to determine an order to use in a Saga implementation that uses multiple
+     * adaptors.
+     */
     private static Class[] exceptionClasses = {
         AlreadyExistsException.class,
         DoesNotExistException.class,
@@ -54,6 +58,12 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         NotImplementedException.class,
     };
 
+    /**
+     * Returns the most important exception of the two parameters.
+     * @param e1 exception 1.
+     * @param e2 exception 2.
+     * @return the most important exception.
+     */
     private static SagaException compare(SagaException e1, SagaException e2) {
         for (Class c : exceptionClasses) {
             if (c.isInstance(e1)) {
@@ -63,10 +73,12 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 return e2;
             }
         }
-        // Something wrong?
+        // Something wrong? O well ...
+        logger.debug("Got exceptions not present in list!");
         return e1;
     }
     
+    /** Logger. */
     private static Logger logger = Logger
         .getLogger(AdaptorInvocationHandler.class);
 
@@ -143,8 +155,10 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
     }
 
+    /** Re-organize adaptor lists per method. When a method succeeds, it is put in front. */
     private static final boolean OPTIMIZE_ADAPTOR_POLICY = true;
 
+    /** Maintains lists of adaptors per method. */
     private static AdaptorSorter adaptorSorter = new AdaptorSorter();
 
     /**
@@ -214,8 +228,10 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 // when all adaptors fail.
                 if (t instanceof SagaException) {
                     SagaException e = (SagaException) t;
-                    if (exception == null || e.compareTo(exception) < 0) {
+                    if (exception == null) {
                         exception = e;
+                    } else {
+                        exception = compare(exception, e);
                     }
                 } else if (exception == null) {
                     exception = new NoSuccessException("Got exception from constructor of "
@@ -286,8 +302,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 try {
                     // Set context classloader before calling constructor.
                     // Some adaptors may need this because some libraries
-                    // explicitly
-                    // use the context classloader. (jaxrpc).
+                    // explicitly use the context classloader. (jaxrpc).
                     Thread.currentThread().setContextClassLoader(
                             adaptor.adaptorClass.getClassLoader());
                     if (logger.isDebugEnabled()) {
