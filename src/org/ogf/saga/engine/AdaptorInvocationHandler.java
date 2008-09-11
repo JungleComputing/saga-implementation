@@ -1,5 +1,6 @@
 package org.ogf.saga.engine;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -194,6 +195,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
         
         SagaException exception = null; 
+        NestedException nested = null;
+        boolean multiple = false;
 
         for (Adaptor adaptor : adaptors) {
             String adaptorname = adaptor.getAdaptorName();
@@ -228,19 +231,36 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 // when all adaptors fail.
                 if (t instanceof SagaException) {
                     SagaException e = (SagaException) t;
+                    if (nested == null) {
+                        nested = new NestedException();
+                    }
+                    nested.add(adaptor.getShortAdaptorClassName(), e);
                     if (exception == null) {
+                        nested = new NestedException();
                         exception = e;
                     } else {
+                        multiple = true;
                         exception = compare(exception, e);
                     }
                 } else if (exception == null) {
                     exception = new NoSuccessException("Got exception from constructor of "
                             + adaptor.getShortAdaptorClassName(), t);
+                    nested.add(adaptor.getShortAdaptorClassName(), exception);
                 }
             }
         }
 
         if (this.adaptors.size() == 0) {
+            if (multiple) {
+                try {
+                   Constructor c = exception.getClass().getConstructor(String.class, Throwable.class);
+                   exception = (SagaException) c.newInstance(exception.getMessage(), nested);
+                } catch(Throwable e) {
+                    // O well, we tried ...
+                    logger.debug("Creation of nested exception failed");
+                }
+                
+            }
             throw exception;
         }
     }
@@ -288,6 +308,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         throws Throwable {
         
         SagaException exception = null;
+        NestedException nested = null;
+        boolean multiple = false;
         
         ArrayList<String> adaptornames = adaptorSorter.getOrdering(m);
         boolean first = true;
@@ -332,26 +354,32 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                         t = ((InvocationTargetException) t)
                             .getTargetException();
                     }
-                    
                     // keep the most specific exception around. We can throw that
                     // when all adaptors fail.
                     if (t instanceof SagaException) {
                         SagaException e = (SagaException) t;
+                        if (nested == null) {
+                            nested = new NestedException();
+                        }
+                        nested.add(adaptor.getShortAdaptorClassName(), e);
                         if (exception == null) {
+                            nested = new NestedException();
                             exception = e;
                         } else {
+                            multiple = true;
                             exception = compare(exception, e);
                         }
                     } else if (exception == null) {
-                        exception = new NoSuccessException("Got exception from " + m.getName()
-                                + " on " + adaptor.getShortAdaptorClassName(), t);
+                        exception = new NoSuccessException("Got exception from constructor of "
+                                + adaptor.getShortAdaptorClassName(), t);
+                        nested.add(adaptor.getShortAdaptorClassName(), exception);
                     }
 
                     if (logger.isDebugEnabled()) {
                         logger.debug("Method " + m.getName() + " on "
                                 + adaptor.getShortAdaptorClassName()
                                 + " failed: " + t, t);
-                    }
+                    }                    
                 } finally {
                     Thread.currentThread().setContextClassLoader(loader);
                 }
@@ -366,8 +394,17 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             // Can this happen??? I don't think so.
             throw new NoSuccessException("no adaptor found for " + m.getName());
         }
-
-        // throw the most specific exception.
+        
+        if (multiple) {
+            try {
+               Constructor c = exception.getClass().getConstructor(String.class, Throwable.class);
+               exception = (SagaException) c.newInstance(exception.getMessage(), nested);
+            } catch(Throwable e) {
+                // O well, we tried ...
+                logger.debug("Creation of nested exception failed");
+            }
+            
+        }
         throw exception;
     }
 }
