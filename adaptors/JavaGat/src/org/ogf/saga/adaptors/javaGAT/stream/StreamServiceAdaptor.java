@@ -1,6 +1,7 @@
 package org.ogf.saga.adaptors.javaGAT.stream;
 
 import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 import org.gridlab.gat.GAT;
@@ -83,7 +84,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         int invocationTimeout = -1;
 
         if (!active)
-            throw new IncorrectStateException("The service is not active");
+            throw new IncorrectStateException("The service is not active", wrapper);
         if (timeoutInSeconds == 0.0)
             timeoutInSeconds = MINIMAL_TIMEOUT;
 
@@ -121,16 +122,18 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
                         logger.debug("Another exception: " + t2.getClass());
                         if (t2 instanceof SocketTimeoutException) {
                             logger.debug("Timeout exception");
-                            throw new TimeoutException(e);
+                            throw new TimeoutException(e, wrapper);
                         }
                     }
                     break;
                 }
             }
             // we have no other clues
-            throw new NoSuccessException(e);
+            throw new NoSuccessException(e, wrapper);
         } catch (BadParameterException e) {
-            throw new NoSuccessException("Incorrect URL for javagat advert service?", e);
+            throw new NoSuccessException("Incorrect URL for javagat advert service?", e, wrapper);
+        } catch (URISyntaxException e) {
+            throw new NoSuccessException("Incorrect URL for javagat advert service?", e, wrapper);
         } finally {
             try {
                 advertService.delete(url.getString());
@@ -143,30 +146,30 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
     public String getGroup() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("getGroup", wrapper);
     }
 
     public String getOwner() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("getOwner", wrapper);
     }
 
     public void permissionsAllow(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public boolean permissionsCheck(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
     public void permissionsDeny(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsDeny", wrapper);
     }
 
 }

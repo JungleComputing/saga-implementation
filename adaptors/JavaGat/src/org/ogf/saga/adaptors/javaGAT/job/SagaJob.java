@@ -2,6 +2,7 @@ package org.ogf.saga.adaptors.javaGAT.job;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -228,13 +229,13 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
                 if (parts.length == 1) {
                     // no match                  
                 } else {
-                    throw new NotImplementedException("PostStage append is not supported");
+                    throw new NotImplementedException("PostStage append is not supported", this);
                 }
                 parts = transfers[i].split(" >> ");
                 if (parts.length == 1) {
                     // no match                  
                 } else {
-                    throw new NotImplementedException("PreStage append is not supported");
+                    throw new NotImplementedException("PreStage append is not supported", this);
                 }
                 boolean prestage = true;
                 parts = transfers[i].split(" > ");
@@ -242,7 +243,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
                     prestage = false;
                     parts = transfers[i].split(" < "); 
                     if (parts.length == 1) {
-                        throw new BadParameterException("Unrecognized FileTransfer part: " + transfers[i]);
+                        throw new BadParameterException("Unrecognized FileTransfer part: " + transfers[i], this);
                     }
                 }
                 
@@ -251,8 +252,8 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
                 try {
                     s1 = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(parts[0]));
                     s2 = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(parts[1]));
-                } catch (BadParameterException e) {
-                    throw e;
+                } catch (URISyntaxException e) {
+                    throw new BadParameterException(e, this);
                 }
                 
                 if (! prestage) {
@@ -311,7 +312,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
         try {
             return GAT.createFile(gatContext, uri);
         } catch (GATObjectCreationException e) {
-            throw new BadParameterException("Could not create GAT File for " + uri, e);
+            throw new BadParameterException("Could not create GAT File for " + uri, e, this);
         }
     }
     
@@ -323,7 +324,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             // so it does not matter that it is not implemented :-)
             return;
         } 
-        throw new NotImplementedException(s + " not implemented");
+        throw new NotImplementedException(s + " not implemented", this);
     }
     
     private HardwareResourceDescription createHardwareResourceDescription() {
@@ -366,23 +367,24 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             URL url = URLFactory.createURL(getV(s)); 
             return NSEntryAdaptor.cvtToGatURI(url);
         } catch(BadParameterException e) {
-            throw e;
-        } catch (Throwable e) {
-            // ignored
+            throw new BadParameterException(e.getMessage(), e.getCause(), this);
+        } catch (URISyntaxException e) {
+            throw new BadParameterException(e, this);
+        } catch(Throwable e) {
+            return null;
         }
-        return null;       
     }
     
     @Override
     public synchronized void cancel(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (state == State.NEW) {
-            throw new IncorrectStateException("cancel() called on job in state New");
+            throw new IncorrectStateException("cancel() called on job in state New", this);
         }
         try {
             gatJob.stop();
         } catch (GATInvocationException e) {
-            throw new NoSuccessException("Could not cancel job");
+            throw new NoSuccessException("Could not cancel job", this);
         }
         setState(State.CANCELED);
     }
@@ -423,7 +425,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             TimeoutException, NoSuccessException {
         synchronized(this) {
             if (state != State.NEW) {
-                throw new IncorrectStateException("run() called on job in state " + state);
+                throw new IncorrectStateException("run() called on job in state " + state, this);
             }
 
             setState(State.RUNNING);
@@ -432,7 +434,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             gatJob = service.broker.submitJob(gatJobDescription, this, "job.status");
         } catch (GATInvocationException e) {
             setState(State.FAILED);
-            throw new NoSuccessException("Job.run() failed", e);
+            throw new NoSuccessException("Job.run() failed", e, this);
         }
         String id;
         try {
@@ -557,7 +559,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
 
         case SUBMISSION_ERROR:
             setDetail("SUBMISSION_ERROR");
-            setException(new NoSuccessException("Submission error"));
+            setException(new NoSuccessException("Submission error", this));
             setState(State.FAILED);
             notifyAll();
             break;
@@ -569,7 +571,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             IncorrectStateException, TimeoutException, NoSuccessException {
         switch(state) {
         case NEW:
-            throw new IncorrectStateException("waitFor called on new job");
+            throw new IncorrectStateException("waitFor called on new job", this);
         case DONE:
         case CANCELED:
         case FAILED:
@@ -607,46 +609,46 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     public void checkpoint() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        throw new NotImplementedException("checkpoint() not implemented: JavaGAT does not support it");     
+        throw new NotImplementedException("checkpoint() not implemented: JavaGAT does not support it", this);     
     }
 
     public InputStream getStderr() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, BadParameterException, DoesNotExistException,
             TimeoutException, IncorrectStateException, NoSuccessException {
         throw new NotImplementedException("getStderr is not implemented, "
-                + "javaGAT does not support interactive jobs");
+                + "javaGAT does not support interactive jobs", this);
     }
 
     public OutputStream getStdin() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, BadParameterException, DoesNotExistException,
             TimeoutException, IncorrectStateException, NoSuccessException {
         throw new NotImplementedException("getStdin is not implemented, "
-                + "javaGAT does not support interactive jobs");
+                + "javaGAT does not support interactive jobs", this);
     }
 
     public InputStream getStdout() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, BadParameterException, DoesNotExistException,
             TimeoutException, IncorrectStateException, NoSuccessException {       
         throw new NotImplementedException("getStdout is not implemented, "
-                + "javaGAT does not support interactive jobs");
+                + "javaGAT does not support interactive jobs", this);
     }
 
     public void migrate(org.ogf.saga.job.JobDescription jd) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("migrate() not implemented: JavaGAT does not support it");
+        throw new NotImplementedException("migrate() not implemented: JavaGAT does not support it", this);
     }
 
     public void resume() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
         if (state != State.SUSPENDED) {
-            throw new IncorrectStateException("resume() called when job state was " + state);
+            throw new IncorrectStateException("resume() called when job state was " + state, this);
         }
         try {
             gatJob.resume();
         } catch (GATInvocationException e) {
-            throw new NoSuccessException("resume failed", e);
+            throw new NoSuccessException("resume failed", e, this);
         }
         setState(State.RUNNING);
     }
@@ -654,7 +656,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     public void signal(int signum) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("signal() not implemented: javaGAT does not support this");
+        throw new NotImplementedException("signal() not implemented: javaGAT does not support this", this);
         
     }
 
@@ -662,42 +664,42 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
         if (state != State.RUNNING) {
-            throw new IncorrectStateException("suspend() called when job state was " + state);
+            throw new IncorrectStateException("suspend() called when job state was " + state, this);
         }
         try {
             gatJob.hold();
         } catch (GATInvocationException e) {
-            throw new NoSuccessException("resume failed", e);
+            throw new NoSuccessException("resume failed", e, this);
         }
         setState(State.SUSPENDED);
     }
 
     public String getGroup() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("getGroup() not supported");
+        throw new NotImplementedException("getGroup() not supported", this);
     }
 
     public String getOwner() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("getOwner not supported");
+        throw new NotImplementedException("getOwner not supported", this);
     }
 
     public void permissionsAllow(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsAllow not supported");
+        throw new NotImplementedException("permissionsAllow not supported", this);
     }
 
     public boolean permissionsCheck(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsCheck not supported");
+        throw new NotImplementedException("permissionsCheck not supported", this);
     }
 
     public void permissionsDeny(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsDeny not supported");        
+        throw new NotImplementedException("permissionsDeny not supported", this);        
     }
 
     @Override

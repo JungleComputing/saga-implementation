@@ -60,7 +60,7 @@ public class DirectoryAdaptor extends org.ogf.saga.spi.file.DirectoryAdaptorBase
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameterException("Flags not allowed for getSize: " + flags);
+            throw new BadParameterException("Flags not allowed for getSize: " + flags, wrapper);
         }
         
         name = resolve(name);
@@ -69,7 +69,7 @@ public class DirectoryAdaptor extends org.ogf.saga.spi.file.DirectoryAdaptorBase
         try {
             file = new FileEntry(session, name, Flags.NONE.getValue());
         } catch (AlreadyExistsException e) {
-            throw new NoSuccessException("This should not happen! " + e);
+            throw new NoSuccessException("This should not happen! " + e, wrapper);
         }
         long sz = file.size();
         file.close(0.0F);

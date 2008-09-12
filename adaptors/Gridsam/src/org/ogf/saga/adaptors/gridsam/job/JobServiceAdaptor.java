@@ -41,21 +41,21 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             try {
                 this.rm.setScheme(scheme);
             } catch (Exception e) {
-                throw new NoSuccessException("Should not happen", e);
+                throw new NoSuccessException("Should not happen", e, wrapper);
             }
         }
         if ("http".equals(scheme) || "https".equals(scheme)) {
             // this is OK.
         } else {
             throw new IncorrectURLException(
-                    "Wrong scheme for gridsam adaptor");
+                    "Wrong scheme for gridsam adaptor", wrapper);
         }
         url = rm.toString();
         try {
             jobManager = new ClientSideJobManager(new String[] { "-s", url },
                     ClientSideJobManager.getStandardOptions());
         } catch (ConfigurationException e) {
-            throw new NoSuccessException("Could not create job service", e);
+            throw new NoSuccessException("Could not create job service", e, wrapper);
         }
     }
 
@@ -79,7 +79,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             NoSuccessException {
         Job job = jobs.get(jobId);
         if (job == null) {
-            throw new DoesNotExistException("Job " + jobId + " does not exist");
+            throw new DoesNotExistException("Job " + jobId + " does not exist", wrapper);
         }
         return job;
     }
@@ -88,7 +88,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
         // TODO Implement this!
-        throw new NotImplementedException("getSelf");
+        throw new NotImplementedException("getSelf", wrapper);
     }
 
     public List<String> list() throws NotImplementedException,

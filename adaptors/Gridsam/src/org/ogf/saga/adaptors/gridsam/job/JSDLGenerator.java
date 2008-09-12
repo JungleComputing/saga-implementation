@@ -24,6 +24,7 @@ import org.icenigrid.schema.jsdl.y2005.m11.ProcessorArchitectureEnumeration;
 import org.icenigrid.schema.jsdl.y2005.m11.RangeValueType;
 import org.icenigrid.schema.jsdl.y2005.m11.ResourcesType;
 import org.icenigrid.schema.jsdl.y2005.m11.SourceTargetType;
+import org.ogf.saga.SagaObject;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
@@ -37,30 +38,31 @@ class JSDLGenerator {
 
     private final JobDefinitionDocument jobDefinitionDocument;
 
-    JSDLGenerator(JobDescription jd) throws BadParameterException,
+    JSDLGenerator(JobDescription jd, SagaObject o) throws BadParameterException,
             NotImplementedException, NoSuccessException {
         this.jobDescription = jd;
 
         jobDefinitionDocument = JobDefinitionDocument.Factory.newInstance();
 
-        createJSDLDescription();
+        createJSDLDescription(o);
     }
 
     JobDefinitionDocument getJSDL() {
         return jobDefinitionDocument;
     }
 
-    private void createJSDLDescription() throws BadParameterException,
-            NotImplementedException, NoSuccessException {
+    private void createJSDLDescription(SagaObject o)
+            throws BadParameterException, NotImplementedException,
+                            NoSuccessException {
 
         JobDefinitionType jobDef = jobDefinitionDocument.addNewJobDefinition();
         JobDescriptionType jobDescr = jobDef.addNewJobDescription();
         JobIdentificationType jobid = jobDescr.addNewJobIdentification();
         jobid.addJobProject("gridsam");
 
-        addApplication(jobDescr);
+        addApplication(jobDescr, o);
         addResource(jobDescr);
-        addDataStaging(jobDescr);
+        addDataStaging(jobDescr, o);
     }
 
     private String getV(String s) {
@@ -148,14 +150,14 @@ class JSDLGenerator {
         }
     }
 
-    private void addApplication(JobDescriptionType jobDescr)
+    private void addApplication(JobDescriptionType jobDescr, SagaObject o)
             throws BadParameterException {
         String exec;
         try {
             exec = getV(JobDescription.EXECUTABLE);
         } catch (Throwable e) {
             throw new BadParameterException("Could not get Executable for job",
-                    e);
+                    e, o);
         }
 
         ApplicationType appl = jobDescr.addNewApplication();
@@ -251,7 +253,7 @@ class JSDLGenerator {
         ds.setFileName(fileName);
     }
 
-    private void addDataStaging(JobDescriptionType jobDescr)
+    private void addDataStaging(JobDescriptionType jobDescr, SagaObject o)
             throws BadParameterException, NotImplementedException {
 
         String[] transfers = null;
@@ -268,14 +270,14 @@ class JSDLGenerator {
                 // no match
             } else {
                 throw new NotImplementedException(
-                        "PostStage append is not supported");
+                        "PostStage append is not supported", o);
             }
             parts = s.split(" >> ");
             if (parts.length == 1) {
                 // no match
             } else {
                 throw new NotImplementedException(
-                        "PreStage append is not supported");
+                        "PreStage append is not supported", o);
             }
             boolean prestage = true;
             parts = s.split(" > ");
@@ -284,7 +286,7 @@ class JSDLGenerator {
                 parts = s.split(" < ");
                 if (parts.length == 1) {
                     throw new BadParameterException(
-                            "Unrecognized FileTransfer part: " + s);
+                            "Unrecognized FileTransfer part: " + s, o);
                 }
             }
 

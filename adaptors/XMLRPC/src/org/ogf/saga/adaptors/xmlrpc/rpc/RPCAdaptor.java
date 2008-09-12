@@ -85,7 +85,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
             ok = true;
         }
         if (! ok) {
-            throw new DoesNotExistException("Server not support function " + func);
+            throw new DoesNotExistException("Server does not support function " + func);
         }
     }
     
@@ -137,7 +137,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
 
         synchronized(this) {
             if (closed) {
-                throw new IncorrectStateException("Already closed");
+                throw new IncorrectStateException("Already closed", wrapper);
             }
         }
         
@@ -146,7 +146,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
             if (parameters[i].getIOMode() != IOMode.IN) {
                 if (outIndex >= 0) {
                     throw new NotImplementedException(
-                            "More than one INOUT/OUT parameter not supported");
+                            "More than one INOUT/OUT parameter not supported", wrapper);
                 }
                outIndex = i;
             }
@@ -172,7 +172,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
                 parameters[outIndex].setData(retval);
             }
         } catch (XmlRpcException e) {
-            throw new NoSuccessException("RPC failed", e);
+            throw new NoSuccessException("RPC failed", e, wrapper);
         }
     }
 
@@ -184,34 +184,34 @@ public class RPCAdaptor extends RPCAdaptorBase {
     public String getGroup() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("getGroup");
+        throw new NotImplementedException("getGroup", wrapper);
     }
 
     public String getOwner() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("getOwner");
+        throw new NotImplementedException("getOwner", wrapper);
     }
 
     public void permissionsAllow(String arg0, int arg1)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsAllow");
+        throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public boolean permissionsCheck(String arg0, int arg1)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsCheck");
+        throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
     public void permissionsDeny(String arg0, int arg1)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsDeny");
+        throw new NotImplementedException("permissionsDeny", wrapper);
     }
 
 }

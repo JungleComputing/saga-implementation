@@ -31,6 +31,7 @@ class Adaptor {
      * @exception Throwable anything that the constructor throws, or an
      *     error indicating that no suitable constructor was found.
      */
+    @SuppressWarnings("unchecked")
     AdaptorBase instantiate(Class<?>[] types, Object[] parameters)
             throws Throwable {
         // Set context classloader before calling constructor.

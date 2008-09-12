@@ -1,6 +1,7 @@
 package org.ogf.saga.adaptors.javaGAT.stream;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
@@ -166,6 +167,10 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             onStateChange(StreamState.ERROR);
             throw new NoSuccessException("Incorrect entry information", e);
         } catch (BadParameterException e) {
+            StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
+            onStateChange(StreamState.ERROR);
+            throw new NoSuccessException("Incorrect URL for javagat advert service?", e);
+        } catch (URISyntaxException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
             throw new NoSuccessException("Incorrect URL for javagat advert service?", e);

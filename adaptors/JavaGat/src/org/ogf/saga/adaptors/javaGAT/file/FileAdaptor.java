@@ -127,7 +127,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             if (logger.isDebugEnabled()) {
                 logger.debug("File already closed!");
             }
-            throw new IncorrectStateException("Already closed");
+            throw new IncorrectStateException("Already closed", wrapper);
         }
         return entry.size();
     }
@@ -135,7 +135,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
    public List<String> modesE() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("modesE", wrapper);
     }
         
     public int read(Buffer buffer, int off, int len) throws NotImplementedException,
@@ -143,11 +143,11 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         
         if (closed) {
-            throw new IncorrectStateException("File already closed");
+            throw new IncorrectStateException("File already closed", wrapper);
         }
         
         if (!Flags.READ.isSet(flags)) {
-            throw new PermissionDeniedException("No permission to read");
+            throw new PermissionDeniedException("No permission to read", wrapper);
         }
                      
         byte[] b;
@@ -155,24 +155,24 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             b = buffer.getData();
         } catch(DoesNotExistException e) {
             if (len < 0) {
-                throw new BadParameterException("read: len < 0 and buffer not allocated yet");
+                throw new BadParameterException("read: len < 0 and buffer not allocated yet", wrapper);
             }
             buffer.setSize(off + len);
             try {
                 b = buffer.getData();
             } catch(DoesNotExistException e2) {
                 // This should not happen after setSize() with size >= 0.
-                throw new NoSuccessException("Internal error", e2);
+                throw new NoSuccessException("Internal error", e2, wrapper);
             }
         }
         
         int sz = buffer.getSize();
         
         if (off > sz) {
-            throw new BadParameterException("read: offset > buffer size");
+            throw new BadParameterException("read: offset > buffer size", wrapper);
         }
         if (off + len > sz) {
-            throw new BadParameterException("read: specified len > buffer size");
+            throw new BadParameterException("read: specified len > buffer size", wrapper);
         } else if (len < 0) {
             len = sz - off;
         }
@@ -186,7 +186,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                 result = in.read(b, off, len);
             }
         } catch (IOException e) {
-            throw new SagaIOException(e);
+            throw new SagaIOException(e, wrapper);
         }
         if (result < 0) {
             // EOF
@@ -200,7 +200,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("readE", wrapper);
     }
 
     public long seek(long offset, SeekMode whence) throws NotImplementedException,
@@ -208,11 +208,11 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         
         if (closed) {
-            throw new IncorrectStateException("File already closed");
+            throw new IncorrectStateException("File already closed", wrapper);
         }
         
         if (! Flags.READ.isSet(flags) && ! Flags.WRITE.isSet(flags)) {
-            throw new IncorrectStateException("seek() called but not opened for READ or WRITE");
+            throw new IncorrectStateException("seek() called but not opened for READ or WRITE", wrapper);
         }
         
         switch(whence) {
@@ -234,7 +234,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                 rf.seek(offset);
                 this.offset = rf.getFilePointer();
             } catch (IOException e) {
-                throw new SagaIOException(e);
+                throw new SagaIOException(e, wrapper);
             }
             return this.offset;
         } else if (in != null) {
@@ -242,11 +242,11 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                 try {
                     in.skip(offset - this.offset);
                 } catch (IOException e) {
-                    throw new SagaIOException(e);
+                    throw new SagaIOException(e, wrapper);
                 }
-            } else throw new NotImplementedException("Backwards seek not implemented");
+            } else throw new NotImplementedException("Backwards seek not implemented", wrapper);
         } else {
-            throw new NotImplementedException("Seek on output stream not implemented");
+            throw new NotImplementedException("Seek on output stream not implemented", wrapper);
         }
         this.offset = offset;
         return offset;
@@ -255,7 +255,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     public int sizeE(String arg0, String arg1) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, IncorrectStateException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("sizeE", wrapper);
     }
 
     public int write(Buffer buffer, int off, int len) throws NotImplementedException,
@@ -263,11 +263,11 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         
         if (closed) {
-            throw new IncorrectStateException("File already closed");
+            throw new IncorrectStateException("File already closed", wrapper);
         }
         
         if (!Flags.WRITE.isSet(flags)) {
-            throw new PermissionDeniedException("No permission to write");
+            throw new PermissionDeniedException("No permission to write", wrapper);
         }
         
         if (rf != null && Flags.APPEND.isSet(flags)) { 
@@ -278,14 +278,14 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         try {
             b = buffer.getData();
         } catch(DoesNotExistException e) {
-            throw new BadParameterException("write: buffer not allocated yet");
+            throw new BadParameterException("write: buffer not allocated yet", wrapper);
         }
 
         if (len + off > buffer.getSize() || len < 0) {
             len = buffer.getSize() - off;
         }
         if (len < 0) {
-            throw new BadParameterException("write: offset too large");
+            throw new BadParameterException("write: offset too large", wrapper);
         }
         
         try {
@@ -295,7 +295,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                 out.write(b, off, len);
             }
         } catch (IOException e) {
-            throw new SagaIOException(e);
+            throw new SagaIOException(e, wrapper);
         }
         offset += len;
         return len;
@@ -305,7 +305,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("writeE", wrapper);
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
@@ -329,7 +329,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                 out = null;
             }
         } catch (IOException e) {
-            throw new NoSuccessException("close() failed", e);
+            throw new NoSuccessException("close() failed", e, wrapper);
         }
     }
 

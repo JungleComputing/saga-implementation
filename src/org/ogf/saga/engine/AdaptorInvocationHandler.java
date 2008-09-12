@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
+import org.ogf.saga.SagaObject;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -298,6 +299,48 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             }
         }
     }
+    
+    /**
+     * Adds a wrapper object to the exception, in case the adaptor or could'nt for some
+     * other reason. This is what makes SAGAException.getObject() work.
+     * @param exception the exception
+     * @param base the adaptor base
+     * @return the modified exception.
+     */
+    private SagaException addWrapper(SagaException exception, AdaptorBase base) {
+        Object sagaObject = null;
+        try {
+            sagaObject = exception.getObject();
+        } catch(Throwable e) {
+            // ignored
+        }
+        if (sagaObject != null) {
+            return exception;
+        }
+        sagaObject = base.getWrapper();
+        SagaException ex = exception;
+        try {
+            if (exception instanceof SagaIOException) {
+                Constructor c = exception.getClass().getConstructor(String.class,
+                        Throwable.class, Integer.TYPE, SagaObject.class);
+
+                ex = (SagaException) c.newInstance(exception.getMessage(), exception.getCause(),
+                        ((SagaIOException) exception).getPosixErrorCode(),
+                        (SagaObject) sagaObject);
+            } else {
+                Constructor c = exception.getClass().getConstructor(String.class,
+                        Throwable.class, SagaObject.class);
+
+                ex = (SagaException) c.newInstance(exception.getMessage(), exception.getCause(),
+                        (SagaObject) sagaObject);
+            }
+            ex.setStackTrace(exception.getStackTrace());
+            exception = ex;
+        } catch(Throwable e) {
+            // o well, we tried ...
+        }
+        return exception;
+    }
 
     /*
      * (non-Javadoc)
@@ -323,7 +366,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 ClassLoader loader = Thread.currentThread().getContextClassLoader();
                 AdaptorBase adaptorInstantiation = adaptorInstantiations.get(adaptorName);
                 try {
-                    // Set context classloader before calling constructor.
+                    // Set context classloader before invoking method.
                     // Some adaptors may need this because some libraries
                     // explicitly use the context classloader. (jaxrpc).
                     Thread.currentThread().setContextClassLoader(
@@ -359,6 +402,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     // when all adaptors fail.
                     if (t instanceof SagaException) {
                         SagaException e = (SagaException) t;
+                        addWrapper(e, adaptorInstantiation);
                         if (nested == null) {
                             nested = new NestedException();
                         }
@@ -370,8 +414,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                             exception = compare(exception, e);
                         }
                     } else if (exception == null) {
-                        exception = new NoSuccessException("Got exception from constructor of "
-                                + adaptorName, t);
+                        exception = new NoSuccessException("Got exception from method "
+                                + m.getName(), t,
+                                (SagaObject) adaptorInstantiation.getWrapper());
                         nested.add(adaptorName, exception);
                     }
 
@@ -397,10 +442,28 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         
         if (multiple) {
             try {
-               Constructor c = exception.getClass().getConstructor(String.class, Throwable.class);
-               SagaException ex = (SagaException) c.newInstance(exception.getMessage(), nested);
-               ex.setStackTrace(exception.getStackTrace());
-               exception = ex;
+                Object sagaObject = null;
+                try {
+                    sagaObject = exception.getObject();
+                } catch(Throwable e) {
+                    // ignored
+                }
+                SagaException ex = null;
+                if (exception instanceof SagaIOException) {
+                    Constructor c = exception.getClass().getConstructor(String.class,
+                            Throwable.class, Integer.TYPE, SagaObject.class);
+
+                    ex = (SagaException) c.newInstance(exception.getMessage(), nested,
+                            ((SagaIOException) exception).getPosixErrorCode(), sagaObject);
+                } else {
+                    Constructor c = exception.getClass().getConstructor(String.class,
+                            Throwable.class, SagaObject.class);
+
+                    ex = (SagaException) c.newInstance(exception.getMessage(), nested,
+                            sagaObject);
+                }
+                ex.setStackTrace(exception.getStackTrace());
+                exception = ex;
             } catch(Throwable e) {
                 // O well, we tried ...
                 logger.debug("Creation of nested exception failed");

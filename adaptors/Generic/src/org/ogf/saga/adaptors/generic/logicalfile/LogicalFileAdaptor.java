@@ -106,11 +106,11 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         
         if (closed) {
             throw new IncorrectStateException(
-                    "addLocation() called on closed LogicalFile");
+                    "addLocation() called on closed LogicalFile", wrapper);
         }
         if (!Flags.WRITE.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "addLocation() called on LogicalFile not opened for writing");
+                    "addLocation() called on LogicalFile not opened for writing", wrapper);
         }
 
         if (doAdd(name)) {
@@ -135,11 +135,11 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException(
-                    "listLocations() called on closed LogicalFile");
+                    "listLocations() called on closed LogicalFile", wrapper);
         }
         if (!Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "listLocations() called on LogicalFile not opened for reading");
+                    "listLocations() called on LogicalFile not opened for reading", wrapper);
         }
         return new ArrayList<URL>(urls);
     }
@@ -152,17 +152,17 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             NoSuccessException {
         if (closed) {
             throw new IncorrectStateException(
-                    "removeLocation() called on closed LogicalFile");
+                    "removeLocation() called on closed LogicalFile", wrapper);
         }
         if (!Flags.WRITE.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "removeLocation() called on LogicalFile not opened for writing");
+                    "removeLocation() called on LogicalFile not opened for writing", wrapper);
         }
 
         if (doRemove(name)) {
             write();
         } else {
-            throw new DoesNotExistException("url " + name + " not found");
+            throw new DoesNotExistException("url " + name + " not found", wrapper);
         }
     }
 
@@ -183,20 +183,20 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             DoesNotExistException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException(
-                    "replicate() called on closed LogicalFile");
+                    "replicate() called on closed LogicalFile", wrapper);
         }
         if (!Flags.WRITE.isSet(logicalFileFlags)
                 || !Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "replicate() called on LogicalFile not opened for reading/writing");
+                    "replicate() called on LogicalFile not opened for reading/writing", wrapper);
         }
         if (Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
-                    "replicate() call with RECURSIVE flag");
+                    "replicate() call with RECURSIVE flag", wrapper);
         }
         if (! name.isAbsolute()) {
             throw new BadParameterException(
-                    "replicate() call with relative URL " + name);
+                    "replicate() call with relative URL " + name, wrapper);
         }
 
         name = name.normalize();
@@ -212,7 +212,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             e.copy(name, flags);
             e.close();
         } catch (Throwable e) {
-            throw new NoSuccessException("Copy failed", e);
+            throw new NoSuccessException("Copy failed", e, wrapper);
         }
 
         if (doAdd(name)) {
@@ -229,28 +229,28 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         
         if (closed) {
             throw new IncorrectStateException(
-                    "updateLocation() called on closed LogicalFile");
+                    "updateLocation() called on closed LogicalFile", wrapper);
         }
         
         if (!Flags.WRITE.isSet(logicalFileFlags)
                 || !Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "updateLocation() called on LogicalFile not opened for reading/writing");
+                    "updateLocation() called on LogicalFile not opened for reading/writing", wrapper);
         }
         
         if (! nameNew.isAbsolute()) {
             throw new BadParameterException(
-                    "updateLocation() call with relative URL " + nameNew);
+                    "updateLocation() call with relative URL " + nameNew, wrapper);
         }
         
         nameNew = nameNew.normalize();
 
         if (urls.contains(nameNew)) {
             throw new AlreadyExistsException("URL " + nameNew
-                    + " already exists in LogicalFile");
+                    + " already exists in LogicalFile", wrapper);
         }
         if (! doRemove(nameOld)) {
-            throw new DoesNotExistException("url " + nameOld + " not found");
+            throw new DoesNotExistException("url " + nameOld + " not found", wrapper);
         }
 
         doAdd(nameNew);
@@ -260,7 +260,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
     private URL getClosestURL(URL location) throws IncorrectStateException, NotImplementedException {
         if (urls == null || urls.size() == 0) {
             throw new IncorrectStateException("No files in logical file '"
-                    + nameUrl + "' to compare with");
+                    + nameUrl + "' to compare with", wrapper);
         }
 //      first check: same hostname
         for (URL file : urls) {
@@ -308,7 +308,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             out.close();
         } catch (Throwable e) {
             throw new NoSuccessException("Exception while writing "
-                    + nameUrl, e);
+                    + nameUrl, e, wrapper);
         }
     }
 

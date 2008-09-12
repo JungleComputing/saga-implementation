@@ -47,7 +47,7 @@ class FileEntry extends NSEntryAdaptor {
         try {
             return GAT.createFileInputStream(gatContext, gatURI);
         } catch (GATObjectCreationException e) {
-            throw new NoSuccessException("Could not create input stream", e);
+            throw new NoSuccessException("Could not create input stream", e, wrapper);
         }
     }
     
@@ -55,7 +55,7 @@ class FileEntry extends NSEntryAdaptor {
         try {
             return GAT.createFileOutputStream(gatContext, gatURI, append);
         } catch (GATObjectCreationException e) {
-            throw new NoSuccessException("Could not create output stream", e);
+            throw new NoSuccessException("Could not create output stream", e, wrapper);
         }
     }
 }

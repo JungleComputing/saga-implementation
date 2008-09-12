@@ -1,6 +1,7 @@
 package org.ogf.saga.adaptors.javaGAT.file;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
@@ -50,7 +51,12 @@ public class FileOutputStreamAdaptor extends org.ogf.saga.spi.file.FileOutputStr
         }
 
         GATContext gatContext = gatSession.getGATContext();
-        URI gatURI = NSEntryAdaptor.cvtToGatURI(source);
+        URI gatURI;
+        try {
+            gatURI = NSEntryAdaptor.cvtToGatURI(source);
+        } catch (URISyntaxException e1) {
+            throw new IncorrectURLException(e1);
+        }
         
         try {
             out = GAT.createFileOutputStream(gatContext, gatURI, append);
