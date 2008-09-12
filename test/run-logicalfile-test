@@ -4,7 +4,12 @@
 # The servers are listed below, and should be replaced by your own
 # servers.
 
-GENERIC_SERVERS=localhost,titan.cs.vu.nl
+GENERIC_SERVERS="$1"
+case X$GENERIC_SERVERS in
+    X)
+	GENERIC_SERVERS=localhost,fs0.das3.cs.vu.nl
+	;;
+esac
 
 export SAGA_LOCATION=`cd .. && pwd`
 
