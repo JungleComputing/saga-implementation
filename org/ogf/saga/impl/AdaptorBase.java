@@ -49,7 +49,7 @@ public abstract class AdaptorBase<T> implements Cloneable {
         this.wrapper = wrapper;
     }
     
-    protected T getWrapper() {
+    public T getWrapper() {
         return wrapper;
     }
 }
