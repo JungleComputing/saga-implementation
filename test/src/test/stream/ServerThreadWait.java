@@ -13,12 +13,13 @@ import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.stream.Activity;
 import org.ogf.saga.stream.Stream;
+import org.ogf.saga.url.URL;
 
 public class ServerThreadWait extends ServerThread {
 
     private static Logger logger = Logger.getLogger(ServerThreadWait.class);
 
-    public ServerThreadWait(String url) {
+    public ServerThreadWait(URL url) {
         super(url);
     }
 

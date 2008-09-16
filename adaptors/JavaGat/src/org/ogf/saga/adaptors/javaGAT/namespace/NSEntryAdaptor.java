@@ -10,7 +10,6 @@ import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.URI;
 import org.gridlab.gat.io.File;
 import org.gridlab.gat.io.FileInterface;
-import org.ogf.saga.URL;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -30,6 +29,8 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.spi.namespace.NSEntryAdaptorBase;
 import org.ogf.saga.spi.namespace.NSEntrySPI;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
@@ -85,7 +86,11 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         }
 
         gatContext = gatSession.getGATContext();
-        gatURI = cvtToGatURI(nameUrl);
+        try {
+            gatURI = cvtToGatURI(nameUrl);
+        } catch (URISyntaxException e1) {
+            throw new IncorrectURLException(e1);
+        }
 
         try {
             fileImpl = GAT.createFile(gatContext, gatURI);
@@ -183,69 +188,65 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         return clone;
     }
 
-    public static URI cvtToGatURI(URL url) throws NotImplementedException,
-            BadParameterException, NoSuccessException {
-        try {
-            URI uri;
-            String scheme = url.getScheme();
-            String userInfo = url.getUserInfo();
-            String host = url.getHost();
-            int port = url.getPort();
-            String path = url.getPath();
-            String query = url.getQuery();
-            String fragment = url.getFragment();
+    public static URI cvtToGatURI(URL url) throws URISyntaxException {
 
-            StringBuffer u = new StringBuffer();
-            if (scheme != null) {
-                u.append(scheme);
-                u.append(":");
-            }
-            if (host != null) {
-                u.append("//");
-                if (userInfo != null) {
-                    u.append(userInfo);
-                    u.append("@");
-                }
-                u.append(host);
-                if (port >= 0) {
-                    u.append(":");
-                    u.append(port);
-                }
-            }
+        URI uri;
+        String scheme = url.getScheme();
+        String userInfo = url.getUserInfo();
+        String host = url.getHost();
+        int port = url.getPort();
+        String path = url.getPath();
+        String query = url.getQuery();
+        String fragment = url.getFragment();
 
-            if (scheme != null) {
-                // This is the work-around to obtain uri's that
-                // JavaGAT understands.
-                if (host != null) {
-                    u.append("/");
-                } else {
-                    u.append("///");
-                }
-            }
-            u.append(path);
-            if (query != null) {
-                u.append("?");
-                u.append(query);
-            }
-            if (fragment != null) {
-                u.append("#");
-                u.append(fragment);
-            }
-
-            uri = new URI(u.toString());
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("URL " + url + " converted to " + uri);
-            }
-            return uri;
-        } catch (URISyntaxException e) {
-            throw new BadParameterException(e);
+        StringBuffer u = new StringBuffer();
+        if (scheme != null) {
+            u.append(scheme);
+            u.append(":");
         }
+        if (host != null) {
+            u.append("//");
+            if (userInfo != null) {
+                u.append(userInfo);
+                u.append("@");
+            }
+            u.append(host);
+            if (port >= 0) {
+                u.append(":");
+                u.append(port);
+            }
+        }
+
+        if (scheme != null) {
+            // This is the work-around to obtain uri's that
+            // JavaGAT understands.
+            if (host != null) {
+                u.append("/");
+            } else {
+                u.append("///");
+            }
+        }
+        u.append(path);
+        if (query != null) {
+            u.append("?");
+            u.append(query);
+        }
+        if (fragment != null) {
+            u.append("#");
+            u.append(fragment);
+        }
+
+        uri = new URI(u.toString());
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("URL " + url + " converted to " + uri);
+        }
+        return uri;
     }
 
     public static URL cvtToSagaURL(URI uri) throws NotImplementedException,
             BadParameterException, NoSuccessException {
-        return new URL(uri.toString()).normalize();
+        return URLFactory.createURL(uri.toString()).normalize();
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
@@ -279,12 +280,12 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
     protected void nonResolvingCopy(URL target, int flags)
             throws IncorrectStateException, NoSuccessException,
             BadParameterException, AlreadyExistsException,
-            IncorrectURLException, NotImplementedException {
+            IncorrectURLException, NotImplementedException, DoesNotExistException {
         if (closed) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Entry already closed!");
             }
-            throw new IncorrectStateException("NSEntry already closed");
+            throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
                 .or(Flags.OVERWRITE));
@@ -295,7 +296,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                 logger.debug("Wrong flags used!");
             }
             throw new BadParameterException(
-                    "Flags not allowed for NSEntry copy: " + flags);
+                    "Flags not allowed for NSEntry copy: " + flags, wrapper);
         }
         File targetFile = null;
         try {
@@ -308,15 +309,17 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             if (logger.isDebugEnabled()) {
                 logger.debug("Target file could not be created!");
             }
-            throw new NoSuccessException(e);
-        }
+            throw new NoSuccessException(e, wrapper);
+        } catch (URISyntaxException e) {
+            throw new BadParameterException(e, wrapper);
+        } 
 
         // a 'BadParameter' exception is thrown if the source is a directory
         // and the 'Recursive' flag is not set
 
         if (isDirectory && !Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
-                    "Source is a directory and recursive flag not set");
+                    "Source is a directory and recursive flag not set", wrapper);
         }
 
         // a 'BadParameter' exception is thrown if the source is not a directory
@@ -324,13 +327,13 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
         if (!isDirectory && Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
-                    "Source is not a directory and recursive flag is set");
+                    "Source is not a directory and recursive flag is set", wrapper);
         }
 
         if (isDirectory && Flags.RECURSIVE.isSet(flags) && targetFile.isFile()) {
             throw new AlreadyExistsException("cannot overwrite non-directory"
                     + targetFile.toGATURI().toString() + " with directory "
-                    + fileImpl.toGATURI().toString());
+                    + fileImpl.toGATURI().toString(), wrapper);
         }
         // test whether target is in existing part of the name space
         File targetParentFile;
@@ -350,7 +353,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                     if (logger.isDebugEnabled()) {
                         logger.debug("targetChildFile not created!");
                     }
-                    throw new NoSuccessException(e);
+                    throw new NoSuccessException(e, wrapper);
                 }
             } else {
                 targetParentFile = (org.gridlab.gat.io.File) targetFile
@@ -359,17 +362,17 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                     try {
                         targetParentFile = GAT.createFile(gatContext, ".");
                     } catch (GATObjectCreationException e) {
-                        throw new NoSuccessException(e);
+                        throw new NoSuccessException(e, wrapper);
                     }
                 }
                 targetChildFile = targetFile;
             }
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e);
+            throw new NoSuccessException(e, wrapper);
         }
         if (!Flags.OVERWRITE.isSet(flags) && targetChildFile.exists()) {
             throw new AlreadyExistsException("Target already exists: "
-                    + targetChildFile.toGATURI().toString());
+                    + targetChildFile.toGATURI().toString(), wrapper);
         }
         if (Flags.CREATEPARENTS.isSet(flags)) {
             if (!targetParentFile.exists()) {
@@ -378,17 +381,16 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                         logger.debug("targetParentFile mkdirs failed!");
                     }
                     throw new NoSuccessException(
-                            "Failed to make non-existing directories");
+                            "Failed to make non-existing directories", wrapper);
                 }
             }
         } else {
-            // TODO below commented to get the demo work. Check the
-            // getParentFile from the LocalFileAdaptor
-            /*
-             * if (!targetParentFile.exists()) { if (logger.isDebugEnabled()) {
-             * logger.debug("targetParentFile does not exist!"); } throw new
-             * DoesNotExist("Target parent file does not exist"); }
-             */
+            if (!targetParentFile.exists()) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("targetParentFile does not exist!");
+                }
+                throw new DoesNotExistException("Target parent file does not exist", wrapper);
+            }
         }
         // if the target already exists, it will be overwritten if the
         // 'Overwrite' flag is set, otherwise it is an 'AlreadyExists'
@@ -400,14 +402,14 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             }
             file.copy(targetChildFile.toGATURI());
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e);
+            throw new NoSuccessException(e, wrapper);
         }
     }
 
     public URL getCWD() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
-            throw new IncorrectStateException("NSEntry already closed");
+            throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         String path = nameUrl.getPath();
         if (!isDirectory) {
@@ -418,10 +420,10 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         }
         URL newURL = null;
         try {
-            newURL = new URL(nameUrl.toString());
+            newURL = URLFactory.createURL(nameUrl.toString());
             newURL.setPath(path);
         } catch (BadParameterException e) {
-            throw new NoSuccessException("Unexpected error", e);
+            throw new NoSuccessException("Unexpected error", e, wrapper);
         }
         return newURL;
     }
@@ -429,27 +431,27 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
     public URL getName() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
-            throw new IncorrectStateException("NSEntry already closed");
+            throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         String path = nameUrl.getPath();
         String[] s = path.split("/");
 
         try {
-            return new URL(s[s.length - 1]);
+            return URLFactory.createURL(s[s.length - 1]);
         } catch (BadParameterException e) {
-            throw new NoSuccessException("Unexpected error", e);
+            throw new NoSuccessException("Unexpected error", e, wrapper);
         }
     }
 
     public URL getURL() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
-            throw new IncorrectStateException("NSEntry already closed");
+            throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         try {
-            return new URL(nameUrl.normalize().toString());
+            return URLFactory.createURL(nameUrl.normalize().toString());
         } catch (BadParameterException e) {
-            throw new NoSuccessException("Unexpected error", e);
+            throw new NoSuccessException("Unexpected error", e, wrapper);
         }
     }
 
@@ -458,7 +460,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
-            throw new IncorrectStateException("NSEntry already closed");
+            throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         return isDirectory;
     }
@@ -468,7 +470,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
-            throw new IncorrectStateException("NSEntry already closed");
+            throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         return !isDirectory;
     }
@@ -477,7 +479,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("Not Implemented!");
+        throw new NotImplementedException("isLink", wrapper);
     }
 
     public void link(URL target, int flags) throws NotImplementedException,
@@ -485,7 +487,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException {
-        throw new NotImplementedException("Not Implemented!");
+        throw new NotImplementedException("link", wrapper);
     }
 
     public void move(URL target, int flags) throws NotImplementedException,
@@ -503,7 +505,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             BadParameterException, AlreadyExistsException,
             NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, IncorrectURLException {
+            TimeoutException, IncorrectURLException, DoesNotExistException {
         nonResolvingCopy(target, flags);
         remove(flags);
     }
@@ -513,7 +515,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, BadParameterException, TimeoutException,
             NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public void permissionsDeny(String id, int permissions, int flags)
@@ -521,14 +523,14 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, BadParameterException, TimeoutException,
             NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("permissionsDeny", wrapper);
     }
 
     public URL readLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("readLink", wrapper);
     }
 
     public void remove(int flags) throws NotImplementedException,
@@ -536,28 +538,28 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
-            throw new IncorrectStateException("NSEntry already closed");
+            throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         int allowedFlags = Flags.DEREFERENCE.or(Flags.RECURSIVE);
         if ((allowedFlags | flags) != allowedFlags) {
             throw new BadParameterException(
-                    "Flags not allowed for NSEntry remove: " + flags);
+                    "Flags not allowed for NSEntry remove: " + flags, wrapper);
         }
         if (isDirectory && !Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
-                    "Target is directory and recursive flag not set");
+                    "Target is directory and recursive flag not set", wrapper);
         }
 
         if (!isDirectory && Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
-                    "Target is not directory and recursive flag is set");
+                    "Target is not directory and recursive flag is set", wrapper);
         }
         try {
             if (!file.delete()) {
-                throw new NoSuccessException("Remove operation failed!");
+                throw new NoSuccessException("Remove operation failed!", wrapper);
             }
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e);
+            throw new NoSuccessException(e, wrapper);
         }
         close(0.0F);
     }
@@ -572,7 +574,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             // This method cannot throw this, because it implements the method
             // as
             // specified in org.ogf.saga.permissions.Permissions.
-            throw new NoSuccessException("Incorrect state", e);
+            throw new NoSuccessException("Incorrect state", e, wrapper);
         }
     }
 
@@ -580,7 +582,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
     public void permissionsDeny(String id, int permissions)
@@ -593,19 +595,19 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             // This method cannot throw this, because it implements the method
             // as
             // specified in org.ogf.saga.permissions.Permissions.
-            throw new NoSuccessException("Incorrect state", e);
+            throw new NoSuccessException("Incorrect state", e, wrapper);
         }
     }
 
     public String getGroup() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("getGroup", wrapper);
     }
 
     public String getOwner() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("getOwner", wrapper);
     }
 }

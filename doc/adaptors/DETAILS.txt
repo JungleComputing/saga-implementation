@@ -43,7 +43,7 @@ Package SAGA job
 
 - JavaGAT
   The JavaGAT adaptor for the job package is built on JavaGAT Resources,
-  for which various adaptors are available: ssh, globus, gridsam, to name
+  for which various adaptors are available: ssh, globus, gridsam, glite, to name
   a few.
   * adaptor for JobService.
     getSelf() is not implemented.
@@ -73,7 +73,7 @@ Package SAGA job
     WORKINGDIRECTORY, INTERACTIVE, JOBCONTACT, JOBSTARTTIME.
     Also, post-stage append and pre-stage append is not supported.
     Reason: there is no corresponding mechanism in Gridsam job descriptions.
-    There is WORKINGDIRECTORY in JSDL, but is not supported by Gridsam.
+    There is WORKINGDIRECTORY in JSDL, but this is not supported by Gridsam.
     In addition, the SPMD extensions are not implemented yet in this adaptor.
   * JobAttributes that are not implemented:
     TERMSIG.
@@ -106,8 +106,9 @@ Package SAGA file
     is no support. In addition, readP and writeP only have the implementation
     inherited from the base implementation, which translates the patterns into
     seeks and contiguous reads/writes, which probably is very slow.
-    This adaptor is built on the JavaGAT RandomAccessFile. Unfortunately,
-    currently only a local adaptor is available for that.
+    This adaptor is built on the JavaGAT RandomAccessFile, if available
+    (which is only local for the current JavaGAT version). If not available,
+    FileInputStream or FileOutputStream is used.
   * adaptor for Directory
     implemented, except for permissions.
   * adaptors for FileInputStream and FileOutputStream

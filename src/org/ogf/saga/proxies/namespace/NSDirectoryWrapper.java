@@ -3,7 +3,6 @@ package org.ogf.saga.proxies.namespace;
 import java.util.Iterator;
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -23,6 +22,7 @@ import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.namespace.NSDirectorySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
@@ -448,7 +448,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
         proxy.permissionsAllow(target, id, permissions, flags);
     }
 
@@ -456,7 +456,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, BadParameterException, TimeoutException,
-            NoSuccessException {
+            NoSuccessException, IncorrectURLException {
         permissionsAllow(target, id, permissions, Flags.NONE.getValue());
     }
 
@@ -476,14 +476,14 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException {
+            NoSuccessException, IncorrectURLException {
         proxy.permissionsDeny(target, id, permissions, flags);
     }
 
     public void permissionsDeny(URL target, String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
         permissionsDeny(target, id, permissions, Flags.NONE.getValue());
     }
 
@@ -587,7 +587,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
         proxy.permissionsAllow(target, id, permissions, flags);
     }
 
@@ -616,7 +616,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException {
+            NoSuccessException, IncorrectURLException {
         proxy.permissionsDeny(target, id, permissions, flags);
     }
 
@@ -686,7 +686,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, BadParameterException, TimeoutException,
-            NoSuccessException {
+            NoSuccessException, IncorrectURLException {
         permissionsAllow(target, id, permissions, Flags.NONE.getValue());
     }
 
@@ -701,7 +701,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     public void permissionsDeny(String target, String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
         permissionsDeny(target, id, permissions, Flags.NONE.getValue());
 
     }

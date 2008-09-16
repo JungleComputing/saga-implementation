@@ -9,7 +9,6 @@ import org.gridlab.gat.GATContext;
 import org.gridlab.gat.Preferences;
 import org.gridlab.gat.URI;
 import org.gridlab.gat.resources.ResourceBroker;
-import org.ogf.saga.URL;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -25,6 +24,7 @@ import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
 import org.ogf.saga.proxies.job.JobServiceWrapper;
 import org.ogf.saga.spi.job.JobServiceAdaptorBase;
+import org.ogf.saga.url.URL;
 
 public class JobServiceAdaptor extends JobServiceAdaptorBase {
 

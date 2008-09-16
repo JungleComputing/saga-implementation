@@ -4,6 +4,7 @@ JavaGAT adaptor README
 Introduction.
   The JavaGAT adaptor actually consists of several adaptors:
   it has implementations for streams, namespace, file, job.
+  The JavaGAT version supplied is version 2.0.2.
 
 Not implemented.
   Permissions are not implemented, there is no support for it in JavaGAT.
@@ -17,15 +18,17 @@ Not implemented.
   Streams:
     The JavaGAT adaptor for the stream package is built on JavaGAT EndPoint
     and JavaGAT Pipe. The adaptor implementation also depends on the JavaGAT
-    advertService. Unfortunately, at the moment only a local advertService
-    is available for JavaGAT, which means that this streams adaptor only
-    works locally. This will probably change in the future.
-    The StreamService adaptor is complete, exept for permissions.
+    advertService. This advert service relies on a file, whose url may
+    be supplied to the Streams adaptor by means of a system property.
+    The system property "saga.adaptor.javagat.advertService"
+    should be set to the required URL.
+    There is a default but that works only locally: "file://$HOME/.GatAdvertDB".
+    The StreamService adaptor is complete, except for permissions.
     The Stream adaptor does not support the STREAM_WRITE metric and
     waitFor(Activity.WRITE). Also, Stream attributes are not supported yet.
   Jobs:
     The JavaGAT adaptor for the job package is built on JavaGAT Resources,
-    for which various adaptors are available: ssh, globus, gridsam, to name
+    for which various adaptors are available: ssh, globus, gridsam, glite, to name
     a few.
     The following methods are not implemented: getSelf(),  signal(),
     checkpoint(), migrate().
@@ -43,7 +46,10 @@ Not implemented.
     from the base implementation, which translates the patterns into
     seeks and contiguous reads/writes, which probably is very slow.
     The File adaptor is built on the JavaGAT RandomAccessFile. Unfortunately,
-    currently only a local adaptor is available for that.
+    currently only a local adaptor is available for that. If a RandomAccessFile
+    cannot be used, the adaptor creates a FileInputStream or FileOutputStream
+    and uses their methods to implement its own. BUT: FileInputStream only
+    supports forward seeks, and FileOutputStream does not support seeks at all.
     Permissions are not implemented.
     FileInputStream and FileOutputStream are built in top of the
     corresponding JavaGAT versions, for which several adaptors are available.
@@ -56,4 +62,4 @@ JavaGAT Preferences.
   adaptor to use, very similar to the way a SAGA application can use
   properties to select which SAGA adaptor to use. See for instance the
   code in demo/src/demo/job/TestJob2.java for an example.
-  The file JavaGat-doc/preferences.html describes the available preferences.
+  The file JavaGat-doc/javagat.properties describes the available preferences.

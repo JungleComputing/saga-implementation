@@ -32,7 +32,7 @@ import org.ogf.saga.task.State;
  * attributes JobDescription.INTERACTIVE, JobDescription.THREADSPERPROCESS.
  * JobDescription.JOBCONTACT, JobDescription.JOBSTARTTIME, the Job attribute
  * Job.EXECUTIONHOSTS, the Job Metrics JOB_CPUTIME, JOB_MEMORYUSE,
- * JOB_VMEMORYUSE, JOB_PERFORMANCE. TODO: update this list. In addition, the
+ * JOB_VMEMORYUSE, JOB_PERFORMANCE. In addition, the
  * method {@link #signal(int)} cannot be implemented.
  */
 
@@ -60,13 +60,21 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
 
     private JobState savedState = null;
 
+    /**
+     * Some methods of this class are called directly, not through a
+     * Saga engine dispatcher. Therefore, these methods have to set
+     * the context classloader.
+     */
+    private static ClassLoader loader = SagaJob.class.getClassLoader();
+
     public SagaJob(JobServiceAdaptor service, JobDescription jobDescription,
             Session session) throws NotImplementedException,
             BadParameterException, NoSuccessException {
         super(jobDescription, session);
         this.service = service;
 
-        jobDefinitionDocument = new JSDLGenerator(jobDescription).getJSDL();
+        jobDefinitionDocument = new JSDLGenerator(jobDescription,
+                service.getWrapper()).getJSDL();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Created JSDL " + jobDefinitionDocument.toString());
@@ -74,15 +82,30 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
 
         JobInstance jobInstance;
 
-        try {
-            jobInstance = service.jobManager.submitJob(jobDefinitionDocument,
-                    true);
-            // Unfortunately, notification is not yet supported!!
-            // So, we use a polling thread instead.
-            // service.jobManager.registerChangeListener(jobInstance.getID(),
-            // this);
-        } catch (Throwable e1) {
-            throw new NoSuccessException("Job submission failed", e1);
+        synchronized(this) {
+            // Take care of axis.ClientConfigFile system property: it may
+            // be set by some Globus adaptor, but GridSAM cannot stand that.
+            // So, save and restore it.
+            String saved = System.getProperty("axis.ClientConfigFile");
+            if (saved != null) {
+                System.clearProperty("axis.ClientConfigFile");
+            }
+
+            try {
+                jobInstance = service.jobManager.submitJob(jobDefinitionDocument,
+                        true);
+                // Unfortunately, notification is not yet supported!!
+                // So, we use a polling thread instead.
+                // service.jobManager.registerChangeListener(jobInstance.getID(),
+                // this);
+            } catch (Throwable e1) {
+                throw new NoSuccessException("Job submission failed", e1,
+                        service.getWrapper());
+            } finally {
+                if (saved != null) {
+                    System.setProperty("axis.ClientConfigFile", saved);
+                }
+            }
         }
 
         jobID = jobInstance.getID();
@@ -99,6 +122,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
         // registerChangeListener.
         pollingThread = new PollingThread(this);
         pollingThread.setDaemon(true);
+        pollingThread.setContextClassLoader(loader);
     }
 
     private SagaJob(SagaJob orig) {
@@ -114,17 +138,21 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             TimeoutException, NoSuccessException {
         if (state == State.NEW) {
             throw new IncorrectStateException(
-                    "cancel() called on job in state New");
+                    "cancel() called on job in state New", this);
         }
         if (isDone()) {
             return;
         }
+        ClassLoader saved = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(loader);
         try {
             service.jobManager.terminateJob(jobID);
         } catch (Throwable e) {
             logger.error("unable to cancel job with id " + jobID, e);
             throw new NoSuccessException("unable to cancel job with id "
-                    + jobID, e);
+                    + jobID, e, this);
+        } finally {
+            Thread.currentThread().setContextClassLoader(saved);
         }
         setState(State.CANCELED);
     }
@@ -161,20 +189,38 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (state != State.NEW) {
             throw new IncorrectStateException("run() called on job in state "
-                    + state);
+                    + state, this);
         }
 
         setState(State.RUNNING);
 
-        pollingThread.start();
-        try {
-            service.jobManager.startJob(jobID);
-        } catch (Throwable e1) {
-            setState(State.FAILED);
-            stopped = true; // finishes polling thread.
-            throw new NoSuccessException("Job start failed");
-        }
+        ClassLoader savedLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(loader);
 
+        synchronized(this) {
+            // Take care of axis.ClientConfigFile system property: it may
+            // be set by some Globus adaptor, but GridSAM cannot stand that.
+            // So, save and restore it.
+            String saved = System.getProperty("axis.ClientConfigFile");
+            if (saved != null) {
+                System.clearProperty("axis.ClientConfigFile");
+            }
+
+            pollingThread.start();
+
+            try {
+                service.jobManager.startJob(jobID);
+            } catch (Throwable e1) {
+                setState(State.FAILED);
+                stopped = true; // finishes polling thread.
+                throw new NoSuccessException("Job start failed", e1, this);
+            } finally {
+                if (saved != null) {
+                    System.setProperty("axis.ClientConfigFile", saved);
+                }
+                Thread.currentThread().setContextClassLoader(savedLoader);
+            }
+        }
     }
 
     private void setDetail(String s) {
@@ -191,7 +237,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             TimeoutException, NoSuccessException {
         switch (state) {
         case NEW:
-            throw new IncorrectStateException("waitFor called on new job");
+            throw new IncorrectStateException("waitFor called on new job", this);
         case DONE:
         case CANCELED:
         case FAILED:
@@ -230,7 +276,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        throw new NotImplementedException("checkpoint() is not implemented");
+        throw new NotImplementedException("checkpoint() is not implemented", this);
     }
 
     public InputStream getStderr() throws NotImplementedException,
@@ -239,7 +285,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             DoesNotExistException, TimeoutException, IncorrectStateException,
             NoSuccessException {
         throw new NotImplementedException("getStderr is not implemented, "
-                + "gridSAM does not support interactive jobs");
+                + "gridSAM does not support interactive jobs", this);
     }
 
     public OutputStream getStdin() throws NotImplementedException,
@@ -248,7 +294,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             DoesNotExistException, TimeoutException, IncorrectStateException,
             NoSuccessException {
         throw new NotImplementedException("getStdin is not implemented, "
-                + "gridSAM does not support interactive jobs");
+                + "gridSAM does not support interactive jobs", this);
     }
 
     public InputStream getStdout() throws NotImplementedException,
@@ -257,7 +303,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             DoesNotExistException, TimeoutException, IncorrectStateException,
             NoSuccessException {
         throw new NotImplementedException("getStdout is not implemented, "
-                + "gridSAM does not support interactive jobs");
+                + "gridSAM does not support interactive jobs", this);
     }
 
     public void migrate(org.ogf.saga.job.JobDescription jd)
@@ -265,21 +311,21 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        throw new NotImplementedException("migrate() not implemented");
+        throw new NotImplementedException("migrate() not implemented", this);
     }
 
     public void resume() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        throw new NotImplementedException("resume() not implemented");
+        throw new NotImplementedException("resume() not implemented", this);
     }
 
     public void signal(int signum) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("signal() not implemented");
+        throw new NotImplementedException("signal() not implemented", this);
 
     }
 
@@ -287,40 +333,40 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        throw new NotImplementedException("suspend() not implemented");
+        throw new NotImplementedException("suspend() not implemented", this);
     }
 
     public String getGroup() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("getGroup() not supported");
+        throw new NotImplementedException("getGroup() not supported", this);
     }
 
     public String getOwner() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("getOwner not supported");
+        throw new NotImplementedException("getOwner not supported", this);
     }
 
     public void permissionsAllow(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsAllow not supported");
+        throw new NotImplementedException("permissionsAllow not supported", this);
     }
 
     public boolean permissionsCheck(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsCheck not supported");
+        throw new NotImplementedException("permissionsCheck not supported", this);
     }
 
     public void permissionsDeny(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsDeny not supported");
+        throw new NotImplementedException("permissionsDeny not supported", this);
     }
 
     public Object clone() {
@@ -416,12 +462,25 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             while (true) {
                 // update the manager state of the job
                 JobInstance jobInstance;
-                try {
-                    jobInstance = parent.service.jobManager
-                            .findJobInstance(parent.jobID);
-                } catch (Throwable e) {
-                    logger.error("got exception", e);
-                    throw new RuntimeException(e);
+                // Take care of axis.ClientConfigFile system property: it may
+                // be set by some Globus adaptor, but GridSAM cannot stand that.
+                // So, save and restore it.
+                synchronized(parent) {
+                    String saved = System.getProperty("axis.ClientConfigFile");
+                    if (saved != null) {
+                        System.clearProperty("axis.ClientConfigFile");
+                    }
+                    try {
+                        jobInstance = parent.service.jobManager
+                                .findJobInstance(parent.jobID);
+                    } catch (Throwable e) {
+                        logger.error("got exception", e);
+                        throw new RuntimeException(e);
+                    } finally {
+                        if (saved != null) {
+                            System.setProperty("axis.ClientConfigFile", saved);
+                        }
+                    }
                 }
                 if (logger.isDebugEnabled()) {
                     StringBuilder props = new StringBuilder();

@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.ogf.saga.URL;
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -22,6 +21,8 @@ import org.ogf.saga.proxies.rpc.RPCWrapper;
 import org.ogf.saga.rpc.IOMode;
 import org.ogf.saga.rpc.Parameter;
 import org.ogf.saga.spi.rpc.RPCAdaptorBase;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class RPCAdaptor extends RPCAdaptorBase {
  
@@ -35,7 +36,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
     
     public RPCAdaptor(RPCWrapper wrapper, Session session, URL funcName)
             throws NotImplementedException, BadParameterException,
-            NoSuccessException, DoesNotExistException {
+            NoSuccessException, DoesNotExistException, IncorrectURLException {
         super(session, wrapper, funcName);
         String scheme = funcName.getScheme();
         if ("any".equals(scheme)) {
@@ -43,10 +44,10 @@ public class RPCAdaptor extends RPCAdaptorBase {
         } else if ("xmlrpc".equals(scheme)) {
             // OK
         } else {
-            throw new NotImplementedException("Unrecognized scheme: " + scheme);
+            throw new IncorrectURLException("Unrecognized scheme: " + scheme);
         }
         
-        URL url = new URL(funcName.toString());
+        URL url = URLFactory.createURL(funcName.toString());
         url.setScheme("http");
         url.setHost(getHost());
         url.setPort(getPort());
@@ -84,7 +85,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
             ok = true;
         }
         if (! ok) {
-            throw new DoesNotExistException("Server not support function " + func);
+            throw new DoesNotExistException("Server does not support function " + func);
         }
     }
     
@@ -136,7 +137,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
 
         synchronized(this) {
             if (closed) {
-                throw new IncorrectStateException("Already closed");
+                throw new IncorrectStateException("Already closed", wrapper);
             }
         }
         
@@ -145,7 +146,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
             if (parameters[i].getIOMode() != IOMode.IN) {
                 if (outIndex >= 0) {
                     throw new NotImplementedException(
-                            "More than one INOUT/OUT parameter not supported");
+                            "More than one INOUT/OUT parameter not supported", wrapper);
                 }
                outIndex = i;
             }
@@ -171,7 +172,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
                 parameters[outIndex].setData(retval);
             }
         } catch (XmlRpcException e) {
-            throw new NoSuccessException("RPC failed", e);
+            throw new NoSuccessException("RPC failed", e, wrapper);
         }
     }
 
@@ -183,34 +184,34 @@ public class RPCAdaptor extends RPCAdaptorBase {
     public String getGroup() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("getGroup");
+        throw new NotImplementedException("getGroup", wrapper);
     }
 
     public String getOwner() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("getOwner");
+        throw new NotImplementedException("getOwner", wrapper);
     }
 
     public void permissionsAllow(String arg0, int arg1)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsAllow");
+        throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public boolean permissionsCheck(String arg0, int arg1)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsCheck");
+        throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
     public void permissionsDeny(String arg0, int arg1)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsDeny");
+        throw new NotImplementedException("permissionsDeny", wrapper);
     }
 
 }

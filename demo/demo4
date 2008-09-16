@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# For now, javaGAT only has a local file adaptor for RandomAccessFile,
-# so as long as we only have a javaGAT adaptor for File, this only works
-# for local files.
-
 export SAGA_LOCATION=`cd .. && pwd`
 
-$SAGA_LOCATION/bin/run_saga_app -Xmx256M demo.file.FileSize file://$HOME/.bashrc
+$SAGA_LOCATION/bin/run-saga-app -Xmx256M demo.file.FileSize ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz

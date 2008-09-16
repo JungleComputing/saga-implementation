@@ -7,11 +7,11 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
@@ -20,6 +20,7 @@ import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.proxies.stream.StreamServiceWrapper;
 import org.ogf.saga.spi.stream.StreamServiceAdaptorBase;
 import org.ogf.saga.stream.Stream;
+import org.ogf.saga.url.URL;
 
 public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
@@ -29,7 +30,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
     private ServerSocket server;
 
     public StreamServiceAdaptor(StreamServiceWrapper wrapper, Session session, URL url)
-            throws NotImplementedException, BadParameterException, NoSuccessException {
+            throws NotImplementedException, BadParameterException, NoSuccessException, IncorrectURLException {
 
         super(wrapper, session, url);
         active = true;
@@ -38,7 +39,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
         String scheme = url.getScheme().toLowerCase();
         if (! scheme.equals("any") && !scheme.equals("tcp")) {
-            throw new NotImplementedException(
+            throw new IncorrectURLException(
                     "Only tcp scheme is supported in socket implementation");
         }
 
@@ -77,7 +78,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         int invocationTimeout = -1;
 
         if (!active)
-            throw new IncorrectStateException("The service is not active");
+            throw new IncorrectStateException("The service is not active", wrapper);
         if (timeoutInSeconds == 0.0)
             timeoutInSeconds = MINIMAL_TIMEOUT;
 
@@ -93,41 +94,41 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             // TODO: blocking or non-blocking ???
             return new ConnectedStreamImpl(session, url, clientConnection);
         } catch (SocketException e) {
-            throw new NoSuccessException(e);
+            throw new NoSuccessException(e, wrapper);
         } catch (SocketTimeoutException e) {
-            throw new TimeoutException(e);
+            throw new TimeoutException(e, wrapper);
         } catch (IOException e) {
-            throw new NoSuccessException(e);
+            throw new NoSuccessException(e, wrapper);
         }
 
     }
 
     public String getGroup() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("getGroup", wrapper);
     }
 
     public String getOwner() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("getOwner", wrapper);
     }
 
     public void permissionsAllow(String arg0, int arg1) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public boolean permissionsCheck(String arg0, int arg1)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
     public void permissionsDeny(String arg0, int arg1) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsDeny", wrapper);
     }
 
 }

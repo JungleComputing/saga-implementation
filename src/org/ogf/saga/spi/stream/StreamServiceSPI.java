@@ -1,6 +1,5 @@
 package org.ogf.saga.spi.stream;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.IncorrectStateException;
@@ -15,6 +14,7 @@ import org.ogf.saga.stream.StreamService;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public interface StreamServiceSPI extends AsyncMonitorable<StreamService>,
         Permissions<StreamService>, Async {

@@ -3,7 +3,6 @@ package org.ogf.saga.spi.file;
 import java.util.HashMap;
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -15,8 +14,8 @@ import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
-import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.error.SagaIOException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
@@ -28,6 +27,7 @@ import org.ogf.saga.proxies.file.FileWrapper;
 import org.ogf.saga.spi.namespace.NSEntryAdaptorBase;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
         FileSPI {
@@ -45,11 +45,37 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
         super(wrapper, session, name, flags
                 & Flags.ALLNAMESPACEFLAGS.getValue());
         this.wrapper = wrapper;
-        fileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
+        fileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();       
+        sanityCheck(flags);
+
+    }
+    
+    private void sanityCheck(int flags) throws BadParameterException {
+
+        // First, check for unrecognized flags.
         if ((fileFlags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
                 .getValue()) {
             throw new BadParameterException(
                     "Illegal flags for File constructor: " + flags);
+        }
+        
+        // Sanity check 1: append and truncate?
+        if (Flags.APPEND.isSet(fileFlags)) {
+            if (Flags.TRUNCATE.isSet(fileFlags)) {
+                throw new BadParameterException("TRUNCATE and APPEND?");
+            }
+        }
+        
+        if (! Flags.WRITE.isSet(flags)) {
+            // Sanity check 2: truncate and not write?
+            if (Flags.TRUNCATE.isSet(fileFlags)) {
+                throw new BadParameterException("TRUNCATE and not WRITE?");
+            }
+            
+            // Sanity check 3: append and not write?
+            if (Flags.APPEND.isSet(fileFlags)) {
+                throw new BadParameterException("APPEND and not WRITE?");
+            }
         }
     }
 

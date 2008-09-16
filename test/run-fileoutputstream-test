@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# This script runs the SAGA fileoutputstream test for the javagat adaptor.
+# The server is listed below, and should be replaced by your own
+# server.
+
+JAVAGAT_SERVER="$1"
+case X$JAVAGAT_SERVER in
+    X)
+	JAVAGAT_SERVER=fs0.das3.cs.vu.nl
+	;;
+esac
+
+export SAGA_LOCATION=`cd .. && pwd`
+
+$SAGA_LOCATION/bin/run-saga-app -Xmx256M \
+    test.file.FileOutputStreamAdaptorTest javagat $JAVAGAT_SERVER

@@ -1,6 +1,7 @@
 package org.ogf.saga.adaptors.javaGAT.stream;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
@@ -8,14 +9,16 @@ import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.GATObjectCreationException;
+import org.gridlab.gat.URI;
 import org.gridlab.gat.advert.AdvertService;
 import org.gridlab.gat.io.Endpoint;
 import org.gridlab.gat.io.Pipe;
-import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
+import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -35,6 +38,8 @@ import org.ogf.saga.stream.Activity;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
@@ -57,7 +62,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     public StreamAdaptor(StreamWrapper wrapper, Session session, URL url)
             throws NotImplementedException, BadParameterException {
         super(wrapper, session, url);
-        initializeGatContext();
+        gatContext = initializeGatContext(session);
     }
 
     public Object clone() throws CloneNotSupportedException {
@@ -134,9 +139,11 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             throw e;
         }
 
-        String path = url.getURL();
+        String path = url.getString();
         try {
+            URI db = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(getAdvertName(gatContext)));
             AdvertService advService = GAT.createAdvertService(gatContext);
+            advService.importDataBase(db);
             Endpoint remoteEndPoint = (Endpoint) advService
                     .getAdvertisable(path);
             pipe = remoteEndPoint.connect();
@@ -159,6 +166,14 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
             throw new NoSuccessException("Incorrect entry information", e);
+        } catch (BadParameterException e) {
+            StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
+            onStateChange(StreamState.ERROR);
+            throw new NoSuccessException("Incorrect URL for javagat advert service?", e);
+        } catch (URISyntaxException e) {
+            StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
+            onStateChange(StreamState.ERROR);
+            throw new NoSuccessException("Incorrect URL for javagat advert service?", e);
         }
     }
 
@@ -354,7 +369,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         throw new NotImplementedException();
     }
 
-    private void initializeGatContext() {
+    static GATContext initializeGatContext(Session session) {
         org.ogf.saga.adaptors.javaGAT.session.Session gatSession;
 
         synchronized (session) {
@@ -366,7 +381,15 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             }
         }
 
-        gatContext = gatSession.getGATContext();
+        return gatSession.getGATContext();
+    }
+    
+    static String getAdvertName(GATContext gatContext) {
+        String s = SAGAEngine.getProperty("saga.adaptor.javagat.advertService");
+        if (s != null) {
+            return s;
+        }
+        return "file://" + System.getProperty("user.home") + "/.GatAdvertDB";
     }
 
     // we can't just set state to ERROR in StreamListener

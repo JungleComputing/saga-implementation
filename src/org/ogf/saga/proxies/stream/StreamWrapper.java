@@ -1,6 +1,5 @@
 package org.ogf.saga.proxies.stream;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.engine.SAGAEngine;
@@ -20,11 +19,12 @@ import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.stream.StreamSPI;
+import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
-import org.ogf.saga.stream.Stream;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public class StreamWrapper extends SagaObjectBase implements Stream {
 

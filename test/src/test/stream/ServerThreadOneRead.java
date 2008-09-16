@@ -14,12 +14,13 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.stream.Stream;
+import org.ogf.saga.url.URL;
 
 public class ServerThreadOneRead extends ServerThread {
 
     private static Logger logger = Logger.getLogger(ServerThreadOneRead.class);
 
-    public ServerThreadOneRead(String url) {
+    public ServerThreadOneRead(URL url) {
         super(url);
     }
 

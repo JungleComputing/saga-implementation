@@ -1,3 +1,0 @@
-#! /bin/sh
-
-$SAGA_LOCATION/bin/run_saga_app -DStreamService.adaptor.name=socket -DStream.adaptor.name=socket junit.textui.TestRunner test.stream.StreamTest

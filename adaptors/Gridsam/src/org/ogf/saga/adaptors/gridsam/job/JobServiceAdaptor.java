@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.icenigrid.gridsam.client.common.ClientSideJobManager;
 import org.icenigrid.gridsam.core.ConfigurationException;
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
@@ -21,6 +21,7 @@ import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
 import org.ogf.saga.proxies.job.JobServiceWrapper;
 import org.ogf.saga.spi.job.JobServiceAdaptorBase;
+import org.ogf.saga.url.URL;
 
 public class JobServiceAdaptor extends JobServiceAdaptorBase {
 
@@ -31,34 +32,30 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
     String url;
 
     public JobServiceAdaptor(JobServiceWrapper wrapper, Session session, URL rm)
-            throws NoSuccessException, NotImplementedException {
+            throws NoSuccessException, NotImplementedException, IncorrectURLException {
         super(wrapper, session, rm);
-        String scheme;
-        try {
-            scheme = rm.getScheme();
-        } catch (NotImplementedException e) {
-            throw new NoSuccessException("Should not happen", e);
-        }
+        String scheme = rm.getScheme();
+
         if (scheme.equals("any") || scheme.equals("gridsam")) {
             scheme = "https";
             try {
                 this.rm.setScheme(scheme);
             } catch (Exception e) {
-                throw new NoSuccessException("Should not happen", e);
+                throw new NoSuccessException("Should not happen", e, wrapper);
             }
         }
         if ("http".equals(scheme) || "https".equals(scheme)) {
             // this is OK.
         } else {
-            throw new NotImplementedException(
-                    "Wrong scheme for gridsam adaptor");
+            throw new IncorrectURLException(
+                    "Wrong scheme for gridsam adaptor", wrapper);
         }
         url = rm.toString();
         try {
             jobManager = new ClientSideJobManager(new String[] { "-s", url },
                     ClientSideJobManager.getStandardOptions());
         } catch (ConfigurationException e) {
-            throw new NoSuccessException("Could not create job service", e);
+            throw new NoSuccessException("Could not create job service", e, wrapper);
         }
     }
 
@@ -82,7 +79,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             NoSuccessException {
         Job job = jobs.get(jobId);
         if (job == null) {
-            throw new DoesNotExistException("Job " + jobId + " does not exist");
+            throw new DoesNotExistException("Job " + jobId + " does not exist", wrapper);
         }
         return job;
     }
@@ -91,7 +88,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
         // TODO Implement this!
-        throw new NotImplementedException("getSelf");
+        throw new NotImplementedException("getSelf", wrapper);
     }
 
     public List<String> list() throws NotImplementedException,

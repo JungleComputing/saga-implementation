@@ -1,6 +1,5 @@
 package demo.namespace;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.namespace.Flags;
@@ -8,6 +7,7 @@ import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
+import org.ogf.saga.url.URLFactory;
 
 class CopyTest {
 
@@ -19,9 +19,9 @@ class CopyTest {
             session.addContext(ftpContext);
             // Possibly add other contexts ...
             
-            NSDirectory entry = NSFactory.createNSDirectory(session, new URL("."),
+            NSDirectory entry = NSFactory.createNSDirectory(session, URLFactory.createURL("."),
                     Flags.NONE.getValue());
-            entry.copy(new URL(args[0]), new URL(args[1]), Integer.parseInt(args[2]));
+            entry.copy(URLFactory.createURL(args[0]), URLFactory.createURL(args[1]), Integer.parseInt(args[2]));
             System.out.println("copied!");
         } catch (Throwable t) {
             System.out.println("ouch..." + t);

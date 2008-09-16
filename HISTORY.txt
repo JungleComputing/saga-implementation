@@ -1,0 +1,39 @@
+1.0 (16 September 2008)
+   This release contains a new version of the JavaGAT, which now includes
+   a glite adaptor for the Job (in JavaGAT terms: ResourceBroker) package.
+   This release incorporates the changes that were required to make it run with the
+   new JavaGAT (which has a few API changes). Also, the engine now orders
+   exceptions as obtained from adaptors differently. If one adaptor throws
+   NotImplemented, and another throws DoesNotExist, the user presumably wants
+   to see DoesNotExist, and not NotImplemented (as would be the case if the
+   ordering of the SAGA specs whould be obeyed).
+   
+1.0rc3 (11 July 2008)
+   This release fixes some problems in release 1.0rc2. Notably:
+   - a wrong version was included for some demo applications;
+   - there was a problem with the JavaGAT adaptor for GridSAM: JavaGAT
+     sandboxes did not work properly;
+   - SAGA Gridsam adaptor made to work with Java 6.
+
+1.0rc2 (9 June 2008)
+   This release reflects a change in the Java Language Bindings, which adds
+   an URLFactory, so that SAGA implementations can provide their own URL
+   class.
+
+1.0rc1 (21 May 2008)
+   This release implements the corresponding version of the Java SAGA
+   language bindings. Changes with respect to the 0.9 version are,
+   a.o.:
+   - this version includes an XMLRPC implementation of the RPC package.
+   - this version includes a generic logicalfile package implementation,
+     generic in that it is completely built on top of the SAGA file
+     and namespace packages. The JavaGAT adaptor for the logicalfile
+     package was removed because it did not function.
+   - the Gridsam adaptor is rewritten to use the gridsam-supplied libraries
+     for generating JSDL.
+
+0.9 (3 April 2008)
+   This is the first public release of this Java SAGA implementation.
+   It includes adaptors for the job, namespace, file, logicalfile,
+   and stream packages. Also included are a Gridsam job adaptor and
+   a socket stream adaptor.

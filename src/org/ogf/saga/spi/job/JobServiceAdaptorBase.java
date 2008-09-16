@@ -3,7 +3,6 @@ package org.ogf.saga.spi.job;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -23,6 +22,7 @@ import org.ogf.saga.job.JobService;
 import org.ogf.saga.proxies.job.JobServiceWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public abstract class JobServiceAdaptorBase extends
         AdaptorBase<JobServiceWrapper> implements JobServiceSPI {

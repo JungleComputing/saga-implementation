@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
-import org.ogf.saga.URL;
 import org.ogf.saga.attributes.Attributes;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -16,6 +15,7 @@ import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
@@ -31,6 +31,7 @@ import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
+import org.ogf.saga.url.URL;
 
 public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
@@ -46,14 +47,14 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     private static Logger logger = Logger.getLogger(StreamAdaptor.class);
 
     public StreamAdaptor(StreamWrapper wrapper, Session session, URL url)
-            throws NotImplementedException, BadParameterException {
+            throws NotImplementedException, BadParameterException, IncorrectURLException {
         super(wrapper, session, url);
 
         // check URL
 
         String scheme = url.getScheme().toLowerCase();
         if (! scheme.equals("any") && !scheme.equals("tcp"))
-            throw new BadParameterException(
+            throw new IncorrectURLException(
                     "Only tcp scheme is supported in socket implementation");
     }
 
@@ -68,7 +69,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
         if (StreamStateUtils.equalsStreamState(streamState, StreamState.NEW)) {
-            throw new IncorrectStateException("close() called on new stream");
+            throw new IncorrectStateException("close() called on new stream", wrapper);
         }
         try {
             if (listeningReader != null) {
@@ -80,7 +81,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
                 onStateChange(StreamState.CLOSED);
             }
         } catch (IOException e) {
-            throw new NoSuccessException("close", e);
+            throw new NoSuccessException("close", e, wrapper);
         }
     }
     
@@ -130,11 +131,11 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         } catch (IOException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
-            throw new NoSuccessException("IO error", e);
+            throw new NoSuccessException("IO error", e, wrapper);
         } catch (NoSuchElementException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
-            throw new NoSuccessException("Incorrect entry information", e);
+            throw new NoSuccessException("Incorrect entry information", e, wrapper);
         }
     }
     
@@ -195,7 +196,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
         if (!wasOpen)
-            throw new IncorrectStateException("This stream was never opened");
+            throw new IncorrectStateException("This stream was never opened", wrapper);
 
         return ContextFactory.createContext("Unknown");
     }
@@ -213,7 +214,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
 
         if (len < 0)
-            throw new BadParameterException("Length should be non-negative");
+            throw new BadParameterException("Length should be non-negative", wrapper);
 
         int bytesRead = 0;
 
@@ -306,13 +307,13 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
                 }
             } while (forever);
         } catch (SagaException e) {
-            throw new NoSuccessException("waitFor", e);
+            throw new NoSuccessException("waitFor", e, wrapper);
         } catch (InterruptedException e) {
-            throw new NoSuccessException("waitFor -- thread interrupted", e);
+            throw new NoSuccessException("waitFor -- thread interrupted", e, wrapper);
         }
 
         if ((what & Activity.WRITE.getValue()) != 0) {
-            throw new NotImplementedException("waitFor: writeable");
+            throw new NotImplementedException("waitFor: writeable", wrapper);
         }
 
         return cause;
@@ -327,7 +328,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         try {
             data = buffer.getData();
         } catch(DoesNotExistException e) {
-            throw new BadParameterException("The buffer contains no data");
+            throw new BadParameterException("The buffer contains no data", wrapper);
         }
         if (len > data.length) {
             len = data.length;
@@ -341,37 +342,37 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         } catch (IOException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
-            throw new SagaIOException(e);
+            throw new SagaIOException(e, wrapper);
         }
         return len;
     }
 
     public String getGroup() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("getGroup", wrapper);
     }
 
     public String getOwner() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("getOwner", wrapper);
     }
 
     public void permissionsAllow(String arg0, int arg1) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public boolean permissionsCheck(String arg0, int arg1)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
     public void permissionsDeny(String arg0, int arg1) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsDeny", wrapper);
     }
 
     public synchronized void signalReaderException(StreamExceptionalSituation e) {
@@ -408,7 +409,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         try {
             return new org.ogf.saga.impl.stream.OutputStream(session, socket.getOutputStream());
         } catch (IOException e) {
-            throw new SagaIOException(e);
+            throw new SagaIOException(e, wrapper);
         }
     }
 }

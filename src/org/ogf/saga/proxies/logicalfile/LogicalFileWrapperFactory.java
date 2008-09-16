@@ -1,6 +1,5 @@
 package org.ogf.saga.proxies.logicalfile;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -17,6 +16,7 @@ import org.ogf.saga.logicalfile.LogicalFileFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
 
 public class LogicalFileWrapperFactory extends LogicalFileFactory {
 

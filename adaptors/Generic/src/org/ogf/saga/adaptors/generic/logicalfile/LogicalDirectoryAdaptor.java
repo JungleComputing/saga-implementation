@@ -2,7 +2,6 @@ package org.ogf.saga.adaptors.generic.logicalfile;
 
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -20,6 +19,7 @@ import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.proxies.logicalfile.LogicalDirectoryWrapper;
 import org.ogf.saga.spi.logicalfile.LogicalDirectoryAdaptorBase;
+import org.ogf.saga.url.URL;
 
 public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
 
@@ -159,7 +159,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
         entry.permissionsAllow(target, id, permissions, flags);
     }
 
@@ -167,7 +167,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException {
+            NoSuccessException, IncorrectURLException {
         entry.permissionsDeny(target, id, permissions, flags);
     }
 
@@ -296,7 +296,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
         entry.permissionsAllow(target, id, permissions, flags);
     }
 
@@ -304,7 +304,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException {
+            NoSuccessException, IncorrectURLException {
         entry.permissionsDeny(target, id, permissions, flags);
     }
 

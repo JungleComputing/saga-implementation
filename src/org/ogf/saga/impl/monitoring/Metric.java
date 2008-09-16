@@ -32,7 +32,7 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
     
     /** A thread pool to execute callbacks. */
     private static ExecutorService executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-            3L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+            3L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(true));
       
     private static class CallbackHandler implements Runnable {
         boolean busy = false;

@@ -1,13 +1,15 @@
 package org.ogf.saga.adaptors.javaGAT.file;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.io.RandomAccessFile;
-import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -27,14 +29,14 @@ import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.FileWrapper;
 import org.ogf.saga.spi.file.FileAdaptorBase;
 import org.ogf.saga.spi.file.FileSPI;
-import org.ogf.saga.adaptors.javaGAT.util.Initialize;
+import org.ogf.saga.url.URL;
 
 // Aaarggghh, javagat only has a local RandomAccessFile adaptor!!!
 // So, this is no good, but there is nothing else ...
 // input/output streams don't support seeks ...
-// So, make a copy to a local file??? and write on close()??? TODO!
-// Or, implement with streams, don't support read/write, and only support
-// forward seeks.
+// Partial solution: for input if the RandomAccessFile cannot be created,
+// create a file input stream. Forward seeks can then be implemented with skip().
+// Likewise, for output create a file output stream. No seeks in this case.
 
 public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     
@@ -46,8 +48,10 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     
     private int flags;
     private long offset = 0L;
-    private RandomAccessFile rf;
+    private RandomAccessFile rf = null;
     private FileEntry entry;
+    private InputStream in = null;
+    private OutputStream out = null;
 
     public FileAdaptor(FileWrapper wrapper, Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
@@ -59,38 +63,52 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         this.flags = flags;
         
         // Determine read/write
-        String rfflags = "r";
+        String rfflags = null;
+        if (Flags.READ.isSet(flags)) {
+            rfflags = "r";
+        }
         if (Flags.WRITE.isSet(flags)) {
             rfflags = "rw";
         }
         
-        // Open the file.
-        try {
-            rf = GAT.createRandomAccessFile(entry.getGatContext(), entry.getGatURI(),
-                    rfflags);
-        } catch (GATObjectCreationException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("GAT.createFile failed");
-            }
-            throw new NoSuccessException(e);
-        }
-        
-        // Deal with append
-        if (Flags.APPEND.isSet(flags)) {
-            if (Flags.TRUNCATE.isSet(flags)) {
-                throw new BadParameterException("TRUNCATE and APPEND?");
-            }
-        }
-        
-        // Truncate if needed.
-        if (Flags.TRUNCATE.isSet(flags)) {
-            if (! Flags.WRITE.isSet(flags)) {
-                throw new BadParameterException("TRUNCATE but no WRITE?");
-            }
+        if (rfflags != null) {
+            // Open the file, if needed.
             try {
-                rf.setLength(0L);
-            } catch(IOException e) {
-                throw new NoSuccessException("Truncate failed", e);
+                rf = GAT.createRandomAccessFile(entry.getGatContext(), entry.getGatURI(),
+                        rfflags);
+            } catch (GATObjectCreationException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("GAT.createRandomAccessFile failed");
+                }
+            }
+        }
+           
+        if (rf != null) {
+            // Truncate if needed.
+            if (Flags.TRUNCATE.isSet(flags)) {
+                try {
+                    rf.setLength(0L);
+                } catch(IOException e) {
+                    throw new NoSuccessException("Truncate failed", e);
+                }
+            } else if (Flags.APPEND.isSet(flags)) {
+                offset = entry.size();
+                try {
+                    rf.seek(offset);
+                } catch (IOException e) {
+                    throw new NoSuccessException("Append failed", e);
+                }                                
+            }            
+        } else {
+            if (Flags.READ.isSet(flags)) {
+                if (Flags.WRITE.isSet(flags)) {
+                    throw new NoSuccessException("READWRITE not supported");
+                }
+                in = entry.getInputStream();                
+            } else if (Flags.WRITE.isSet(flags)) {
+                boolean append = Flags.APPEND.isSet(flags);
+                out = entry.getOutputStream(append);
+                offset = entry.size();
             }
         }
     }
@@ -109,19 +127,15 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             if (logger.isDebugEnabled()) {
                 logger.debug("File already closed!");
             }
-            throw new IncorrectStateException("Already closed");
+            throw new IncorrectStateException("Already closed", wrapper);
         }
-        try {
-            return rf.length();
-        } catch(IOException e) {
-            throw new NoSuccessException("RandomAccessFile.length() gave IOException", e);
-        }
+        return entry.size();
     }
 
    public List<String> modesE() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("modesE", wrapper);
     }
         
     public int read(Buffer buffer, int off, int len) throws NotImplementedException,
@@ -129,11 +143,11 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         
         if (closed) {
-            throw new IncorrectStateException("File already closed");
+            throw new IncorrectStateException("File already closed", wrapper);
         }
         
         if (!Flags.READ.isSet(flags)) {
-            throw new PermissionDeniedException("No permission to read");
+            throw new PermissionDeniedException("No permission to read", wrapper);
         }
                      
         byte[] b;
@@ -141,33 +155,38 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             b = buffer.getData();
         } catch(DoesNotExistException e) {
             if (len < 0) {
-                throw new BadParameterException("read: len < 0 and buffer not allocated yet");
+                throw new BadParameterException("read: len < 0 and buffer not allocated yet", wrapper);
             }
             buffer.setSize(off + len);
             try {
                 b = buffer.getData();
             } catch(DoesNotExistException e2) {
                 // This should not happen after setSize() with size >= 0.
-                throw new NoSuccessException("Internal error", e2);
+                throw new NoSuccessException("Internal error", e2, wrapper);
             }
         }
         
         int sz = buffer.getSize();
         
         if (off > sz) {
-            throw new BadParameterException("read: offset > buffer size");
+            throw new BadParameterException("read: offset > buffer size", wrapper);
         }
         if (off + len > sz) {
-            throw new BadParameterException("read: specified len > buffer size");
+            throw new BadParameterException("read: specified len > buffer size", wrapper);
         } else if (len < 0) {
             len = sz - off;
         }
                
         int result;
+        
         try {
-            result = rf.read(b, off, len);
+            if (rf != null) {
+                result = rf.read(b, off, len);
+            } else {
+                result = in.read(b, off, len);
+            }
         } catch (IOException e) {
-            throw new SagaIOException(e);
+            throw new SagaIOException(e, wrapper);
         }
         if (result < 0) {
             // EOF
@@ -181,7 +200,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("readE", wrapper);
     }
 
     public long seek(long offset, SeekMode whence) throws NotImplementedException,
@@ -189,7 +208,11 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         
         if (closed) {
-            throw new IncorrectStateException("File already closed");
+            throw new IncorrectStateException("File already closed", wrapper);
+        }
+        
+        if (! Flags.READ.isSet(flags) && ! Flags.WRITE.isSet(flags)) {
+            throw new IncorrectStateException("seek() called but not opened for READ or WRITE", wrapper);
         }
         
         switch(whence) {
@@ -206,19 +229,33 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             break;
         }
         
-        try {
-            rf.seek(offset);
-            this.offset = rf.getFilePointer();
-        } catch (IOException e) {
-            throw new SagaIOException(e);
+        if (rf != null) {
+            try {
+                rf.seek(offset);
+                this.offset = rf.getFilePointer();
+            } catch (IOException e) {
+                throw new SagaIOException(e, wrapper);
+            }
+            return this.offset;
+        } else if (in != null) {
+            if (offset >= this.offset) {
+                try {
+                    in.skip(offset - this.offset);
+                } catch (IOException e) {
+                    throw new SagaIOException(e, wrapper);
+                }
+            } else throw new NotImplementedException("Backwards seek not implemented", wrapper);
+        } else {
+            throw new NotImplementedException("Seek on output stream not implemented", wrapper);
         }
-        return this.offset;
+        this.offset = offset;
+        return offset;
     }
 
     public int sizeE(String arg0, String arg1) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, IncorrectStateException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("sizeE", wrapper);
     }
 
     public int write(Buffer buffer, int off, int len) throws NotImplementedException,
@@ -226,14 +263,14 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         
         if (closed) {
-            throw new IncorrectStateException("File already closed");
+            throw new IncorrectStateException("File already closed", wrapper);
         }
         
         if (!Flags.WRITE.isSet(flags)) {
-            throw new PermissionDeniedException("No permission to write");
+            throw new PermissionDeniedException("No permission to write", wrapper);
         }
         
-        if (Flags.APPEND.isSet(flags)) { 
+        if (rf != null && Flags.APPEND.isSet(flags)) { 
             seek(0L, SeekMode.END);
         }
         
@@ -241,20 +278,24 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         try {
             b = buffer.getData();
         } catch(DoesNotExistException e) {
-            throw new BadParameterException("write: buffer not allocated yet");
+            throw new BadParameterException("write: buffer not allocated yet", wrapper);
         }
 
         if (len + off > buffer.getSize() || len < 0) {
             len = buffer.getSize() - off;
         }
         if (len < 0) {
-            throw new BadParameterException("writeV: offset too large");
+            throw new BadParameterException("write: offset too large", wrapper);
         }
         
         try {
-            rf.write(b, off, len);
+            if (rf != null) {
+                rf.write(b, off, len);
+            } else {
+                out.write(b, off, len);
+            }
         } catch (IOException e) {
-            throw new SagaIOException(e);
+            throw new SagaIOException(e, wrapper);
         }
         offset += len;
         return len;
@@ -264,7 +305,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
-        throw new NotImplementedException("Not implemented!");
+        throw new NotImplementedException("writeE", wrapper);
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
@@ -277,9 +318,18 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         super.close(timeoutInSeconds);
         entry.close(timeoutInSeconds);
         try {
-            rf.close();
+            if (rf != null) {
+                rf.close();
+                rf = null;
+            } else if (in != null) {
+                in.close();
+                in = null;
+            } else if (out != null) {
+                out.close();
+                out = null;
+            }
         } catch (IOException e) {
-            throw new NoSuccessException("RandomAccessFile close() failed", e);
+            throw new NoSuccessException("close() failed", e, wrapper);
         }
     }
 

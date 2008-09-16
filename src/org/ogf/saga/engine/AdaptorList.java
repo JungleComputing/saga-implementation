@@ -78,6 +78,10 @@ class AdaptorList extends ArrayList<Adaptor> {
         return destPos;
     }
     
+    /**
+     * Returns the adaptor list, as a string suitable for printing.
+     * @return the adaptor list as a string.
+     */
     public String toString() {
         String res = "Adaptor list for " + spiName;
         

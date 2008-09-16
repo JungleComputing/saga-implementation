@@ -1,7 +1,6 @@
 package org.ogf.saga.spi.namespace;
 
 import org.apache.log4j.Logger;
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -21,6 +20,8 @@ import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         implements NSEntrySPI {
@@ -41,7 +42,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         super(session, wrapper);
         nameUrl = name.normalize();
         if (name == nameUrl) {
-            nameUrl = new URL(name.toString());
+            nameUrl = URLFactory.createURL(name.toString());
         }
 
         if (logger.isDebugEnabled()) {
@@ -61,7 +62,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     public Object clone() throws CloneNotSupportedException {
         NSEntryAdaptorBase clone = (NSEntryAdaptorBase) super.clone();
         try {
-            clone.nameUrl = new URL(nameUrl.toString());
+            clone.nameUrl = URLFactory.createURL(nameUrl.toString());
         } catch (Throwable e) {
             throw new SagaRuntimeException("Should not happen", e);
         }
@@ -120,7 +121,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         }
         URL newURL = null;
         try {
-            newURL = new URL(nameUrl.toString());
+            newURL = URLFactory.createURL(nameUrl.toString());
             newURL.setPath(path);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
@@ -141,7 +142,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         String[] s = path.split("/");
 
         try {
-            return new URL(s[s.length - 1]);
+            return URLFactory.createURL(s[s.length - 1]);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
         }
@@ -157,7 +158,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
             IncorrectStateException, TimeoutException, NoSuccessException {
         checkNotClosed();
         try {
-            return new URL(nameUrl.normalize().toString());
+            return URLFactory.createURL(nameUrl.normalize().toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
         }

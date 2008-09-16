@@ -1,16 +1,19 @@
 package org.ogf.saga.adaptors.javaGAT.stream;
 
 import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
+
 import org.apache.log4j.Logger;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.GATObjectCreationException;
+import org.gridlab.gat.URI;
 import org.gridlab.gat.advert.AdvertService;
 import org.gridlab.gat.advert.MetaData;
 import org.gridlab.gat.io.Endpoint;
 import org.gridlab.gat.io.Pipe;
-import org.ogf.saga.URL;
+import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -24,6 +27,8 @@ import org.ogf.saga.impl.session.Session;
 import org.ogf.saga.proxies.stream.StreamServiceWrapper;
 import org.ogf.saga.spi.stream.StreamServiceAdaptorBase;
 import org.ogf.saga.stream.Stream;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
@@ -41,7 +46,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
     public StreamServiceAdaptor(StreamServiceWrapper wrapper, Session session, URL url)
             throws NotImplementedException, BadParameterException {
         super(wrapper, session, url);
-        initializeGatContext();
+        gatContext = StreamAdaptor.initializeGatContext(session);
         active = true;
     }
 
@@ -49,21 +54,6 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         StreamServiceAdaptor clone = (StreamServiceAdaptor) super.clone();
         clone.gatContext = (GATContext) this.gatContext.clone();
         return clone;
-    }
-
-    private void initializeGatContext() {
-        org.ogf.saga.adaptors.javaGAT.session.Session gatSession;
-
-        synchronized (session) {
-            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session) session
-                    .getAdaptorSession("JavaGAT");
-            if (gatSession == null) {
-                gatSession = new org.ogf.saga.adaptors.javaGAT.session.Session();
-                session.putAdaptorSession("JavaGAT", gatSession);
-            }
-        }
-
-        gatContext = gatSession.getGATContext();
     }
 
     // if a stream_service was never opened (i.e.
@@ -94,7 +84,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         int invocationTimeout = -1;
 
         if (!active)
-            throw new IncorrectStateException("The service is not active");
+            throw new IncorrectStateException("The service is not active", wrapper);
         if (timeoutInSeconds == 0.0)
             timeoutInSeconds = MINIMAL_TIMEOUT;
 
@@ -104,14 +94,17 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             invocationTimeout = (int) (timeoutInSeconds * 1000);
         
         AdvertService advertService = null;
+        URI db = null;
         try {
+            db = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(
+                    StreamAdaptor.getAdvertName(gatContext)));
             advertService = GAT.createAdvertService(gatContext);
             Endpoint serverSide = GAT.createEndpoint(gatContext);
-            advertService.add(serverSide, new MetaData(), url.getURL());
+            advertService.add(serverSide, new MetaData(), url.getString());
+            advertService.exportDataBase(db);
             Pipe pipe = serverSide.listen(invocationTimeout);
             clientConnectMetric.internalFire();
             return new ConnectedStreamImpl(session, url, pipe);
-
         } catch (GATObjectCreationException e) {
             throw new NoSuccessException("Errors in GAT", e);
         } catch (GATInvocationException e) {
@@ -129,17 +122,22 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
                         logger.debug("Another exception: " + t2.getClass());
                         if (t2 instanceof SocketTimeoutException) {
                             logger.debug("Timeout exception");
-                            throw new TimeoutException(e);
+                            throw new TimeoutException(e, wrapper);
                         }
                     }
                     break;
                 }
             }
             // we have no other clues
-            throw new NoSuccessException(e);
+            throw new NoSuccessException(e, wrapper);
+        } catch (BadParameterException e) {
+            throw new NoSuccessException("Incorrect URL for javagat advert service?", e, wrapper);
+        } catch (URISyntaxException e) {
+            throw new NoSuccessException("Incorrect URL for javagat advert service?", e, wrapper);
         } finally {
             try {
-                advertService.delete(url.getURL());
+                advertService.delete(url.getString());
+                advertService.exportDataBase(db);
             } catch (Throwable e) {
                 // ignored
             }
@@ -148,30 +146,30 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
     public String getGroup() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("getGroup", wrapper);
     }
 
     public String getOwner() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("getOwner", wrapper);
     }
 
     public void permissionsAllow(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public boolean permissionsCheck(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
     public void permissionsDeny(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException();
+        throw new NotImplementedException("permissionsDeny", wrapper);
     }
 
 }

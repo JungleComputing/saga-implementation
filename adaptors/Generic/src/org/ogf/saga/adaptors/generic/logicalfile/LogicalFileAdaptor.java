@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.ogf.saga.URL;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -28,6 +27,8 @@ import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.proxies.logicalfile.LogicalFileWrapper;
 import org.ogf.saga.spi.logicalfile.LogicalFileAdaptorBase;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 /**
  * This LogicalFile adaptor actually stores its contents
@@ -64,7 +65,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
                         break;
                     }
                     try {
-                        URL u = new URL(s);
+                        URL u = URLFactory.createURL(s);
                         urls.add(u);
                     } catch(Throwable e) {
                         try {
@@ -105,11 +106,11 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         
         if (closed) {
             throw new IncorrectStateException(
-                    "addLocation() called on closed LogicalFile");
+                    "addLocation() called on closed LogicalFile", wrapper);
         }
         if (!Flags.WRITE.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "addLocation() called on LogicalFile not opened for writing");
+                    "addLocation() called on LogicalFile not opened for writing", wrapper);
         }
 
         if (doAdd(name)) {
@@ -134,11 +135,11 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException(
-                    "listLocations() called on closed LogicalFile");
+                    "listLocations() called on closed LogicalFile", wrapper);
         }
         if (!Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "listLocations() called on LogicalFile not opened for reading");
+                    "listLocations() called on LogicalFile not opened for reading", wrapper);
         }
         return new ArrayList<URL>(urls);
     }
@@ -151,17 +152,17 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             NoSuccessException {
         if (closed) {
             throw new IncorrectStateException(
-                    "removeLocation() called on closed LogicalFile");
+                    "removeLocation() called on closed LogicalFile", wrapper);
         }
         if (!Flags.WRITE.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "removeLocation() called on LogicalFile not opened for writing");
+                    "removeLocation() called on LogicalFile not opened for writing", wrapper);
         }
 
         if (doRemove(name)) {
             write();
         } else {
-            throw new DoesNotExistException("url " + name + " not found");
+            throw new DoesNotExistException("url " + name + " not found", wrapper);
         }
     }
 
@@ -182,33 +183,28 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             DoesNotExistException, TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException(
-                    "replicate() called on closed LogicalFile");
+                    "replicate() called on closed LogicalFile", wrapper);
         }
         if (!Flags.WRITE.isSet(logicalFileFlags)
                 || !Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "replicate() called on LogicalFile not opened for reading/writing");
+                    "replicate() called on LogicalFile not opened for reading/writing", wrapper);
         }
         if (Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
-                    "replicate() call with RECURSIVE flag");
+                    "replicate() call with RECURSIVE flag", wrapper);
         }
         if (! name.isAbsolute()) {
             throw new BadParameterException(
-                    "replicate() call with relative URL " + name);
+                    "replicate() call with relative URL " + name, wrapper);
         }
 
         name = name.normalize();
 
-        URL[] array = urls.toArray(new URL[urls.size()]);
-        if (array.length == 0) {
-            throw new IncorrectStateException(
-                    "replicate() called on empty LogicalFile");
-        }
-
+        URL url = getClosestURL(name);
         // Create entry so that we can copy.
         try {
-            NSEntry e = NSFactory.createNSEntry(session, array[0],
+            NSEntry e = NSFactory.createNSEntry(session, url,
                     Flags.NONE.getValue());
 
             // Pick the first location. Exceptions passed on to user.
@@ -216,7 +212,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             e.copy(name, flags);
             e.close();
         } catch (Throwable e) {
-            throw new NoSuccessException("Copy failed", e);
+            throw new NoSuccessException("Copy failed", e, wrapper);
         }
 
         if (doAdd(name)) {
@@ -233,33 +229,72 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         
         if (closed) {
             throw new IncorrectStateException(
-                    "updateLocation() called on closed LogicalFile");
+                    "updateLocation() called on closed LogicalFile", wrapper);
         }
         
         if (!Flags.WRITE.isSet(logicalFileFlags)
                 || !Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "updateLocation() called on LogicalFile not opened for reading/writing");
+                    "updateLocation() called on LogicalFile not opened for reading/writing", wrapper);
         }
         
         if (! nameNew.isAbsolute()) {
             throw new BadParameterException(
-                    "updateLocation() call with relative URL " + nameNew);
+                    "updateLocation() call with relative URL " + nameNew, wrapper);
         }
         
         nameNew = nameNew.normalize();
 
         if (urls.contains(nameNew)) {
             throw new AlreadyExistsException("URL " + nameNew
-                    + " already exists in LogicalFile");
+                    + " already exists in LogicalFile", wrapper);
         }
         if (! doRemove(nameOld)) {
-            throw new DoesNotExistException("url " + nameOld + " not found");
+            throw new DoesNotExistException("url " + nameOld + " not found", wrapper);
         }
 
         doAdd(nameNew);
         write();
     }
+    
+    private URL getClosestURL(URL location) throws IncorrectStateException, NotImplementedException {
+        if (urls == null || urls.size() == 0) {
+            throw new IncorrectStateException("No files in logical file '"
+                    + nameUrl + "' to compare with", wrapper);
+        }
+//      first check: same hostname
+        for (URL file : urls) {
+            if (file.getHost().equalsIgnoreCase(location.getHost())) {
+                return file;
+            }
+        }
+//      check for same suffix. The more parts of the suffix are the same, the
+//      closer the location
+        String locationPart = location.getHost();
+        while (locationPart.contains(".")) {
+            int position = locationPart.indexOf(".");
+            for (URL file : urls) {
+                if (file.getHost().endsWith(locationPart.substring(position))) {
+                    return file;
+                }
+            }
+            // assuming the a hostname never ends with a dot "."
+            locationPart = locationPart.substring(position + 1);
+        }
+        int separatorPosition = location.getHost().indexOf(".");
+        if (separatorPosition > 0) {
+            for (URL file : urls) {
+                if (file.getHost().endsWith(
+                        location.getHost().substring(separatorPosition))) {
+                    return file;
+                }
+            }
+        }
+        URL[] array = urls.toArray(new URL[urls.size()]);
+//      return first
+        return array[0];
+    }
+
     
     private void write() throws NoSuccessException {
         
@@ -273,7 +308,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             out.close();
         } catch (Throwable e) {
             throw new NoSuccessException("Exception while writing "
-                    + nameUrl, e);
+                    + nameUrl, e, wrapper);
         }
     }
 
