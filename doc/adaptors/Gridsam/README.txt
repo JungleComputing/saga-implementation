@@ -34,8 +34,8 @@ Using a GridSAM service.
   application runs does not run more than 5 minutes behind the clock on
   the server on which the Gridsam service runs, otherwise certificate
   validation will fail.
-  If you don't use the run_saga_app script, you need to be aware that the
+  If you don't use the run-saga-app script, you need to be aware that the
   Gridsam adaptor depends on some endorsed libraries, which live in
   $SAGA_LOCATION/lib/adaptors/GridsamAdaptor/endorsed. You need to set
-  the java.endorsed.dirs property to this directory, see the run_saga_app
+  the java.endorsed.dirs property to this directory, see the run-saga-app
   script.

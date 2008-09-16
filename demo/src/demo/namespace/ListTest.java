@@ -15,7 +15,7 @@ import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
 // Run this for instance with: 
-// $SAGA_HOME/bin/run_saga_app test.namespace.ListTest \
+// $SAGA_HOME/bin/run-saga-app test.namespace.ListTest \
 //              ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*' 
 // First argument is the directory, the other arguments are patterns to list.
 

@@ -7,5 +7,5 @@
 
 export SAGA_LOCATION=`cd .. && pwd`
 
-$SAGA_LOCATION/bin/run_saga_app \
+$SAGA_LOCATION/bin/run-saga-app \
     demo.job.TestJobGridsam

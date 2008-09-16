@@ -43,7 +43,7 @@ class Sequence {
    
     public static void main(String[] args) {
         if (args.length != 4) {
-            System.err.println("Usage: run_saga_app test.namespace.Sequence filename1 filename2 dirname message");
+            System.err.println("Usage: run-saga-app test.namespace.Sequence filename1 filename2 dirname message");
             System.exit(1);
         }
         

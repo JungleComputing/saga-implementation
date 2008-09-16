@@ -119,7 +119,7 @@ We will use the \texttt{demo.namespace.ListTest} example here.
 This application lists the directory as specified by the first
 program argument with different patterns, as specified by the
 remaining arguments.
-The Java SAGA release contains a simple \texttt{run\_saga\_app} utility script.
+The Java SAGA release contains a simple \texttt{run-saga-app} utility script.
 This script creates a list of jar-files to put in the classpath (the
 ones in the \texttt{lib} sub-directory of \texttt{SAGA\_LOCATION}),
 and then calls java with the specified arguments.
@@ -128,7 +128,7 @@ On a unix-like system it can be used to run the application as follows:
 \noindent
 {\small
 \begin{verbatim}
-$ $SAGA_LOCATION/bin/run_saga_app demo.namespace.ListTest \
+$ $SAGA_LOCATION/bin/run-saga-app demo.namespace.ListTest \
     ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
 \end{verbatim}
 }
@@ -139,7 +139,7 @@ On a windows system this looks as follows:
 \noindent
 {\small
 \begin{verbatim}
-C:\DOCUME~1\Temp> "%SAGA_LOCATION%"\bin\run_saga_app
+C:\DOCUME~1\Temp> "%SAGA_LOCATION%"\bin\run-saga-app
     demo.namespace.ListTest
     ftp://ftp.cs.vu.nl/pub/ceriel "*" "*.gz" "{L,M}*" "*tar*"
 \end{verbatim}
@@ -150,7 +150,7 @@ Note the absence as well as presence of quoting! Also, the
 command is split into multiple lines for readability.
 This should be just a single line.
 
-To run the application without \texttt{run\_saga\_app},
+To run the application without \texttt{run-saga-app},
 with Java 6 the following command can be used:
 
 \noindent
@@ -331,7 +331,7 @@ Another important property, which can \emph{only} be set on the
 command line, is the \texttt{java.endorsed.dirs} property. Currently,
 the Gridsam adaptor only works with Java 6 if you set this property
 to \texttt{\$SAGA\_LOCATION/lib/adaptors/GridsamAdaptor/endorsed}.
-The \texttt{run\_saga\_app} script takes care of this, but if you don't
+The \texttt{run-saga-app} script takes care of this, but if you don't
 use this script, beware.
 
 For the structure of an adaptor directory see the \texttt{adaptors}
@@ -373,7 +373,7 @@ specified by the \texttt{saga.adaptor.path} property.
 It is, however, possible to select a specific
 adaptor, or to not select a specific adaptor. This is accomplished
 with properties, which can be specified in a \texttt{saga.properties} file or
-on the \texttt{run\_saga\_app} or \texttt{java} command line.
+on the \texttt{run-saga-app} or \texttt{java} command line.
 Below are some examples:
 
 \begin{description}

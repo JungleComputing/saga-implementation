@@ -7,4 +7,4 @@
 
 export SAGA_LOCATION=`cd .. && pwd`
 
-$SAGA_LOCATION/bin/run_saga_app demo.logicalfile.LogicalFileCopy lf `pwd`/copy
+$SAGA_LOCATION/bin/run-saga-app demo.logicalfile.LogicalFileCopy lf `pwd`/copy

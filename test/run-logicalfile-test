@@ -13,5 +13,5 @@ esac
 
 export SAGA_LOCATION=`cd .. && pwd`
 
-$SAGA_LOCATION/bin/run_saga_app -Xmx256M \
+$SAGA_LOCATION/bin/run-saga-app -Xmx256M \
     test.logicalfile.LogicalFileAdaptorTest generic $GENERIC_SERVERS
