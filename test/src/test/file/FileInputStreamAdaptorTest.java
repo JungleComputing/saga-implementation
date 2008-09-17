@@ -31,7 +31,7 @@ public class FileInputStreamAdaptorTest {
             Session session = SessionFactory.createSession(true);
             
             Context preferences  = ContextFactory.createContext("preferences");
-            preferences.setAttribute("resourcebroker.adaptor.name", "sshtrilead,local");
+            preferences.setAttribute("resourcebroker.adaptor.name", "sshtrilead,commandlinessh,local");
             session.addContext(preferences);
         } catch (Throwable e) {
             System.err.println("Could not create session");
