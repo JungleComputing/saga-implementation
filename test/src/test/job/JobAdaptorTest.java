@@ -157,7 +157,7 @@ public class JobAdaptorTest {
                     new java.io.FileInputStream(DIR + "/stdout")));
             result = reader.readLine();
             reader.close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
         }
         return new AdaptorTestResultEntry(result.equals("test 1 2 3"),
