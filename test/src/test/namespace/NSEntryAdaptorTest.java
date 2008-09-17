@@ -29,22 +29,25 @@ public class NSEntryAdaptorTest {
 
     public AdaptorTestResult test(String adaptor, String host) {
 
+        Session jobSession = null;
         try {
             Session session = SessionFactory.createSession(true);
+            jobSession = SessionFactory.createSession(false);
             
             Context ftpContext = ContextFactory.createContext("ftp");
             session.addContext(ftpContext);
             Context preferences  = ContextFactory.createContext("preferences");
             preferences.setAttribute("resourcebroker.adaptor.name", "sshtrilead,commandlinessh,local");
-            session.addContext(preferences);
+            preferences.setAttribute("file.adaptor.name", "sshtrilead,commandlinessh,local");
+            jobSession.addContext(preferences);
         } catch (Throwable e) {
             System.err.println("Could not create session");
             e.printStackTrace(System.err);
             System.exit(1);
         }
         
-        run(host, "nsentry-adaptor-test-init.sh");
-        run("localhost", "nsentry-adaptor-test-init.sh");
+        run(host, jobSession, "nsentry-adaptor-test-init.sh");
+        run("localhost", jobSession, "nsentry-adaptor-test-init.sh");
 
         AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor,
                 host);
@@ -80,14 +83,14 @@ public class NSEntryAdaptorTest {
         adaptorTestResult.put("move: relative existing file       ", moveTest(
                 "/tmp/Saga-test-exists-file", "/tmp/Saga-test-exists-file.copy"));
 
-        run(host, "nsentry-adaptor-test-clean.sh");
-        run("localhost", "nsentry-adaptor-test-clean.sh");
+        run(host, jobSession, "nsentry-adaptor-test-clean.sh");
+        run("localhost", jobSession, "nsentry-adaptor-test-clean.sh");
 
         return adaptorTestResult;
 
     }
 
-    private void run(String host, String script) {
+    private void run(String host, Session jobSession, String script) {
         JobService js;
         JobDescription jd;
         try {
@@ -99,7 +102,7 @@ public class NSEntryAdaptorTest {
                     new String[] { script + " > " + script });
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS, new String[] {host});
             URL url = URLFactory.createURL("any://" + host);
-            js = JobFactory.createJobService(url);
+            js = JobFactory.createJobService(jobSession, url);
             Job job = js.createJob(jd);
             job.run();
             job.waitFor();
