@@ -52,6 +52,7 @@ public class FileInputStreamAdaptorTest {
             in = FileFactory.createFileInputStream(url);
         } catch (Throwable e) {
             adaptorTestResult.put("open", new AdaptorTestResultEntry(false, 0, e));
+            return adaptorTestResult;
         }
         adaptorTestResult.put("markSupported      ", markSupportedTest(in));
         adaptorTestResult
