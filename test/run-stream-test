@@ -10,9 +10,9 @@ export SAGA_LOCATION=`cd .. && pwd`
 
 echo "Running SAGA streams test for the socket adaptor ..."
 
-$SAGA_LOCATION/bin/run-saga-app \
+$SAGA_LOCATION/bin/run-saga-app -Xmx256M \
      test.stream.StreamAdaptorTest socket tcp://$HOST:$PORT
 
 echo "Running SAGA streams test for the javagat adaptor ..."
-$SAGA_LOCATION/bin/run-saga-app \
+$SAGA_LOCATION/bin/run-saga-app -Xmx256M \
      test.stream.StreamAdaptorTest javagat tcp://$HOST:$PORT

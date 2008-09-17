@@ -20,8 +20,8 @@ HOST=`hostname -f`
 
 export SAGA_LOCATION=`cd .. && pwd`
 
-$SAGA_LOCATION/bin/run-saga-app \
+$SAGA_LOCATION/bin/run-saga-app -Xmx256M \
      test.job.JobAdaptorTest gridsam $GRIDSAM_SERVER ftp://$HOST:$PORT/
 
-$SAGA_LOCATION/bin/run-saga-app \
+$SAGA_LOCATION/bin/run-saga-app -Xmx256M \
      test.job.JobAdaptorTest javagat $JAVAGAT_SERVER file://$HOST/tmp/saga-test-data

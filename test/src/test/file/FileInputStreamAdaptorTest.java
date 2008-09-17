@@ -27,19 +27,20 @@ public class FileInputStreamAdaptorTest {
 
     public AdaptorTestResult test(String adaptor, String host) {
         
+        Session jobSession = null;
         try {
-            Session session = SessionFactory.createSession(true);
-            
+            jobSession = SessionFactory.createSession(false);
             Context preferences  = ContextFactory.createContext("preferences");
-            preferences.setAttribute("resourcebroker.adaptor.name", "sshtrilead,local");
-            session.addContext(preferences);
+            preferences.setAttribute("resourcebroker.adaptor.name", "sshtrilead,commandlinessh,local");
+            preferences.setAttribute("file.adaptor.name", "sshtrilead,commandlinessh,local");
+            jobSession.addContext(preferences);
         } catch (Throwable e) {
             System.err.println("Could not create session");
             e.printStackTrace(System.err);
             System.exit(1);
         }
 
-        run(host, "fileinputstream-adaptor-test-init.sh");
+        run(host, jobSession, "fileinputstream-adaptor-test-init.sh");
 
         AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor,
                 host);
@@ -52,6 +53,8 @@ public class FileInputStreamAdaptorTest {
             in = FileFactory.createFileInputStream(url);
         } catch (Throwable e) {
             adaptorTestResult.put("open", new AdaptorTestResultEntry(false, 0, e));
+            run(host, jobSession, "fileinputstream-adaptor-test-clean.sh");
+            return adaptorTestResult;
         }
         adaptorTestResult.put("markSupported      ", markSupportedTest(in));
         adaptorTestResult
@@ -81,13 +84,13 @@ public class FileInputStreamAdaptorTest {
                 10 * 1024 * 1024));
         adaptorTestResult.put("close                ", closeTest(in));
 
-        run(host, "fileinputstream-adaptor-test-clean.sh");
+        run(host, jobSession, "fileinputstream-adaptor-test-clean.sh");
 
         return adaptorTestResult;
 
     }
 
-    private void run(String host, String script) {
+    private void run(String host, Session session, String script) {
         JobService js;
         JobDescription jd;
         try {
@@ -98,7 +101,7 @@ public class FileInputStreamAdaptorTest {
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
                     new String[] { script + " > " + script });
             URL url = URLFactory.createURL("any://" + host);
-            js = JobFactory.createJobService(url);
+            js = JobFactory.createJobService(session, url);
             Job job = js.createJob(jd);
             job.run();
             job.waitFor();
