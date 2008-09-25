@@ -50,7 +50,14 @@ public class SAGAEngine {
 
     private static Logger logger = Logger.getLogger(SAGAEngine.class);
     
-    private static String sagaLocation = System.getenv("SAGA_LOCATION");
+    private static String sagaLocation;
+    
+    {
+        sagaLocation = System.getenv("SAGA_LOCATION");
+        if (sagaLocation == null) {
+            sagaLocation = getProperty("saga.location");
+        }
+    }
   
     private static class URLComparator implements Comparator<URL> {
         public int compare(URL u1, URL u2) {
