@@ -5,12 +5,13 @@ import java.net.URISyntaxException;
 
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.impl.SagaObjectBase;
 
 /**
  * URL class as specified by SAGA. The java.net.URL class is not usable because
  * of all kinds of side-effects.
  */
-public class URL implements org.ogf.saga.url.URL {
+public class URL extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneable {
     private URI u;
 
     /**
@@ -31,6 +32,13 @@ public class URL implements org.ogf.saga.url.URL {
 
     private URL(URI u) {
         this.u = u;
+    }
+    
+    public Object clone() throws CloneNotSupportedException {
+        URL o = (URL) super.clone();
+        o.u = URI.create(u.toString());
+        return o;
+        
     }
 
     /* (non-Javadoc)
@@ -256,4 +264,5 @@ public class URL implements org.ogf.saga.url.URL {
         }
         return new URL(uri);
     }
+
 }
