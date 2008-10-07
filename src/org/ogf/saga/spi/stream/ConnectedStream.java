@@ -110,6 +110,18 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
             throws NotImplementedException {
         return attributes.getVectorAttribute(mode, key);
     }
+    
+    public boolean existsAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
+        return attributes.existsAttribute(key);
+    }
+
+    public Task<Stream, Boolean> existsAttribute(TaskMode mode, String key)
+            throws NotImplementedException {
+        return attributes.existsAttribute(mode, key);
+    }
 
     public boolean isReadOnlyAttribute(String key)
             throws NotImplementedException, AuthenticationFailedException,

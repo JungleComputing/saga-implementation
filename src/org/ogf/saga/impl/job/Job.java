@@ -279,6 +279,17 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void, Void> implem
         return attributes.getVectorAttribute(mode, key);
     }
 
+    public boolean existsAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
+        return attributes.existsAttribute(key);
+    }
+
+    public Task<org.ogf.saga.job.Job, Boolean> existsAttribute(TaskMode mode, String key)
+            throws NotImplementedException {
+        return attributes.existsAttribute(mode, key);
+    }
+    
     public boolean isReadOnlyAttribute(String key) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {

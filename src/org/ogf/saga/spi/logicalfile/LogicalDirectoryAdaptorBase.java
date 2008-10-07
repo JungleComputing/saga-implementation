@@ -226,10 +226,22 @@ public abstract class LogicalDirectoryAdaptorBase extends
             DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isReadOnlyAttribute(key);
     }
-
+    
     public Task<LogicalDirectory, Boolean> isReadOnlyAttribute(TaskMode mode,
             String key) throws NotImplementedException {
         return attributes.isReadOnlyAttribute(mode, key);
+    }
+    
+    public boolean existsAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
+        return attributes.existsAttribute(key);
+    }
+
+    public Task<LogicalDirectory, Boolean> existsAttribute(TaskMode mode,
+            String key) throws NotImplementedException {
+        return attributes.existsAttribute(mode, key);
     }
 
     public boolean isRemovableAttribute(String key)
