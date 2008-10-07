@@ -164,6 +164,18 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             String key) throws NotImplementedException {
         return proxy.isReadOnlyAttribute(mode, key);
     }
+    
+    public boolean existsAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
+        return proxy.existsAttribute(key);
+    }
+
+    public Task<LogicalDirectory, Boolean> existsAttribute(TaskMode mode,
+            String key) throws NotImplementedException {
+        return proxy.existsAttribute(mode, key);
+    }
 
     public boolean isRemovableAttribute(String key)
             throws NotImplementedException, AuthenticationFailedException,

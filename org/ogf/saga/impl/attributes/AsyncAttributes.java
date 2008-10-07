@@ -51,6 +51,15 @@ public class AsyncAttributes<T> extends Attributes implements
                 key);
     }
 
+
+    public Task<T, Boolean> existsAttribute(TaskMode mode, String key)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.Task<T, Boolean>(
+                object, session, mode, "existsAttribute",
+                new Class[] { String.class },
+                key);
+    }
+    
     public Task<T, Boolean> isReadOnlyAttribute(TaskMode mode, String key)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.Task<T, Boolean>(
@@ -112,4 +121,5 @@ public class AsyncAttributes<T> extends Attributes implements
                 new Class[] { String.class, String[].class },
                 key, (Object) values);
     }
+
 }

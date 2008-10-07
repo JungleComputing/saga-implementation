@@ -272,6 +272,19 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         return getInfoCheckVector(key, true).vectorValue.clone();
     }
 
+
+    public synchronized boolean existsAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
+        try {
+            getInfo(key);
+        } catch(DoesNotExistException e) {
+            return false;
+        }
+        return true;
+    }
+    
     public synchronized boolean isReadOnlyAttribute(String key) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {
@@ -502,4 +515,5 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
             info.value = value;
         }
     }
+
 }

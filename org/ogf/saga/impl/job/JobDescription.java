@@ -49,6 +49,13 @@ public class JobDescription extends SagaObjectBase implements
         return attributes.getVectorAttribute(key);
     }
 
+    public boolean existsAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
+        return attributes.existsAttribute(key);
+    }
+    
+
     public boolean isReadOnlyAttribute(String key) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {

@@ -93,6 +93,13 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
             DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isReadOnlyAttribute(key);
     }
+    
+    public boolean existsAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            TimeoutException, NoSuccessException {
+        return attributes.existsAttribute(key);
+    }
 
     public boolean isRemovableAttribute(String key)
             throws NotImplementedException, AuthenticationFailedException,
@@ -159,6 +166,11 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
         return attributes.getVectorAttribute(mode, key);
     }
 
+    public Task<LogicalFile, Boolean> existsAttribute(TaskMode mode,
+            String key) throws NotImplementedException {
+        return attributes.existsAttribute(mode, key);
+    }
+    
     public Task<LogicalFile, Boolean> isReadOnlyAttribute(TaskMode mode,
             String key) throws NotImplementedException {
         return attributes.isReadOnlyAttribute(mode, key);
