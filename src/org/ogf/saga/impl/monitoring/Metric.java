@@ -6,7 +6,8 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -28,7 +29,7 @@ import org.ogf.saga.session.Session;
  */
 public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Metric {
     
-    protected static Logger logger = Logger.getLogger(Metric.class);
+    protected static Logger logger = LoggerFactory.getLogger(Metric.class);
     
     /** A thread pool to execute callbacks. */
     private static ExecutorService executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,

@@ -2,7 +2,8 @@ package org.ogf.saga.adaptors.javaGAT.namespace;
 
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATInvocationException;
@@ -34,7 +35,7 @@ import org.ogf.saga.url.URLFactory;
 
 public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
-    private static Logger logger = Logger.getLogger(NSEntryAdaptor.class);
+    private static Logger logger = LoggerFactory.getLogger(NSEntryAdaptor.class);
 
     static {
         Initialize.initialize();

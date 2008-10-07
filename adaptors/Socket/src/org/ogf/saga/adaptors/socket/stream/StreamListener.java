@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.IncorrectStateException;
@@ -21,7 +22,7 @@ public class StreamListener implements Runnable {
     private Metric streamRead;
     private ErrorInterface err;
 
-    private static Logger logger = Logger.getLogger(StreamListener.class);
+    private static Logger logger = LoggerFactory.getLogger(StreamListener.class);
 
     public StreamListener(Socket socket, Metric streamRead,
             int bufferCapacity, ErrorInterface err) {

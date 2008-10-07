@@ -9,7 +9,6 @@
 	<classpathentry kind="src" path="adaptors/Gridsam/src"/>
 	<classpathentry kind="src" path="demo/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="external/log4j-1.2.13.jar"/>
 	<classpathentry kind="lib" path="adaptors/Gridsam/external/commons-cli-1.0.jar"/>
 	<classpathentry kind="lib" path="adaptors/Gridsam/external/gridsam-client.jar"/>
 	<classpathentry kind="lib" path="adaptors/Gridsam/external/gridsam-core-2.0.1.jar"/>
@@ -20,5 +19,6 @@
 	<classpathentry kind="lib" path="adaptors/XMLRPC/external/xmlrpc-common-3.1.jar"/>
 	<classpathentry kind="lib" path="adaptors/XMLRPC/external/xmlrpc-server-3.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Saga"/>
+	<classpathentry kind="lib" path="external/slf4j-api-1.5.3.jar"/>
 	<classpathentry kind="output" path="tmp-eclipse"/>
 </classpath>

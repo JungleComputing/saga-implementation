@@ -1,6 +1,7 @@
 package test.stream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -26,7 +27,7 @@ public class ServerThread implements Runnable {
 
     protected static final int BUFFER_SIZE = 100;
 
-    private static Logger logger = Logger.getLogger(ServerThread.class);
+    private static Logger logger = LoggerFactory.getLogger(ServerThread.class);
 
     private URL url;
     

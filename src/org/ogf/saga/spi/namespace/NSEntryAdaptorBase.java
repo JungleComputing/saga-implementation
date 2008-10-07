@@ -1,6 +1,7 @@
 package org.ogf.saga.spi.namespace;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -26,7 +27,7 @@ import org.ogf.saga.url.URLFactory;
 public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         implements NSEntrySPI {
 
-    private static Logger logger = Logger.getLogger(NSEntryAdaptorBase.class);
+    private static Logger logger = LoggerFactory.getLogger(NSEntryAdaptorBase.class);
     private static final int COPY_FLAGS = Flags.CREATEPARENTS.or(Flags.RECURSIVE
             .or(Flags.OVERWRITE));
 

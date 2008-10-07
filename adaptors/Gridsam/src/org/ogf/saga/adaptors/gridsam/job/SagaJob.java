@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.icenigrid.gridsam.core.JobInstance;
 import org.icenigrid.gridsam.core.JobInstanceChangeListener;
 import org.icenigrid.gridsam.core.JobStage;
@@ -39,7 +40,7 @@ import org.ogf.saga.task.State;
 public class SagaJob extends org.ogf.saga.impl.job.Job implements
         JobInstanceChangeListener {
 
-    private static final Logger logger = Logger.getLogger(SagaJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(SagaJob.class);
 
     private final JobServiceAdaptor service;
 
@@ -449,7 +450,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
     }
 
     private static class PollingThread extends Thread {
-        private Logger logger = Logger.getLogger(PollingThread.class);
+        private Logger logger = LoggerFactory.getLogger(PollingThread.class);
 
         private SagaJob parent;
 

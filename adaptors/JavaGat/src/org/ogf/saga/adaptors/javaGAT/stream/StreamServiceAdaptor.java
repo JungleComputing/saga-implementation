@@ -3,7 +3,8 @@ package org.ogf.saga.adaptors.javaGAT.stream;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATInvocationException;
@@ -38,7 +39,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
     private static float MINIMAL_TIMEOUT = 0.001f;
 
-    private static Logger logger = Logger.getLogger(StreamServiceAdaptor.class);
+    private static Logger logger = LoggerFactory.getLogger(StreamServiceAdaptor.class);
     
     private boolean active = false;
     private GATContext gatContext;

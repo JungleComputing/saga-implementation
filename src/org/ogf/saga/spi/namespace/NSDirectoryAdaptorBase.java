@@ -5,7 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -70,7 +71,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
     }
 
-    protected static Logger logger = Logger
+    protected static Logger logger = LoggerFactory
             .getLogger(NSDirectoryAdaptorBase.class);
 
     protected NSDirectoryWrapper wrapper;

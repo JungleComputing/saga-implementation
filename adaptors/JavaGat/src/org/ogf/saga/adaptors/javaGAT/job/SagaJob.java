@@ -6,7 +6,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATInvocationException;
@@ -52,7 +53,7 @@ import org.ogf.saga.url.URLFactory;
 
 public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener {
     
-    private static final Logger logger = Logger.getLogger(SagaJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(SagaJob.class);
 
     private final JobServiceAdaptor service;
     private org.gridlab.gat.resources.Job gatJob = null;

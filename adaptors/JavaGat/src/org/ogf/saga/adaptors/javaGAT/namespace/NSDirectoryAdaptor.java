@@ -4,7 +4,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.GATObjectCreationException;
@@ -33,7 +34,7 @@ import org.ogf.saga.url.URLFactory;
 public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         NSDirectorySPI {
 
-    static Logger logger = Logger.getLogger(NSDirectoryAdaptor.class);
+    static Logger logger = LoggerFactory.getLogger(NSDirectoryAdaptor.class);
 
     static {
         Initialize.initialize();

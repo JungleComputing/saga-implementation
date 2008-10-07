@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATInvocationException;
@@ -57,7 +58,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     private static float MINIMAL_TIMEOUT = 0.001f;
     private static int NUM_WAIT_TRIES = 10;
 
-    private static Logger logger = Logger.getLogger(StreamAdaptor.class);
+    private static Logger logger = LoggerFactory.getLogger(StreamAdaptor.class);
 
     public StreamAdaptor(StreamWrapper wrapper, Session session, URL url)
             throws NotImplementedException, BadParameterException {

@@ -1,6 +1,7 @@
 package test.stream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -17,7 +18,7 @@ import org.ogf.saga.url.URL;
 
 public class ServerThreadWait extends ServerThread {
 
-    private static Logger logger = Logger.getLogger(ServerThreadWait.class);
+    private static Logger logger = LoggerFactory.getLogger(ServerThreadWait.class);
 
     public ServerThreadWait(URL url) {
         super(url);

@@ -5,7 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.io.RandomAccessFile;
@@ -40,7 +41,7 @@ import org.ogf.saga.url.URL;
 
 public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     
-    private static Logger logger = Logger.getLogger(FileAdaptor.class);
+    private static Logger logger = LoggerFactory.getLogger(FileAdaptor.class);
     
     static {
         Initialize.initialize();

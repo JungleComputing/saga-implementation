@@ -2,7 +2,8 @@ package org.ogf.saga.adaptors.javaGAT.file;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -22,7 +23,7 @@ import org.ogf.saga.url.URL;
 
 public class DirectoryAdaptor extends org.ogf.saga.spi.file.DirectoryAdaptorBase {
     
-    private static Logger logger = Logger.getLogger(DirectoryAdaptor.class);
+    private static Logger logger = LoggerFactory.getLogger(DirectoryAdaptor.class);
     
     static {
         Initialize.initialize();

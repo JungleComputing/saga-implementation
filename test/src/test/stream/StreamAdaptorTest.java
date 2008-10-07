@@ -1,6 +1,7 @@
 package test.stream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.context.Context;
@@ -27,7 +28,7 @@ public class StreamAdaptorTest {
 
     private static final int SERVER_WAIT = 3000;
 
-    private static Logger logger = Logger.getLogger(StreamAdaptorTest.class);
+    private static Logger logger = LoggerFactory.getLogger(StreamAdaptorTest.class);
 
     private final URL serverUrl;
 

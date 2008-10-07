@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
@@ -16,7 +17,7 @@ import org.ogf.saga.impl.buffer.Buffer;
 
 class CircularBuffer extends java.io.InputStream {
     
-    private static final Logger logger = Logger.getLogger(CircularBuffer.class);
+    private static final Logger logger = LoggerFactory.getLogger(CircularBuffer.class);
 
     private static final int DEFAULT_CAPACITY = 4096;
 

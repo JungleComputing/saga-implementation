@@ -1,6 +1,7 @@
 package org.ogf.saga.adaptors.gridsam.job;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xmlbeans.XmlCursor;
 import org.icenigrid.schema.jsdl.posix.y2005.m11.ArgumentType;
 import org.icenigrid.schema.jsdl.posix.y2005.m11.EnvironmentType;
@@ -32,7 +33,7 @@ import org.ogf.saga.job.JobDescription;
 
 class JSDLGenerator {
 
-    private static final Logger logger = Logger.getLogger(JSDLGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(JSDLGenerator.class);
 
     private final JobDescription jobDescription;
 

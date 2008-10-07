@@ -5,7 +5,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.attributes.Attributes;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -44,7 +45,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     private static float MINIMAL_TIMEOUT = 0.001f;
     private static int NUM_WAIT_TRIES = 10;
 
-    private static Logger logger = Logger.getLogger(StreamAdaptor.class);
+    private static Logger logger = LoggerFactory.getLogger(StreamAdaptor.class);
 
     public StreamAdaptor(StreamWrapper wrapper, Session session, URL url)
             throws NotImplementedException, BadParameterException, IncorrectURLException {

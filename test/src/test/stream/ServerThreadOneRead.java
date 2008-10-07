@@ -1,6 +1,7 @@
 package test.stream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -18,7 +19,7 @@ import org.ogf.saga.url.URL;
 
 public class ServerThreadOneRead extends ServerThread {
 
-    private static Logger logger = Logger.getLogger(ServerThreadOneRead.class);
+    private static Logger logger = LoggerFactory.getLogger(ServerThreadOneRead.class);
 
     public ServerThreadOneRead(URL url) {
         super(url);

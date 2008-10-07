@@ -4,7 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.error.BadParameterException;
 
 /**
@@ -25,7 +26,7 @@ public class PatternConverter {
     /** Set if the wildcard expression actually has wildcards. */
     private boolean hasWildcard = false;
     
-    private static Logger logger = Logger.getLogger(PatternConverter.class);
+    private static Logger logger = LoggerFactory.getLogger(PatternConverter.class);
     
     /**
      * Translates the wildcard expression to a regular expression.

@@ -3,7 +3,8 @@ package org.ogf.saga.adaptors.javaGAT.stream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.io.Pipe;
 import org.ogf.saga.error.BadParameterException;
@@ -17,7 +18,7 @@ import org.ogf.saga.impl.buffer.Buffer;
 
 class CircularBuffer extends java.io.InputStream {
     
-    private static final Logger logger = Logger.getLogger(CircularBuffer.class);
+    private static final Logger logger = LoggerFactory.getLogger(CircularBuffer.class);
 
     private static final int DEFAULT_CAPACITY = 4096;
 
