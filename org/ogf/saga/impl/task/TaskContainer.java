@@ -2,7 +2,8 @@ package org.ogf.saga.impl.task;
 
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.context.Context;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -25,7 +26,7 @@ import org.ogf.saga.task.WaitMode;
 
 public class TaskContainer extends SagaObjectBase implements
         org.ogf.saga.task.TaskContainer {
-    static Logger logger = Logger.getLogger(TaskContainer.class);
+    static Logger logger = LoggerFactory.getLogger(TaskContainer.class);
     private HashMap<Integer, Task> tasks = new HashMap<Integer, Task>();
     private HashMap<Task, Integer> reverseMap = new HashMap<Task, Integer>();
     private HashMap<Task, Integer> callbackCookies = new HashMap<Task, Integer>();

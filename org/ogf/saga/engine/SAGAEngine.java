@@ -15,7 +15,8 @@ import java.util.StringTokenizer;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.SagaException;
 
@@ -48,7 +49,7 @@ public class SAGAEngine {
     private static final Properties properties
             = org.ogf.saga.bootstrap.SagaProperties.getDefaultProperties();
 
-    private static Logger logger = Logger.getLogger(SAGAEngine.class);
+    private static Logger logger = LoggerFactory.getLogger(SAGAEngine.class);
     
     private static String sagaLocation;
     

@@ -11,7 +11,8 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -36,7 +37,7 @@ import org.ogf.saga.task.TaskMode;
 public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
         implements org.ogf.saga.task.Task<T, E>, Callable<E> {
 
-    private static Logger logger = Logger.getLogger(Task.class);
+    private static Logger logger = LoggerFactory.getLogger(Task.class);
     
     protected State state = State.NEW;
     private final T object;

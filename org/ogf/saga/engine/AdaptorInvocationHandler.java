@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ogf.saga.SagaObject;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -81,7 +82,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
     }
     
     /** Logger. */
-    private static Logger logger = Logger
+    private static Logger logger = LoggerFactory
         .getLogger(AdaptorInvocationHandler.class);
 
     /**
