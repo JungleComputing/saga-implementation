@@ -16,7 +16,7 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.SagaRuntimeException;
-import org.ogf.saga.impl.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.MetricImpl;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.session.Session;
@@ -24,21 +24,21 @@ import org.ogf.saga.task.State;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.WaitMode;
 
-public class TaskContainer extends SagaObjectBase implements
+public class TaskContainerImpl extends SagaObjectBase implements
         org.ogf.saga.task.TaskContainer {
-    static Logger logger = LoggerFactory.getLogger(TaskContainer.class);
+    static Logger logger = LoggerFactory.getLogger(TaskContainerImpl.class);
     private HashMap<Integer, Task> tasks = new HashMap<Integer, Task>();
     private HashMap<Task, Integer> reverseMap = new HashMap<Task, Integer>();
     private HashMap<Task, Integer> callbackCookies = new HashMap<Task, Integer>();
     private int taskCount = 0;
-    private Metric taskContainerMetric;
+    private MetricImpl taskContainerMetric;
     
     private class ContainerCallback implements Callback {
         
-        final TaskContainer taskContainer;
+        final TaskContainerImpl taskContainerImpl;
 
-        ContainerCallback(TaskContainer taskContainer) {
-            this.taskContainer = taskContainer;
+        ContainerCallback(TaskContainerImpl taskContainerImpl) {
+            this.taskContainerImpl = taskContainerImpl;
         }
         
         // callback from each task in the container.
@@ -59,8 +59,8 @@ public class TaskContainer extends SagaObjectBase implements
                 }
                 taskContainerMetric.internalFire();
             }
-            synchronized(taskContainer) {
-                taskContainer.notifyAll();
+            synchronized(taskContainerImpl) {
+                taskContainerImpl.notifyAll();
             }
             return true;
         }       
@@ -68,11 +68,11 @@ public class TaskContainer extends SagaObjectBase implements
     
     ContainerCallback cb;
     
-    TaskContainer() {
+    TaskContainerImpl() {
         super((Session) null);
         cb = new ContainerCallback(this);
         try {
-            taskContainerMetric = new Metric(
+            taskContainerMetric = new MetricImpl(
                     this, null, TASKCONTAINER_STATE,
                     "fires on state changes of any task in the container, and has the value of that task's cookie",
                     "ReadOnly", "1", "Int", "" );
@@ -83,10 +83,12 @@ public class TaskContainer extends SagaObjectBase implements
     }
 
     public Object clone() throws CloneNotSupportedException {
-        TaskContainer clone = (TaskContainer) super.clone();
-        clone.tasks = new HashMap<Integer, Task>(tasks);
-        clone.reverseMap = new HashMap<Task, Integer>(reverseMap);
-        clone.callbackCookies = new HashMap<Task, Integer>(callbackCookies);
+        TaskContainerImpl clone = (TaskContainerImpl) super.clone();
+        synchronized(clone) {
+            clone.tasks = new HashMap<Integer, Task>(tasks);
+            clone.reverseMap = new HashMap<Task, Integer>(reverseMap);
+            clone.callbackCookies = new HashMap<Task, Integer>(callbackCookies);
+        }
         return clone;
     }
 
@@ -281,7 +283,7 @@ public class TaskContainer extends SagaObjectBase implements
         throw new DoesNotExistException("metric " + name + " does not exist");
     }
 
-    public Metric getMetric(String name) throws NotImplementedException,
+    public MetricImpl getMetric(String name) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         if (TASKCONTAINER_STATE.equals(name)) {

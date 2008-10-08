@@ -1,11 +1,11 @@
 package org.ogf.saga.spi.logicalfile;
 
-import org.ogf.saga.impl.attributes.AsyncAttributes;
+import org.ogf.saga.impl.attributes.AsyncAttributesImpl;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.session.Session;
 
-class LogicalFileAttributes extends AsyncAttributes<LogicalFile> {
+class LogicalFileAttributes extends AsyncAttributesImpl<LogicalFile> {
 
     LogicalFileAttributes(LogicalFile object, Session session, boolean autoAdd) {
         super(object, session, autoAdd);

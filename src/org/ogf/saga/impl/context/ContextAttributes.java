@@ -6,9 +6,9 @@ import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.attributes.AttributeType;
-import org.ogf.saga.impl.attributes.Attributes;
+import org.ogf.saga.impl.attributes.AttributesImpl;
 
-class ContextAttributes extends Attributes {
+class ContextAttributes extends AttributesImpl {
     
     ContextAttributes() {
         this(false);
@@ -16,22 +16,22 @@ class ContextAttributes extends Attributes {
 
     ContextAttributes(boolean autoAdd) {
         super(autoAdd);
-        addAttribute(Context.TYPE, AttributeType.STRING, false, false, false, false);
-        addAttribute(Context.SERVER, AttributeType.STRING, false, false, false, false);
-        addAttribute(Context.CERTREPOSITORY, AttributeType.STRING, false, false, false, false);
-        addAttribute(Context.USERPROXY, AttributeType.STRING, false, false, false, false);
-        addAttribute(Context.USERCERT, AttributeType.STRING, false, false, false, false);
-        addAttribute(Context.USERKEY, AttributeType.STRING, false, false, false, false);
-        addAttribute(Context.USERID, AttributeType.STRING, false, false, false, false);
-        addAttribute(Context.USERPASS, AttributeType.STRING, false, false, false, false);
-        addAttribute(Context.USERVO, AttributeType.STRING, false, false, false, false);
-        addAttribute(Context.LIFETIME, AttributeType.INT, false, false, false, false);
-        addAttribute(Context.REMOTEID, AttributeType.STRING, false, true, false, false);
-        addAttribute(Context.REMOTEHOST, AttributeType.STRING, false, true, false, false);
-        addAttribute(Context.REMOTEPORT, AttributeType.INT, false, true, false, false);
+        addAttribute(ContextImpl.TYPE, AttributeType.STRING, false, false, false, false);
+        addAttribute(ContextImpl.SERVER, AttributeType.STRING, false, false, false, false);
+        addAttribute(ContextImpl.CERTREPOSITORY, AttributeType.STRING, false, false, false, false);
+        addAttribute(ContextImpl.USERPROXY, AttributeType.STRING, false, false, false, false);
+        addAttribute(ContextImpl.USERCERT, AttributeType.STRING, false, false, false, false);
+        addAttribute(ContextImpl.USERKEY, AttributeType.STRING, false, false, false, false);
+        addAttribute(ContextImpl.USERID, AttributeType.STRING, false, false, false, false);
+        addAttribute(ContextImpl.USERPASS, AttributeType.STRING, false, false, false, false);
+        addAttribute(ContextImpl.USERVO, AttributeType.STRING, false, false, false, false);
+        addAttribute(ContextImpl.LIFETIME, AttributeType.INT, false, false, false, false);
+        addAttribute(ContextImpl.REMOTEID, AttributeType.STRING, false, true, false, false);
+        addAttribute(ContextImpl.REMOTEHOST, AttributeType.STRING, false, true, false, false);
+        addAttribute(ContextImpl.REMOTEPORT, AttributeType.INT, false, true, false, false);
 
         try {
-            setValue(Context.LIFETIME, "-1");
+            setValue(ContextImpl.LIFETIME, "-1");
         } catch(Throwable e) {
             throw new SagaRuntimeException("Internal error", e);
         }

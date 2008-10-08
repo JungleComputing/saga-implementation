@@ -25,7 +25,7 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaRuntimeException;
-import org.ogf.saga.impl.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.MetricImpl;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.task.State;
@@ -34,57 +34,70 @@ import org.ogf.saga.task.TaskMode;
 // The SAGA specifications warn against using threads.
 // However, there is nothing against a default implementation that uses them.
 
-public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
-        implements org.ogf.saga.task.Task<T, E>, Callable<E> {
+public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
+        implements org.ogf.saga.task.Task<T, E>, Callable<E>, Cloneable {
 
-    private static Logger logger = LoggerFactory.getLogger(Task.class);
+    private static Logger logger = LoggerFactory.getLogger(TaskImpl.class);
     
     protected State state = State.NEW;
     private final T object;
     private Throwable exception = null;
-    private Metric metric;
+    private MetricImpl metricImpl;
     private E result = null;
     private Method method = null;
     private Object[] parameters = null;
     private Future<E> future = null;
     
-    protected HashMap<String, Metric> metrics = new HashMap<String, Metric>();
+    protected HashMap<String, MetricImpl> metricImpls = new HashMap<String, MetricImpl>();
     
     private static ExecutorService executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
             10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
     
     // Constructor used for Job.
-    public Task(Session session, T object) throws BadParameterException {
+    public TaskImpl(Session session, T object) throws BadParameterException {
         super(session);
         this.object = object;
     }
     
-    public Task(Task<T, E> orig) {
+    public TaskImpl(TaskImpl<T, E> orig) {
         super(orig);
-        this.object = orig.object;
-        this.state = orig.state;
-        this.result = orig.result;
-        this.exception = null;
-        this.method = orig.method;
-        if (orig.parameters != null) {
-            this.parameters = orig.parameters.clone();
-        } else {
-            this.parameters = null;
-        }
-        this.future = orig.future;
-        this.metrics = new HashMap<String, Metric>(orig.metrics);
-        for (String s : metrics.keySet()) {
-            Metric m = new Metric(metrics.get(s));
-            m.setMonitorable(this);
-            metrics.put(s, m);
+        synchronized(orig) {
+            this.object = orig.object;
+            this.state = orig.state;
+            this.result = orig.result;
+            this.exception = null;
+            this.method = orig.method;
+            if (orig.parameters != null) {
+                this.parameters = orig.parameters.clone();
+            } else {
+                this.parameters = null;
+            }
+            this.future = orig.future;
+            this.metricImpls = new HashMap<String, MetricImpl>(orig.metricImpls);
+            for (String s : metricImpls.keySet()) {
+                MetricImpl m = new MetricImpl(metricImpls.get(s));
+                m.setMonitorable(this);
+                metricImpls.put(s, m);
+            }
         }
     }
     
-    public Object clone() {
-        return new Task<T, E>(this);
+    @SuppressWarnings("unchecked")
+    public Object clone() throws CloneNotSupportedException {
+        TaskImpl<T,E> o = (TaskImpl<T,E>) super.clone();
+        if (parameters != null) {
+            o.parameters = parameters.clone();
+        }
+        o.metricImpls = new HashMap<String, MetricImpl>(metricImpls);
+        for (String s : o.metricImpls.keySet()) {
+            MetricImpl m = new MetricImpl(o.metricImpls.get(s));
+            m.setMonitorable(o);
+            o.metricImpls.put(s, m);
+        }
+        return o;
     }
     
-    public Task(T object, Session session, TaskMode mode, String methodName,
+    public TaskImpl(T object, Session session, TaskMode mode, String methodName,
             Class[] parameterTypes, Object... parameters) {
         
         super(session);
@@ -99,7 +112,7 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
                      
         // Create the task metric.
         try {
-            metric = new Metric(this, session, TASK_STATE,
+            metricImpl = new MetricImpl(this, session, TASK_STATE,
                     "fires on task change, and has the literal value of the task state enum",
                     "ReadOnly", "1", "Enum", "New");
         } catch(Throwable e) {
@@ -107,9 +120,9 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
             logger.error("Could not create metric", e);
             throw new SagaRuntimeException("Unexpected exception", e);
         }
-        metrics.put(TASK_STATE, metric);
+        metricImpls.put(TASK_STATE, metricImpl);
         this.object = object;
-        this.parameters = parameters;
+        this.parameters = parameters.clone();
         
         if (logger.isDebugEnabled()) {
             logger.debug("Created task for method " + methodName);
@@ -142,7 +155,7 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#cancel(float)
      */
-    public void cancel(float timeoutInSeconds) throws NotImplementedException,
+    public synchronized void cancel(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         if (state == State.NEW) {
             throw new IncorrectStateException("cancel() called on task in state New");
@@ -168,8 +181,10 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
      */
     public E getResult() throws NotImplementedException, IncorrectStateException, TimeoutException,
            NoSuccessException {
-        if (state == State.NEW || state == State.CANCELED || state == State.FAILED) {
-            throw new IncorrectStateException("getResult called in state " + state);
+        synchronized(this) {
+            if (state == State.NEW || state == State.CANCELED || state == State.FAILED) {
+                throw new IncorrectStateException("getResult called in state " + state);
+            }
         }
         waitFor();
         return result;
@@ -180,7 +195,8 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
      * 
      * @see org.ogf.saga.task.Task#getState()
      */
-    public State getState() throws NotImplementedException, TimeoutException, NoSuccessException {
+    public synchronized State getState() throws NotImplementedException,
+            TimeoutException, NoSuccessException {
         return state;
     }
 
@@ -241,8 +257,10 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
      * @see org.ogf.saga.task.Task#run()
      */
     public void run() throws NotImplementedException, IncorrectStateException, TimeoutException, NoSuccessException {
-        if (state != State.NEW) {
-            throw new IncorrectStateException("run() called in wrong state");
+        synchronized(this) {
+            if (state != State.NEW) {
+                throw new IncorrectStateException("run() called in wrong state");
+            }
         }
         internalRun();
     }
@@ -348,7 +366,7 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
     public synchronized int addCallback(String name, Callback cb) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException, IncorrectStateException {
-        Metric m = metrics.get(name);
+        MetricImpl m = metricImpls.get(name);
         if (m == null) {
             throw new DoesNotExistException("metric " + name + " does not exist");
         }
@@ -363,7 +381,7 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
     public org.ogf.saga.monitoring.Metric getMetric(String name) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        Metric m = metrics.get(name);
+        MetricImpl m = metricImpls.get(name);
         if (m == null) {
             throw new DoesNotExistException("metric " + name + " does not exist");
         }
@@ -377,7 +395,7 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
      */
     public synchronized String[] listMetrics() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
-        return metrics.keySet().toArray(new String[metrics.size()]);
+        return metricImpls.keySet().toArray(new String[metricImpls.size()]);
     }
 
     /*
@@ -389,7 +407,7 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
     public synchronized void removeCallback(String name, int cookie) throws NotImplementedException,
             DoesNotExistException, BadParameterException, TimeoutException, NoSuccessException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException {
-        Metric m = metrics.get(name);
+        MetricImpl m = metricImpls.get(name);
         if (m == null) {
             throw new DoesNotExistException("metric " + name + " does not exist");
         }
@@ -426,22 +444,24 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
         return future.isDone();
     }
 
-    private synchronized void setState(State value) {
-        state = value;
-        notifyAll();
+    private void setState(State value) {
+        synchronized(this) {
+            state = value;
+            notifyAll();
+        }
         try {
             if (value == State.DONE || value == State.FAILED
                     || value == State.CANCELED) {
-                metric.setMode("Final");
+                metricImpl.setMode("Final");
             }
-            metric.setValue(value.toString());
-            metric.internalFire();
+            metricImpl.setValue(value.toString());
+            metricImpl.internalFire();
         } catch(Throwable e) {
             throw new SagaRuntimeException("Internal error", e);
         }
     }
     
-    protected void setStateValue(State value) {
+    protected synchronized void setStateValue(State value) {
         state = value;
     }
     
@@ -453,16 +473,20 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
         try {
             result = (E) method.invoke(object, parameters);
         } catch(InvocationTargetException e1) {
-            exception = e1.getCause();
+            synchronized(this) {
+                exception = e1.getCause();
+            }
             if (logger.isDebugEnabled()) {
-                logger.debug("Invocation gave exception: ", exception);
+                logger.debug("Invocation gave exception: ", e1.getCause());
             }            
             setState(State.FAILED);
             return null;
         } catch(Throwable e2) {
             logger.warn("Invoke failed:", e2);
             setState(State.FAILED);
-            exception = e2;
+            synchronized(this) {
+                exception = e2;
+            }
             return null;
         }
         if (future.isCancelled()) {
@@ -473,8 +497,8 @@ public class Task<T, E> extends org.ogf.saga.impl.SagaObjectBase
         return result;
     }
     
-    protected void addMetric(String name, Metric metric) {
-        metrics.put(name, metric);
+    protected void addMetric(String name, MetricImpl metricImpl) {
+        metricImpls.put(name, metricImpl);
     }
     
     protected synchronized void setException(Throwable e) {

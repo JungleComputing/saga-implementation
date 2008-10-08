@@ -11,16 +11,16 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.url.URL;
 
 class DirectoryEntry extends NSDirectoryAdaptor {
 
-    public DirectoryEntry(NSDirectoryWrapper wrapper, Session session, URL name, int flags)
+    public DirectoryEntry(NSDirectoryWrapper wrapper, SessionImpl sessionImpl, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
-        super(wrapper, session, name, flags);
+        super(wrapper, sessionImpl, name, flags);
     }
 }

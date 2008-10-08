@@ -24,7 +24,7 @@ import org.ogf.saga.error.TimeoutException;
 /**
  * This is the base class of all attributes in this SAGA implementation.
  */
-public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable {
+public class AttributesImpl implements org.ogf.saga.attributes.Attributes, Cloneable {
     
     // This format is not quite correct: the date should be space-padded,
     // not zero-padded. Cannot express this, though, so this is fixed, in the
@@ -97,17 +97,17 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         }
     }
     
-    private final HashMap<String, AttributeInfo> attributes;
+    private HashMap<String, AttributeInfo> attributes;
     
     private final boolean autoAdd;
 
-    public Attributes(boolean autoAdd) {
+    public AttributesImpl(boolean autoAdd) {
         attributes = new HashMap<String, AttributeInfo>();
         dateFormatter.setLenient(false);
         this.autoAdd = autoAdd;
     }
     
-    protected Attributes(Attributes orig) {
+    protected AttributesImpl(AttributesImpl orig) {
         attributes = new HashMap<String, AttributeInfo>();
         for (String s : orig.attributes.keySet()) {
             attributes.put(s, new AttributeInfo(orig.attributes.get(s)));
@@ -117,12 +117,17 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
         
     }
     
-    public Attributes() {
+    public AttributesImpl() {
         this(false);
     }
     
-    public Object clone() {
-        return new Attributes(this);
+    public Object clone() throws CloneNotSupportedException {
+        AttributesImpl o = (AttributesImpl) super.clone();
+        o.attributes = new HashMap<String, AttributeInfo>();
+        for (String s : attributes.keySet()) {
+            o.attributes.put(s, new AttributeInfo(attributes.get(s)));
+        }
+        return o;
     }
     
     public int hashCode() {
@@ -130,10 +135,10 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
     }
     
     public boolean equals(Object o) {
-        if (o == null || ! (o instanceof Attributes)) {
+        if (o == null || ! (o instanceof AttributesImpl)) {
             return false;
         }
-        Attributes a = (Attributes) o;
+        AttributesImpl a = (AttributesImpl) o;
         if (a.autoAdd != autoAdd) {
             return false;
         }
@@ -488,7 +493,7 @@ public class Attributes implements org.ogf.saga.attributes.Attributes, Cloneable
     }
     
     public static void main(String[] args) throws Exception {
-        Attributes attribs = new Attributes(false);
+        AttributesImpl attribs = new AttributesImpl(false);
         attribs.addAttribute("time", AttributeType.TIME, false, false, false, false);
         attribs.setAttribute("time", "" + System.currentTimeMillis());
         System.out.println("time = " + attribs.getAttribute("time"));

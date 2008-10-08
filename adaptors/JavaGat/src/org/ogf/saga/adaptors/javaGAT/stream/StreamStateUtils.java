@@ -2,26 +2,26 @@ package org.ogf.saga.adaptors.javaGAT.stream;
 
 import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NoSuccessException;
-import org.ogf.saga.impl.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.MetricImpl;
 import org.ogf.saga.stream.StreamState;
 
 public class StreamStateUtils {
 
-    static boolean equalsStreamState(Metric streamState, StreamState state) throws NoSuccessException {
+    static boolean equalsStreamState(MetricImpl streamState, StreamState state) throws NoSuccessException {
         String val;
         try {
-            val = streamState.getAttribute(Metric.VALUE);
+            val = streamState.getAttribute(MetricImpl.VALUE);
         } catch (Throwable  e) {
             throw new NoSuccessException("Internal error", e);
         }
         return state.toString().equals(val);
     }
 
-    static void checkStreamState(Metric streamState, StreamState state)
+    static void checkStreamState(MetricImpl streamState, StreamState state)
             throws NoSuccessException, IncorrectStateException {
         String val;
         try {
-            val = streamState.getAttribute(Metric.VALUE);
+            val = streamState.getAttribute(MetricImpl.VALUE);
         } catch (Throwable  e) {
             throw new NoSuccessException("Internal error", e);
         }
@@ -31,7 +31,7 @@ public class StreamStateUtils {
         }
     }
 
-    static void setStreamState(Metric streamState, StreamState state)
+    static void setStreamState(MetricImpl streamState, StreamState state)
             throws NoSuccessException {
         try {
             streamState.setValue(state.toString());
@@ -40,10 +40,10 @@ public class StreamStateUtils {
         }
     }
     
-    static boolean isFinalState(Metric streamState)
+    static boolean isFinalState(MetricImpl streamState)
             throws NoSuccessException {
         try {
-            String val = streamState.getAttribute(Metric.VALUE);
+            String val = streamState.getAttribute(MetricImpl.VALUE);
             return (val.equals(StreamState.DROPPED.toString())
                     || val.equals(StreamState.CLOSED.toString())
                     || val.equals(StreamState.ERROR.toString()));

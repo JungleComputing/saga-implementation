@@ -21,7 +21,7 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.FileFactory;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.namespace.NSFactory;
@@ -43,21 +43,21 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
     private HashSet<URL> urls = new HashSet<URL>();
        
-    public LogicalFileAdaptor(LogicalFileWrapper wrapper, Session session,
+    public LogicalFileAdaptor(LogicalFileWrapper wrapper, SessionImpl sessionImpl,
             URL url, int flags) throws NotImplementedException,
             IncorrectURLException, BadParameterException,
             DoesNotExistException, PermissionDeniedException,
             AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
                
-        super(wrapper, session, url, flags);
+        super(wrapper, sessionImpl, url, flags);
         
-        entry = NSFactory.createNSEntry(session, url,
+        entry = NSFactory.createNSEntry(sessionImpl, url,
                 flags & Flags.ALLNAMESPACEFLAGS.getValue());
     
         if (Flags.READ.isSet(flags)) {
             BufferedReader in = new BufferedReader(new InputStreamReader(
-                    FileFactory.createFileInputStream(session, url)));
+                    FileFactory.createFileInputStream(sessionImpl, url)));
             try {
                 for (;;) {
                     String s = in.readLine();
@@ -85,10 +85,12 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         }
     }
    
-    public Object clone() throws CloneNotSupportedException {
+    public synchronized Object clone() throws CloneNotSupportedException {
         LogicalFileAdaptor clone = (LogicalFileAdaptor) super.clone();
-        clone.entry = (NSEntry) entry.clone();
-        clone.urls = new HashSet<URL>(urls);
+        synchronized(clone) {
+            clone.entry = (NSEntry) entry.clone();
+            clone.urls = new HashSet<URL>(urls);
+        }
         return clone;
     }
 
@@ -204,7 +206,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         URL url = getClosestURL(name);
         // Create entry so that we can copy.
         try {
-            NSEntry e = NSFactory.createNSEntry(session, url,
+            NSEntry e = NSFactory.createNSEntry(sessionImpl, url,
                     Flags.NONE.getValue());
 
             // Pick the first location. Exceptions passed on to user.
@@ -300,7 +302,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                    FileFactory.createFileOutputStream(session, nameUrl)));
+                    FileFactory.createFileOutputStream(sessionImpl, nameUrl)));
             for (URL u : urls) {
                 out.write(u.toString());
                 out.newLine();

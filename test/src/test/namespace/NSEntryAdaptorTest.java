@@ -41,9 +41,7 @@ public class NSEntryAdaptorTest {
             preferences.setAttribute("file.adaptor.name", "sshtrilead,commandlinessh,local");
             jobSession.addContext(preferences);
         } catch (Throwable e) {
-            System.err.println("Could not create session");
-            e.printStackTrace(System.err);
-            System.exit(1);
+            throw new Error("Got exception while creating session: ", e);
         }
         
         run(host, jobSession, "nsentry-adaptor-test-init.sh");
@@ -107,8 +105,7 @@ public class NSEntryAdaptorTest {
             job.run();
             job.waitFor();
         } catch (Throwable e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new Error("Got exception in run(): ", e);
         }
     }
     

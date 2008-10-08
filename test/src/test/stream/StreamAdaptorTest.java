@@ -45,7 +45,7 @@ public class StreamAdaptorTest {
             u = URLFactory.createURL(url);
         } catch(Throwable e) {
             logger.error("URL error", e);
-            System.exit(1);
+            throw new Error("Got exception", e);
         }
         serverUrl = u;
     }

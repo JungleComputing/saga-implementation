@@ -24,8 +24,8 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaRuntimeException;
-import org.ogf.saga.impl.attributes.Attributes;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.attributes.AttributesImpl;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.spi.namespace.NSEntryAdaptorBase;
@@ -47,42 +47,42 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
     protected boolean isDirectory;
     protected URI gatURI;
 
-    Attributes attributes = new Attributes();
+    AttributesImpl attributesImpl = new AttributesImpl();
 
-    protected NSEntryAdaptor(Session session, URL name, int flags)
+    protected NSEntryAdaptor(SessionImpl sessionImpl, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
             BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        this(null, session, name, flags, false);
+        this(null, sessionImpl, name, flags, false);
     }
 
-    public NSEntryAdaptor(NSEntryWrapper wrapper, Session session, URL name,
+    public NSEntryAdaptor(NSEntryWrapper wrapper, SessionImpl sessionImpl, URL name,
             int flags) throws NotImplementedException, IncorrectURLException,
             BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        this(wrapper, session, name, flags, false);
+        this(wrapper, sessionImpl, name, flags, false);
     }
 
-    NSEntryAdaptor(NSEntryWrapper wrapper, Session session, URL name,
+    NSEntryAdaptor(NSEntryWrapper wrapper, SessionImpl sessionImpl, URL name,
             int flags, boolean isDir) throws NotImplementedException,
             IncorrectURLException, BadParameterException,
             DoesNotExistException, PermissionDeniedException,
             AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
-        super(wrapper, session, name, flags);
+        super(wrapper, sessionImpl, name, flags);
 
         org.ogf.saga.adaptors.javaGAT.session.Session gatSession;
 
-        synchronized (session) {
-            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session) session
+        synchronized (sessionImpl) {
+            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session) sessionImpl
                     .getAdaptorSession("JavaGAT");
             if (gatSession == null) {
                 gatSession = new org.ogf.saga.adaptors.javaGAT.session.Session();
-                session.putAdaptorSession("JavaGAT", gatSession);
+                sessionImpl.putAdaptorSession("JavaGAT", gatSession);
             }
         }
 
@@ -253,16 +253,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
         closed = true;
-    }
-
-    protected void finalize() {
-        if (!closed) {
-            try {
-                close(0.0F);
-            } catch (Throwable e) {
-                // ignored
-            }
-        }
     }
 
     public void copy(URL target, int flags) throws NotImplementedException,

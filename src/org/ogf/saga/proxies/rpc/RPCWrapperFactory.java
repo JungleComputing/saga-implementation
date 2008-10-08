@@ -29,7 +29,7 @@ public class RPCWrapperFactory extends RPCFactory {
 
     protected Task<RPCFactory, RPC> doCreateRPC(TaskMode mode, Session session,
             URL funcname) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<RPCFactory, RPC>(this, session,
+        return new org.ogf.saga.impl.task.TaskImpl<RPCFactory, RPC>(this, session,
                 mode, "doCreateRPC", new Class[] { Session.class, URL.class },
                 session, funcname);
     }
@@ -37,12 +37,12 @@ public class RPCWrapperFactory extends RPCFactory {
     protected org.ogf.saga.rpc.Parameter doCreateParameter(Object data,
             IOMode mode) throws BadParameterException, NoSuccessException,
             NotImplementedException {
-        return new Parameter(data, mode);
+        return new ParameterImpl(data, mode);
     }
 
     protected org.ogf.saga.rpc.Parameter doCreateParameter(IOMode mode)
             throws BadParameterException, NoSuccessException,
             NotImplementedException {
-        return new Parameter(mode);
+        return new ParameterImpl(mode);
     }
 }

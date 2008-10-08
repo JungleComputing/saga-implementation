@@ -16,7 +16,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.DirectoryWrapper;
 import org.ogf.saga.url.URL;
@@ -31,18 +31,18 @@ public class DirectoryAdaptor extends org.ogf.saga.spi.file.DirectoryAdaptorBase
     
     DirectoryEntry dir;
     
-    public DirectoryAdaptor(DirectoryWrapper wrapper, Session session, URL name, int flags)
+    public DirectoryAdaptor(DirectoryWrapper wrapper, SessionImpl sessionImpl, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
-        super(wrapper, session, name, flags);
-        dir = new DirectoryEntry(wrapper, session, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
+        super(wrapper, sessionImpl, name, flags);
+        dir = new DirectoryEntry(wrapper, sessionImpl, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
     }
     
     public Object clone() throws CloneNotSupportedException {
         DirectoryAdaptor clone = (DirectoryAdaptor) super.clone();
         clone.dir = (DirectoryEntry) dir.clone();
-        clone.dir.setWrapper(clone.wrapper);
+        clone.dir.setWrapper(clone.directoryWrapper);
         return clone;
     }
     
@@ -61,16 +61,16 @@ public class DirectoryAdaptor extends org.ogf.saga.spi.file.DirectoryAdaptorBase
             if (logger.isDebugEnabled()) {
                 logger.debug("Wrong flags used!");
             }
-            throw new BadParameterException("Flags not allowed for getSize: " + flags, wrapper);
+            throw new BadParameterException("Flags not allowed for getSize: " + flags, directoryWrapper);
         }
         
         name = resolve(name);
         
         FileEntry file = null;
         try {
-            file = new FileEntry(session, name, Flags.NONE.getValue());
+            file = new FileEntry(sessionImpl, name, Flags.NONE.getValue());
         } catch (AlreadyExistsException e) {
-            throw new NoSuccessException("This should not happen! " + e, wrapper);
+            throw new NoSuccessException("This should not happen! " + e, directoryWrapper);
         }
         long sz = file.size();
         file.close(0.0F);

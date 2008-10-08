@@ -25,7 +25,7 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.SeekMode;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.FileWrapper;
 import org.ogf.saga.spi.file.FileAdaptorBase;
@@ -54,13 +54,13 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     private InputStream in = null;
     private OutputStream out = null;
 
-    public FileAdaptor(FileWrapper wrapper, Session session, URL name, int flags)
+    public FileAdaptor(FileWrapper wrapper, SessionImpl sessionImpl, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
         
-        super(wrapper, session, name, flags);
-        entry = new FileEntry(session, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
+        super(wrapper, sessionImpl, name, flags);
+        entry = new FileEntry(sessionImpl, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
         this.flags = flags;
         
         // Determine read/write
@@ -238,10 +238,13 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                 throw new SagaIOException(e, wrapper);
             }
             return this.offset;
-        } else if (in != null) {
+        } 
+        if (in != null) {
             if (offset >= this.offset) {
                 try {
-                    in.skip(offset - this.offset);
+                    long skipped = in.skip(offset - this.offset);
+                    this.offset += skipped;
+                    return offset;
                 } catch (IOException e) {
                     throw new SagaIOException(e, wrapper);
                 }
@@ -249,8 +252,6 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         } else {
             throw new NotImplementedException("Seek on output stream not implemented", wrapper);
         }
-        this.offset = offset;
-        return offset;
     }
 
     public int sizeE(String arg0, String arg1) throws NotImplementedException,

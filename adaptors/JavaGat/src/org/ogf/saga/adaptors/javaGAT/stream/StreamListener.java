@@ -12,19 +12,19 @@ import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.SagaIOException;
-import org.ogf.saga.impl.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.MetricImpl;
 import org.ogf.saga.stream.StreamState;
 
 public class StreamListener implements Runnable {
 
     private boolean closed = false;
     private CircularBuffer buf;
-    private Metric streamRead;
+    private MetricImpl streamRead;
     private ErrorInterface err;
 
     private static Logger logger = LoggerFactory.getLogger(StreamListener.class);
 
-    public StreamListener(Pipe pipe, Metric streamRead,
+    public StreamListener(Pipe pipe, MetricImpl streamRead,
             int bufferCapacity, ErrorInterface err) {
         this.streamRead = streamRead;
         this.buf = new CircularBuffer(pipe, bufferCapacity);

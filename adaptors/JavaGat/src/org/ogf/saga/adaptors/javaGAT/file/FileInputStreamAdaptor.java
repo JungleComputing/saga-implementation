@@ -19,7 +19,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.proxies.file.FileInputStreamWrapper;
 import org.ogf.saga.url.URL;
 
@@ -31,21 +31,21 @@ public class FileInputStreamAdaptor extends org.ogf.saga.spi.file.FileInputStrea
     
     private org.gridlab.gat.io.FileInputStream in;
     
-    public FileInputStreamAdaptor(FileInputStreamWrapper wrapper, Session session, URL source)
+    public FileInputStreamAdaptor(FileInputStreamWrapper wrapper, SessionImpl sessionImpl, URL source)
             throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, DoesNotExistException, AlreadyExistsException, TimeoutException, NoSuccessException {
         
-        super(session, wrapper);
+        super(sessionImpl, wrapper);
         
         org.ogf.saga.adaptors.javaGAT.session.Session gatSession;
 
-        synchronized(session) {
+        synchronized(sessionImpl) {
             gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session)
-                    session.getAdaptorSession("JavaGAT");
+                    sessionImpl.getAdaptorSession("JavaGAT");
             if (gatSession == null) {
                 gatSession = new org.ogf.saga.adaptors.javaGAT.session.Session();
-                session.putAdaptorSession("JavaGAT", gatSession);
+                sessionImpl.putAdaptorSession("JavaGAT", gatSession);
             }
         }
 

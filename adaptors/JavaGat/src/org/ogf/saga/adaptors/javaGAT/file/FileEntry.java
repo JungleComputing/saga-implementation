@@ -18,17 +18,17 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.url.URL;
 
 // Make protected fields from NSEntry available for this package.
 class FileEntry extends NSEntryAdaptor {
 
-    FileEntry(Session session, URL name, int flags)
+    FileEntry(SessionImpl sessionImpl, URL name, int flags)
             throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
-        super(session, name, flags);
+        super(sessionImpl, name, flags);
     }
     
     GATContext getGatContext() {

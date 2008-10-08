@@ -18,7 +18,7 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.MetricImpl;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.stream.ConnectedStream;
 import org.ogf.saga.stream.Activity;
@@ -27,7 +27,7 @@ import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
 import org.ogf.saga.url.URL;
 
-public class ConnectedStreamImpl extends ConnectedStream implements
+public final class ConnectedStreamImpl extends ConnectedStream implements
         ErrorInterface {
 
     private Pipe pipe;
@@ -54,14 +54,16 @@ public class ConnectedStreamImpl extends ConnectedStream implements
         }
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    public synchronized Object clone() throws CloneNotSupportedException {
         ConnectedStreamImpl clone = (ConnectedStreamImpl) super.clone();
-        clone.streamListenerException = null;
-        clone.pipe = this.pipe;
-        if (listeningReader != null) {
-            clone.listeningReader = new StreamListener(clone.pipe,
-                    clone.streamRead, 1024, clone);
-            clone.listeningReaderThread = new Thread(clone.listeningReader);
+        synchronized(clone) {
+            clone.streamListenerException = null;
+            clone.pipe = this.pipe;
+            if (listeningReader != null) {
+                clone.listeningReader = new StreamListener(clone.pipe,
+                        clone.streamRead, 1024, clone);
+                clone.listeningReaderThread = new Thread(clone.listeningReader);
+            }
         }
         return clone;
     }
@@ -164,7 +166,7 @@ public class ConnectedStreamImpl extends ConnectedStream implements
             do {
                 for (int i = 0; i < NUM_WAIT_TRIES; i++) {
                     if ((what & Activity.EXCEPTION.getValue()) != 0) {
-                        if (streamState.getAttribute(Metric.VALUE).equals(
+                        if (streamState.getAttribute(MetricImpl.VALUE).equals(
                                 StreamState.ERROR.toString()))
                             return Activity.EXCEPTION.getValue();
                     }
@@ -254,13 +256,13 @@ public class ConnectedStreamImpl extends ConnectedStream implements
   
     public StreamInputStream getInputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
-        return new org.ogf.saga.impl.stream.InputStream(session, listeningReader.getInputStream());
+        return new org.ogf.saga.impl.stream.InputStream(sessionImpl, listeningReader.getInputStream());
     }
 
     public StreamOutputStream getOutputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
         try {
-            return new org.ogf.saga.impl.stream.OutputStream(session, pipe.getOutputStream());
+            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl, pipe.getOutputStream());
         } catch (GATInvocationException e) {
             throw new SagaIOException(e);
         }

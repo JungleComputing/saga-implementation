@@ -23,7 +23,7 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.proxies.stream.StreamWrapper;
 import org.ogf.saga.spi.stream.StreamAdaptorBase;
@@ -47,9 +47,9 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
     private static Logger logger = LoggerFactory.getLogger(StreamAdaptor.class);
 
-    public StreamAdaptor(StreamWrapper wrapper, Session session, URL url)
+    public StreamAdaptor(StreamWrapper wrapper, SessionImpl sessionImpl, URL url)
             throws NotImplementedException, BadParameterException, IncorrectURLException {
-        super(wrapper, session, url);
+        super(wrapper, sessionImpl, url);
 
         // check URL
 
@@ -62,7 +62,9 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     public Object clone() throws CloneNotSupportedException {
         // TODO
         StreamAdaptor clone = (StreamAdaptor) super.clone();
-        clone.streamListenerException = null;
+        synchronized(clone) {
+            clone.streamListenerException = null;
+        }
         return clone;
     }
 
@@ -402,13 +404,13 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     
     public StreamInputStream getInputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
-        return new org.ogf.saga.impl.stream.InputStream(session, listeningReader.getInputStream());
+        return new org.ogf.saga.impl.stream.InputStream(sessionImpl, listeningReader.getInputStream());
     }
 
     public StreamOutputStream getOutputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
         try {
-            return new org.ogf.saga.impl.stream.OutputStream(session, socket.getOutputStream());
+            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl, socket.getOutputStream());
         } catch (IOException e) {
             throw new SagaIOException(e, wrapper);
         }

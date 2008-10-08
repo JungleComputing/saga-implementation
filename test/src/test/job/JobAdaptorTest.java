@@ -152,13 +152,22 @@ public class JobAdaptorTest {
 
         long stop = System.currentTimeMillis();
         String result;
+        java.io.InputStream in = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new java.io.FileInputStream(DIR + "/stdout")));
+            in = new java.io.FileInputStream(DIR + "/stdout");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             result = reader.readLine();
             reader.close();
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch(Throwable e) {
+                    // ignored
+                }
+            }
         }
         return new AdaptorTestResultEntry(result.equals("test 1 2 3"),
                 (stop - start), null);
@@ -197,13 +206,22 @@ public class JobAdaptorTest {
 
         long stop = System.currentTimeMillis();
         String result;
+        java.io.InputStream in = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new java.io.FileInputStream(DIR + "/stderr")));
+            in = new java.io.FileInputStream(DIR + "/stderr");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             result = reader.readLine();
             reader.close();
         } catch (Exception e) {
             return new AdaptorTestResultEntry(false, 0L, e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch(Throwable e) {
+                    // ignored
+                }
+            }
         }
         return new AdaptorTestResultEntry(result != null
                 && result.startsWith("/bin/ls:")
@@ -245,13 +263,22 @@ public class JobAdaptorTest {
  
         long stop = System.currentTimeMillis();
         String result;
+        java.io.InputStream in = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new java.io.FileInputStream(DIR + "/stdout")));
+            in = new java.io.FileInputStream(DIR + "/stdout");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             result = reader.readLine();
             reader.close();
         } catch (Exception e) {
-            return new AdaptorTestResultEntry(false, 0L, e);
+            return new AdaptorTestResultEntry(false, 0L, e); 
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch(Throwable e) {
+                    // ignored
+                }
+            }
         }
         return new AdaptorTestResultEntry(result != null, (stop - start), null);
 
@@ -325,9 +352,10 @@ public class JobAdaptorTest {
  
         long stop = System.currentTimeMillis();
         boolean success = false;
+        java.io.InputStream in = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    new java.io.FileInputStream(DIR + "/stdout")));
+            in = new java.io.FileInputStream(DIR + "/stdout");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             while (true) {
                 String result = reader.readLine();
                 if (result == null) {
@@ -341,6 +369,15 @@ public class JobAdaptorTest {
             reader.close();
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch(Throwable e) {
+                    // ignored
+                }
+            }
+   
         }
         return new AdaptorTestResultEntry(success, (stop - start), null);
 

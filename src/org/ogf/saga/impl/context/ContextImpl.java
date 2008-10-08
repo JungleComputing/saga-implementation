@@ -15,12 +15,12 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.session.Session;
 
-public class Context extends SagaObjectBase
-        implements org.ogf.saga.context.Context {
+public class ContextImpl extends SagaObjectBase
+        implements org.ogf.saga.context.Context, Cloneable {
 
-    private final ContextAttributes attributes;
+    private ContextAttributes attributes;
 
-    Context(String type) throws NotImplementedException, IncorrectStateException, TimeoutException,
+    ContextImpl(String type) throws NotImplementedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
         super((Session) null);
         
@@ -41,13 +41,15 @@ public class Context extends SagaObjectBase
         }
     }
     
-    Context(Context orig) {
+    ContextImpl(ContextImpl orig) {
         super(orig);
         attributes = new ContextAttributes(orig.attributes);
     }
 
-    public Object clone() {
-        return new Context(this);
+    public Object clone() throws CloneNotSupportedException {
+        ContextImpl o = (ContextImpl) super.clone();
+        o.attributes = new ContextAttributes(attributes);
+        return o;
     }
 
     public void setDefaults() throws NotImplementedException, IncorrectStateException, TimeoutException,
@@ -67,8 +69,8 @@ public class Context extends SagaObjectBase
                 // nothing
             } else if ("ftp".equals(type)) {
                 // Default is anonymous
-                setValueIfEmpty(Context.USERID, "anonymous");
-                setValueIfEmpty(Context.USERPASS, "anonymous@localhost");
+                setValueIfEmpty(ContextImpl.USERID, "anonymous");
+                setValueIfEmpty(ContextImpl.USERPASS, "anonymous@localhost");
             } else if ("ssh".equals(type) || "sftp".equals(type)) {
                 // setValue(Context.USERID, "");
                 // setValue(Context.USERPASS, "");
@@ -76,9 +78,9 @@ public class Context extends SagaObjectBase
             } else if ("globus".equals(type) || "gridftp".equals(type)) {
                 // Default: taken from .globus dir in user home.
                 String home = System.getProperty("user.home");
-                setValueIfEmpty(Context.USERKEY, home + File.separator
+                setValueIfEmpty(ContextImpl.USERKEY, home + File.separator
                         + ".globus" + File.separator + "userkey.pem");
-                setValueIfEmpty(Context.USERCERT, home + File.separator
+                setValueIfEmpty(ContextImpl.USERCERT, home + File.separator
                         + ".globus" + File.separator + "usercert.pem");
                 // attributes.setValue(Context.USERPASS, "");
             } else if ("preferences".equals(type)) {

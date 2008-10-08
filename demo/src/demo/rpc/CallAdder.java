@@ -12,8 +12,8 @@ public class CallAdder {
         try {
             URL url = URLFactory.createURL("any://localhost:8080/Calculator.add");
             RPC rpc = RPCFactory.createRPC(url);
-            Parameter param1 = RPCFactory.createParameter(new Integer(10));
-            Parameter param2 = RPCFactory.createParameter(new Integer(20));
+            Parameter param1 = RPCFactory.createParameter(Integer.valueOf(10));
+            Parameter param2 = RPCFactory.createParameter(Integer.valueOf(20));
             Parameter result = RPCFactory.createParameter(IOMode.OUT);
             
             rpc.call(param1, param2, result);

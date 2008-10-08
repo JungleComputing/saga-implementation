@@ -31,8 +31,8 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.monitoring.Metric;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.monitoring.MetricImpl;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.proxies.stream.StreamWrapper;
 import org.ogf.saga.spi.stream.StreamAdaptorBase;
 import org.ogf.saga.stream.Activity;
@@ -60,22 +60,24 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
     private static Logger logger = LoggerFactory.getLogger(StreamAdaptor.class);
 
-    public StreamAdaptor(StreamWrapper wrapper, Session session, URL url)
+    public StreamAdaptor(StreamWrapper wrapper, SessionImpl sessionImpl, URL url)
             throws NotImplementedException, BadParameterException {
-        super(wrapper, session, url);
-        gatContext = initializeGatContext(session);
+        super(wrapper, sessionImpl, url);
+        gatContext = initializeGatContext(sessionImpl);
     }
 
     public Object clone() throws CloneNotSupportedException {
         StreamAdaptor clone = (StreamAdaptor) super.clone();
-        clone.streamListenerException = null;
+        synchronized(clone) {
+            clone.streamListenerException = null;
+        }
         clone.gatContext = (GATContext) this.gatContext.clone();
         clone.pipe = this.pipe;
 
         // only if the stream is in Open state we create listening thread
 
         try {
-            if (streamState.getAttribute(Metric.VALUE).equals(
+            if (streamState.getAttribute(MetricImpl.VALUE).equals(
                     StreamState.OPEN.toString())) {
                 clone.listeningReader = new StreamListener(clone.pipe,
                         clone.streamRead, 1024, this);
@@ -268,7 +270,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
                 for (int i = 0; i < NUM_WAIT_TRIES; i++) {
 
                     if ((what & Activity.EXCEPTION.getValue()) != 0) {
-                        if (streamState.getAttribute(Metric.VALUE).equals(
+                        if (streamState.getAttribute(MetricImpl.VALUE).equals(
                                 StreamState.ERROR.toString()))
                             return Activity.EXCEPTION.getValue();
                     }
@@ -370,15 +372,15 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         throw new NotImplementedException();
     }
 
-    static GATContext initializeGatContext(Session session) {
+    static GATContext initializeGatContext(SessionImpl sessionImpl) {
         org.ogf.saga.adaptors.javaGAT.session.Session gatSession;
 
-        synchronized (session) {
-            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session) session
+        synchronized (sessionImpl) {
+            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session) sessionImpl
                     .getAdaptorSession("JavaGAT");
             if (gatSession == null) {
                 gatSession = new org.ogf.saga.adaptors.javaGAT.session.Session();
-                session.putAdaptorSession("JavaGAT", gatSession);
+                sessionImpl.putAdaptorSession("JavaGAT", gatSession);
             }
         }
 
@@ -430,7 +432,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     public StreamInputStream getInputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
         try {
-            return new org.ogf.saga.impl.stream.InputStream(session, pipe.getInputStream());
+            return new org.ogf.saga.impl.stream.InputStream(sessionImpl, pipe.getInputStream());
         } catch (GATInvocationException e) {
             throw new SagaIOException(e);
         }
@@ -439,7 +441,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     public StreamOutputStream getOutputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
         try {
-            return new org.ogf.saga.impl.stream.OutputStream(session, pipe.getOutputStream());
+            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl, pipe.getOutputStream());
         } catch (GATInvocationException e) {
             throw new SagaIOException(e);
         }

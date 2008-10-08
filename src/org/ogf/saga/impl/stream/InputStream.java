@@ -27,13 +27,13 @@ public class InputStream extends StreamInputStream {
     }
         
     public Task<StreamInputStream, Integer> read(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamInputStream, Integer>(this, session, mode, "read",
+        return new org.ogf.saga.impl.task.TaskImpl<StreamInputStream, Integer>(this, session, mode, "read",
                 new Class[] { });
     }
     
     public Task<StreamInputStream, Integer> read(TaskMode mode, byte[] buf, int off, int len)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamInputStream, Integer>(this, session, mode, "read",
+        return new org.ogf.saga.impl.task.TaskImpl<StreamInputStream, Integer>(this, session, mode, "read",
                 new Class[] { byte[].class, Integer.TYPE, Integer.TYPE },
                 buf, off, len);
     }
@@ -43,34 +43,34 @@ public class InputStream extends StreamInputStream {
     }
     
     public Task<StreamInputStream, Long> skip(TaskMode mode, long n) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamInputStream, Long>(this, session, mode, "skip",
+        return new org.ogf.saga.impl.task.TaskImpl<StreamInputStream, Long>(this, session, mode, "skip",
                 new Class[] {Long.TYPE}, n);
     }
     
     public Task<StreamInputStream, Integer> available(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamInputStream, Integer>(this, session, mode, "available",
+        return new org.ogf.saga.impl.task.TaskImpl<StreamInputStream, Integer>(this, session, mode, "available",
                 new Class[]{});
     }
     
     public Task<StreamInputStream, Void> close(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamInputStream, Void>(this, session, mode, "close",
+        return new org.ogf.saga.impl.task.TaskImpl<StreamInputStream, Void>(this, session, mode, "close",
                 new Class[]{});            
     }
     
     public Task<StreamInputStream, Void> mark(TaskMode mode, int readlimit)
                throws NotImplementedException {        
-        return new org.ogf.saga.impl.task.Task<StreamInputStream, Void>(this, session, mode, "mark",
+        return new org.ogf.saga.impl.task.TaskImpl<StreamInputStream, Void>(this, session, mode, "mark",
                 new Class[]{Integer.TYPE}, readlimit); 
     }
     
     public Task<StreamInputStream, Void> reset(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamInputStream, Void>(this, session, mode, "reset",
+        return new org.ogf.saga.impl.task.TaskImpl<StreamInputStream, Void>(this, session, mode, "reset",
                 new Class[]{});        
     }
     
     public Task<StreamInputStream, Boolean> markSupported(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamInputStream, Boolean>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<StreamInputStream, Boolean>(this, session, mode,
                 "markSupported", new Class[]{});       
     }
 

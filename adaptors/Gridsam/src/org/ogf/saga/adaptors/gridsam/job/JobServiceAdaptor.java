@@ -15,7 +15,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
@@ -31,9 +31,9 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
 
     String url;
 
-    public JobServiceAdaptor(JobServiceWrapper wrapper, Session session, URL rm)
+    public JobServiceAdaptor(JobServiceWrapper wrapper, SessionImpl sessionImpl, URL rm)
             throws NoSuccessException, NotImplementedException, IncorrectURLException {
-        super(wrapper, session, rm);
+        super(wrapper, sessionImpl, rm);
         String scheme = rm.getScheme();
 
         if (scheme.equals("any") || scheme.equals("gridsam")) {
@@ -64,7 +64,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             PermissionDeniedException, BadParameterException, TimeoutException,
             NoSuccessException {
         SagaJob job = new SagaJob(this,
-                (org.ogf.saga.impl.job.JobDescription) jd, session);
+                (org.ogf.saga.impl.job.JobDescriptionImpl) jd, sessionImpl);
         return job;
     }
 

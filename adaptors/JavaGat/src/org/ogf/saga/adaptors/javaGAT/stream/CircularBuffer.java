@@ -14,7 +14,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.impl.SagaRuntimeException;
-import org.ogf.saga.impl.buffer.Buffer;
+import org.ogf.saga.impl.buffer.BufferImpl;
 
 class CircularBuffer extends java.io.InputStream {
     
@@ -57,21 +57,21 @@ class CircularBuffer extends java.io.InputStream {
     public synchronized int read(org.ogf.saga.buffer.Buffer b, int len)
             throws IncorrectStateException, NoSuccessException, BadParameterException,
             SagaIOException, NotImplementedException {
-        if (! (b instanceof Buffer)) {
+        if (! (b instanceof BufferImpl)) {
             throw new BadParameterException("Wrong buffer type");
         }
-        Buffer buffer = (Buffer) b;
+        BufferImpl bufferImpl = (BufferImpl) b;
         
         byte[] res;
         try {
-            res = buffer.getData();
+            res = bufferImpl.getData();
         } catch(DoesNotExistException e) {
             if (len < 0) {
                 throw new BadParameterException("read: len < 0 and buffer not allocated yet");
             }
-            buffer.setSize(len);
+            bufferImpl.setSize(len);
             try {
-                res = buffer.getData();
+                res = bufferImpl.getData();
             } catch(DoesNotExistException e2) {
                 // This should not happen after setSize() with size >= 0.
                 throw new SagaRuntimeException("Internal error", e2);
@@ -79,12 +79,12 @@ class CircularBuffer extends java.io.InputStream {
         }
         
         if (len < 0) {
-            len = buffer.getSize();
-        } else if (len > buffer.getSize()) {
-            if (buffer.isImplementationManaged()) {
-                buffer.setSize(len);
+            len = bufferImpl.getSize();
+        } else if (len > bufferImpl.getSize()) {
+            if (bufferImpl.isImplementationManaged()) {
+                bufferImpl.setSize(len);
                 try {
-                    res = buffer.getData();
+                    res = bufferImpl.getData();
                 } catch (DoesNotExistException e) {
                     throw new SagaRuntimeException("Internal error", e);
                 }
@@ -182,6 +182,7 @@ class CircularBuffer extends java.io.InputStream {
             ex.initCause(e);
             throw ex;
         }
+        int start = 0;
         synchronized(this) {
             // Wait until space becomes available.
             len = buf.length - getSize();
@@ -189,16 +190,13 @@ class CircularBuffer extends java.io.InputStream {
                 wait();
                 len = buf.length - getSize();
             }
-        }
-        int retval;
-        if (end == buf.length) {
-            retval = inputStream.read(buf, 0, len);
-        } else {
-            if (buf.length - end < len) {
+            if (end != buf.length && buf.length - end < len) {
                 len = buf.length - end;
+                start = end;
             }
-            retval = inputStream.read(buf, end, len);
         }
+        
+        int retval = inputStream.read(buf, start, len);
         
         if (logger.isDebugEnabled()) {
             logger.debug("readFromStream: read " + retval + " bytes");

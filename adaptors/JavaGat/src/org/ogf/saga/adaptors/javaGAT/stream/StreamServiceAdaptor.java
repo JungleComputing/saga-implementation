@@ -24,7 +24,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.proxies.stream.StreamServiceWrapper;
 import org.ogf.saga.spi.stream.StreamServiceAdaptorBase;
 import org.ogf.saga.stream.Stream;
@@ -44,10 +44,10 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
     private boolean active = false;
     private GATContext gatContext;
     
-    public StreamServiceAdaptor(StreamServiceWrapper wrapper, Session session, URL url)
+    public StreamServiceAdaptor(StreamServiceWrapper wrapper, SessionImpl sessionImpl, URL url)
             throws NotImplementedException, BadParameterException {
-        super(wrapper, session, url);
-        gatContext = StreamAdaptor.initializeGatContext(session);
+        super(wrapper, sessionImpl, url);
+        gatContext = StreamAdaptor.initializeGatContext(sessionImpl);
         active = true;
     }
 
@@ -105,7 +105,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             advertService.exportDataBase(db);
             Pipe pipe = serverSide.listen(invocationTimeout);
             clientConnectMetric.internalFire();
-            return new ConnectedStreamImpl(session, url, pipe);
+            return new ConnectedStreamImpl(sessionImpl, url, pipe);
         } catch (GATObjectCreationException e) {
             throw new NoSuccessException("Errors in GAT", e);
         } catch (GATInvocationException e) {

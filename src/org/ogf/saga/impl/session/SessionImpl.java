@@ -9,7 +9,7 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.SagaRuntimeException;
 
-public class Session extends SagaObjectBase
+public class SessionImpl extends SagaObjectBase
         implements org.ogf.saga.session.Session {
 
     private HashSet<Context> contexts = new HashSet<Context>();
@@ -17,7 +17,7 @@ public class Session extends SagaObjectBase
     private HashMap<String, AdaptorSessionInterface> adaptorSessions
             = new HashMap<String, AdaptorSessionInterface>();
 
-    Session(boolean defaults) {
+    SessionImpl(boolean defaults) {
         super((org.ogf.saga.session.Session) null);
     }
     
@@ -30,7 +30,7 @@ public class Session extends SagaObjectBase
         adaptorSessions.put(name, session);
         for (Context ctxt : contexts) {
             try {
-                session.addContext((org.ogf.saga.impl.context.Context) ctxt);
+                session.addContext((org.ogf.saga.impl.context.ContextImpl) ctxt);
             } catch(Throwable e) {
                 // ignored
             }
@@ -45,7 +45,7 @@ public class Session extends SagaObjectBase
         }
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
-                session.addContext((org.ogf.saga.impl.context.Context) context);
+                session.addContext((org.ogf.saga.impl.context.ContextImpl) context);
             } catch(Throwable e) {
                 // ignored
             }
@@ -74,13 +74,16 @@ public class Session extends SagaObjectBase
 
     @SuppressWarnings("unchecked")
     public synchronized Object clone() throws CloneNotSupportedException {
-        Session clone = (Session) super.clone();
-        clone.contexts = new HashSet<Context>(contexts);
-        clone.adaptorSessions
-                = new HashMap<String, AdaptorSessionInterface>();
-        for (String key : adaptorSessions.keySet()) {
-            clone.adaptorSessions.put(key,
-                    (AdaptorSessionInterface) adaptorSessions.get(key).clone());
+        SessionImpl clone = (SessionImpl) super.clone();
+        synchronized(clone) {
+            clone.contexts = new HashSet<Context>(contexts);
+            clone.adaptorSessions
+            = new HashMap<String, AdaptorSessionInterface>();
+        
+            for (String key : adaptorSessions.keySet()) {
+                clone.adaptorSessions.put(key,
+                        (AdaptorSessionInterface) adaptorSessions.get(key).clone());
+            }
         }
         return clone;
     }
@@ -109,7 +112,7 @@ public class Session extends SagaObjectBase
         }
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
-                session.removeContext((org.ogf.saga.impl.context.Context) context);
+                session.removeContext((org.ogf.saga.impl.context.ContextImpl) context);
             } catch(Throwable e) {
                 // ignored
             }

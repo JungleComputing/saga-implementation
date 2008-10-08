@@ -16,7 +16,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.proxies.stream.StreamServiceWrapper;
 import org.ogf.saga.spi.stream.StreamServiceAdaptorBase;
 import org.ogf.saga.stream.Stream;
@@ -29,10 +29,10 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
     private ServerSocket server;
 
-    public StreamServiceAdaptor(StreamServiceWrapper wrapper, Session session, URL url)
+    public StreamServiceAdaptor(StreamServiceWrapper wrapper, SessionImpl sessionImpl, URL url)
             throws NotImplementedException, BadParameterException, NoSuccessException, IncorrectURLException {
 
-        super(wrapper, session, url);
+        super(wrapper, sessionImpl, url);
         active = true;
 
         // check URL
@@ -92,7 +92,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             Socket clientConnection = server.accept();
             clientConnectMetric.internalFire();
             // TODO: blocking or non-blocking ???
-            return new ConnectedStreamImpl(session, url, clientConnection);
+            return new ConnectedStreamImpl(sessionImpl, url, clientConnection);
         } catch (SocketException e) {
             throw new NoSuccessException(e, wrapper);
         } catch (SocketTimeoutException e) {

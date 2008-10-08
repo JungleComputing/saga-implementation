@@ -20,7 +20,7 @@ import org.ogf.saga.file.File;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
 import org.ogf.saga.impl.SagaRuntimeException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.Falls;
 import org.ogf.saga.proxies.file.FileWrapper;
@@ -36,13 +36,13 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
     protected final HashMap<String, Falls> fallsCache = new HashMap<String, Falls>();
     protected FileWrapper wrapper;
 
-    public FileAdaptorBase(FileWrapper wrapper, Session session, URL name,
+    public FileAdaptorBase(FileWrapper wrapper, SessionImpl sessionImpl, URL name,
             int flags) throws NotImplementedException, IncorrectURLException,
             BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        super(wrapper, session, name, flags
+        super(wrapper, sessionImpl, name, flags
                 & Flags.ALLNAMESPACEFLAGS.getValue());
         this.wrapper = wrapper;
         fileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();       
@@ -80,7 +80,7 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
     }
 
     protected void checkBufferType(Buffer buffer) {
-        if (!(buffer instanceof org.ogf.saga.impl.buffer.Buffer)) {
+        if (!(buffer instanceof org.ogf.saga.impl.buffer.BufferImpl)) {
             throw new SagaRuntimeException("Wrong buffer type: "
                     + buffer.getClass().getName());
         }
@@ -88,7 +88,7 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
 
     protected void checkIOVecsType(IOVec[] iovecs) {
         for (IOVec iovec : iovecs) {
-            if (!(iovec instanceof org.ogf.saga.proxies.file.IOVec)) {
+            if (!(iovec instanceof org.ogf.saga.proxies.file.IOVecImpl)) {
                 throw new SagaRuntimeException("Wrong iovec type: "
                         + iovec.getClass().getName());
             }
@@ -102,7 +102,7 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
             SagaIOException {
         checkIOVecsType(arg0);
         for (IOVec iov : arg0) {
-            org.ogf.saga.proxies.file.IOVec iovec = (org.ogf.saga.proxies.file.IOVec) iov;
+            org.ogf.saga.proxies.file.IOVecImpl iovec = (org.ogf.saga.proxies.file.IOVecImpl) iov;
             int lenIn = iovec.getLenIn();
             int offset = iovec.getOffset();
             iovec.setLenOut(read(iovec, offset, lenIn));
@@ -116,7 +116,7 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
             SagaIOException {
         checkIOVecsType(arg0);
         for (IOVec iov : arg0) {
-            org.ogf.saga.proxies.file.IOVec iovec = (org.ogf.saga.proxies.file.IOVec) iov;
+            org.ogf.saga.proxies.file.IOVecImpl iovec = (org.ogf.saga.proxies.file.IOVecImpl) iov;
             int lenIn = iovec.getLenIn();
             int offset = iovec.getOffset();
             iovec.setLenOut(write(iovec, offset, lenIn));
@@ -270,87 +270,87 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
 
     public Task<File, Long> getSize(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Long>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Long>(wrapper, sessionImpl,
                 mode, "getSize", new Class[] {});
     }
 
     public Task<File, Integer> read(TaskMode mode, Buffer buffer, int offset,
             int len) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Integer>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper, sessionImpl,
                 mode, "read", new Class[] { Buffer.class, Integer.TYPE,
                         Integer.TYPE }, buffer, len);
     }
 
     public Task<File, Integer> write(TaskMode mode, Buffer buffer, int offset,
             int len) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Integer>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper, sessionImpl,
                 mode, "write", new Class[] { Buffer.class, Integer.TYPE,
                         Integer.TYPE }, buffer, len);
     }
 
     public Task<File, Long> seek(TaskMode mode, long arg1, SeekMode arg2)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Long>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Long>(wrapper, sessionImpl,
                 mode, "seek", new Class[] { Long.TYPE, SeekMode.class }, arg1,
                 arg2);
     }
 
     public Task<File, List<String>> modesE(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, List<String>>(wrapper,
-                session, mode, "modesE", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<File, List<String>>(wrapper,
+                sessionImpl, mode, "modesE", new Class[] {});
     }
 
     public Task<File, Integer> sizeE(TaskMode mode, String arg1, String arg2)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Integer>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper, sessionImpl,
                 mode, "sizeE", new Class[] { String.class, String.class },
                 arg1, arg2);
     }
 
     public Task<File, Integer> readE(TaskMode mode, String arg1, String arg2,
             Buffer arg3) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Integer>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper, sessionImpl,
                 mode, "readE", new Class[] { String.class, String.class,
                         Buffer.class }, arg1, arg2, arg3);
     }
 
     public Task<File, Integer> writeE(TaskMode mode, String arg1, String arg2,
             Buffer arg3) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Integer>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper, sessionImpl,
                 mode, "writeE", new Class[] { String.class, String.class,
                         Buffer.class }, arg1, arg2, arg3);
     }
 
     public Task<File, Integer> sizeP(TaskMode mode, String arg1)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Integer>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper, sessionImpl,
                 mode, "sizeP", new Class[] { String.class }, arg1);
     }
 
     public Task<File, Integer> readP(TaskMode mode, String arg1, Buffer arg2)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Integer>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper, sessionImpl,
                 mode, "readP", new Class[] { String.class, Buffer.class },
                 arg1, arg2);
     }
 
     public Task<File, Integer> writeP(TaskMode mode, String arg1, Buffer arg2)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Integer>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper, sessionImpl,
                 mode, "writeP", new Class[] { String.class, Buffer.class },
                 arg1, arg2);
     }
 
     public Task<File, Void> readV(TaskMode mode, IOVec[] arg1)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Void>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Void>(wrapper, sessionImpl,
                 mode, "readV", new Class[] { IOVec[].class }, (Object) arg1);
     }
 
     public Task<File, Void> writeV(TaskMode mode, IOVec[] arg1)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<File, Void>(wrapper, session,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Void>(wrapper, sessionImpl,
                 mode, "writeV", new Class[] { IOVec[].class }, (Object) arg1);
     }
 }

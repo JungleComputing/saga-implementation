@@ -35,7 +35,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
             proxy = (RPCSPI) SAGAEngine
                     .createAdaptorProxy(RPCSPI.class,
                             new Class[] { RPCWrapper.class,
-                                    org.ogf.saga.impl.session.Session.class,
+                                    org.ogf.saga.impl.session.SessionImpl.class,
                                     URL.class }, parameters);
         } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {

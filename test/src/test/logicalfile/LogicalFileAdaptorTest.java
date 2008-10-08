@@ -26,9 +26,9 @@ public class LogicalFileAdaptorTest {
     public AdaptorTestResult test(String adaptor, String[] hosts) {
 
         if (hosts.length != 2) {
-            System.out
+            System.err
                     .println("please provide 2 hosts (comma separated, no spaces)");
-            System.exit(1);
+            throw new Error("Provided wrong number of hosts");
         }
 
         AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor,

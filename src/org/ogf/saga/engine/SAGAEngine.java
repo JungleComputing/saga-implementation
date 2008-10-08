@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.jar.Attributes;
@@ -60,7 +61,10 @@ public class SAGAEngine {
         }
     }
   
-    private static class URLComparator implements Comparator<URL> {
+    private static class URLComparator implements Comparator<URL>, java.io.Serializable {
+        private static final long serialVersionUID = 1L;
+
+        // Serializable, because findbugs wants it.
         public int compare(URL u1, URL u2) {
             return u1.toString().compareTo(u2.toString());
         }
@@ -274,19 +278,19 @@ public class SAGAEngine {
         // Next, we find out  which adaptors are inside the adaptor jar.
         JarFile adaptorJar = new JarFile(adaptorJarFile, true);
         Attributes attributes = adaptorJar.getManifest().getMainAttributes();
-        for (Object key : attributes.keySet()) {
-            if (((Attributes.Name) key).toString().endsWith("Spi-class")) {
+        for (Map.Entry<Object,Object> entry : attributes.entrySet()) {
+            Attributes.Name key = (Attributes.Name) entry.getKey();
+            if (key.toString().endsWith("Spi-class")) {
                 // This is an adaptor!
                 // Now get the service provider interface name
                 // (for an attribute named 'FileSpi-class' the SPI name is
                 // 'File').
-                String spiName = ((Attributes.Name) key).toString().replace(
-                        "Spi-class", "");
+                String spiName = key.toString().replace("Spi-class", "");
                 
                 // A single jar may contain more than one adaptor. In that
                 // case, the list is comma-separated.
-                String[] adaptorClasses = attributes.getValue(
-                        (Attributes.Name) key).split(",");
+                String value = (String) entry.getValue();
+                String[] adaptorClasses = value.split(",");
                 for (String adaptorClass : adaptorClasses) {
                     ClassLoader context = Thread.currentThread().getContextClassLoader();
                     try {

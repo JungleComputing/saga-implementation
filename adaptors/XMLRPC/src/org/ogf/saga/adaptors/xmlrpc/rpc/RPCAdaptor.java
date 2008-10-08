@@ -16,7 +16,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.proxies.rpc.RPCWrapper;
 import org.ogf.saga.rpc.IOMode;
 import org.ogf.saga.rpc.Parameter;
@@ -34,10 +34,10 @@ public class RPCAdaptor extends RPCAdaptorBase {
     
     private boolean closed = false;
     
-    public RPCAdaptor(RPCWrapper wrapper, Session session, URL funcName)
+    public RPCAdaptor(RPCWrapper wrapper, SessionImpl sessionImpl, URL funcName)
             throws NotImplementedException, BadParameterException,
             NoSuccessException, DoesNotExistException, IncorrectURLException {
-        super(session, wrapper, funcName);
+        super(sessionImpl, wrapper, funcName);
         String scheme = funcName.getScheme();
         if ("any".equals(scheme)) {
             scheme = "xmlrpc";

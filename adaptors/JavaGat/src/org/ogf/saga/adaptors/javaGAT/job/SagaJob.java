@@ -32,8 +32,8 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaRuntimeException;
-import org.ogf.saga.impl.job.JobDescription;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.job.JobDescriptionImpl;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.task.State;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
@@ -51,7 +51,7 @@ import org.ogf.saga.url.URLFactory;
  * How much actually is implemented depends on the JavaGAT adaptor at hand.
  */
 
-public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener {
+public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements MetricListener, Cloneable {
     
     private static final Logger logger = LoggerFactory.getLogger(SagaJob.class);
 
@@ -63,23 +63,23 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     
     private static int jobCount = 0;
     
-    public SagaJob(JobServiceAdaptor service, JobDescription jobDescription,
-            Session session, GATContext gatContext) throws NotImplementedException,
+    public SagaJob(JobServiceAdaptor service, JobDescriptionImpl jobDescriptionImpl,
+            SessionImpl sessionImpl, GATContext gatContext) throws NotImplementedException,
             BadParameterException, NoSuccessException {
-        super(jobDescription, session);
+        super(jobDescriptionImpl, sessionImpl);
         this.service = service;
         this.gatContext = gatContext;
         gatJobDescription = new org.gridlab.gat.resources.JobDescription(
                 createSoftwareDescription(), createHardwareResourceDescription());
         try {
-            int count = Integer.parseInt(getV(JobDescription.NUMBEROFPROCESSES));
+            int count = Integer.parseInt(getV(JobDescriptionImpl.NUMBEROFPROCESSES));
             gatJobDescription.setProcessCount(count);
         } catch(Throwable e) {
             // ignored
         }
 
         try {
-            int hostCount = Integer.parseInt(getV(JobDescription.NUMBEROFPROCESSES)) /  Integer.parseInt(getV(JobDescription.PROCESSESPERHOST));
+            int hostCount = Integer.parseInt(getV(JobDescriptionImpl.NUMBEROFPROCESSES)) /  Integer.parseInt(getV(JobDescriptionImpl.PROCESSESPERHOST));
             // What to do if PROCESSESPERHOST is set but NUMBEROFPROCESSES is not???
             gatJobDescription.setResourceCount(hostCount);
         } catch(Throwable e) {
@@ -92,22 +92,24 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     
     private SagaJob(SagaJob orig) {
         super(orig);
-        gatContext = new GATContext();
-        gatContext.addPreferences(orig.gatContext.getPreferences());
-        for (SecurityContext c : orig.gatContext.getSecurityContexts()) {
-            gatContext.addSecurityContext(c);           
+        synchronized(orig) {
+            gatContext = new GATContext();
+            gatContext.addPreferences(orig.gatContext.getPreferences());
+            for (SecurityContext c : orig.gatContext.getSecurityContexts()) {
+                gatContext.addSecurityContext(c);           
+            }
+            service = orig.service;
+            gatJob = orig.gatJob;
+            savedState = orig.savedState;
+            gatJobDescription = new org.gridlab.gat.resources.JobDescription(
+                    orig.gatJobDescription.getSoftwareDescription(),
+                    createHardwareResourceDescription());
         }
-        service = orig.service;
-        gatJob = orig.gatJob;
-        savedState = orig.savedState;
-        gatJobDescription = new org.gridlab.gat.resources.JobDescription(
-                orig.gatJobDescription.getSoftwareDescription(),
-                createHardwareResourceDescription());
     }
     
     private String getV(String s) {
         try {
-            s = jobDescription.getAttribute(s);
+            s = jobDescriptionImpl.getAttribute(s);
             if ("".equals(s)) {
                 throw new Error("Not initialized");
             }
@@ -121,7 +123,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     private String[] getVec(String s) {
         String[] result;
         try {
-            result = jobDescription.getVectorAttribute(s);
+            result = jobDescriptionImpl.getVectorAttribute(s);
             if (result == null || result.length == 0) {
                 throw new Error("Not initialized");
             }
@@ -135,7 +137,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     private SoftwareDescription createSoftwareDescription()
             throws BadParameterException, NotImplementedException, NoSuccessException {
         try {
-            String s = getV(JobDescription.INTERACTIVE);
+            String s = getV(JobDescriptionImpl.INTERACTIVE);
             if ("True".equals(s)) {
                 throw new NotImplementedException("Interactive jobs cannot be implemented on JavaGAT");
             }
@@ -148,18 +150,18 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
         sd.addAttribute("sandbox.delete", "true");
         
         try {
-            String s = getV(JobDescription.EXECUTABLE);
+            String s = getV(JobDescriptionImpl.EXECUTABLE);
             sd.setExecutable(s);
          } catch(Throwable e) {
             throw new BadParameterException("Could not get Executable for job", e);
         }
         try {
-            sd.setArguments(getVec(JobDescription.ARGUMENTS));
+            sd.setArguments(getVec(JobDescriptionImpl.ARGUMENTS));
         } catch(Throwable e) {
             // ignored
         }
         try {
-            String[] env = getVec(JobDescription.ENVIRONMENT);
+            String[] env = getVec(JobDescriptionImpl.ENVIRONMENT);
             HashMap<String, Object> environment = new HashMap<String, Object>();
             for (String e : env) {
                 int index = e.indexOf('=');
@@ -174,7 +176,7 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
             // ignored
         }
         try {
-            sd.addAttribute("job.type", getV(JobDescription.SPMDVARIATION));
+            sd.addAttribute("job.type", getV(JobDescriptionImpl.SPMDVARIATION));
         } catch(Throwable e) {
             // ignored
         }
@@ -184,42 +186,42 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
         // notImplemented(JobDescription.JOBSTARTTIME);
 
         try {
-            sd.addAttribute("directory", getV(JobDescription.WORKINGDIRECTORY));
+            sd.addAttribute("directory", getV(JobDescriptionImpl.WORKINGDIRECTORY));
         } catch(Throwable e) {
             sd.addAttribute("directory", ".");
         }
         try {
-            sd.addAttribute("queue", getV(JobDescription.QUEUE));
+            sd.addAttribute("queue", getV(JobDescriptionImpl.QUEUE));
         } catch(Throwable e) {
             // ignored
         }
         try {
-            sd.addAttribute("memory.min", getV(JobDescription.TOTALPHYSICALMEMORY));
+            sd.addAttribute("memory.min", getV(JobDescriptionImpl.TOTALPHYSICALMEMORY));
         } catch(Throwable e) {
             // ignored
         }
         try {
-            sd.addAttribute("cputime.max", getV(JobDescription.TOTALCPUTIME));
+            sd.addAttribute("cputime.max", getV(JobDescriptionImpl.TOTALCPUTIME));
         } catch(Throwable e) {
             // ignored
         }
         try {
             sd.addAttribute("save.state", 
-                    ("True".equals(getV(JobDescription.CLEANUP)) ? "false" : "true"));
+                    ("True".equals(getV(JobDescriptionImpl.CLEANUP)) ? "false" : "true"));
         } catch(Throwable e) {
             // ignored
         }
         
-        URI stdin = getURI(JobDescription.INPUT);
+        URI stdin = getURI(JobDescriptionImpl.INPUT);
 
-        URI stdout = getURI(JobDescription.OUTPUT);
+        URI stdout = getURI(JobDescriptionImpl.OUTPUT);
 
-        URI stderr = getURI(JobDescription.ERROR);
+        URI stderr = getURI(JobDescriptionImpl.ERROR);
         
         String[] transfers = null;
         
         try {
-            transfers = getVec(JobDescription.FILETRANSFER);
+            transfers = getVec(JobDescriptionImpl.FILETRANSFER);
         } catch(Throwable e) {
             // ignored
         }
@@ -331,14 +333,14 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     private HardwareResourceDescription createHardwareResourceDescription() {
         HardwareResourceDescription hd = new HardwareResourceDescription();
         try {
-            String s = getV(JobDescription.TOTALCPUCOUNT);
+            String s = getV(JobDescriptionImpl.TOTALCPUCOUNT);
             hd.addResourceAttribute("cpu.count", s);
         } catch(Throwable e) {
             // ignored
         }
         
         try {
-            String[] hosts = getVec(JobDescription.CANDIDATEHOSTS);
+            String[] hosts = getVec(JobDescriptionImpl.CANDIDATEHOSTS);
             hd.addResourceAttribute("machine.node", hosts);
         } catch(Throwable e) {
             // ignored
@@ -346,13 +348,13 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
         
         try {
             hd.addResourceAttribute("cpu.type",
-                    getV(JobDescription.CPUARCHITECTURE));
+                    getV(JobDescriptionImpl.CPUARCHITECTURE));
         } catch(Throwable e) {
             // ignored
         }
         
         try {
-            String s = getV(JobDescription.OPERATINGSYSTEMTYPE);
+            String s = getV(JobDescriptionImpl.OPERATINGSYSTEMTYPE);
             SoftwareResourceDescription sd = new SoftwareResourceDescription();
             sd.addResourceAttribute("os.type", s);
             hd.addResourceDescription(sd);
@@ -643,8 +645,9 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     public void resume() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        if (state != State.SUSPENDED) {
-            throw new IncorrectStateException("resume() called when job state was " + state, this);
+        State s = getState();
+        if (s != State.SUSPENDED) {
+            throw new IncorrectStateException("resume() called when job state was " + s, this);
         }
         try {
             gatJob.resume();
@@ -664,8 +667,9 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements MetricListener
     public void suspend() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        if (state != State.RUNNING) {
-            throw new IncorrectStateException("suspend() called when job state was " + state, this);
+        State s = getState();
+        if (s != State.RUNNING) {
+            throw new IncorrectStateException("suspend() called when job state was " + s, this);
         }
         try {
             gatJob.hold();

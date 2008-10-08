@@ -1,10 +1,10 @@
 package org.ogf.saga.impl.job;
 
 import org.ogf.saga.impl.attributes.AttributeType;
-import org.ogf.saga.impl.attributes.Attributes;
+import org.ogf.saga.impl.attributes.AttributesImpl;
 import org.ogf.saga.job.JobDescription;
 
-public class JobDescriptionAttributes extends Attributes {
+public class JobDescriptionAttributes extends AttributesImpl {
 
     public JobDescriptionAttributes() {
         addAttribute(JobDescription.EXECUTABLE, AttributeType.STRING,

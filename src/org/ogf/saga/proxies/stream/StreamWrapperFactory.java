@@ -32,7 +32,7 @@ public class StreamWrapperFactory extends StreamFactory {
     @Override
     protected Task<StreamFactory, Stream> doCreateStream(TaskMode mode,
             Session session, URL name) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamFactory, Stream>(this,
+        return new org.ogf.saga.impl.task.TaskImpl<StreamFactory, Stream>(this,
                 session, mode, "doCreateStream", new Class[] { Session.class,
                         URL.class }, session, name);
     }
@@ -65,7 +65,7 @@ public class StreamWrapperFactory extends StreamFactory {
     protected Task<StreamFactory, StreamService> doCreateStreamService(
             TaskMode mode, Session session, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<StreamFactory, StreamService>(
+        return new org.ogf.saga.impl.task.TaskImpl<StreamFactory, StreamService>(
                 this, session, mode, "doCreateStreamService", new Class[] {
                         Session.class, URL.class }, session, name);
     }

@@ -35,9 +35,7 @@ public class FileInputStreamAdaptorTest {
             preferences.setAttribute("file.adaptor.name", "sshtrilead,commandlinessh,local");
             jobSession.addContext(preferences);
         } catch (Throwable e) {
-            System.err.println("Could not create session");
-            e.printStackTrace(System.err);
-            System.exit(1);
+            throw new Error("Could not create session", e);
         }
 
         run(host, jobSession, "fileinputstream-adaptor-test-init.sh");
@@ -106,8 +104,7 @@ public class FileInputStreamAdaptorTest {
             job.run();
             job.waitFor();
         } catch (Throwable e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new Error("run() got exception: ", e);
         }
     }
 

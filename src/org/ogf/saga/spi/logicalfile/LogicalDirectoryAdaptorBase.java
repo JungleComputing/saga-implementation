@@ -15,7 +15,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.logicalfile.LogicalDirectory;
 import org.ogf.saga.logicalfile.LogicalFile;
 import org.ogf.saga.logicalfile.LogicalFileFactory;
@@ -32,7 +32,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
 
     private LogicalDirectoryAttributes attributes;
     private int logicalFileFlags;
-    protected LogicalDirectoryWrapper wrapper;
+    protected LogicalDirectoryWrapper logicalDirectoryWrapper;
 
     private static int checkFlags(int flags) throws BadParameterException {
         int allowed = Flags.ALLNAMESPACEFLAGS.getValue()
@@ -45,16 +45,16 @@ public abstract class LogicalDirectoryAdaptorBase extends
     }
 
     public LogicalDirectoryAdaptorBase(LogicalDirectoryWrapper wrapper,
-            Session session, URL name, int flags)
+            SessionImpl sessionImpl, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
             BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        super(wrapper, session, name, checkFlags(flags)
+        super(wrapper, sessionImpl, name, checkFlags(flags)
                 & Flags.ALLNAMESPACEFLAGS.getValue());
-        this.wrapper = wrapper;
-        attributes = new LogicalDirectoryAttributes(wrapper, session, true);
+        this.logicalDirectoryWrapper = wrapper;
+        attributes = new LogicalDirectoryAttributes(wrapper, sessionImpl, true);
         logicalFileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
     }
 
@@ -114,8 +114,8 @@ public abstract class LogicalDirectoryAdaptorBase extends
     public Task<LogicalDirectory, List<URL>> find(TaskMode mode,
             String namePattern, String[] attrPattern, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<LogicalDirectory, List<URL>>(
-                wrapper, session, mode, "find", new Class[] { String.class,
+        return new org.ogf.saga.impl.task.TaskImpl<LogicalDirectory, List<URL>>(
+                logicalDirectoryWrapper, sessionImpl, mode, "find", new Class[] { String.class,
                         String[].class, Integer.TYPE }, namePattern,
                 attrPattern, flags);
     }
@@ -134,13 +134,13 @@ public abstract class LogicalDirectoryAdaptorBase extends
                             + "on logicalDirectory not opened for writing");
         }
         name = resolve(name);
-        return LogicalFileFactory.createLogicalDirectory(session, name, flags);
+        return LogicalFileFactory.createLogicalDirectory(sessionImpl, name, flags);
     }
 
     public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(
             TaskMode mode, URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<LogicalDirectory, LogicalDirectory>(
-                wrapper, session, mode, "openLogicalDir", new Class[] {
+        return new org.ogf.saga.impl.task.TaskImpl<LogicalDirectory, LogicalDirectory>(
+                logicalDirectoryWrapper, sessionImpl, mode, "openLogicalDir", new Class[] {
                         URL.class, Integer.TYPE }, name, flags);
     }
 
@@ -160,13 +160,13 @@ public abstract class LogicalDirectoryAdaptorBase extends
         }
 
         name = resolve(name);
-        return LogicalFileFactory.createLogicalFile(session, name, flags);
+        return LogicalFileFactory.createLogicalFile(sessionImpl, name, flags);
     }
 
     public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode,
             URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<LogicalDirectory, LogicalFile>(
-                wrapper, session, mode, "openLogicalFile", new Class[] {
+        return new org.ogf.saga.impl.task.TaskImpl<LogicalDirectory, LogicalFile>(
+                logicalDirectoryWrapper, sessionImpl, mode, "openLogicalFile", new Class[] {
                         URL.class, Integer.TYPE }, name, flags);
     }
 

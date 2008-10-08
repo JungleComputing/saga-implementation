@@ -13,7 +13,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSFactory;
@@ -26,14 +26,14 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
     private NSDirectory entry;
 
     public LogicalDirectoryAdaptor(LogicalDirectoryWrapper wrapper,
-            Session session, URL name, int flags)
+            SessionImpl sessionImpl, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
             BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        super(wrapper, session, name, flags);
-        entry = NSFactory.createNSDirectory(session, name, flags
+        super(wrapper, sessionImpl, name, flags);
+        entry = NSFactory.createNSDirectory(sessionImpl, name, flags
                 & Flags.ALLNAMESPACEFLAGS.getValue());
     }
 

@@ -2,12 +2,9 @@ package org.ogf.saga.adaptors.gridsam.job;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.icenigrid.gridsam.core.JobInstance;
 import org.icenigrid.gridsam.core.JobInstanceChangeListener;
 import org.icenigrid.gridsam.core.JobStage;
@@ -22,9 +19,11 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.job.JobDescription;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.job.JobDescriptionImpl;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.task.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is an implementation of the SAGA Job SPI on top of the GridSAM. Some
@@ -37,8 +36,8 @@ import org.ogf.saga.task.State;
  * method {@link #signal(int)} cannot be implemented.
  */
 
-public class SagaJob extends org.ogf.saga.impl.job.Job implements
-        JobInstanceChangeListener {
+public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
+        JobInstanceChangeListener, Cloneable {
 
     private static final Logger logger = LoggerFactory.getLogger(SagaJob.class);
 
@@ -68,13 +67,13 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
      */
     private static ClassLoader loader = SagaJob.class.getClassLoader();
 
-    public SagaJob(JobServiceAdaptor service, JobDescription jobDescription,
-            Session session) throws NotImplementedException,
+    public SagaJob(JobServiceAdaptor service, JobDescriptionImpl jobDescriptionImpl,
+            SessionImpl sessionImpl) throws NotImplementedException,
             BadParameterException, NoSuccessException {
-        super(jobDescription, session);
+        super(jobDescriptionImpl, sessionImpl);
         this.service = service;
 
-        jobDefinitionDocument = new JSDLGenerator(jobDescription,
+        jobDefinitionDocument = new JSDLGenerator(jobDescriptionImpl,
                 service.getWrapper()).getJSDL();
 
         if (logger.isDebugEnabled()) {
@@ -445,7 +444,8 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
             logger.warn("unknown job state: " + jobState.toString());
         }
         synchronized (this) {
-            notifyAll();
+            notifyAll();        // findbugs complains about a naked notify ...
+                                // but this is OK.
         }
     }
 
@@ -485,12 +485,10 @@ public class SagaJob extends org.ogf.saga.impl.job.Job implements
                 }
                 if (logger.isDebugEnabled()) {
                     StringBuilder props = new StringBuilder();
-                    Map properties = jobInstance.getProperties();
-                    Iterator iterator = properties.keySet().iterator();
-                    while (iterator.hasNext()) {
-                        Object next = iterator.next();
-                        props.append("\n    ").append(next).append("=").append(
-                                properties.get(next));
+                    Map<Object,Object> properties = jobInstance.getProperties();
+                    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+                        props.append("\n    ").append(entry.getKey()).append("=").append(
+                                properties.get(entry.getValue()));
                     }
                     logger.debug("job properties (from GridSAM)="
                             + props.toString());

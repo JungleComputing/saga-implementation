@@ -27,7 +27,7 @@ import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamState;
 import org.ogf.saga.url.URL;
 
-public class ConnectedStreamImpl extends ConnectedStream implements
+public final class ConnectedStreamImpl extends ConnectedStream implements
         ErrorInterface {
 
     private Socket socket = null;
@@ -58,7 +58,9 @@ public class ConnectedStreamImpl extends ConnectedStream implements
     public Object clone() throws CloneNotSupportedException {
         // TODO
         ConnectedStreamImpl clone = (ConnectedStreamImpl) super.clone();
-        clone.streamListenerException = null;
+        synchronized(clone) {
+            clone.streamListenerException = null;
+        }
         return clone;
     }
 
@@ -274,13 +276,13 @@ public class ConnectedStreamImpl extends ConnectedStream implements
 
     public StreamInputStream getInputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
-        return new org.ogf.saga.impl.stream.InputStream(session, listeningReader.getInputStream());
+        return new org.ogf.saga.impl.stream.InputStream(sessionImpl, listeningReader.getInputStream());
     }
 
     public StreamOutputStream getOutputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
         try {
-            return new org.ogf.saga.impl.stream.OutputStream(session, socket.getOutputStream());
+            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl, socket.getOutputStream());
         } catch (IOException e) {
             throw new SagaIOException(e);
         }

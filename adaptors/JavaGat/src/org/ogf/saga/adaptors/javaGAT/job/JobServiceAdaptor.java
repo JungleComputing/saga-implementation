@@ -18,7 +18,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobSelf;
@@ -38,18 +38,18 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
 
     static final String JAVAGAT = "JavaGAT";
 
-    public JobServiceAdaptor(JobServiceWrapper wrapper, Session session, URL rm) 
+    public JobServiceAdaptor(JobServiceWrapper wrapper, SessionImpl sessionImpl, URL rm) 
             throws NoSuccessException {
-        super(wrapper, session, rm);
+        super(wrapper, sessionImpl, rm);
               
         org.ogf.saga.adaptors.javaGAT.session.Session s;
               
-        synchronized(session) {           
+        synchronized(sessionImpl) {           
             s = (org.ogf.saga.adaptors.javaGAT.session.Session)
-                    session.getAdaptorSession(JAVAGAT);
+                    sessionImpl.getAdaptorSession(JAVAGAT);
             if (s == null) {
                 s = new org.ogf.saga.adaptors.javaGAT.session.Session();
-                session.putAdaptorSession(JAVAGAT, s);
+                sessionImpl.putAdaptorSession(JAVAGAT, s);
             }
         }
         gatContext = s.getGATContext();
@@ -72,7 +72,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         SagaJob job = new SagaJob(this,
-                (org.ogf.saga.impl.job.JobDescription) jd, session, gatContext);
+                (org.ogf.saga.impl.job.JobDescriptionImpl) jd, sessionImpl, gatContext);
         return job;
     }
     
