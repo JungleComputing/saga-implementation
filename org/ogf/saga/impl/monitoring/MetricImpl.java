@@ -27,9 +27,9 @@ import org.ogf.saga.session.Session;
 /**
  * Base implementation of metrics.
  */
-public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Metric {
+public class MetricImpl extends SagaObjectBase implements org.ogf.saga.monitoring.Metric {
     
-    protected static Logger logger = LoggerFactory.getLogger(Metric.class);
+    protected static final Logger logger = LoggerFactory.getLogger(MetricImpl.class);
     
     /** A thread pool to execute callbacks. */
     private static ExecutorService executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
@@ -39,14 +39,14 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         boolean busy = false;
         private Monitorable monitorable;
         final Callback cb;
-        private final Metric metric;
+        private final MetricImpl metricImpl;
         final int cookie;
         Context context;
         
         public CallbackHandler(Monitorable monitorable, Callback cb,
-                Metric metric, int cookie, Context context) {
+                MetricImpl metricImpl, int cookie, Context context) {
             this.cb = cb;
-            this.metric = metric;
+            this.metricImpl = metricImpl;
             this.cookie = cookie;
             this.monitorable = monitorable;
             this.context = context;
@@ -75,29 +75,29 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
             }
             
             if (logger.isDebugEnabled()) {
-                logger.debug("Invoking callback for metric " + metric);
+                logger.debug("Invoking callback for metric " + metricImpl);
             }
             boolean retval = true;
             try {
-                retval = cb.cb(monitorable, metric, context);
+                retval = cb.cb(monitorable, metricImpl, context);
             } catch(SagaException e) {
-                synchronized(metric) {
-                    metric.callbackExceptions.add(e);
+                synchronized(metricImpl) {
+                    metricImpl.callbackExceptions.add(e);
                 }
                 logger.warn("Callback throws exception", e);
                 // if callback throws an exception, keep the callback.
                 retval = true;
             } finally {
-                synchronized(metric) {
-                    metric.fireCount--;
-                    if (metric.fireCount == 0) {
-                        metric.notifyAll();
+                synchronized(metricImpl) {
+                    metricImpl.fireCount--;
+                    if (metricImpl.fireCount == 0) {
+                        metricImpl.notifyAll();
                     }
                 }
             }
             if (! retval) {
                 try {
-                    metric.removeCallback(cookie);
+                    metricImpl.removeCallback(cookie);
                 } catch(Throwable e) {
                     // ignored
                 }
@@ -111,25 +111,25 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         }
     };
     
-    private final MetricAttributes attributes;
-    private final ArrayList<CallbackHandler> callBacks;
+    private MetricAttributes attributes;
+    private ArrayList<CallbackHandler> callBacks;
     private Monitorable monitorable;    
     private int fireCount = 0;
     private final ArrayList<SagaException> callbackExceptions = new ArrayList<SagaException>();
     
-    Metric(Session session, String name, String desc, String mode,
+    MetricImpl(Session session, String name, String desc, String mode,
             String unit, String type, String value) throws NotImplementedException,
             BadParameterException {
         super(session);
         callBacks = new ArrayList<CallbackHandler>();
         attributes = new MetricAttributes();
         try {
-            attributes.setValue(Metric.NAME, name);
-            attributes.setValue(Metric.DESCRIPTION, desc);
-            attributes.setValue(Metric.MODE, mode);
-            attributes.setValue(Metric.TYPE, type);
-            attributes.setValue(Metric.UNIT, unit);
-            attributes.setValue(Metric.VALUE, value);
+            attributes.setValue(MetricImpl.NAME, name);
+            attributes.setValue(MetricImpl.DESCRIPTION, desc);
+            attributes.setValue(MetricImpl.MODE, mode);
+            attributes.setValue(MetricImpl.TYPE, type);
+            attributes.setValue(MetricImpl.UNIT, unit);
+            attributes.setValue(MetricImpl.VALUE, value);
         } catch(IncorrectStateException e) {
             // Should not happen.
         } catch(DoesNotExistException e) {
@@ -137,49 +137,65 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
         }        
     }
     
-    public Metric(Metric orig) {
+    public MetricImpl(MetricImpl orig) {
         super(orig);
-        attributes = new MetricAttributes(orig.attributes);
-        this.monitorable = orig.monitorable;
-        fireCount = 0;
-        callBacks = new ArrayList<CallbackHandler>(orig.callBacks);
-        for (int i = 0; i < callBacks.size(); i++) {
-            CallbackHandler cb = callBacks.get(i);
-            if (cb == null) {
-                continue;
+        synchronized(orig) {
+            attributes = new MetricAttributes(orig.attributes);
+            this.monitorable = orig.monitorable;
+            fireCount = 0;
+            callBacks = new ArrayList<CallbackHandler>(orig.callBacks);
+            for (int i = 0; i < callBacks.size(); i++) {
+                CallbackHandler cb = callBacks.get(i);
+                if (cb == null) {
+                    continue;
+                }
+                callBacks.set(i,
+                        new CallbackHandler(monitorable, cb.cb, this, cb.cookie, cb.context));
             }
-            callBacks.set(i,
-                    new CallbackHandler(monitorable, cb.cb, this, cb.cookie, cb.context));
         }
     }
        
-    public Object clone() {
-        return new Metric(this);
+    public synchronized Object clone() throws CloneNotSupportedException {
+        MetricImpl o = (MetricImpl) super.clone();
+        synchronized(o) {
+            o.attributes = new MetricAttributes(attributes);
+            o.fireCount = 0;
+            o.callBacks = new ArrayList<CallbackHandler>(callBacks);
+            for (int i = 0; i < o.callBacks.size(); i++) {
+                CallbackHandler cb = o.callBacks.get(i);
+                if (cb == null) {
+                    continue;
+                }
+                o.callBacks.set(i,
+                        new CallbackHandler(o.monitorable, cb.cb, this, cb.cookie, cb.context));
+            }
+        }
+        return o;
     }
       
-    public Metric(Monitorable monitorable, Session session, String name, String desc,
+    public MetricImpl(Monitorable monitorable, Session session, String name, String desc,
             String mode, String unit, String type, String value)
             throws NotImplementedException, BadParameterException {
         this(session, name, desc, mode, unit, type, value);
         this.monitorable = monitorable;
     }
     
-    Metric(String name, String desc,
+    MetricImpl(String name, String desc,
             String mode, String unit, String type, String value)
             throws NotImplementedException, BadParameterException {
         this(null, name, desc, mode, unit, type, value);
     }
      
     public String toString() {
-        return attributes.getValue(Metric.NAME);
+        return attributes.getValue(MetricImpl.NAME);
     }
  
     public void setValue(String value) throws NotImplementedException , BadParameterException, IncorrectStateException, DoesNotExistException {
-        attributes.setValue(Metric.VALUE, value);   
+        attributes.setValue(MetricImpl.VALUE, value);   
     }
     
     public void setMode(String value) throws NotImplementedException, BadParameterException, DoesNotExistException, IncorrectStateException {
-        attributes.setValue(Metric.MODE, value);
+        attributes.setValue(MetricImpl.MODE, value);
     }
     
     // This method is to be called from addMetric() implementations.
@@ -266,7 +282,7 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         try {
-            if ("Final".equals(attributes.getAttribute(Metric.MODE))) {
+            if ("Final".equals(attributes.getAttribute(MetricImpl.MODE))) {
                 throw new IncorrectStateException("Callback added on Final metric");
             }
         } catch(DoesNotExistException e) {
@@ -281,10 +297,10 @@ public class Metric extends SagaObjectBase implements org.ogf.saga.monitoring.Me
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
         try {
-            if ("Final".equals(attributes.getAttribute(Metric.MODE))) {
+            if ("Final".equals(attributes.getAttribute(MetricImpl.MODE))) {
                 throw new IncorrectStateException("fire called on Final metric");
             }
-            if (! "ReadWrite".equals(attributes.getAttribute(Metric.MODE))) {
+            if (! "ReadWrite".equals(attributes.getAttribute(MetricImpl.MODE))) {
                 throw new PermissionDeniedException("file called on non-readwrite metric");
             }
         } catch(DoesNotExistException e) {

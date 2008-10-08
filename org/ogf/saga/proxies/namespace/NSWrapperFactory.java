@@ -41,7 +41,7 @@ public class NSWrapperFactory extends NSFactory {
     protected Task<NSFactory, NSDirectory> doCreateNSDirectory(TaskMode mode,
             Session session, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSFactory, NSDirectory>(this,
+        return new org.ogf.saga.impl.task.TaskImpl<NSFactory, NSDirectory>(this,
                 session, mode, "doCreateNSDirectory", new Class[] {
                         Session.class, URL.class, Integer.TYPE }, session,
                 name, flags);
@@ -50,7 +50,7 @@ public class NSWrapperFactory extends NSFactory {
     protected Task<NSFactory, NSEntry> doCreateNSEntry(TaskMode mode,
             Session session, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSFactory, NSEntry>(this,
+        return new org.ogf.saga.impl.task.TaskImpl<NSFactory, NSEntry>(this,
                 session, mode, "doCreateNSEntry", new Class[] { Session.class,
                         URL.class, Integer.TYPE }, session, name, flags);
     }

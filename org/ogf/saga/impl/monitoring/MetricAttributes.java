@@ -5,16 +5,16 @@ import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.attributes.AttributeType;
-import org.ogf.saga.impl.attributes.Attributes;
+import org.ogf.saga.impl.attributes.AttributesImpl;
 
-class MetricAttributes extends Attributes {
+class MetricAttributes extends AttributesImpl {
     MetricAttributes() {
-        addAttribute(Metric.NAME, AttributeType.STRING, false, true, false, false);
-        addAttribute(Metric.DESCRIPTION, AttributeType.STRING, false, true, false, false);
-        addAttribute(Metric.MODE, AttributeType.STRING, false, true, false, false);
-        addAttribute(Metric.UNIT, AttributeType.STRING, false, true, false, false);
-        addAttribute(Metric.TYPE, AttributeType.STRING, false, true, false, false);
-        addAttribute(Metric.VALUE, AttributeType.STRING, false, false, false, false);
+        addAttribute(MetricImpl.NAME, AttributeType.STRING, false, true, false, false);
+        addAttribute(MetricImpl.DESCRIPTION, AttributeType.STRING, false, true, false, false);
+        addAttribute(MetricImpl.MODE, AttributeType.STRING, false, true, false, false);
+        addAttribute(MetricImpl.UNIT, AttributeType.STRING, false, true, false, false);
+        addAttribute(MetricImpl.TYPE, AttributeType.STRING, false, true, false, false);
+        addAttribute(MetricImpl.VALUE, AttributeType.STRING, false, false, false, false);
     }
     
     MetricAttributes(MetricAttributes orig) {
@@ -32,7 +32,7 @@ class MetricAttributes extends Attributes {
     
     protected void checkValueType(String key, AttributeType type, String value)
             throws BadParameterException {
-        if (Metric.TYPE.equals(key)) {
+        if (MetricImpl.TYPE.equals(key)) {
             if (! STRING.equals(value)
                 && ! INT.equals(value)
                 && ! ENUM.equals(value)
@@ -42,7 +42,7 @@ class MetricAttributes extends Attributes {
                 && ! TRIGGER.equals(value)) {
                 throw new BadParameterException("Illegal metric type: " + value);
             }
-        } else if (Metric.MODE.equals(key)) {
+        } else if (MetricImpl.MODE.equals(key)) {
             if (! "ReadOnly".equals(value)
                 && ! "ReadWrite".equals(value)
                 && ! "Final".equals(value)) {

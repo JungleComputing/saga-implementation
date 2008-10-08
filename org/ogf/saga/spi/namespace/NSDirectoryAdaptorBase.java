@@ -21,7 +21,7 @@ import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.attributes.PatternConverter;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
@@ -71,19 +71,18 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
     }
 
-    protected static Logger logger = LoggerFactory
-            .getLogger(NSDirectoryAdaptorBase.class);
+    protected static final Logger logger = LoggerFactory.getLogger(NSDirectoryAdaptorBase.class);
 
     protected NSDirectoryWrapper wrapper;
 
     protected NSDirectoryAdaptorBase(NSDirectoryWrapper wrapper,
-            Session session, URL name, int flags)
+            SessionImpl sessionImpl, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
             BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        super(wrapper, session, name, flags);
+        super(wrapper, sessionImpl, name, flags);
         this.wrapper = wrapper;
     }
 
@@ -102,8 +101,8 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
     public Task<NSDirectory, Void> changeDir(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "changeDir", new Class[] { URL.class }, name);
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "changeDir", new Class[] { URL.class }, name);
     }
 
     protected void checkDirCopyFlags(int flags) throws IncorrectStateException,
@@ -122,48 +121,48 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
     public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "copy", new Class[] { URL.class, URL.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "copy", new Class[] { URL.class, URL.class,
                         Integer.TYPE }, source, target, flags);
     }
 
     public Task<NSDirectory, Void> copy(TaskMode mode, String source,
             URL target, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "copy", new Class[] { String.class, URL.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "copy", new Class[] { String.class, URL.class,
                         Integer.TYPE }, source, target, flags);
     }
 
     public Task<NSDirectory, Boolean> exists(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper,
-                session, mode, "exists", new Class[] { URL.class }, name);
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Boolean>(wrapper,
+                sessionImpl, mode, "exists", new Class[] { URL.class }, name);
     }
 
     public Task<NSDirectory, List<URL>> find(TaskMode mode, String pattern,
             int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, List<URL>>(wrapper,
-                session, mode, "find",
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, List<URL>>(wrapper,
+                sessionImpl, mode, "find",
                 new Class[] { String.class, Integer.TYPE }, pattern, flags);
     }
 
     public Task<NSDirectory, URL> getEntry(TaskMode mode, int entryNo)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, URL>(wrapper,
-                session, mode, "getEntry", new Class[] { Integer.TYPE },
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, URL>(wrapper,
+                sessionImpl, mode, "getEntry", new Class[] { Integer.TYPE },
                 entryNo);
     }
 
     public Task<NSDirectory, Integer> getNumEntries(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Integer>(wrapper,
-                session, mode, "getNumEntries", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Integer>(wrapper,
+                sessionImpl, mode, "getNumEntries", new Class[] {});
     }
 
     public Task<NSDirectory, Boolean> isDir(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper,
-                session, mode, "isDir", new Class[] { URL.class }, name);
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Boolean>(wrapper,
+                sessionImpl, mode, "isDir", new Class[] { URL.class }, name);
     }
 
     protected URL resolveToDir(URL url) throws NotImplementedException,
@@ -361,27 +360,27 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
     public Task<NSDirectory, Boolean> isEntry(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper,
-                session, mode, "isEntry", new Class[] { URL.class }, name);
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Boolean>(wrapper,
+                sessionImpl, mode, "isEntry", new Class[] { URL.class }, name);
     }
 
     public Task<NSDirectory, Boolean> isLink(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Boolean>(wrapper,
-                session, mode, "isLink", new Class[] { URL.class }, name);
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Boolean>(wrapper,
+                sessionImpl, mode, "isLink", new Class[] { URL.class }, name);
     }
 
     public Task<NSDirectory, Void> link(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "link", new Class[] { URL.class, URL.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "link", new Class[] { URL.class, URL.class,
                         Integer.TYPE }, source, target, flags);
     }
 
     public Task<NSDirectory, Void> link(TaskMode mode, String source,
             URL target, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "link", new Class[] { String.class, URL.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "link", new Class[] { String.class, URL.class,
                         Integer.TYPE }, source, target, flags);
     }
 
@@ -429,7 +428,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             if (resultList.size() == 1 && isDir(resultList.get(0))) {
                 // Pattern indicates a single directory. In this case, list the
                 // contents of the directory (like "ls").
-                NSDirectory dir = NSFactory.createNSDirectory(session, nameUrl
+                NSDirectory dir = NSFactory.createNSDirectory(sessionImpl, nameUrl
                         .resolve(resultList.get(0)), Flags.NONE.getValue());
                 return dir.list(".", flags);
             }
@@ -450,8 +449,8 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
     public Task<NSDirectory, List<URL>> list(TaskMode mode, String pattern,
             int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, List<URL>>(wrapper,
-                session, mode, "list",
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, List<URL>>(wrapper,
+                sessionImpl, mode, "list",
                 new Class[] { String.class, Integer.TYPE }, pattern, flags);
     }
 
@@ -471,28 +470,28 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
                     "Flags not allowed for makeDir method: " + flags);
         }
         target = resolveToDir(target);
-        NSFactory.createNSDirectory(session, target, flags
+        NSFactory.createNSDirectory(sessionImpl, target, flags
                 | Flags.CREATE.getValue());
     }
 
     public Task<NSDirectory, Void> makeDir(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "makeDir",
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "makeDir",
                 new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 
     public Task<NSDirectory, Void> move(TaskMode mode, URL src, URL dest,
             int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "move", new Class[] { URL.class, URL.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "move", new Class[] { URL.class, URL.class,
                         Integer.TYPE }, src, dest, flags);
     }
 
     public Task<NSDirectory, Void> move(TaskMode mode, String src, URL dest,
             int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "move", new Class[] { String.class, URL.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "move", new Class[] { String.class, URL.class,
                         Integer.TYPE }, src, dest, flags);
     }
 
@@ -504,13 +503,13 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             NoSuccessException {
         checkNotClosed();
         name = resolveToDir(name);
-        return NSFactory.createNSEntry(session, name, flags);
+        return NSFactory.createNSEntry(sessionImpl, name, flags);
     }
 
     public Task<NSDirectory, NSEntry> open(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, NSEntry>(wrapper,
-                session, mode, "open", new Class[] { URL.class, Integer.TYPE },
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, NSEntry>(wrapper,
+                sessionImpl, mode, "open", new Class[] { URL.class, Integer.TYPE },
                 name, flags);
     }
 
@@ -522,21 +521,21 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
         name = resolveToDir(name);
-        return NSFactory.createNSDirectory(session, name, flags);
+        return NSFactory.createNSDirectory(sessionImpl, name, flags);
     }
 
     public Task<NSDirectory, org.ogf.saga.namespace.NSDirectory> openDir(
             TaskMode mode, URL name, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, NSDirectory>(
-                wrapper, session, mode, "openDir", new Class[] { URL.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, NSDirectory>(
+                wrapper, sessionImpl, mode, "openDir", new Class[] { URL.class,
                         Integer.TYPE }, name, flags);
     }
 
     public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL name,
             String id, int permissions, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "permissionsAllow", new Class[] { URL.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "permissionsAllow", new Class[] { URL.class,
                         String.class, Integer.TYPE, Integer.TYPE }, name, id,
                 permissions, flags);
     }
@@ -544,8 +543,8 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
     public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, String name,
             String id, int permissions, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "permissionsAllow", new Class[] { String.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "permissionsAllow", new Class[] { String.class,
                         String.class, Integer.TYPE, Integer.TYPE }, name, id,
                 permissions, flags);
     }
@@ -553,8 +552,8 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
     public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL name,
             String id, int permissions, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "permissionsDeny", new Class[] { URL.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "permissionsDeny", new Class[] { URL.class,
                         String.class, Integer.TYPE, Integer.TYPE }, name, id,
                 permissions, flags);
     }
@@ -562,29 +561,29 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
     public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, String name,
             String id, int permissions, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "permissionsDeny", new Class[] { String.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "permissionsDeny", new Class[] { String.class,
                         String.class, Integer.TYPE, Integer.TYPE }, name, id,
                 permissions, flags);
     }
 
     public Task<NSDirectory, URL> readLink(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, URL>(wrapper,
-                session, mode, "readlink", new Class[] { URL.class }, name);
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, URL>(wrapper,
+                sessionImpl, mode, "readlink", new Class[] { URL.class }, name);
     }
 
     public Task<NSDirectory, Void> remove(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "remove",
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "remove",
                 new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 
     public Task<NSDirectory, Void> remove(TaskMode mode, String name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<NSDirectory, Void>(wrapper,
-                session, mode, "remove", new Class[] { String.class,
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
+                sessionImpl, mode, "remove", new Class[] { String.class,
                         Integer.TYPE }, name, flags);
     }
 }

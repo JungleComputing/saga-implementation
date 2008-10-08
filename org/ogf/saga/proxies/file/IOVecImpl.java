@@ -2,15 +2,15 @@ package org.ogf.saga.proxies.file;
 
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.NotImplementedException;
-import org.ogf.saga.impl.buffer.Buffer;
+import org.ogf.saga.impl.buffer.BufferImpl;
 
-public class IOVec extends Buffer implements org.ogf.saga.file.IOVec {
+public class IOVecImpl extends BufferImpl implements org.ogf.saga.file.IOVec {
 
     private int lenIn;
     private int lenOut = 0;
     private int offset = 0;
 
-    public IOVec(byte[] data, int lenIn) throws NotImplementedException,
+    public IOVecImpl(byte[] data, int lenIn) throws NotImplementedException,
             BadParameterException {
         super(data);
         if (lenIn > size) {
@@ -20,7 +20,7 @@ public class IOVec extends Buffer implements org.ogf.saga.file.IOVec {
         this.lenIn = lenIn;
     }
 
-    public IOVec(int size, int lenIn) throws NotImplementedException,
+    public IOVecImpl(int size, int lenIn) throws NotImplementedException,
             BadParameterException {
         super(size);
         if (size >= 0 && lenIn > size) {
@@ -30,25 +30,21 @@ public class IOVec extends Buffer implements org.ogf.saga.file.IOVec {
         this.lenIn = lenIn;
     }
 
-    public IOVec(byte[] data) throws BadParameterException,
+    public IOVecImpl(byte[] data) throws BadParameterException,
             NotImplementedException {
         this(data, data.length);
     }
 
-    public IOVec(int size) throws BadParameterException,
+    public IOVecImpl(int size) throws BadParameterException,
             NotImplementedException {
         this(size, size);
     }
 
-    public IOVec(IOVec orig) {
+    public IOVecImpl(IOVecImpl orig) {
         super(orig);
         this.lenIn = orig.lenIn;
         this.lenOut = orig.lenOut;
         this.offset = orig.offset;
-    }
-
-    public Object clone() {
-        return new IOVec(this);
     }
 
     public int getLenIn() {

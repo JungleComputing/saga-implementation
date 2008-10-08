@@ -40,7 +40,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         try {
             proxy = (NSEntrySPI) SAGAEngine.createAdaptorProxy(
                     NSEntrySPI.class, new Class[] { NSEntryWrapper.class,
-                            org.ogf.saga.impl.session.Session.class, URL.class,
+                            org.ogf.saga.impl.session.SessionImpl.class, URL.class,
                             Integer.TYPE }, parameters);
         } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {

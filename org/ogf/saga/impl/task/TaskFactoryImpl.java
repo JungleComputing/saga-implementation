@@ -5,10 +5,10 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.task.TaskContainer;
 
-public class TaskFactory extends org.ogf.saga.task.TaskFactory {
+public class TaskFactoryImpl extends org.ogf.saga.task.TaskFactory {
 
     protected TaskContainer doCreateTaskContainer() throws NotImplementedException,
             TimeoutException, NoSuccessException {
-        return new org.ogf.saga.impl.task.TaskContainer();
+        return new org.ogf.saga.impl.task.TaskContainerImpl();
     }
 }

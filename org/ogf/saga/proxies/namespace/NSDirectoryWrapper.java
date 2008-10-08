@@ -41,7 +41,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             proxy = (NSDirectorySPI) SAGAEngine.createAdaptorProxy(
                     NSDirectorySPI.class, new Class[] {
                             NSDirectoryWrapper.class,
-                            org.ogf.saga.impl.session.Session.class, URL.class,
+                            org.ogf.saga.impl.session.SessionImpl.class, URL.class,
                             Integer.TYPE }, parameters);
             super.setProxy(proxy);
         } catch (org.ogf.saga.error.SagaException e) {

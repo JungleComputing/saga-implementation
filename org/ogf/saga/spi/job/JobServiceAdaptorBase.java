@@ -13,7 +13,7 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.impl.SagaRuntimeException;
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
@@ -29,9 +29,9 @@ public abstract class JobServiceAdaptorBase extends
 
     protected URL rm;
 
-    public JobServiceAdaptorBase(JobServiceWrapper wrapper, Session session,
+    public JobServiceAdaptorBase(JobServiceWrapper wrapper, SessionImpl sessionImpl,
             URL rm) {
-        super(session, wrapper);
+        super(sessionImpl, wrapper);
         this.rm = rm;
     }
 
@@ -146,35 +146,35 @@ public abstract class JobServiceAdaptorBase extends
 
     public Task<JobService, Job> createJob(TaskMode mode, JobDescription jd)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, Job>(wrapper,
-                session, mode, "createJob",
+        return new org.ogf.saga.impl.task.TaskImpl<JobService, Job>(wrapper,
+                sessionImpl, mode, "createJob",
                 new Class[] { JobDescription.class }, jd);
     }
 
     public Task<JobService, Job> runJob(TaskMode mode, String commandLine,
             String host, boolean interactive) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, Job>(wrapper,
-                session, mode, "runJob", new Class[] { String.class,
+        return new org.ogf.saga.impl.task.TaskImpl<JobService, Job>(wrapper,
+                sessionImpl, mode, "runJob", new Class[] { String.class,
                         String.class, Boolean.TYPE }, commandLine, host,
                 interactive);
     }
 
     public Task<JobService, Job> getJob(TaskMode mode, String jobId)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, Job>(wrapper,
-                session, mode, "getJob", new Class[] { String.class }, jobId);
+        return new org.ogf.saga.impl.task.TaskImpl<JobService, Job>(wrapper,
+                sessionImpl, mode, "getJob", new Class[] { String.class }, jobId);
     }
 
     public Task<JobService, JobSelf> getSelf(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, JobSelf>(wrapper,
-                session, mode, "getSelf", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<JobService, JobSelf>(wrapper,
+                sessionImpl, mode, "getSelf", new Class[] {});
     }
 
     public Task<JobService, List<String>> list(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<JobService, List<String>>(
-                wrapper, session, mode, "list", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<JobService, List<String>>(
+                wrapper, sessionImpl, mode, "list", new Class[] {});
     }
 
 }

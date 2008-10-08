@@ -44,7 +44,7 @@ public class FileInputStreamWrapper extends FileInputStream {
             proxy = (FileInputStreamSPI) SAGAEngine
                     .createAdaptorProxy(FileInputStreamSPI.class,
                             new Class[] { FileInputStreamWrapper.class,
-                                    org.ogf.saga.impl.session.Session.class,
+                                    org.ogf.saga.impl.session.SessionImpl.class,
                                     URL.class }, parameters);
             sagaObject = new InputSagaObject(session);
         } catch (org.ogf.saga.error.SagaException e) {

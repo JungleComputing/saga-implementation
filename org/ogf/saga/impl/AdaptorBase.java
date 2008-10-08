@@ -1,6 +1,6 @@
 package org.ogf.saga.impl;
 
-import org.ogf.saga.impl.session.Session;
+import org.ogf.saga.impl.session.SessionImpl;
 
 /**
  * Base class for all adaptors. Makes sure that all adaptors are
@@ -17,14 +17,14 @@ public abstract class AdaptorBase<T> implements Cloneable {
     protected T wrapper;
     
     /** The session of the adaptor. */
-    protected Session session;
+    protected SessionImpl sessionImpl;
     
     /** 
      * Constructor with the specified wrapper.
      * @param wrapper the wrapper.
      */
-    protected AdaptorBase(Session session, T wrapper) {
-        this.session = session;
+    protected AdaptorBase(SessionImpl sessionImpl, T wrapper) {
+        this.sessionImpl = sessionImpl;
         this.wrapper = wrapper;
     }
 

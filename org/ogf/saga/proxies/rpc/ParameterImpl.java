@@ -5,29 +5,29 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.rpc.IOMode;
 
-public class Parameter extends SagaObjectBase implements
+public class ParameterImpl extends SagaObjectBase implements
         org.ogf.saga.rpc.Parameter {
 
     IOMode mode;
     Object data;
 
-    protected Parameter() throws NotImplementedException, BadParameterException {
+    protected ParameterImpl() throws NotImplementedException, BadParameterException {
         mode = IOMode.IN;
     }
 
-    protected Parameter(IOMode mode) throws NotImplementedException,
+    protected ParameterImpl(IOMode mode) throws NotImplementedException,
             BadParameterException {
         this.mode = mode;
     }
 
-    protected Parameter(Object b) throws NotImplementedException,
+    protected ParameterImpl(Object b) throws NotImplementedException,
             BadParameterException {
         super();
         this.data = b;
         this.mode = IOMode.IN;
     }
 
-    protected Parameter(Object b, IOMode mode) throws NotImplementedException,
+    protected ParameterImpl(Object b, IOMode mode) throws NotImplementedException,
             BadParameterException {
         this.data = b;
         this.mode = mode;

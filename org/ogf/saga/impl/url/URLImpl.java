@@ -11,7 +11,7 @@ import org.ogf.saga.impl.SagaObjectBase;
  * URL class as specified by SAGA. The java.net.URL class is not usable because
  * of all kinds of side-effects.
  */
-public class URL extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneable {
+public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneable {
     private URI u;
 
     /**
@@ -22,7 +22,7 @@ public class URL extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneab
      * @exception BadParameterException
      *                is thrown when there is a syntax error in the parameter.
      */
-    public URL(String url) throws BadParameterException, NoSuccessException {
+    public URLImpl(String url) throws BadParameterException, NoSuccessException {
         try {
             u = new URI(url);
         } catch (URISyntaxException e) {
@@ -30,12 +30,12 @@ public class URL extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneab
         }
     }
 
-    private URL(URI u) {
+    private URLImpl(URI u) {
         this.u = u;
     }
     
     public Object clone() throws CloneNotSupportedException {
-        URL o = (URL) super.clone();
+        URLImpl o = (URLImpl) super.clone();
         o.u = URI.create(u.toString());
         return o;
         
@@ -203,7 +203,7 @@ public class URL extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneab
             // Not quite correct: the SAGA specs say that NoSuccess should be
             // thrown when the scheme is not supported. How to check this
             // here ???
-            return new URL(url);
+            return new URLImpl(url);
         } catch (URISyntaxException e) {
             throw new BadParameterException("syntax error in scheme", e);
         }
@@ -217,10 +217,10 @@ public class URL extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneab
         if (o == null) {
             return false;
         }
-        if (!(o instanceof URL)) {
+        if (!(o instanceof URLImpl)) {
             return false;
         }
-        URL other = (URL) o;
+        URLImpl other = (URLImpl) o;
         return u.equals(other.u);
     }
 
@@ -244,7 +244,7 @@ public class URL extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneab
             return url;
         }
 
-        return new URL(uri);
+        return new URLImpl(uri);
     }
 
     /* (non-Javadoc)
@@ -257,12 +257,12 @@ public class URL extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneab
     /* (non-Javadoc)
      * @see org.ogf.saga.url.URL#normalize()
      */
-    public URL normalize() {
+    public URLImpl normalize() {
         URI uri = u.normalize();
         if (uri == u) {
             return this;
         }
-        return new URL(uri);
+        return new URLImpl(uri);
     }
 
 }

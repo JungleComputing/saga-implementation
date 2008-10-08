@@ -12,23 +12,25 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 
-public class JobDescription extends SagaObjectBase implements
-        org.ogf.saga.job.JobDescription {
+public class JobDescriptionImpl extends SagaObjectBase implements
+        org.ogf.saga.job.JobDescription, Cloneable {
 
-    final JobDescriptionAttributes attributes;
+    JobDescriptionAttributes attributes;
     
-    public JobDescription() {
+    public JobDescriptionImpl() {
         super((Session) null);
         attributes = new JobDescriptionAttributes();
     }
     
-    public JobDescription(JobDescription orig) {
+    public JobDescriptionImpl(JobDescriptionImpl orig) {
         super(orig);
         attributes = new JobDescriptionAttributes(orig.attributes);
     }
 
-    public Object clone() {
-        return new JobDescription(this);
+    public Object clone() throws CloneNotSupportedException {
+        JobDescriptionImpl o = (JobDescriptionImpl) super.clone();
+        o.attributes = new JobDescriptionAttributes(attributes);
+        return o;
     }
 
     public String[] findAttributes(String... patterns) throws NotImplementedException,

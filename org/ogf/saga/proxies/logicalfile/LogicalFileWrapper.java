@@ -40,7 +40,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             proxy = (LogicalFileSPI) SAGAEngine.createAdaptorProxy(
                     LogicalFileSPI.class, new Class[] {
                             LogicalFileWrapper.class,
-                            org.ogf.saga.impl.session.Session.class, URL.class,
+                            org.ogf.saga.impl.session.SessionImpl.class, URL.class,
                             Integer.TYPE }, parameters);
             super.setProxy(proxy);
         } catch (org.ogf.saga.error.SagaException e) {

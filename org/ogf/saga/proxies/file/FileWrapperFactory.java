@@ -62,7 +62,7 @@ public class FileWrapperFactory extends FileFactory {
     protected Task<FileFactory, Directory> doCreateDirectory(TaskMode mode,
             Session session, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileFactory, Directory>(this,
+        return new org.ogf.saga.impl.task.TaskImpl<FileFactory, Directory>(this,
                 session, mode, "doCreateDirectory", new Class[] {
                         Session.class, URL.class, Integer.TYPE }, session,
                 name, flags);
@@ -71,7 +71,7 @@ public class FileWrapperFactory extends FileFactory {
     protected Task<FileFactory, File> doCreateFile(TaskMode mode,
             Session session, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileFactory, File>(this,
+        return new org.ogf.saga.impl.task.TaskImpl<FileFactory, File>(this,
                 session, mode, "doCreateFile", new Class[] { Session.class,
                         URL.class, Integer.TYPE }, session, name, flags);
     }
@@ -79,7 +79,7 @@ public class FileWrapperFactory extends FileFactory {
     protected Task<FileFactory, FileInputStream> doCreateFileInputStream(
             TaskMode mode, Session session, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileFactory, FileInputStream>(
+        return new org.ogf.saga.impl.task.TaskImpl<FileFactory, FileInputStream>(
                 this, session, mode, "doCreateFileInputStream", new Class[] {
                         Session.class, URL.class }, session, name);
     }
@@ -87,7 +87,7 @@ public class FileWrapperFactory extends FileFactory {
     protected Task<FileFactory, FileOutputStream> doCreateFileOutputStream(
             TaskMode mode, Session session, URL name, boolean append)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<FileFactory, FileOutputStream>(
+        return new org.ogf.saga.impl.task.TaskImpl<FileFactory, FileOutputStream>(
                 this, session, mode, "doCreateFileOutputStream", new Class[] {
                         Session.class, URL.class, Boolean.TYPE }, session,
                 name, append);
@@ -96,24 +96,24 @@ public class FileWrapperFactory extends FileFactory {
     protected org.ogf.saga.file.IOVec doCreateIOVec(byte[] data, int lenIn)
             throws BadParameterException, NoSuccessException,
             NotImplementedException {
-        return new IOVec(data, lenIn);
+        return new IOVecImpl(data, lenIn);
     }
 
     protected org.ogf.saga.file.IOVec doCreateIOVec(int size, int lenIn)
             throws BadParameterException, NoSuccessException,
             NotImplementedException {
-        return new IOVec(size, lenIn);
+        return new IOVecImpl(size, lenIn);
     }
 
     protected org.ogf.saga.file.IOVec doCreateIOVec(byte[] data)
             throws BadParameterException, NoSuccessException,
             NotImplementedException {
-        return new IOVec(data);
+        return new IOVecImpl(data);
     }
 
     protected org.ogf.saga.file.IOVec doCreateIOVec(int size)
             throws BadParameterException, NoSuccessException,
             NotImplementedException {
-        return new IOVec(size);
+        return new IOVecImpl(size);
     }
 }

@@ -17,7 +17,7 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaRuntimeException;
-import org.ogf.saga.impl.monitoring.Metric;
+import org.ogf.saga.impl.monitoring.MetricImpl;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.task.State;
 import org.ogf.saga.task.Task;
@@ -28,50 +28,50 @@ import org.ogf.saga.task.TaskMode;
  * Rather, a JobService SPI can use this class as a base class to construct jobs
  * from.
  */
-public abstract class Job extends org.ogf.saga.impl.task.Task<Void, Void> implements
+public abstract class JobImpl extends org.ogf.saga.impl.task.TaskImpl<Void, Void> implements
         org.ogf.saga.job.Job {
 
     private JobAttributes attributes;
-    protected JobDescription jobDescription;
-    protected Metric jobState;
-    protected Metric jobStateDetail;
-    protected Metric jobSignal;
-    protected Metric jobCpuTime;
-    protected Metric jobMemoryUse;
-    protected Metric jobVMemoryUse;
-    protected Metric jobPerformance;
+    protected JobDescriptionImpl jobDescriptionImpl;
+    protected MetricImpl jobState;
+    protected MetricImpl jobStateDetail;
+    protected MetricImpl jobSignal;
+    protected MetricImpl jobCpuTime;
+    protected MetricImpl jobMemoryUse;
+    protected MetricImpl jobVMemoryUse;
+    protected MetricImpl jobPerformance;
     
-    public Job(JobDescription jobDescription, Session session)
+    public JobImpl(JobDescriptionImpl jobDescriptionImpl, Session session)
             throws NotImplementedException, BadParameterException {
         super(session, null);
         attributes = new JobAttributes(this, session);
-        this.jobDescription = new JobDescription(jobDescription);
+        this.jobDescriptionImpl = new JobDescriptionImpl(jobDescriptionImpl);
 
-        jobState = new Metric(this, session,
+        jobState = new MetricImpl(this, session,
                 JOB_STATE,
                 "fires on state changes of the job, and has the literal value of the job state enum",
                 "ReadOnly", "1", "Enum", "New");
-        jobStateDetail = new Metric(this, session,
+        jobStateDetail = new MetricImpl(this, session,
                 JOB_STATEDETAIL,
                 "fires as a job changes its state detail",
                 "ReadOnly", "1", "String", "");
-        jobSignal = new Metric(this, session,
+        jobSignal = new MetricImpl(this, session,
                 JOB_SIGNAL,
                 "fires as the job receives a signal, and has a value indicating the signal number",
                 "ReadOnly", "1", "Int", "");
-        jobCpuTime = new Metric(this, session,
+        jobCpuTime = new MetricImpl(this, session,
                 JOB_CPUTIME,
                 "number of CPU seconds consumed by the job, aggregated",
                 "ReadOnly", "1", "Int", "");
-        jobMemoryUse = new Metric(this, session,
+        jobMemoryUse = new MetricImpl(this, session,
                 JOB_MEMORYUSE,
                 "current aggregate memory usage",
                 "ReadOnly", "1", "Float", "0.0");
-        jobVMemoryUse = new Metric(this, session,
+        jobVMemoryUse = new MetricImpl(this, session,
                 JOB_VMEMORYUSE,
                 "current aggregate virtual memory usage",
                 "ReadOnly", "1", "Float", "0.0");
-        jobPerformance = new Metric(this, session,
+        jobPerformance = new MetricImpl(this, session,
                 JOB_PERFORMANCE,
                 "current performance",
                 "ReadOnly", "1", "Float", "0.0"); 
@@ -84,19 +84,19 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void, Void> implem
         addMetric(JOB_PERFORMANCE, jobPerformance);
     }
     
-    protected Job(Job orig) {
+    protected JobImpl(JobImpl orig) {
         super(orig);
         
         attributes = new JobAttributes(orig.attributes);
-        jobDescription = new JobDescription(orig.jobDescription);
+        jobDescriptionImpl = new JobDescriptionImpl(orig.jobDescriptionImpl);
         
-        jobState = metrics.get(JOB_STATE);
-        jobStateDetail = metrics.get(JOB_STATEDETAIL);
-        jobSignal = metrics.get(JOB_SIGNAL);
-        jobCpuTime = metrics.get(JOB_CPUTIME);
-        jobMemoryUse = metrics.get(JOB_MEMORYUSE);       
-        jobVMemoryUse = metrics.get(JOB_VMEMORYUSE);
-        jobPerformance = metrics.get(JOB_PERFORMANCE);
+        jobState = metricImpls.get(JOB_STATE);
+        jobStateDetail = metricImpls.get(JOB_STATEDETAIL);
+        jobSignal = metricImpls.get(JOB_SIGNAL);
+        jobCpuTime = metricImpls.get(JOB_CPUTIME);
+        jobMemoryUse = metricImpls.get(JOB_MEMORYUSE);       
+        jobVMemoryUse = metricImpls.get(JOB_VMEMORYUSE);
+        jobPerformance = metricImpls.get(JOB_PERFORMANCE);
     }
     
     protected synchronized void setState(State value) {
@@ -160,89 +160,89 @@ public abstract class Job extends org.ogf.saga.impl.task.Task<Void, Void> implem
     // Base implementations.
 
     public Task<org.ogf.saga.job.Job, Void> checkpoint(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, Void>(this, sessionImpl, mode,
                 "checkpoint", new Class[] { });
     }
 
     public org.ogf.saga.job.JobDescription getJobDescription() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        if (jobDescription == null) {
+        if (jobDescriptionImpl == null) {
             throw new DoesNotExistException("No jobDescription available for this job");
         }
-        return new JobDescription(jobDescription);
+        return new JobDescriptionImpl(jobDescriptionImpl);
     }
 
     public Task<org.ogf.saga.job.Job, org.ogf.saga.job.JobDescription> getJobDescription(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, org.ogf.saga.job.JobDescription>(
-                this, session, mode, "getJobDescription", new Class[] { } );
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, org.ogf.saga.job.JobDescription>(
+                this, sessionImpl, mode, "getJobDescription", new Class[] { } );
     }
 
     public Task<org.ogf.saga.job.Job, InputStream> getStderr(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, InputStream>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, InputStream>(this, sessionImpl, mode,
                 "getStderr", new Class[] { });
     }
 
     public Task<org.ogf.saga.job.Job, OutputStream> getStdin(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, OutputStream>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, OutputStream>(this, sessionImpl, mode,
                 "getStdin", new Class[] { });
     }
 
     public Task<org.ogf.saga.job.Job, InputStream> getStdout(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, InputStream>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, InputStream>(this, sessionImpl, mode,
                 "getStdout", new Class[] { });
     }
 
     public Task<org.ogf.saga.job.Job, Void> migrate(TaskMode mode, org.ogf.saga.job.JobDescription jd)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, Void>(this, sessionImpl, mode,
                 "resume", new Class[] { org.ogf.saga.job.JobDescription.class }, jd);
     }
 
     public Task<org.ogf.saga.job.Job, Void> resume(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, Void>(this, sessionImpl, mode,
                 "resume", new Class[] { });
     }
 
     public Task<org.ogf.saga.job.Job, Void> signal(TaskMode mode, int signum) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, Void>(this, sessionImpl, mode,
                 "signal", new Class[] { Integer.TYPE }, signum);
     }
 
     public Task<org.ogf.saga.job.Job, Void> suspend(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, Void>(this, sessionImpl, mode,
                 "suspend", new Class[] { });
     }
 
     public Task<org.ogf.saga.job.Job, Void> permissionsAllow(TaskMode mode, String id, int permissions)
     throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, Void>(this, sessionImpl, mode,
                 "permissionsAllow", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
     public Task<org.ogf.saga.job.Job, Boolean> permissionsCheck(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Boolean>(this, session,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, Boolean>(this, sessionImpl,
                 mode, "permissionsCheck", new Class[] { String.class,
                 Integer.TYPE }, id, permissions);
     }
 
     public Task<org.ogf.saga.job.Job, Void> permissionsDeny(TaskMode mode, String id, int permissions)
     throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, Void>(this, session, mode,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, Void>(this, sessionImpl, mode,
                 "permissionsDeny", new Class[] { String.class, Integer.TYPE },
                 id, permissions);
     }
 
     public Task<org.ogf.saga.job.Job, String> getGroup(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, String>(this, session,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, String>(this, sessionImpl,
                 mode, "getGroup", new Class[] {});
     }
 
     public Task<org.ogf.saga.job.Job, String> getOwner(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.Task<org.ogf.saga.job.Job, String>(this, session,
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.job.Job, String>(this, sessionImpl,
                 mode, "getOwner", new Class[] {});
     }
 

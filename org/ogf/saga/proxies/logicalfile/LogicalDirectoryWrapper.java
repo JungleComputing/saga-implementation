@@ -42,7 +42,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             proxy = (LogicalDirectorySPI) SAGAEngine.createAdaptorProxy(
                     LogicalDirectorySPI.class, new Class[] {
                             LogicalDirectoryWrapper.class,
-                            org.ogf.saga.impl.session.Session.class, URL.class,
+                            org.ogf.saga.impl.session.SessionImpl.class, URL.class,
                             Integer.TYPE }, parameters);
             super.setProxy(proxy);
         } catch (org.ogf.saga.error.SagaException e) {

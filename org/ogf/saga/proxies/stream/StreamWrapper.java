@@ -41,7 +41,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             proxy = (StreamSPI) SAGAEngine
                     .createAdaptorProxy(StreamSPI.class,
                             new Class[] { StreamWrapper.class,
-                                    org.ogf.saga.impl.session.Session.class,
+                                    org.ogf.saga.impl.session.SessionImpl.class,
                                     URL.class }, parameters);
         } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {

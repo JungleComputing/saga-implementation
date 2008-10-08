@@ -4,12 +4,12 @@ import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NotImplementedException;
-import org.ogf.saga.impl.attributes.AsyncAttributes;
+import org.ogf.saga.impl.attributes.AsyncAttributesImpl;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.session.Session;
 
-public class JobAttributes extends AsyncAttributes<org.ogf.saga.job.Job> {
+public class JobAttributes extends AsyncAttributesImpl<org.ogf.saga.job.Job> {
 
     public JobAttributes(org.ogf.saga.job.Job object, Session session) {
         super(object, session, false);
@@ -24,10 +24,6 @@ public class JobAttributes extends AsyncAttributes<org.ogf.saga.job.Job> {
        
     JobAttributes(JobAttributes orig) {
         super(orig);
-    }
-    
-    public Object clone() {
-        return new JobAttributes(this);
     }
     
     protected void setValue(String key, String value) throws DoesNotExistException, NotImplementedException,

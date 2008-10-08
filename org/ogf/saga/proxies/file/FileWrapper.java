@@ -42,7 +42,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         try {
             proxy = (FileSPI) SAGAEngine.createAdaptorProxy(FileSPI.class,
                     new Class[] { FileWrapper.class,
-                            org.ogf.saga.impl.session.Session.class, URL.class,
+                            org.ogf.saga.impl.session.SessionImpl.class, URL.class,
                             Integer.TYPE }, parameters);
             super.setProxy(proxy);
         } catch (org.ogf.saga.error.SagaException e) {

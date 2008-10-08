@@ -18,11 +18,11 @@ import org.ogf.saga.url.URLFactory;
 public class MetaFactory implements SagaFactory {
 
     public BufferFactory createBufferFactory() throws NotImplementedException {
-        return new org.ogf.saga.impl.buffer.BufferFactory();
+        return new org.ogf.saga.impl.buffer.BufferFactoryImpl();
     }
 
     public ContextFactory createContextFactory() {
-        return new org.ogf.saga.impl.context.ContextFactory();
+        return new org.ogf.saga.impl.context.ContextFactoryImpl();
     }
 
     public FileFactory createFileFactory() {
@@ -38,7 +38,7 @@ public class MetaFactory implements SagaFactory {
     }
 
     public MonitoringFactory createMonitoringFactory() throws NotImplementedException {
-        return new org.ogf.saga.impl.monitoring.MonitoringFactory();
+        return new org.ogf.saga.impl.monitoring.MonitoringFactoryImpl();
     }
 
     public NSFactory createNamespaceFactory() throws NotImplementedException {
@@ -50,7 +50,7 @@ public class MetaFactory implements SagaFactory {
     }
 
     public SessionFactory createSessionFactory() {
-        return new org.ogf.saga.impl.session.SessionFactory();
+        return new org.ogf.saga.impl.session.SessionFactoryImpl();
     }
 
     public StreamFactory createStreamFactory() throws NotImplementedException {
@@ -58,10 +58,10 @@ public class MetaFactory implements SagaFactory {
     }
 
     public TaskFactory createTaskFactory() throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskFactory();
+        return new org.ogf.saga.impl.task.TaskFactoryImpl();
     }
 
     public URLFactory createURLFactory() throws NotImplementedException {
-        return new org.ogf.saga.impl.url.URLFactory();
+        return new org.ogf.saga.impl.url.URLFactoryImpl();
     }
 }
