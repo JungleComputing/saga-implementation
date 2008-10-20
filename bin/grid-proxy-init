@@ -1,3 +1,6 @@
 #!/bin/sh
 
-java  -classpath ${SAGA_LOCATION}/lib/adaptors/JavaGatAdaptor/adaptors/GlobusAdaptor/cog-jglobus.jar org.globus.tools.ProxyInit "$@"
+if [ -z "$JAVA_SAGA_LOCATION" ] ; then
+    export JAVA_SAGA_LOCATION="$SAGA_LOCATION"
+fi
+java  -classpath "${JAVA_SAGA_LOCATION}"/lib/adaptors/JavaGatAdaptor/adaptors/GlobusAdaptor/cog-jglobus.jar org.globus.tools.ProxyInit "$@"

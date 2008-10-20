@@ -25,7 +25,8 @@ directory that will help the reader get a feel for it.
 \section{Environment variables}
 
 There is one important environment variable, used by the SAGA scripts,
-and that is \texttt{SAGA\_LOCATION}. This should be set and point to the root
+and that is \texttt{JAVA\_SAGA\_LOCATION}.
+This should be set and point to the root
 directory of your SAGA installation. So, if you installed the SAGA
 implementation in 
 
@@ -42,7 +43,7 @@ then you should have
 \noindent
 {\small
 \begin{verbatim}
-SAGA_LOCATION=$HOME/workspace/saga-impl-1.0.
+JAVA_SAGA_LOCATION=$HOME/workspace/saga-impl-1.0.
 \end{verbatim}
 }
 \noindent
@@ -52,7 +53,7 @@ by adding the line
 \noindent
 {\small
 \begin{verbatim}
-export SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
+export JAVA_SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
 \end{verbatim}
 }
 \noindent
@@ -60,7 +61,7 @@ or
 \noindent
 {\small
 \begin{verbatim}
-set SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
+set JAVA_SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
 \end{verbatim}
 }
 \noindent
@@ -75,9 +76,14 @@ c:\Program Files\saga-impl-1.0
 \end{verbatim}
 }
 \noindent
-You can set the \texttt{SAGA\_LOCATION} variable to this path by going to the
+You can set the \texttt{JAVA\_SAGA\_LOCATION} variable to this path by going to the
 Control Panel, System, the "Advanced" tab, Environment variables,
 add it there and reboot your system.
+
+For backwards compatibility with earlier Java SAGA releases, the scripts
+also recognize the \texttt{SAGA\_LOCATION} environment variable.
+However, any value of the \texttt{JAVA\_SAGA\_LOCATION} environment variable
+overrides \texttt{SAGA\_LOCATION}.
 
 \section{Compiling an application for SAGA}
 
@@ -89,7 +95,7 @@ the command
 \noindent
 {\small
 \begin{verbatim}
-javac -classpath $SAGA_LOCATION/lib/saga-api-1.0.jar \
+javac -classpath $JAVA_SAGA_LOCATION/lib/saga-api-1.0.jar \
     <yourapplication>
 \end{verbatim}
 }
@@ -98,7 +104,7 @@ will do the trick on Unix-like systems. On windows,
 \noindent
 {\small
 \begin{verbatim}
-javac -classpath "%SAGA_LOCATION%"\lib\saga-api-1.0.jar
+javac -classpath "%JAVA_SAGA_LOCATION%"\lib\saga-api-1.0.jar
     <yourapplication>
 \end{verbatim}
 }
@@ -112,7 +118,8 @@ See for instance \texttt{build.xml} in the \texttt{demo} directory.
 \section{Running a Java SAGA application}
 
 We will now show how to run an example SAGA application.
-Again, the instructions below assume that the SAGA\_LOCATION
+Again, the instructions below assume that the 
+\texttt{JAVA\_SAGA\_LOCATION}
 environment variable is set to the location of this SAGA release.
 
 We will use the \texttt{demo.namespace.ListTest} example here.
@@ -121,14 +128,14 @@ program argument with different patterns, as specified by the
 remaining arguments.
 The Java SAGA release contains a simple \texttt{run-saga-app} utility script.
 This script creates a list of jar-files to put in the classpath (the
-ones in the \texttt{lib} sub-directory of \texttt{SAGA\_LOCATION}),
+ones in the \texttt{lib} sub-directory of \texttt{JAVA\_SAGA\_LOCATION}),
 and then calls java with the specified arguments.
 On a unix-like system it can be used to run the application as follows:
 
 \noindent
 {\small
 \begin{verbatim}
-$ $SAGA_LOCATION/bin/run-saga-app demo.namespace.ListTest \
+$ $JAVA_SAGA_LOCATION/bin/run-saga-app demo.namespace.ListTest \
     ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
 \end{verbatim}
 }
@@ -139,7 +146,7 @@ On a windows system this looks as follows:
 \noindent
 {\small
 \begin{verbatim}
-C:\DOCUME~1\Temp> "%SAGA_LOCATION%"\bin\run-saga-app
+C:\DOCUME~1\Temp> "%JAVA_SAGA_LOCATION%"\bin\run-saga-app
     demo.namespace.ListTest
     ftp://ftp.cs.vu.nl/pub/ceriel "*" "*.gz" "{L,M}*" "*tar*"
 \end{verbatim}
@@ -157,8 +164,8 @@ with Java 6 the following command can be used:
 {\small
 \begin{verbatim}
 $ java \
-    -cp $SAGA_LOCATION/lib/'*' \
-    -Dlog4j.configuration=file:$SAGA_LOCATION/log4j.properties \
+    -cp $JAVA_SAGA_LOCATION/lib/'*' \
+    -Dlog4j.configuration=file:$JAVA_SAGA_LOCATION/log4j.properties \
     demo.namespace.ListTest \
     ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
 \end{verbatim}
@@ -175,8 +182,8 @@ On a windows system the command would be:
 {\small
 \begin{verbatim}
 C:\DOCUME~1\Temp> java
-    -cp "%SAGA_LOCATION%\lib\*"
-    -Dlog4j.configuration=file:"%SAGA_LOCATION%"\log4j.properties
+    -cp "%JAVA_SAGA_LOCATION%\lib\*"
+    -Dlog4j.configuration=file:"%JAVA_SAGA_LOCATION%"\log4j.properties
     demo.namespace.ListTest
     ftp://ftp.cs.vu.nl/pub/ceriel "*" "*.gz" "{L,M}*" "*tar*"
 \end{verbatim}
@@ -309,19 +316,20 @@ org.ogf.saga.impl.bootstrap.MetaFactory
 \end{verbatim}
 }
 \noindent
-(see the saga.properties file in the SAGA\_LOCATION directory), and
+(see the saga.properties file in the
+\texttt}{JAVA\_SAGA\_LOCATION} directory), and
 should not be changed, unless you have another SAGA implementation to try.
 
 Another important property is the \texttt{saga.adaptor.path},
 which tells the SAGA engine where to find the adaptors.
-Its default value is \texttt{SAGA\_LOCATION/lib/adaptors}.
+Its default value is \texttt{JAVA\_SAGA\_LOCATION/lib/adaptors}.
 This property is interpreted is a path, which may either be specified in the
 "unix" way (with '/' and ':'), or in the system-dependent way.
 
 All properties with names ending in \texttt{.path} are subjected to
 the following replacements: all occurrences of the string
 \texttt{SAGA\_LOCATION} are replaced with the value of the
-\texttt{SAGA\_LOCATION} environment variable, all occurrences
+\texttt{JAVA\_SAGA\_LOCATION} environment variable, all occurrences
 of '/' are replaced with the system-dependent separator character,
 and all occurences of ':' are replaced with the system-dependent
 path separator character. This allows for a system-independent way
@@ -330,7 +338,7 @@ of specifying paths in a \texttt{saga.properties} file.
 Another important property, which can \emph{only} be set on the
 command line, is the \texttt{java.endorsed.dirs} property. Currently,
 the Gridsam adaptor only works with Java 6 if you set this property
-to \texttt{\$SAGA\_LOCATION/lib/adaptors/GridsamAdaptor/endorsed}.
+to \texttt{\$JAVA\_SAGA\_LOCATION/lib/adaptors/GridsamAdaptor/endorsed}.
 The \texttt{run-saga-app} script takes care of this, but if you don't
 use this script, beware.
 

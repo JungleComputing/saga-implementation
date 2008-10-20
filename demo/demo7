@@ -5,6 +5,6 @@
 # in `pwd`/copy.
 # Afterwards, "lf" should contain two entries.
 
-export SAGA_LOCATION=`cd .. && pwd`
+export JAVA_SAGA_LOCATION=`cd .. && pwd`
 
-$SAGA_LOCATION/bin/run-saga-app -Xmx256M demo.logicalfile.LogicalFileCopy lf `pwd`/copy
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M demo.logicalfile.LogicalFileCopy lf `pwd`/copy

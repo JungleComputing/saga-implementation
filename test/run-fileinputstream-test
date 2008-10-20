@@ -11,7 +11,7 @@ case X$JAVAGAT_SERVER in
 	;;
 esac
 
-export SAGA_LOCATION=`cd .. && pwd`
+export JAVA_SAGA_LOCATION=`cd .. && pwd`
 
-$SAGA_LOCATION/bin/run-saga-app -Xmx256M \
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
     test.file.FileInputStreamAdaptorTest javagat $JAVAGAT_SERVER

@@ -18,10 +18,10 @@ trap "kill -9 $PID > /dev/null 2>&1; rm -rf /tmp/saga-test-data" 0 1 2 3 15
 
 HOST=`hostname -f`
 
-export SAGA_LOCATION=`cd .. && pwd`
+export JAVA_SAGA_LOCATION=`cd .. && pwd`
 
-$SAGA_LOCATION/bin/run-saga-app -Xmx256M \
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
      test.job.JobAdaptorTest gridsam $GRIDSAM_SERVER ftp://$HOST:$PORT/
 
-$SAGA_LOCATION/bin/run-saga-app -Xmx256M \
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
      test.job.JobAdaptorTest javagat $JAVAGAT_SERVER file://$HOST/tmp/saga-test-data

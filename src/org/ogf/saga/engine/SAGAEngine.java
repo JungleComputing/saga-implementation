@@ -52,14 +52,7 @@ public class SAGAEngine {
 
     private static Logger logger = LoggerFactory.getLogger(SAGAEngine.class);
     
-    private static String sagaLocation;
-    
-    {
-        sagaLocation = System.getenv("SAGA_LOCATION");
-        if (sagaLocation == null) {
-            sagaLocation = getProperty("saga.location");
-        }
-    }
+    private static String sagaLocation = getProperty("saga.location");
   
     private static class URLComparator implements Comparator<URL>, java.io.Serializable {
         private static final long serialVersionUID = 1L;

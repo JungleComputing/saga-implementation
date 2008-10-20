@@ -3,8 +3,13 @@
 # Starts a toy xml-rpc server on the current host, suitable for the
 # demo.rpc.CallAdder demo.
 
-if [ -z "$SAGA_LOCATION" ] ; then
-    echo "please set SAGA_LOCATION to the location of your SAGA installation" 1>&2
+if [ -z "$JAVA_SAGA_LOCATION" ] ; then
+    JAVA_SAGA_LOCATION="$SAGA_LOCATION"
+    export JAVA_SAGA_LOCATION
+fi
+
+if [ -z "$JAVA_SAGA_LOCATION" ] ; then
+    echo "please set JAVA_SAGA_LOCATION to the location of your SAGA installation" 1>&2
     exit 1
 fi
 
@@ -21,6 +26,6 @@ add_to_xmlrpcserver_classpath () {
     done
 }
 
-add_to_xmlrpcserver_classpath $SAGA_LOCATION/lib/adaptors/XMLRPCAdaptor
+add_to_xmlrpcserver_classpath $JAVA_SAGA_LOCATION/lib/adaptors/XMLRPCAdaptor
 
-java -cp "$SAGA_LOCATION/lib/saga-demo.jar:$XMLRPCSERVER_CLASSPATH:$CLASSPATH" demo.rpc.server.Server
+java -cp "$JAVA_SAGA_LOCATION/lib/saga-demo.jar:$XMLRPCSERVER_CLASSPATH:$CLASSPATH" demo.rpc.server.Server

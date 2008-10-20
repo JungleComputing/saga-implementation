@@ -1,7 +1,11 @@
 #!/bin/sh
 
-if [ -z "$SAGA_LOCATION" ] ; then
-    echo "please set SAGA_LOCATION to the location of your SAGA installation" 1>&2
+if [ -z "$JAVA_SAGA_LOCATION" ] ; then
+    export JAVA_SAGA_LOCATION="$SAGA_LOCATION"
+fi
+
+if [ -z "$JAVA_SAGA_LOCATION" ] ; then
+    echo "please set JAVA_SAGA_LOCATION to the location of your SAGA installation" 1>&2
     exit 1
 fi
 
@@ -18,13 +22,14 @@ add_to_saga_classpath () {
     done
 }
 
-add_to_saga_classpath $SAGA_LOCATION/lib
+add_to_saga_classpath $JAVA_SAGA_LOCATION/lib
 
 # the java.endorsed.dirs is needed for Java 6. If not present, the Gridsam
 # adaptor will not work.
 
 java \
     -cp "$SAGA_CLASSPATH:$CLASSPATH" \
-    -Djava.endorsed.dirs=$SAGA_LOCATION/lib/adaptors/GridsamAdaptor/endorsed \
-    -Dlog4j.configuration="file:$SAGA_LOCATION/log4j.properties" \
+    -Djava.endorsed.dirs=$JAVA_SAGA_LOCATION/lib/adaptors/GridsamAdaptor/endorsed \
+    -Dlog4j.configuration="file:$JAVA_SAGA_LOCATION/log4j.properties" \
+    -Dsaga.location="$JAVA_SAGA_LOCATION" \
     "$@"

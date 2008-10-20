@@ -36,6 +36,6 @@ Using a GridSAM service.
   validation will fail.
   If you don't use the run-saga-app script, you need to be aware that the
   Gridsam adaptor depends on some endorsed libraries, which live in
-  $SAGA_LOCATION/lib/adaptors/GridsamAdaptor/endorsed. You need to set
+  $JAVA_SAGA_LOCATION/lib/adaptors/GridsamAdaptor/endorsed. You need to set
   the java.endorsed.dirs property to this directory, see the run-saga-app
   script.
