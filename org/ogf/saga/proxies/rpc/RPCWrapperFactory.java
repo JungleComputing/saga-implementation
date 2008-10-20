@@ -19,7 +19,7 @@ import org.ogf.saga.url.URL;
 
 public class RPCWrapperFactory extends RPCFactory {
 
-    protected RPC doCreateRPC(Session session, URL funcname)
+    public RPC doCreateRPC(Session session, URL funcname)
             throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,

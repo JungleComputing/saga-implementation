@@ -20,7 +20,7 @@ import org.ogf.saga.url.URL;
 
 public class LogicalFileWrapperFactory extends LogicalFileFactory {
 
-    protected LogicalDirectory doCreateLogicalDirectory(Session session,
+    public LogicalDirectory doCreateLogicalDirectory(Session session,
             URL name, int flags) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
@@ -29,7 +29,7 @@ public class LogicalFileWrapperFactory extends LogicalFileFactory {
         return new LogicalDirectoryWrapper(session, name, flags);
     }
 
-    protected LogicalFile doCreateLogicalFile(Session session, URL name,
+    public LogicalFile doCreateLogicalFile(Session session, URL name,
             int flags) throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,

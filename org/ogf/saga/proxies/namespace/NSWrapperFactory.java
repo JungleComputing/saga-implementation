@@ -20,7 +20,7 @@ import org.ogf.saga.url.URL;
 
 public class NSWrapperFactory extends NSFactory {
 
-    protected NSDirectory doCreateNSDirectory(Session session, URL name,
+    public NSDirectory doCreateNSDirectory(Session session, URL name,
             int flags) throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
@@ -29,7 +29,7 @@ public class NSWrapperFactory extends NSFactory {
         return new NSDirectoryWrapper(session, name, flags);
     }
 
-    protected NSEntry doCreateNSEntry(Session session, URL name, int flags)
+    public NSEntry doCreateNSEntry(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,

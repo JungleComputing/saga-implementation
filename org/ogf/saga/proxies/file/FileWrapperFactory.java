@@ -22,7 +22,7 @@ import org.ogf.saga.url.URL;
 
 public class FileWrapperFactory extends FileFactory {
 
-    protected Directory doCreateDirectory(Session session, URL name, int flags)
+    public Directory doCreateDirectory(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
@@ -31,7 +31,7 @@ public class FileWrapperFactory extends FileFactory {
         return new DirectoryWrapper(session, name, flags);
     }
 
-    protected File doCreateFile(Session session, URL name, int flags)
+    public File doCreateFile(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
@@ -40,7 +40,7 @@ public class FileWrapperFactory extends FileFactory {
         return new FileWrapper(session, name, flags);
     }
 
-    protected FileInputStream doCreateFileInputStream(Session session, URL name)
+    public FileInputStream doCreateFileInputStream(Session session, URL name)
             throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
@@ -49,7 +49,7 @@ public class FileWrapperFactory extends FileFactory {
         return new FileInputStreamWrapper(session, name);
     }
 
-    protected FileOutputStream doCreateFileOutputStream(Session session,
+    public FileOutputStream doCreateFileOutputStream(Session session,
             URL name, boolean append) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
