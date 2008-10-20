@@ -165,6 +165,7 @@ with Java 6 the following command can be used:
 \begin{verbatim}
 $ java \
     -cp $JAVA_SAGA_LOCATION/lib/'*' \
+    -Dsaga.location=$JAVA_SAGA_LOCATION \
     -Dlog4j.configuration=file:$JAVA_SAGA_LOCATION/log4j.properties \
     demo.namespace.ListTest \
     ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
@@ -173,8 +174,11 @@ $ java \
 \noindent
 
 Note the quoting, which is significant because the shell should not expand
-the '*'s. Also, an initialization file is specified for the logger used in the
-SAGA implementation.
+the '*'s. Also, an initialization file is specified for the default logger
+used in the SAGA implementation.
+Also, the location of Saga is passed on to Java, by means of the
+\texttt{saga.location} property. The Saga Java code does not depend on
+environment variables, only the scripts do.
 
 On a windows system the command would be:
 
@@ -183,6 +187,7 @@ On a windows system the command would be:
 \begin{verbatim}
 C:\DOCUME~1\Temp> java
     -cp "%JAVA_SAGA_LOCATION%\lib\*"
+    -Dsaga.location="%JAVA_SAGA_LOCATION%"
     -Dlog4j.configuration=file:"%JAVA_SAGA_LOCATION%"\log4j.properties
     demo.namespace.ListTest
     ftp://ftp.cs.vu.nl/pub/ceriel "*" "*.gz" "{L,M}*" "*tar*"
