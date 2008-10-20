@@ -21,7 +21,7 @@ import org.ogf.saga.url.URLFactory;
 public class StreamWrapperFactory extends StreamFactory {
 
     @Override
-    protected Stream doCreateStream(Session session, URL name)
+    public Stream doCreateStream(Session session, URL name)
             throws NotImplementedException, IncorrectURLException,
             BadParameterException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
@@ -38,7 +38,7 @@ public class StreamWrapperFactory extends StreamFactory {
     }
 
     @Override
-    protected StreamService doCreateStreamService(Session session, URL name)
+    public StreamService doCreateStreamService(Session session, URL name)
             throws NotImplementedException, IncorrectURLException,
             BadParameterException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
@@ -47,7 +47,7 @@ public class StreamWrapperFactory extends StreamFactory {
     }
 
     @Override
-    protected StreamService doCreateStreamService(Session session)
+    public StreamService doCreateStreamService(Session session)
             throws NotImplementedException, IncorrectURLException,
             BadParameterException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,

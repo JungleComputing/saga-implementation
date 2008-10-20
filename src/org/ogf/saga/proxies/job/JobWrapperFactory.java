@@ -25,7 +25,7 @@ public class JobWrapperFactory extends JobFactory {
         return new JobDescriptionImpl();
     }
 
-    protected JobService doCreateJobService(Session session, URL rm)
+    public JobService doCreateJobService(Session session, URL rm)
             throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
