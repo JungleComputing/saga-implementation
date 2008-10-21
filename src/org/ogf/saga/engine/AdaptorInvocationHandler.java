@@ -246,6 +246,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 } else if (exception == null) {
                     exception = new NoSuccessException("Got exception from constructor of "
                             + adaptorname, t);
+                    if (nested == null) {
+                        nested = new NestedException();
+                    }
                     nested.add(adaptors.getSpiName(), exception);
                 }
             }
