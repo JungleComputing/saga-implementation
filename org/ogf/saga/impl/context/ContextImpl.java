@@ -40,7 +40,19 @@ public class ContextImpl extends SagaObjectBase
             setDefaults();
         }
     }
-    
+
+    public boolean equals(Object o) {
+        if (! (o instanceof ContextImpl)) {
+            return false;
+        }
+        ContextImpl ctxt = (ContextImpl) o;
+        return attributes.equals(ctxt.attributes);
+    }
+
+    public int hashCode() {
+        return attributes.hashCode();
+    }
+
     ContextImpl(ContextImpl orig) {
         super(orig);
         attributes = new ContextAttributes(orig.attributes);
