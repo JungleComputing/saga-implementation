@@ -273,9 +273,11 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
         if (logger.isDebugEnabled()) {
             logger.debug("Starting task for method " + method.getName());
         }
-        setState(State.RUNNING);
-        synchronized(executor) {
-            future = executor.submit(this);
+        synchronized(this) {
+            setState(State.RUNNING);
+            synchronized(executor) {
+                future = executor.submit(this);
+            }
         }
     }
 
@@ -445,6 +447,9 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
     }
 
     private void setState(State value) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("In setState: value = " + value);
+        }
         synchronized(this) {
             state = value;
             notifyAll();
@@ -457,6 +462,7 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
             metricImpl.setValue(value.toString());
             metricImpl.internalFire();
         } catch(Throwable e) {
+            logger.debug("Got exception", e);
             throw new SagaRuntimeException("Internal error", e);
         }
     }
@@ -472,6 +478,7 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
         }
         try {
             result = (E) method.invoke(object, parameters);
+
         } catch(InvocationTargetException e1) {
             synchronized(this) {
                 exception = e1.getCause();
@@ -489,10 +496,21 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
             }
             return null;
         }
-        if (future.isCancelled()) {
-            setState(State.CANCELED);
-        } else {
-            setState(State.DONE);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Invoke method done: " + method.getName());
+        }
+        synchronized(this) {
+            if (future.isCancelled()) {
+                setState(State.CANCELED);
+            } else {
+                setState(State.DONE);
+            }
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("setState done for " + method.getName());
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Invoke of method " + method.getName() + " done");
         }
         return result;
     }
