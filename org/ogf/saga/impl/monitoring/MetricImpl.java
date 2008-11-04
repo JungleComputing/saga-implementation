@@ -95,18 +95,19 @@ public class MetricImpl extends SagaObjectBase implements org.ogf.saga.monitorin
                     }
                 }
             }
+
+            // Release busy flag, notify waiters.
+            synchronized(this) {
+                busy = false;
+                notifyAll();
+            }
+
             if (! retval) {
                 try {
                     metricImpl.removeCallback(cookie);
                 } catch(Throwable e) {
                     // ignored
                 }
-            }
-            
-            // Release busy flag, notify waiters.
-            synchronized(this) {
-                busy = false;
-                notifyAll();
             }
         }
     };
