@@ -273,11 +273,12 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
         if (logger.isDebugEnabled()) {
             logger.debug("Starting task for method " + method.getName());
         }
+        setState(State.RUNNING);
         synchronized(this) {
-            setState(State.RUNNING);
             synchronized(executor) {
                 future = executor.submit(this);
             }
+            notifyAll();
         }
     }
 
@@ -478,7 +479,6 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
         }
         try {
             result = (E) method.invoke(object, parameters);
-
         } catch(InvocationTargetException e1) {
             synchronized(this) {
                 exception = e1.getCause();
@@ -500,11 +500,18 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
             logger.debug("Invoke method done: " + method.getName());
         }
         synchronized(this) {
-            if (future.isCancelled()) {
-                setState(State.CANCELED);
-            } else {
-                setState(State.DONE);
+            while (future == null) {
+                try {
+                    wait();
+                } catch(Throwable e) {
+                    // ignored
+                }
             }
+        }
+        if (future.isCancelled()) {
+            setState(State.CANCELED);
+        } else {
+            setState(State.DONE);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("setState done for " + method.getName());
