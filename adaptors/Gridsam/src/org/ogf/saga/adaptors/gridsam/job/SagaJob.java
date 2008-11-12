@@ -515,7 +515,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
     }
 
     public void onChange(JobInstance jobInstance) {
-        List stages = jobInstance.getJobStages();
+        List<?> stages = jobInstance.getJobStages();
         if (stages.size() > firedEventCount) {
             // There are some event that were not fired
             // (and we don't know about). Lets get that knowledge :)

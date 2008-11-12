@@ -46,7 +46,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      * here to determine an order to use in a Saga implementation that uses multiple
      * adaptors.
      */
-    private static Class[] exceptionClasses = {
+    private static Class<?>[] exceptionClasses = {
         AlreadyExistsException.class,
         DoesNotExistException.class,
         SagaIOException.class,
@@ -68,7 +68,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      * @return the most important exception.
      */
     private static SagaException compare(SagaException e1, SagaException e2) {
-        for (Class c : exceptionClasses) {
+        for (Class<?> c : exceptionClasses) {
             if (c.isInstance(e1)) {
                 return e1;
             }
@@ -175,8 +175,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      * The available adaptor instantiations. The keys, again, are class names,
      * the elements are instantiations.
      */
-    private Hashtable<String, AdaptorBase> adaptorInstantiations
-            = new Hashtable<String, AdaptorBase>();
+    private Hashtable<String, AdaptorBase<?>> adaptorInstantiations
+            = new Hashtable<String, AdaptorBase<?>>();
     
     /**
      * Constructs an <code>AdaptorInvocationHandler</code>, attempting to
@@ -188,7 +188,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      *    for some reason. Actually, the most specific exception thrown by
      *    any of the constructors is thrown.
      */
-    AdaptorInvocationHandler(AdaptorList adaptors, Class[] types,
+    AdaptorInvocationHandler(AdaptorList adaptors, Class<?>[] types,
             Object[] params) throws SagaException {
 
         // Do we have any adaptors?
@@ -211,7 +211,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                             + adaptors.getSpiName());
                 }
                 
-                AdaptorBase object = adaptor.instantiate(types, params);
+                AdaptorBase<?> object = adaptor.instantiate(types, params);
          
                 if (logger.isInfoEnabled()) {
                     logger.info("initAdaptor: instantiated "
@@ -257,7 +257,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         if (this.adaptors.size() == 0) {
             if (multiple) {
                 try {
-                   Constructor c = exception.getClass().getConstructor(String.class, Throwable.class);
+                   Constructor<?> c = exception.getClass().getConstructor(String.class, Throwable.class);
                    SagaException ex = (SagaException) c.newInstance(exception.getMessage(), nested);
                    ex.setStackTrace(exception.getStackTrace());
                    exception = ex;
@@ -311,7 +311,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      * @param base the adaptor base
      * @return the modified exception.
      */
-    private SagaException addWrapper(SagaException exception, AdaptorBase base) {
+    private SagaException addWrapper(SagaException exception, AdaptorBase<?> base) {
         Object sagaObject = null;
         try {
             sagaObject = exception.getObject();
@@ -325,14 +325,14 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         SagaException ex = exception;
         try {
             if (exception instanceof SagaIOException) {
-                Constructor c = exception.getClass().getConstructor(String.class,
+                Constructor<?> c = exception.getClass().getConstructor(String.class,
                         Throwable.class, Integer.TYPE, SagaObject.class);
 
                 ex = (SagaException) c.newInstance(exception.getMessage(), exception.getCause(),
                         ((SagaIOException) exception).getPosixErrorCode(),
                         (SagaObject) sagaObject);
             } else {
-                Constructor c = exception.getClass().getConstructor(String.class,
+                Constructor<?> c = exception.getClass().getConstructor(String.class,
                         Throwable.class, SagaObject.class);
 
                 ex = (SagaException) c.newInstance(exception.getMessage(), exception.getCause(),
@@ -368,7 +368,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             if (adaptorInstantiations.containsKey(adaptorName)) {
                 Adaptor adaptor = adaptors.get(adaptorName);
                 ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                AdaptorBase adaptorInstantiation = adaptorInstantiations.get(adaptorName);
+                AdaptorBase<?> adaptorInstantiation = adaptorInstantiations.get(adaptorName);
                 try {
                     // Set context classloader before invoking method.
                     // Some adaptors may need this because some libraries
@@ -454,13 +454,13 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 }
                 SagaException ex = null;
                 if (exception instanceof SagaIOException) {
-                    Constructor c = exception.getClass().getConstructor(String.class,
+                    Constructor<?> c = exception.getClass().getConstructor(String.class,
                             Throwable.class, Integer.TYPE, SagaObject.class);
 
                     ex = (SagaException) c.newInstance(exception.getMessage(), nested,
                             ((SagaIOException) exception).getPosixErrorCode(), sagaObject);
                 } else {
-                    Constructor c = exception.getClass().getConstructor(String.class,
+                    Constructor<?> c = exception.getClass().getConstructor(String.class,
                             Throwable.class, SagaObject.class);
 
                     ex = (SagaException) c.newInstance(exception.getMessage(), nested,

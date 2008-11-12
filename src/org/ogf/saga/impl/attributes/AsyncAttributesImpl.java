@@ -31,7 +31,7 @@ public class AsyncAttributesImpl<T> extends AttributesImpl implements
         if (! (o instanceof AsyncAttributesImpl)) {
             return false;
         }
-        AsyncAttributesImpl a = (AsyncAttributesImpl) o;
+        AsyncAttributesImpl<?> a = (AsyncAttributesImpl<?>) o;
         if (session != null) {
             if (! session.equals(a.session)) {
                 return false;

@@ -514,7 +514,7 @@ public class SAGAEngine {
      * created, the most specific exception is thrown.
      */
     public static Object createAdaptorProxy(
-            Class<?> interfaceClass, Class[] types, Object[] tmpParams)
+            Class<?> interfaceClass, Class<?>[] types, Object[] tmpParams)
                 throws SagaException {
 
         SAGAEngine sagaEngine = SAGAEngine.getSAGAEngine();

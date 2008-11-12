@@ -49,7 +49,7 @@ public class TaskCopyTest implements Callback {
             String value = metric.getAttribute(Metric.VALUE);
             TaskContainer container = (TaskContainer) m;
             try {
-                Task t = container.getTask(Integer.parseInt(value));
+                Task<?,?> t = container.getTask(Integer.parseInt(value));
                 System.out.println("Metric " + metric.getAttribute(Metric.NAME)
                         + " got triggered, task " + value + " now has state "
                         + t.getState());
@@ -112,7 +112,7 @@ public class TaskCopyTest implements Callback {
         container.run();
 
         while (container.size() != 0) {
-            Task t = container.waitFor(WaitMode.ANY);
+            Task<?,?> t = container.waitFor(WaitMode.ANY);
             System.out.println("Task finished, state = " + t.getState());
             if (State.FAILED.equals(t.getState())) {
                 try {
