@@ -98,7 +98,7 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase
     }
     
     public TaskImpl(T object, Session session, TaskMode mode, String methodName,
-            Class[] parameterTypes, Object... parameters) {
+            Class<?>[] parameterTypes, Object... parameters) {
         
         super(session);
                 
