@@ -42,6 +42,15 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
     protected NSEntryAdaptor entry;
 
+    protected NSDirectoryAdaptor(SessionImpl sessionImpl, URL name, int flags)
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
+        this(null, sessionImpl, name, flags);
+    }
+
     public NSDirectoryAdaptor(NSDirectoryWrapper wrapper, SessionImpl sessionImpl,
             URL name, int flags) throws NotImplementedException,
             IncorrectURLException, BadParameterException,
@@ -126,10 +135,12 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
                     "Flags not allowed for copy method: " + flags, wrapper);
         }
 
-        source = resolveToDir(source);
+        URL source1 = resolveToDir(source);
         target = resolveToDir(target);
-        NSEntryAdaptor sourceEntry = new NSEntryAdaptor(sessionImpl, source,
-                Flags.NONE.getValue());
+
+        NSEntryAdaptor sourceEntry = new NSEntryAdaptor(null, sessionImpl,
+                source1, Flags.NONE.getValue(), isDir(source));
+
         // Don't resolve target with respect to source!!!
         sourceEntry.nonResolvingCopy(target, flags);
         sourceEntry.close(0.0F);
@@ -174,9 +185,9 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         }
 
         for (URL s : sources) {
-            s = resolveToDir(s);
-            NSEntryAdaptor sourceEntry = new NSEntryAdaptor(sessionImpl, s,
-                    Flags.NONE.getValue());
+            URL s1 = resolveToDir(s);
+            NSEntryAdaptor sourceEntry = new NSEntryAdaptor(null, sessionImpl,
+                    s1, Flags.NONE.getValue(), isDir(s));
             // Don't resolve target with respect to source!!!
             sourceEntry.nonResolvingCopy(target, flags);
             sourceEntry.close(0.0F);
@@ -440,10 +451,10 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         }
 
         target = resolveToDir(target);
-        source = resolveToDir(source);
+        URL source1 = resolveToDir(source);
 
-        NSEntryAdaptor sourceEntry = new NSEntryAdaptor(sessionImpl, source,
-                Flags.NONE.getValue());
+        NSEntryAdaptor sourceEntry = new NSEntryAdaptor(null, sessionImpl,
+                    source1, Flags.NONE.getValue(), isDir(source));
         // Don't resolve target with respect to source!!!
         sourceEntry.nonResolvingMove(target, flags);
         sourceEntry.close(0.0F);
@@ -499,8 +510,9 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         }
 
         for (URL s : sources) {
-            NSEntryAdaptor sourceEntry = new NSEntryAdaptor(sessionImpl,
-                    resolveToDir(s), Flags.NONE.getValue());
+            URL s1 = resolveToDir(s);
+            NSEntryAdaptor sourceEntry = new NSEntryAdaptor(null, sessionImpl,
+                    s1, Flags.NONE.getValue(), isDir(s));
             // Don't resolve target with respect to source!!!
             sourceEntry.nonResolvingMove(target, flags);
             sourceEntry.close(0.0F);
@@ -568,12 +580,12 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
                     "Flags not allowed for remove method: " + flags, wrapper);
         }
 
-        target = resolveToDir(target);
+        URL target1 = resolveToDir(target);
 
         NSEntryAdaptor targetEntry = null;
         try {
-            targetEntry = new NSEntryAdaptor(sessionImpl, target, Flags.NONE
-                    .getValue());
+            targetEntry = new NSEntryAdaptor(null, sessionImpl,
+                    target1, Flags.NONE.getValue(), isDir(target));
         } catch (AlreadyExistsException e) {
             // cannot happen because create flag is not allowed for this method
             throw new NoSuccessException("Should not happen!: " + e, wrapper);
@@ -615,9 +627,10 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
         for (URL s : targets) {
             NSEntryAdaptor targetEntry = null;
+            URL s1 = resolveToDir(s);
             try {
-                targetEntry = new NSEntryAdaptor(sessionImpl, resolveToDir(s),
-                        Flags.NONE.getValue());
+                targetEntry = new NSEntryAdaptor(null, sessionImpl,
+                        s1, Flags.NONE.getValue(), isDir(s));
             } catch (AlreadyExistsException e) {
                 // cannot happen because create flag is not allowed for this
                 // method
