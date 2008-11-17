@@ -285,7 +285,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
     public AdaptorInvocationHandler(AdaptorInvocationHandler orig,
             Object wrapper) {
         
-        adaptors = new Hashtable<String, Adaptor>(adaptors);
+        adaptors = new Hashtable<String, Adaptor>(orig.adaptors);
         
         for (String s : orig.adaptorInstantiations.keySet()) {
             try {
@@ -359,6 +359,10 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         NestedException nested = null;
         boolean multiple = false;
         
+        if (logger.isDebugEnabled()) {
+            logger.debug("Started invocation of method " + m);
+        }
+        
         ArrayList<String> adaptornames = adaptorSorter.getOrdering(m);
         boolean first = true;
 
@@ -398,6 +402,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     return res; // return on first successful adaptor
                 } catch (Throwable t) {
                     first = false;
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Got throwable", t);
+                    }
                     while (t instanceof InvocationTargetException) {
                         t = ((InvocationTargetException) t)
                             .getTargetException();
@@ -421,6 +428,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                         exception = new NoSuccessException("Got exception from method "
                                 + m.getName(), t,
                                 (SagaObject) adaptorInstantiation.getWrapper());
+                        if (nested == null) {
+                            nested = new NestedException();
+                        }
                         nested.add(adaptorName, exception);
                     }
 
