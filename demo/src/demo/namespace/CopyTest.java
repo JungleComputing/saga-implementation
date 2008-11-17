@@ -19,8 +19,9 @@ class CopyTest {
             session.addContext(ftpContext);
             // Possibly add other contexts ...
             
-            NSDirectory entry = NSFactory.createNSDirectory(session, URLFactory.createURL("."),
+            NSDirectory entry = NSFactory.createNSDirectory(session, URLFactory.createURL("/tmp"),
                     Flags.NONE.getValue());
+            // entry  = (NSDirectory) entry.clone();
             entry.copy(URLFactory.createURL(args[0]), URLFactory.createURL(args[1]), Integer.parseInt(args[2]));
             System.out.println("copied!");
         } catch (Throwable t) {
