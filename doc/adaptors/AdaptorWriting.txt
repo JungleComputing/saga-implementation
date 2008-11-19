@@ -24,3 +24,9 @@ methods that cannot be implemented properly. (Note: we could have provided
 implementations for ALL methods in the AdaptorBases, possibly throwing
 NotImplementedException, but we chose not to do so, to force the adaptor
 writer to mention the not-implemented methods explicitly in the adaptor).
+
+Contexts are not adaptor-specific, but their initialization can be.
+Therefore, an org.ogf.saga.impl.context.ContextInitializerSPI interface
+was added. An adaptor can choose to provide an implementation for this
+interface. See, for example, the
+org.ogf.saga.adaptors.javagat.ContextIntializerAdaptor class.
