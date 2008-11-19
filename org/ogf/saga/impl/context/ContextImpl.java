@@ -202,7 +202,8 @@ public class ContextImpl extends SagaObjectBase implements
             IncorrectStateException, BadParameterException {
         attributes.setValueIfEmpty(key, value);
     }
-    
+  
+    // Allows the addition of adaptor-specific attributes.
     public void addAttribute(String name, AttributeType type, boolean vector,
             boolean readOnly, boolean notImplemented, boolean removeable) {
         attributes.addAttribute(name, type, vector, readOnly, notImplemented, removeable);
