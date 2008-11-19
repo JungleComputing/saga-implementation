@@ -10,11 +10,11 @@ import org.ogf.saga.impl.attributes.AttributesImpl;
 
 class ContextAttributes extends AttributesImpl {
 
-    ContextAttributes() {
+    protected ContextAttributes() {
         this(false);
     }
 
-    ContextAttributes(boolean autoAdd) {
+    protected ContextAttributes(boolean autoAdd) {
         super(autoAdd);
         addAttribute(ContextImpl.TYPE, AttributeType.STRING, false, false,
                 false, false);
@@ -50,7 +50,7 @@ class ContextAttributes extends AttributesImpl {
         }
     }
 
-    ContextAttributes(ContextAttributes orig) {
+    protected ContextAttributes(ContextAttributes orig) {
         super(orig);
     }
 
@@ -75,6 +75,11 @@ class ContextAttributes extends AttributesImpl {
             throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         super.setValueIfEmpty(userid, string);
-
+    }
+    
+    // Makes addAttribute available for this package.
+    protected void addAttribute(String name, AttributeType type, boolean vector,
+            boolean readOnly, boolean notImplemented, boolean removeable) {
+        super.addAttribute(name, type, vector, readOnly, notImplemented, removeable);
     }
 }
