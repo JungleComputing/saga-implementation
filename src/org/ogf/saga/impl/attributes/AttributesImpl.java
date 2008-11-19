@@ -503,7 +503,7 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes, Clone
         System.out.println("Found " + keys.length + " keys, should be 0");
     }
 
-    public void setValueIfEmpty(String key, String value)
+    protected void setValueIfEmpty(String key, String value)
             throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         AttributeInfo info = getInfoCheckVector(key, false);
