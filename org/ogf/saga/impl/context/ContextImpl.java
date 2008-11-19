@@ -77,9 +77,7 @@ public class ContextImpl extends SagaObjectBase
             throw new SagaRuntimeException("could not get TYPE attribute", e);
         }
         try {
-            if ("Unknown".equals(type)) {
-                // nothing
-            } else if ("ftp".equals(type)) {
+            if ("ftp".equals(type)) {
                 // Default is anonymous
                 setValueIfEmpty(ContextImpl.USERID, "anonymous");
                 setValueIfEmpty(ContextImpl.USERPASS, "anonymous@localhost");
@@ -97,10 +95,11 @@ public class ContextImpl extends SagaObjectBase
                 // attributes.setValue(Context.USERPASS, "");
             } else if ("preferences".equals(type)) {
                 // nothing
-            } else if (!type.equals("")) {
-                throw new NoSuccessException("Unrecognized TYPE attribute value: "
-                        + type);
             }
+            // else if (!type.equals("")) {
+            //    throw new NoSuccessException("Unrecognized TYPE attribute value: "
+            //            + type);
+            // }
         } catch (DoesNotExistException e) {
             // Should not happen.
         } catch (BadParameterException e) {
