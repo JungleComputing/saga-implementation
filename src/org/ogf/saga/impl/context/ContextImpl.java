@@ -12,6 +12,7 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.SagaRuntimeException;
+import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.session.Session;
 
 public class ContextImpl extends SagaObjectBase implements
@@ -31,7 +32,7 @@ public class ContextImpl extends SagaObjectBase implements
         }
     }
 
-    ContextImpl(String type) throws NotImplementedException,
+    protected ContextImpl(String type) throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         super((Session) null);
 
@@ -52,6 +53,11 @@ public class ContextImpl extends SagaObjectBase implements
             setDefaults();
         }
     }
+    
+    protected ContextImpl(ContextImpl orig) {
+        super(orig);
+        attributes = new ContextAttributes(orig.attributes);
+    }
 
     public boolean equals(Object o) {
         if (!(o instanceof ContextImpl)) {
@@ -63,11 +69,6 @@ public class ContextImpl extends SagaObjectBase implements
 
     public int hashCode() {
         return attributes.hashCode();
-    }
-
-    ContextImpl(ContextImpl orig) {
-        super(orig);
-        attributes = new ContextAttributes(orig.attributes);
     }
 
     public Object clone() throws CloneNotSupportedException {
@@ -200,5 +201,10 @@ public class ContextImpl extends SagaObjectBase implements
             throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         attributes.setValueIfEmpty(key, value);
+    }
+    
+    public void addAttribute(String name, AttributeType type, boolean vector,
+            boolean readOnly, boolean notImplemented, boolean removeable) {
+        attributes.addAttribute(name, type, vector, readOnly, notImplemented, removeable);
     }
 }
