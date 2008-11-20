@@ -42,9 +42,11 @@ public class ContextInitializerAdaptor  extends AdaptorBase<Object>
                         "This adaptor does not recognize the " + type
                                 + " context");
             }
-
+        } catch(NotImplementedException e) {
+            throw e;
         } catch (Throwable e) {
             // Should not happen.
+            throw new Error("Internal error: got exception", e);
         }
     }
 }
