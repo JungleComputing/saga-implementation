@@ -23,7 +23,7 @@ public class ContextImpl extends SagaObjectBase implements
 
     static {
         Object[] parameters = {};
-        Class[] parameterClasses = {};
+        Class<?>[] parameterClasses = {};
         try {
             proxy = (ContextInitializerSPI) SAGAEngine.createAdaptorProxy(
                     ContextInitializerSPI.class, parameterClasses, parameters);
