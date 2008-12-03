@@ -20,8 +20,8 @@ import org.ogf.saga.url.URL;
 
 public class NSWrapperFactory extends NSFactory {
 
-    public NSDirectory doCreateNSDirectory(Session session, URL name,
-            int flags) throws NotImplementedException, IncorrectURLException,
+    public NSDirectory doCreateNSDirectory(Session session, URL name, int flags)
+            throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             DoesNotExistException, AlreadyExistsException, TimeoutException,
@@ -41,8 +41,8 @@ public class NSWrapperFactory extends NSFactory {
     protected Task<NSFactory, NSDirectory> doCreateNSDirectory(TaskMode mode,
             Session session, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSFactory, NSDirectory>(this,
-                session, mode, "doCreateNSDirectory", new Class[] {
+        return new org.ogf.saga.impl.task.TaskImpl<NSFactory, NSDirectory>(
+                this, session, mode, "doCreateNSDirectory", new Class[] {
                         Session.class, URL.class, Integer.TYPE }, session,
                 name, flags);
     }

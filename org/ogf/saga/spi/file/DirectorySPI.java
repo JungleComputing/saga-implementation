@@ -28,9 +28,9 @@ public interface DirectorySPI extends NSDirectorySPI {
      * Returns the number of bytes in the specified file.
      * 
      * @param name
-     *                name of file to inspect.
+     *            name of file to inspect.
      * @param flags
-     *                mode for operation.
+     *            mode for operation.
      * @return the size.
      */
     long getSize(URL name, int flags) throws NotImplementedException,
@@ -44,7 +44,7 @@ public interface DirectorySPI extends NSDirectorySPI {
      * {@link NSDirectory#isEntry}.
      * 
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return <code>true</code> if the name represents a non-directory entry.
      */
     boolean isFile(URL name) throws NotImplementedException,
@@ -64,9 +64,9 @@ public interface DirectorySPI extends NSDirectorySPI {
      * Creates a new <code>Directory</code> instance.
      * 
      * @param name
-     *                directory to open.
+     *            directory to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the opened directory instance.
      */
     Directory openDirectory(URL name, int flags)
@@ -80,9 +80,9 @@ public interface DirectorySPI extends NSDirectorySPI {
      * Creates a new <code>File</code> instance.
      * 
      * @param name
-     *                file to open.
+     *            file to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the opened file instance.
      */
     File openFile(URL name, int flags) throws NotImplementedException,
@@ -96,7 +96,7 @@ public interface DirectorySPI extends NSDirectorySPI {
      * Creates a new <code>FileInputStream</code> instance.
      * 
      * @param name
-     *                file to open.
+     *            file to open.
      * @return the input stream.
      */
     FileInputStream openFileInputStream(URL name)
@@ -110,9 +110,9 @@ public interface DirectorySPI extends NSDirectorySPI {
      * Creates a new <code>FileOutputStream</code> instance.
      * 
      * @param name
-     *                file to open.
+     *            file to open.
      * @param append
-     *                when set, the stream appends to the file.
+     *            when set, the stream appends to the file.
      * @return the output stream.
      */
     FileOutputStream openFileOutputStream(URL name, boolean append)
@@ -130,15 +130,15 @@ public interface DirectorySPI extends NSDirectorySPI {
      * Creates a task that retrieves the number of bytes in the specified file.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                name of file to inspect.
+     *            name of file to inspect.
      * @param flags
-     *                mode for operation.
+     *            mode for operation.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<Directory, Long> getSize(TaskMode mode, URL name, int flags)
             throws NotImplementedException;
@@ -148,13 +148,13 @@ public interface DirectorySPI extends NSDirectorySPI {
      * alias for {@link NSDirectory#isEntry}.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<Directory, Boolean> isFile(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -163,15 +163,15 @@ public interface DirectorySPI extends NSDirectorySPI {
      * Creates a task that creates a new <code>Directory</code> instance.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                directory to open.
+     *            directory to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<Directory, Directory> openDirectory(TaskMode mode, URL name, int flags)
             throws NotImplementedException;
@@ -180,15 +180,15 @@ public interface DirectorySPI extends NSDirectorySPI {
      * Creates a task that creates a new <code>File</code> instance.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                file to open.
+     *            file to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<Directory, File> openFile(TaskMode mode, URL name, int flags)
             throws NotImplementedException;
@@ -198,13 +198,13 @@ public interface DirectorySPI extends NSDirectorySPI {
      * instance.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                file to open.
+     *            file to open.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<Directory, FileInputStream> openFileInputStream(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -214,15 +214,15 @@ public interface DirectorySPI extends NSDirectorySPI {
      * instance.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                file to open.
+     *            file to open.
      * @param append
-     *                when set, the file is opened for appending.
+     *            when set, the file is opened for appending.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<Directory, FileOutputStream> openFileOutputStream(TaskMode mode,
             URL name, boolean append) throws NotImplementedException;

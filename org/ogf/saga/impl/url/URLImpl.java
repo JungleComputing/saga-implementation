@@ -11,7 +11,8 @@ import org.ogf.saga.impl.SagaObjectBase;
  * URL class as specified by SAGA. The java.net.URL class is not usable because
  * of all kinds of side-effects.
  */
-public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Cloneable {
+public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
+        Cloneable {
     private URI u;
 
     /**
@@ -33,15 +34,17 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
     private URLImpl(URI u) {
         this.u = u;
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
         URLImpl o = (URLImpl) super.clone();
         o.u = URI.create(u.toString());
         return o;
-        
+
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#setString(java.lang.String)
      */
     public void setString(String url) throws BadParameterException {
@@ -52,21 +55,27 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#getString()
      */
     public String getString() {
         return toString();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#getFragment()
      */
     public String getFragment() {
         return u.getFragment();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#setFragment(java.lang.String)
      */
     public void setFragment(String fragment) throws BadParameterException {
@@ -78,14 +87,18 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#getHost()
      */
     public String getHost() {
         return u.getHost();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#setHost(java.lang.String)
      */
     public void setHost(String host) throws BadParameterException {
@@ -97,14 +110,18 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#getPath()
      */
     public String getPath() {
         return u.getPath();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#setPath(java.lang.String)
      */
     public void setPath(String path) throws BadParameterException {
@@ -116,14 +133,18 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#getPort()
      */
     public int getPort() {
         return u.getPort();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#setPort(int)
      */
     public void setPort(int port) throws BadParameterException {
@@ -135,14 +156,18 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#getQuery()
      */
     public String getQuery() {
         return u.getQuery();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#setQuery(java.lang.String)
      */
     public void setQuery(String query) throws BadParameterException {
@@ -154,14 +179,18 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#getScheme()
      */
     public String getScheme() {
         return u.getScheme();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#setScheme(java.lang.String)
      */
     public void setScheme(String scheme) throws BadParameterException {
@@ -173,14 +202,18 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#getUserInfo()
      */
     public String getUserInfo() {
         return u.getUserInfo();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#setUserInfo(java.lang.String)
      */
     public void setUserInfo(String userInfo) throws BadParameterException {
@@ -192,11 +225,13 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#translate(java.lang.String)
      */
-    public org.ogf.saga.url.URL translate(String scheme) throws BadParameterException,
-            NoSuccessException {
+    public org.ogf.saga.url.URL translate(String scheme)
+            throws BadParameterException, NoSuccessException {
         try {
             URI url = new URI(scheme, u.getUserInfo(), u.getHost(),
                     u.getPort(), u.getPath(), u.getQuery(), u.getFragment());
@@ -228,16 +263,20 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         return u.toString();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#resolve(org.ogf.saga.URL)
      */
-    public org.ogf.saga.url.URL resolve(org.ogf.saga.url.URL url) throws NoSuccessException {
+    public org.ogf.saga.url.URL resolve(org.ogf.saga.url.URL url)
+            throws NoSuccessException {
         String s = url.toString();
         URI uri;
         try {
             uri = new URI(s);
         } catch (URISyntaxException e) {
-            throw new NoSuccessException("URL " + s + " not recognized as a URL", e);
+            throw new NoSuccessException("URL " + s
+                    + " not recognized as a URL", e);
         }
         uri = u.resolve(uri);
         if (uri.toString().equals(s)) {
@@ -247,14 +286,18 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL, Clo
         return new URLImpl(uri);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#isAbsolute()
      */
     public boolean isAbsolute() {
         return u.isAbsolute();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ogf.saga.url.URL#normalize()
      */
     public URLImpl normalize() {

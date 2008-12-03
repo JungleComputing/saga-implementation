@@ -115,9 +115,9 @@ public abstract class LogicalDirectoryAdaptorBase extends
             String namePattern, String[] attrPattern, int flags)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<LogicalDirectory, List<URL>>(
-                logicalDirectoryWrapper, sessionImpl, mode, "find", new Class[] { String.class,
-                        String[].class, Integer.TYPE }, namePattern,
-                attrPattern, flags);
+                logicalDirectoryWrapper, sessionImpl, mode, "find",
+                new Class[] { String.class, String[].class, Integer.TYPE },
+                namePattern, attrPattern, flags);
     }
 
     public LogicalDirectory openLogicalDir(URL name, int flags)
@@ -134,14 +134,15 @@ public abstract class LogicalDirectoryAdaptorBase extends
                             + "on logicalDirectory not opened for writing");
         }
         name = resolve(name);
-        return LogicalFileFactory.createLogicalDirectory(sessionImpl, name, flags);
+        return LogicalFileFactory.createLogicalDirectory(sessionImpl, name,
+                flags);
     }
 
     public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(
             TaskMode mode, URL name, int flags) throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<LogicalDirectory, LogicalDirectory>(
-                logicalDirectoryWrapper, sessionImpl, mode, "openLogicalDir", new Class[] {
-                        URL.class, Integer.TYPE }, name, flags);
+                logicalDirectoryWrapper, sessionImpl, mode, "openLogicalDir",
+                new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 
     public LogicalFile openLogicalFile(URL name, int flags)
@@ -166,8 +167,8 @@ public abstract class LogicalDirectoryAdaptorBase extends
     public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode,
             URL name, int flags) throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<LogicalDirectory, LogicalFile>(
-                logicalDirectoryWrapper, sessionImpl, mode, "openLogicalFile", new Class[] {
-                        URL.class, Integer.TYPE }, name, flags);
+                logicalDirectoryWrapper, sessionImpl, mode, "openLogicalFile",
+                new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 
     public boolean isFile(URL name) throws NotImplementedException,
@@ -226,16 +227,15 @@ public abstract class LogicalDirectoryAdaptorBase extends
             DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isReadOnlyAttribute(key);
     }
-    
+
     public Task<LogicalDirectory, Boolean> isReadOnlyAttribute(TaskMode mode,
             String key) throws NotImplementedException {
         return attributes.isReadOnlyAttribute(mode, key);
     }
-    
-    public boolean existsAttribute(String key)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, NoSuccessException {
+
+    public boolean existsAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return attributes.existsAttribute(key);
     }
 

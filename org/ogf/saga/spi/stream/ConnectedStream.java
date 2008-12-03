@@ -110,11 +110,10 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
             throws NotImplementedException {
         return attributes.getVectorAttribute(mode, key);
     }
-    
-    public boolean existsAttribute(String key)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, NoSuccessException {
+
+    public boolean existsAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return attributes.existsAttribute(key);
     }
 
@@ -234,74 +233,75 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
 
     public Task<Stream, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this, sessionImpl,
-                mode, "close", new Class[] { Float.TYPE }, timeoutInSeconds);
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this,
+                sessionImpl, mode, "close", new Class[] { Float.TYPE },
+                timeoutInSeconds);
     }
 
     public Task<Stream, Void> connect(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this, sessionImpl,
-                mode, "connect", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this,
+                sessionImpl, mode, "connect", new Class[] {});
     }
 
     public Task<Stream, Context> getContext(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Context>(this, sessionImpl,
-                mode, "getContext", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Context>(this,
+                sessionImpl, mode, "getContext", new Class[] {});
     }
 
     public Task<Stream, URL> getUrl(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, URL>(this, sessionImpl,
-                mode, "getURL", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, URL>(this,
+                sessionImpl, mode, "getURL", new Class[] {});
     }
 
     public Task<Stream, Integer> read(TaskMode mode, Buffer buffer, int len)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Integer>(this, sessionImpl,
-                mode, "read", new Class[] { Buffer.class, Integer.TYPE },
-                buffer, len);
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Integer>(this,
+                sessionImpl, mode, "read", new Class[] { Buffer.class,
+                        Integer.TYPE }, buffer, len);
     }
 
     public Task<Stream, Integer> waitFor(TaskMode mode, int what,
             float timeoutInSeconds) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Integer>(this, sessionImpl,
-                mode, "waitFor", new Class[] { Integer.TYPE, Float.TYPE },
-                what, timeoutInSeconds);
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Integer>(this,
+                sessionImpl, mode, "waitFor", new Class[] { Integer.TYPE,
+                        Float.TYPE }, what, timeoutInSeconds);
     }
 
     public Task<Stream, Integer> write(TaskMode mode, Buffer buffer, int len)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Integer>(this, sessionImpl,
-                mode, "write", new Class[] { Buffer.class, Integer.TYPE },
-                buffer, len);
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Integer>(this,
+                sessionImpl, mode, "write", new Class[] { Buffer.class,
+                        Integer.TYPE }, buffer, len);
     }
 
     public Task<Stream, Integer> addCallback(TaskMode mode, String name,
             Callback cb) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Integer>(this, sessionImpl,
-                mode, "addCallback",
-                new Class[] { String.class, Callback.class }, name, cb);
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Integer>(this,
+                sessionImpl, mode, "addCallback", new Class[] { String.class,
+                        Callback.class }, name, cb);
     }
 
     public Task<Stream, org.ogf.saga.monitoring.Metric> getMetric(
             TaskMode mode, String name) throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<Stream, org.ogf.saga.monitoring.Metric>(
-                this, sessionImpl, mode, "getMetric", new Class[] { String.class },
-                name);
+                this, sessionImpl, mode, "getMetric",
+                new Class[] { String.class }, name);
     }
 
     public Task<Stream, String[]> listMetrics(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, String[]>(this, sessionImpl,
-                mode, "listMetrics", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, String[]>(this,
+                sessionImpl, mode, "listMetrics", new Class[] {});
     }
 
     public Task<Stream, Void> removeCallback(TaskMode mode, String name,
             int cookie) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this, sessionImpl,
-                mode, "removeCallback", new Class[] { String.class,
-                        Integer.TYPE }, name, cookie);
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this,
+                sessionImpl, mode, "removeCallback", new Class[] {
+                        String.class, Integer.TYPE }, name, cookie);
     }
 
     public int addCallback(String name, Callback cb)
@@ -354,35 +354,35 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
 
     public Task<Stream, String> getGroup(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, String>(this, sessionImpl,
-                mode, "getGroup", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, String>(this,
+                sessionImpl, mode, "getGroup", new Class[] {});
     }
 
     public Task<Stream, String> getOwner(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, String>(this, sessionImpl,
-                mode, "getOwner", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, String>(this,
+                sessionImpl, mode, "getOwner", new Class[] {});
     }
 
     public Task<Stream, Void> permissionsAllow(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this, sessionImpl,
-                mode, "permissionsAllow", new Class[] { String.class,
-                        Integer.TYPE }, id, permissions);
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this,
+                sessionImpl, mode, "permissionsAllow", new Class[] {
+                        String.class, Integer.TYPE }, id, permissions);
     }
 
     public Task<Stream, Boolean> permissionsCheck(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Boolean>(this, sessionImpl,
-                mode, "permissionsCheck", new Class[] { String.class,
-                        Integer.TYPE }, id, permissions);
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Boolean>(this,
+                sessionImpl, mode, "permissionsCheck", new Class[] {
+                        String.class, Integer.TYPE }, id, permissions);
     }
 
     public Task<Stream, Void> permissionsDeny(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this, sessionImpl,
-                mode, "permissionsDeny", new Class[] { String.class,
-                        Integer.TYPE }, id, permissions);
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this,
+                sessionImpl, mode, "permissionsDeny", new Class[] {
+                        String.class, Integer.TYPE }, id, permissions);
     }
 
     public void close() throws NotImplementedException,
@@ -442,8 +442,8 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
 
     public Task<Stream, StreamInputStream> getInputStream(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Stream, StreamInputStream>(this,
-                sessionImpl, mode, "getInputStream", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, StreamInputStream>(
+                this, sessionImpl, mode, "getInputStream", new Class[] {});
     }
 
     public Task<Stream, StreamOutputStream> getOutputStream(TaskMode mode)

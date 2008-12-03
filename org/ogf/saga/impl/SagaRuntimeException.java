@@ -14,7 +14,7 @@ public class SagaRuntimeException extends RuntimeException {
      * Constructs a new SAGA error with the specified detail message.
      * 
      * @param message
-     *                the detail message.
+     *            the detail message.
      */
     public SagaRuntimeException(String message) {
         super(message);
@@ -24,7 +24,7 @@ public class SagaRuntimeException extends RuntimeException {
      * Constructs a new SAGA error with the specified cause.
      * 
      * @param cause
-     *                the cause.
+     *            the cause.
      */
     public SagaRuntimeException(Throwable cause) {
         super(cause);
@@ -34,9 +34,9 @@ public class SagaRuntimeException extends RuntimeException {
      * Constructs a new SAGA error with the specified detail message and cause.
      * 
      * @param message
-     *                the detail message.
+     *            the detail message.
      * @param cause
-     *                the cause.
+     *            the cause.
      */
     public SagaRuntimeException(String message, Throwable cause) {
         super(message, cause);

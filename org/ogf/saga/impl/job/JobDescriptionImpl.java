@@ -16,12 +16,12 @@ public class JobDescriptionImpl extends SagaObjectBase implements
         org.ogf.saga.job.JobDescription, Cloneable {
 
     JobDescriptionAttributes attributes;
-    
+
     public JobDescriptionImpl() {
         super((Session) null);
         attributes = new JobDescriptionAttributes();
     }
-    
+
     public JobDescriptionImpl(JobDescriptionImpl orig) {
         super(orig);
         attributes = new JobDescriptionAttributes(orig.attributes);
@@ -33,79 +33,89 @@ public class JobDescriptionImpl extends SagaObjectBase implements
         return o;
     }
 
-    public String[] findAttributes(String... patterns) throws NotImplementedException,
-            BadParameterException, AuthenticationFailedException, AuthorizationFailedException,
+    public String[] findAttributes(String... patterns)
+            throws NotImplementedException, BadParameterException,
+            AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
         return attributes.findAttributes(patterns);
     }
 
     public String getAttribute(String key) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.getAttribute(key);
     }
 
-    public String[] getVectorAttribute(String key) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, DoesNotExistException, TimeoutException, NoSuccessException {
+    public String[] getVectorAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         return attributes.getVectorAttribute(key);
     }
 
     public boolean existsAttribute(String key) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return attributes.existsAttribute(key);
     }
-    
 
-    public boolean isReadOnlyAttribute(String key) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public boolean isReadOnlyAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isReadOnlyAttribute(key);
     }
 
-    public boolean isRemovableAttribute(String key) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public boolean isRemovableAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isRemovableAttribute(key);
     }
 
-    public boolean isVectorAttribute(String key) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public boolean isVectorAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isVectorAttribute(key);
     }
 
-    public boolean isWritableAttribute(String key) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public boolean isWritableAttribute(String key)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isWritableAttribute(key);
     }
 
     public String[] listAttributes() throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return attributes.listAttributes();
     }
 
     public void removeAttribute(String key) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            DoesNotExistException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
         attributes.removeAttribute(key);
     }
 
-    public void setAttribute(String key, String value) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
+    public void setAttribute(String key, String value)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         attributes.setAttribute(key, value);
     }
 
     public void setVectorAttribute(String key, String[] values)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException,
-            TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         attributes.setVectorAttribute(key, values);
     }
-
 
 }

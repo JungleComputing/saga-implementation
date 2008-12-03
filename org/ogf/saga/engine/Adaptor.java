@@ -12,9 +12,10 @@ class Adaptor {
 
     /** The actual class of this adaptor, must be an implementation of spiClass. */
     final Class<?> adaptorClass;
-    
+
     /**
      * Constructs an information container for a specific adaptor.
+     * 
      * @param adaptorClass
      *            The actual class of this adaptor, must be an implementation of
      *            spiClass.
@@ -22,14 +23,18 @@ class Adaptor {
     Adaptor(Class<?> adaptorClass) {
         this.adaptorClass = adaptorClass;
     }
-    
+
     /**
      * Creates an instance of the adaptor, and returns it.
-     * @param types the constructor parameter types.
-     * @param parameters the actual constructor parameters.
+     * 
+     * @param types
+     *            the constructor parameter types.
+     * @param parameters
+     *            the actual constructor parameters.
      * @return the adaptor instance.
-     * @exception Throwable anything that the constructor throws, or an
-     *     error indicating that no suitable constructor was found.
+     * @exception Throwable
+     *                anything that the constructor throws, or an error
+     *                indicating that no suitable constructor was found.
      */
     @SuppressWarnings("unchecked")
     AdaptorBase instantiate(Class<?>[] types, Object[] parameters)
@@ -59,6 +64,7 @@ class Adaptor {
 
     /**
      * Obtains the name of the adaptor class.
+     * 
      * @return the adaptor class name.
      */
     String getAdaptorName() {
@@ -67,14 +73,16 @@ class Adaptor {
 
     /**
      * Obtains the adaptor class.
+     * 
      * @return the adaptor class.
      */
     Class<?> getAdaptorClass() {
         return adaptorClass;
     }
-    
+
     /**
      * Returns the name of the adaptor class.
+     * 
      * @return the name.
      */
     public String toString() {
@@ -83,6 +91,7 @@ class Adaptor {
 
     /**
      * Obtains the short name of the adaptor class (without package).
+     * 
      * @return the short name of the adaptor class.
      */
     synchronized String getShortAdaptorClassName() {

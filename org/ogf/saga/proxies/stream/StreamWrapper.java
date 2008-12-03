@@ -38,11 +38,10 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         super(session);
         Object[] parameters = { this, session, name };
         try {
-            proxy = (StreamSPI) SAGAEngine
-                    .createAdaptorProxy(StreamSPI.class,
-                            new Class[] { StreamWrapper.class,
-                                    org.ogf.saga.impl.session.SessionImpl.class,
-                                    URL.class }, parameters);
+            proxy = (StreamSPI) SAGAEngine.createAdaptorProxy(StreamSPI.class,
+                    new Class[] { StreamWrapper.class,
+                            org.ogf.saga.impl.session.SessionImpl.class,
+                            URL.class }, parameters);
         } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {
                 throw (NotImplementedException) e;
@@ -220,11 +219,10 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             throws NotImplementedException {
         return proxy.isReadOnlyAttribute(mode, key);
     }
-    
-    public boolean existsAttribute(String key)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, NoSuccessException {
+
+    public boolean existsAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.existsAttribute(key);
     }
 

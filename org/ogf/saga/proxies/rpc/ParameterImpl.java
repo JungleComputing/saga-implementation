@@ -11,7 +11,8 @@ public class ParameterImpl extends SagaObjectBase implements
     IOMode mode;
     Object data;
 
-    protected ParameterImpl() throws NotImplementedException, BadParameterException {
+    protected ParameterImpl() throws NotImplementedException,
+            BadParameterException {
         mode = IOMode.IN;
     }
 
@@ -27,8 +28,8 @@ public class ParameterImpl extends SagaObjectBase implements
         this.mode = IOMode.IN;
     }
 
-    protected ParameterImpl(Object b, IOMode mode) throws NotImplementedException,
-            BadParameterException {
+    protected ParameterImpl(Object b, IOMode mode)
+            throws NotImplementedException, BadParameterException {
         this.data = b;
         this.mode = mode;
     }

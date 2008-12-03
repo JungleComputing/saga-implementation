@@ -9,7 +9,8 @@ public class ContextFactoryImpl extends org.ogf.saga.context.ContextFactory {
 
     @Override
     protected org.ogf.saga.context.Context doCreateContext(String type)
-            throws NotImplementedException, IncorrectStateException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return new ContextImpl(type);
     }
 }

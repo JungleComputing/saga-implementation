@@ -33,11 +33,13 @@ public class MetaFactory implements SagaFactory {
         return new org.ogf.saga.proxies.job.JobWrapperFactory();
     }
 
-    public LogicalFileFactory createLogicalFileFactory() throws NotImplementedException {
+    public LogicalFileFactory createLogicalFileFactory()
+            throws NotImplementedException {
         return new org.ogf.saga.proxies.logicalfile.LogicalFileWrapperFactory();
     }
 
-    public MonitoringFactory createMonitoringFactory() throws NotImplementedException {
+    public MonitoringFactory createMonitoringFactory()
+            throws NotImplementedException {
         return new org.ogf.saga.impl.monitoring.MonitoringFactoryImpl();
     }
 

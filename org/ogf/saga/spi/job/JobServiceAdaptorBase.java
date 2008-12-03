@@ -29,8 +29,8 @@ public abstract class JobServiceAdaptorBase extends
 
     protected URL rm;
 
-    public JobServiceAdaptorBase(JobServiceWrapper wrapper, SessionImpl sessionImpl,
-            URL rm) {
+    public JobServiceAdaptorBase(JobServiceWrapper wrapper,
+            SessionImpl sessionImpl, URL rm) {
         super(sessionImpl, wrapper);
         this.rm = rm;
     }
@@ -49,11 +49,9 @@ public abstract class JobServiceAdaptorBase extends
         // single element, regardless of white space contained within.
         // A quoted string can be embedded in an element.
         // - A double quotation mark preceded by a backslash (\) is interpreted
-        // as a
-        // literal double quotation mark (").
+        // as a literal double quotation mark (").
         // - Backslashes are interpreted literally, unless they immediately
-        // precede
-        // a double quotation mark.
+        // precede a double quotation mark.
 
         for (char c : commandLine.toCharArray()) {
             switch (c) {
@@ -162,13 +160,14 @@ public abstract class JobServiceAdaptorBase extends
     public Task<JobService, Job> getJob(TaskMode mode, String jobId)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<JobService, Job>(wrapper,
-                sessionImpl, mode, "getJob", new Class[] { String.class }, jobId);
+                sessionImpl, mode, "getJob", new Class[] { String.class },
+                jobId);
     }
 
     public Task<JobService, JobSelf> getSelf(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<JobService, JobSelf>(wrapper,
-                sessionImpl, mode, "getSelf", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<JobService, JobSelf>(
+                wrapper, sessionImpl, mode, "getSelf", new Class[] {});
     }
 
     public Task<JobService, List<String>> list(TaskMode mode)

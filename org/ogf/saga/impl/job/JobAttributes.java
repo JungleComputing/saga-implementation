@@ -14,24 +14,28 @@ public class JobAttributes extends AsyncAttributesImpl<org.ogf.saga.job.Job> {
     public JobAttributes(org.ogf.saga.job.Job object, Session session) {
         super(object, session, false);
         addAttribute(Job.JOBID, AttributeType.STRING, false, true, false, false);
-        addAttribute(Job.EXECUTIONHOSTS, AttributeType.STRING, true, true, false, false);
+        addAttribute(Job.EXECUTIONHOSTS, AttributeType.STRING, true, true,
+                false, false);
         addAttribute(Job.CREATED, AttributeType.TIME, false, true, false, false);
         addAttribute(Job.STARTED, AttributeType.TIME, false, true, false, false);
-        addAttribute(Job.FINISHED, AttributeType.TIME, false, true, false, false);
+        addAttribute(Job.FINISHED, AttributeType.TIME, false, true, false,
+                false);
         addAttribute(Job.EXITCODE, AttributeType.INT, false, true, false, false);
         addAttribute(Job.TERMSIG, AttributeType.INT, false, true, false, false);
     }
-       
+
     JobAttributes(JobAttributes orig) {
         super(orig);
     }
-    
-    protected void setValue(String key, String value) throws DoesNotExistException, NotImplementedException,
+
+    protected void setValue(String key, String value)
+            throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         super.setValue(key, value);
     }
-    
-    protected void setVectorValue(String key, String[] values) throws DoesNotExistException, NotImplementedException,
+
+    protected void setVectorValue(String key, String[] values)
+            throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         super.setVectorValue(key, values);
     }

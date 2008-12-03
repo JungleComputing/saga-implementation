@@ -40,12 +40,13 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
         return flags;
     }
 
-    public LogicalFileAdaptorBase(LogicalFileWrapper wrapper, SessionImpl sessionImpl,
-            URL name, int flags) throws NotImplementedException,
-            IncorrectURLException, BadParameterException,
-            DoesNotExistException, PermissionDeniedException,
-            AuthorizationFailedException, AuthenticationFailedException,
-            TimeoutException, NoSuccessException, AlreadyExistsException {
+    public LogicalFileAdaptorBase(LogicalFileWrapper wrapper,
+            SessionImpl sessionImpl, URL name, int flags)
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, checkFlags(flags)
                 & Flags.ALLNAMESPACEFLAGS.getValue());
         this.wrapper = wrapper;
@@ -93,11 +94,10 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
             DoesNotExistException, TimeoutException, NoSuccessException {
         return attributes.isReadOnlyAttribute(key);
     }
-    
-    public boolean existsAttribute(String key)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, NoSuccessException {
+
+    public boolean existsAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return attributes.existsAttribute(key);
     }
 
@@ -166,11 +166,11 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
         return attributes.getVectorAttribute(mode, key);
     }
 
-    public Task<LogicalFile, Boolean> existsAttribute(TaskMode mode,
-            String key) throws NotImplementedException {
+    public Task<LogicalFile, Boolean> existsAttribute(TaskMode mode, String key)
+            throws NotImplementedException {
         return attributes.existsAttribute(mode, key);
     }
-    
+
     public Task<LogicalFile, Boolean> isReadOnlyAttribute(TaskMode mode,
             String key) throws NotImplementedException {
         return attributes.isReadOnlyAttribute(mode, key);
@@ -214,13 +214,14 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
     public Task<LogicalFile, Void> addLocation(TaskMode mode, URL name)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, Void>(wrapper,
-                sessionImpl, mode, "addLocation", new Class[] { URL.class }, name);
+                sessionImpl, mode, "addLocation", new Class[] { URL.class },
+                name);
     }
 
     public Task<LogicalFile, List<URL>> listLocations(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, List<URL>>(wrapper,
-                sessionImpl, mode, "listLocations", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, List<URL>>(
+                wrapper, sessionImpl, mode, "listLocations", new Class[] {});
     }
 
     public Task<LogicalFile, Void> removeLocation(TaskMode mode, URL name)

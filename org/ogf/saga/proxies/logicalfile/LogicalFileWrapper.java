@@ -40,8 +40,8 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             proxy = (LogicalFileSPI) SAGAEngine.createAdaptorProxy(
                     LogicalFileSPI.class, new Class[] {
                             LogicalFileWrapper.class,
-                            org.ogf.saga.impl.session.SessionImpl.class, URL.class,
-                            Integer.TYPE }, parameters);
+                            org.ogf.saga.impl.session.SessionImpl.class,
+                            URL.class, Integer.TYPE }, parameters);
             super.setProxy(proxy);
         } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {
@@ -148,19 +148,17 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
         return proxy.isReadOnlyAttribute(mode, key);
     }
 
-
-    public boolean existsAttribute(String key)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, NoSuccessException {
+    public boolean existsAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.existsAttribute(key);
     }
 
-    public Task<LogicalFile, Boolean> existsAttribute(TaskMode mode,
-            String key) throws NotImplementedException {
+    public Task<LogicalFile, Boolean> existsAttribute(TaskMode mode, String key)
+            throws NotImplementedException {
         return proxy.existsAttribute(mode, key);
     }
-    
+
     public boolean isRemovableAttribute(String key)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,

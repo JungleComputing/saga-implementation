@@ -26,7 +26,7 @@ public interface JobServiceSPI extends Async {
      * so can be modified after this call.
      * 
      * @param jd
-     *                the job description.
+     *            the job description.
      * @return the job.
      */
     public Job createJob(JobDescription jd) throws NotImplementedException,
@@ -45,13 +45,13 @@ public interface JobServiceSPI extends Async {
      * {@link Job#getStdout()}, and {@link Job#getStderr()} methods.
      * 
      * @param commandLine
-     *                the command to run.
+     *            the command to run.
      * @param host
-     *                hostname of the host on which the command must be run. If
-     *                this is an empty string, the implementation is free to
-     *                choose a host.
+     *            hostname of the host on which the command must be run. If this
+     *            is an empty string, the implementation is free to choose a
+     *            host.
      * @param interactive
-     *                specifies whether the job is interactive.
+     *            specifies whether the job is interactive.
      * @return the job.
      */
     public Job runJob(String commandLine, String host, boolean interactive)
@@ -74,7 +74,7 @@ public interface JobServiceSPI extends Async {
      * identification.
      * 
      * @param jobId
-     *                the job identification.
+     *            the job identification.
      * @return the job instance.
      */
     public Job getJob(String jobId) throws NotImplementedException,
@@ -96,13 +96,13 @@ public interface JobServiceSPI extends Async {
      * description provided. The job is delivered in 'New' state.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param jd
-     *                the job description.
+     *            the job description.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<JobService, Job> createJob(TaskMode mode, JobDescription jd)
             throws NotImplementedException;
@@ -119,15 +119,15 @@ public interface JobServiceSPI extends Async {
      * {@link Job#getStderr()} methods
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param commandLine
-     *                the command to run.
+     *            the command to run.
      * @param host
-     *                hostname of the host on which the command must be run. If
-     *                this is an empty string, the implementation is free to
-     *                choose a host.
+     *            hostname of the host on which the command must be run. If this
+     *            is an empty string, the implementation is free to choose a
+     *            host.
      * @param interactive
-     *                specifies whether the job is interactive.
+     *            specifies whether the job is interactive.
      * @return the task.
      */
     public Task<JobService, Job> runJob(TaskMode mode, String commandLine,
@@ -138,11 +138,11 @@ public interface JobServiceSPI extends Async {
      * the resource manager.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<JobService, List<String>> list(TaskMode mode)
             throws NotImplementedException;
@@ -152,13 +152,13 @@ public interface JobServiceSPI extends Async {
      * specified job identification.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param jobId
-     *                the job identification.
+     *            the job identification.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<JobService, Job> getJob(TaskMode mode, String jobId)
             throws NotImplementedException;
@@ -168,11 +168,11 @@ public interface JobServiceSPI extends Async {
      * application.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<JobService, JobSelf> getSelf(TaskMode mode)
             throws NotImplementedException;

@@ -28,7 +28,7 @@ public interface LogicalFileSPI extends NSEntrySPI,
      * <code>AlreadyExists</code> exception!
      * 
      * @param name
-     *                the location to add.
+     *            the location to add.
      */
     public void addLocation(URL name) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
@@ -40,7 +40,7 @@ public interface LogicalFileSPI extends NSEntrySPI,
      * Removes a replica location from the replica set.
      * 
      * @param name
-     *                the location to remove.
+     *            the location to remove.
      */
     public void removeLocation(URL name) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
@@ -52,9 +52,9 @@ public interface LogicalFileSPI extends NSEntrySPI,
      * Changes a replica location in the replica set.
      * 
      * @param nameOld
-     *                the location to be updated.
+     *            the location to be updated.
      * @param nameNew
-     *                the updated location.
+     *            the updated location.
      */
     public void updateLocation(URL nameOld, URL nameNew)
             throws NotImplementedException, IncorrectURLException,
@@ -77,9 +77,9 @@ public interface LogicalFileSPI extends NSEntrySPI,
      * Replicates a file from any of the known locations to a new location.
      * 
      * @param name
-     *                location to replicate to.
+     *            location to replicate to.
      * @param flags
-     *                flags defining the operation modus.
+     *            flags defining the operation modus.
      */
     public void replicate(URL name, int flags) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
@@ -94,13 +94,13 @@ public interface LogicalFileSPI extends NSEntrySPI,
      * Creates a task that adds a replica location to the replica set.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                the location to add.
+     *            the location to add.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<LogicalFile, Void> addLocation(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -109,13 +109,13 @@ public interface LogicalFileSPI extends NSEntrySPI,
      * Creates a task that removes a replica location from the replica set.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                the location to remove.
+     *            the location to remove.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<LogicalFile, Void> removeLocation(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -124,15 +124,15 @@ public interface LogicalFileSPI extends NSEntrySPI,
      * Creates a task that changes a replica location in the replica set.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param nameOld
-     *                the location to be updated.
+     *            the location to be updated.
      * @param nameNew
-     *                the updated location.
+     *            the updated location.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<LogicalFile, Void> updateLocation(TaskMode mode, URL nameOld,
             URL nameNew) throws NotImplementedException;
@@ -141,11 +141,11 @@ public interface LogicalFileSPI extends NSEntrySPI,
      * Creates a task that lists the locations in this location set.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<LogicalFile, List<URL>> listLocations(TaskMode mode)
             throws NotImplementedException;
@@ -155,15 +155,15 @@ public interface LogicalFileSPI extends NSEntrySPI,
      * a new location.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                location to replicate to.
+     *            location to replicate to.
      * @param flags
-     *                flags defining the operation modus.
+     *            flags defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<LogicalFile, Void> replicate(TaskMode mode, URL name, int flags)
             throws NotImplementedException;

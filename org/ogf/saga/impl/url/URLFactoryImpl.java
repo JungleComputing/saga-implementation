@@ -7,8 +7,9 @@ import org.ogf.saga.error.NotImplementedException;
 public class URLFactoryImpl extends org.ogf.saga.url.URLFactory {
 
     @Override
-    protected org.ogf.saga.url.URL doCreateURL(String url) throws BadParameterException,
-            NoSuccessException, NotImplementedException {
+    protected org.ogf.saga.url.URL doCreateURL(String url)
+            throws BadParameterException, NoSuccessException,
+            NotImplementedException {
         return new URLImpl(url);
     }
 

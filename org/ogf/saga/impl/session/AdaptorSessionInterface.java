@@ -5,36 +5,45 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.context.ContextImpl;
 
 /**
- * Adaptor-specific session stuff. Each adaptor can add an adaptor session
- * to the SAGA session. Some of the methods of SAGA session are forwarded
- * to all registered adaptor sessions. 
+ * Adaptor-specific session stuff. Each adaptor can add an adaptor session to
+ * the SAGA session. Some of the methods of SAGA session are forwarded to all
+ * registered adaptor sessions.
  */
-public interface AdaptorSessionInterface {  
-    
+public interface AdaptorSessionInterface {
+
     /**
      * Attaches a deep copy of the specified security context to the session.
-     * @param contextImpl the context to be added.
+     * 
+     * @param contextImpl
+     *            the context to be added.
      */
-    public void addContext(ContextImpl contextImpl) throws NotImplementedException;
-    
+    public void addContext(ContextImpl contextImpl)
+            throws NotImplementedException;
+
     /**
-     * Closes an adaptor session. Middleware may for instance have threads
-     * which may need to be terminated, or the application will hang.
+     * Closes an adaptor session. Middleware may for instance have threads which
+     * may need to be terminated, or the application will hang.
      */
     public void close() throws NotImplementedException;
-    
+
     /**
      * Copies the adaptor session.
+     * 
      * @return the clone.
-     * @throws CloneNotSupportedException when the clone method is not supported.
+     * @throws CloneNotSupportedException
+     *             when the clone method is not supported.
      */
     public Object clone() throws CloneNotSupportedException;
-    
+
     /**
      * Detaches the specified security context from the adaptor session.
-     * @param contextImpl the context to be removed.
-     * @exception DoesNotExistException is thrown when the session does not
-     *     contain the specified context.
+     * 
+     * @param contextImpl
+     *            the context to be removed.
+     * @exception DoesNotExistException
+     *                is thrown when the session does not contain the specified
+     *                context.
      */
-    public void removeContext(ContextImpl contextImpl) throws NotImplementedException, DoesNotExistException;
+    public void removeContext(ContextImpl contextImpl)
+            throws NotImplementedException, DoesNotExistException;
 }

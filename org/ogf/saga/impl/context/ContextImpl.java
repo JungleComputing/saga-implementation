@@ -53,7 +53,7 @@ public class ContextImpl extends SagaObjectBase implements
             setDefaults();
         }
     }
-    
+
     protected ContextImpl(ContextImpl orig) {
         super(orig);
         attributes = new ContextAttributes(orig.attributes);
@@ -202,10 +202,11 @@ public class ContextImpl extends SagaObjectBase implements
             IncorrectStateException, BadParameterException {
         attributes.setValueIfEmpty(key, value);
     }
-  
+
     // Allows the addition of adaptor-specific attributes.
     public void addAttribute(String name, AttributeType type, boolean vector,
             boolean readOnly, boolean notImplemented, boolean removeable) {
-        attributes.addAttribute(name, type, vector, readOnly, notImplemented, removeable);
+        attributes.addAttribute(name, type, vector, readOnly, notImplemented,
+                removeable);
     }
 }
