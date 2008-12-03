@@ -39,11 +39,11 @@ public interface FileSPI extends NSEntrySPI {
      * blocking. The async version can be used to implement non-blocking reads.
      * 
      * @param len
-     *                the number of bytes to be read.
+     *            the number of bytes to be read.
      * @param offset
-     *                the buffer offset.
+     *            the buffer offset.
      * @param buffer
-     *                the buffer to read data into.
+     *            the buffer to read data into.
      * @return the number of bytes read.
      */
     int read(Buffer buffer, int offset, int len)
@@ -57,11 +57,11 @@ public interface FileSPI extends NSEntrySPI {
      * current file position. Returns the number of bytes written.
      * 
      * @param len
-     *                the number of bytes to be written.
+     *            the number of bytes to be written.
      * @param offset
-     *                the buffer offset.
+     *            the buffer offset.
      * @param buffer
-     *                the buffer to write data from.
+     *            the buffer to write data from.
      * @return the number of bytes written.
      */
     int write(Buffer buffer, int offset, int len)
@@ -74,9 +74,9 @@ public interface FileSPI extends NSEntrySPI {
      * Repositions the current file position as requested.
      * 
      * @param offset
-     *                offset in bytes to move pointer.
+     *            offset in bytes to move pointer.
      * @param whence
-     *                determines from where the offset is relative.
+     *            determines from where the offset is relative.
      * @return the position after the seek.
      */
     long seek(long offset, SeekMode whence) throws NotImplementedException,
@@ -90,8 +90,8 @@ public interface FileSPI extends NSEntrySPI {
      * Gather/scatter read.
      * 
      * @param iovecs
-     *                array of IOVecs determining how much to read and where to
-     *                store it.
+     *            array of IOVecs determining how much to read and where to
+     *            store it.
      */
     void readV(IOVec[] iovecs) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -103,8 +103,8 @@ public interface FileSPI extends NSEntrySPI {
      * Gather/scatter write.
      * 
      * @param iovecs
-     *                array of IOVecs determining how much to write and where to
-     *                obtain the data from.
+     *            array of IOVecs determining how much to write and where to
+     *            obtain the data from.
      */
     void writeV(IOVec[] iovecs) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -118,7 +118,7 @@ public interface FileSPI extends NSEntrySPI {
      * Determines the storage size required for a pattern I/O operation.
      * 
      * @param pattern
-     *                to determine size for.
+     *            to determine size for.
      * @return the size.
      */
     int sizeP(String pattern) throws NotImplementedException,
@@ -130,9 +130,9 @@ public interface FileSPI extends NSEntrySPI {
      * Pattern-based read.
      * 
      * @param pattern
-     *                specification for the read operation.
+     *            specification for the read operation.
      * @param buffer
-     *                to store data into.
+     *            to store data into.
      * @return number of succesfully read bytes.
      */
     int readP(String pattern, Buffer buffer) throws NotImplementedException,
@@ -145,9 +145,9 @@ public interface FileSPI extends NSEntrySPI {
      * Pattern-based write.
      * 
      * @param pattern
-     *                specification for the write operation.
+     *            specification for the write operation.
      * @param buffer
-     *                to be written.
+     *            to be written.
      * @return number of succesfully written bytes.
      */
     int writeP(String pattern, Buffer buffer) throws NotImplementedException,
@@ -173,9 +173,9 @@ public interface FileSPI extends NSEntrySPI {
      * Determines the storage size required for an extended I/O operation.
      * 
      * @param emode
-     *                extended mode to use.
+     *            extended mode to use.
      * @param spec
-     *                to determine size for.
+     *            to determine size for.
      * @return the size.
      */
     int sizeE(String emode, String spec) throws NotImplementedException,
@@ -187,11 +187,11 @@ public interface FileSPI extends NSEntrySPI {
      * Extended read.
      * 
      * @param emode
-     *                extended mode to use.
+     *            extended mode to use.
      * @param spec
-     *                specification of read operation.
+     *            specification of read operation.
      * @param buffer
-     *                to store the data read.
+     *            to store the data read.
      * @return the number of successfully read bytes.
      */
     int readE(String emode, String spec, Buffer buffer)
@@ -204,11 +204,11 @@ public interface FileSPI extends NSEntrySPI {
      * Extended write.
      * 
      * @param emode
-     *                extended mode to use.
+     *            extended mode to use.
      * @param spec
-     *                specification of write operation.
+     *            specification of write operation.
      * @param buffer
-     *                data to write.
+     *            data to write.
      * @return the number of successfully written bytes.
      */
     int writeE(String emode, String spec, Buffer buffer)
@@ -228,11 +228,11 @@ public interface FileSPI extends NSEntrySPI {
      * task version.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Long> getSize(TaskMode mode) throws NotImplementedException;
 
@@ -244,17 +244,17 @@ public interface FileSPI extends NSEntrySPI {
      * read, or 0 at end-of-file.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param offset
-     *                the buffer offset.
+     *            the buffer offset.
      * @param len
-     *                the number of bytes to be read.
+     *            the number of bytes to be read.
      * @param buffer
-     *                the buffer to read data into.
+     *            the buffer to read data into.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Integer> read(TaskMode mode, Buffer buffer, int offset, int len)
             throws NotImplementedException;
@@ -265,17 +265,17 @@ public interface FileSPI extends NSEntrySPI {
      * is the number of bytes written.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param offset
-     *                the buffer offset.
+     *            the buffer offset.
      * @param len
-     *                the number of bytes to be written.
+     *            the number of bytes to be written.
      * @param buffer
-     *                the buffer to write data from.
+     *            the buffer to write data from.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Integer> write(TaskMode mode, Buffer buffer, int offset, int len)
             throws NotImplementedException;
@@ -285,15 +285,15 @@ public interface FileSPI extends NSEntrySPI {
      * The number returned by the task is the new file position.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param offset
-     *                offset in bytes to move pointer.
+     *            offset in bytes to move pointer.
      * @param whence
-     *                determines from where the offset is relative.
+     *            determines from where the offset is relative.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Long> seek(TaskMode mode, long offset, SeekMode whence)
             throws NotImplementedException;
@@ -304,14 +304,14 @@ public interface FileSPI extends NSEntrySPI {
      * Creates a task that does a gather/scatter read.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param iovecs
-     *                array of IOVecs determining how much to read and where to
-     *                store it.
+     *            array of IOVecs determining how much to read and where to
+     *            store it.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Void> readV(TaskMode mode, IOVec[] iovecs)
             throws NotImplementedException;
@@ -320,14 +320,14 @@ public interface FileSPI extends NSEntrySPI {
      * Creates a task that does a gather/scatter write.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param iovecs
-     *                array of IOVecs determining how much to write and where to
-     *                obtain the data from.
+     *            array of IOVecs determining how much to write and where to
+     *            obtain the data from.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Void> writeV(TaskMode mode, IOVec[] iovecs)
             throws NotImplementedException;
@@ -339,13 +339,13 @@ public interface FileSPI extends NSEntrySPI {
      * I/O operation.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param pattern
-     *                to determine size for.
+     *            to determine size for.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Integer> sizeP(TaskMode mode, String pattern)
             throws NotImplementedException;
@@ -354,15 +354,15 @@ public interface FileSPI extends NSEntrySPI {
      * Creates a task that does a pattern-based read.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param pattern
-     *                specification for the read operation.
+     *            specification for the read operation.
      * @param buffer
-     *                to store data into.
+     *            to store data into.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<File, Integer> readP(TaskMode mode, String pattern,
             Buffer buffer) throws NotImplementedException;
@@ -371,15 +371,15 @@ public interface FileSPI extends NSEntrySPI {
      * Creates a task that does a pattern-based write.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param pattern
-     *                specification for the write operation.
+     *            specification for the write operation.
      * @param buffer
-     *                to be written.
+     *            to be written.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Integer> writeP(TaskMode mode, String pattern, Buffer buffer)
             throws NotImplementedException;
@@ -391,11 +391,11 @@ public interface FileSPI extends NSEntrySPI {
      * implementation and/or on the server side.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, List<String>> modesE(TaskMode mode)
             throws NotImplementedException;
@@ -405,15 +405,15 @@ public interface FileSPI extends NSEntrySPI {
      * I/O operation.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param emode
-     *                extended mode to use.
+     *            extended mode to use.
      * @param spec
-     *                to determine size for.
+     *            to determine size for.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Integer> sizeE(TaskMode mode, String emode, String spec)
             throws NotImplementedException;
@@ -422,17 +422,17 @@ public interface FileSPI extends NSEntrySPI {
      * Creates a task for an extended read.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param emode
-     *                extended mode to use.
+     *            extended mode to use.
      * @param spec
-     *                specification of read operation.
+     *            specification of read operation.
      * @param buffer
-     *                to store the data read.
+     *            to store the data read.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Integer> readE(TaskMode mode, String emode, String spec,
             Buffer buffer) throws NotImplementedException;
@@ -441,17 +441,17 @@ public interface FileSPI extends NSEntrySPI {
      * Creates a task for an extended write.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param emode
-     *                extended mode to use.
+     *            extended mode to use.
      * @param spec
-     *                specification of write operation.
+     *            specification of write operation.
      * @param buffer
-     *                data to write.
+     *            data to write.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     Task<File, Integer> writeE(TaskMode mode, String emode, String spec,
             Buffer buffer) throws NotImplementedException;

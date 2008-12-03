@@ -20,17 +20,17 @@ import org.ogf.saga.url.URL;
 
 public class LogicalFileWrapperFactory extends LogicalFileFactory {
 
-    public LogicalDirectory doCreateLogicalDirectory(Session session,
-            URL name, int flags) throws NotImplementedException,
-            IncorrectURLException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, DoesNotExistException,
-            AlreadyExistsException, TimeoutException, NoSuccessException {
+    public LogicalDirectory doCreateLogicalDirectory(Session session, URL name,
+            int flags) throws NotImplementedException, IncorrectURLException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            DoesNotExistException, AlreadyExistsException, TimeoutException,
+            NoSuccessException {
         return new LogicalDirectoryWrapper(session, name, flags);
     }
 
-    public LogicalFile doCreateLogicalFile(Session session, URL name,
-            int flags) throws NotImplementedException, IncorrectURLException,
+    public LogicalFile doCreateLogicalFile(Session session, URL name, int flags)
+            throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,

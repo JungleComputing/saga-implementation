@@ -27,44 +27,40 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.AdaptorBase;
 
 /**
- * This class takes care of forwarding method invocations to the
- * adaptors. It maintains adaptor lists for each method, with
- * succesful invocations in front.
- * Note that each Saga object that has associated adaptors has
- * its own instance of an <code>AdaptorInvocationHandler</code>.
+ * This class takes care of forwarding method invocations to the adaptors. It
+ * maintains adaptor lists for each method, with succesful invocations in front.
+ * Note that each Saga object that has associated adaptors has its own instance
+ * of an <code>AdaptorInvocationHandler</code>.
  */
 public class AdaptorInvocationHandler implements InvocationHandler {
- 
+
     /**
-     * Order of importance in exceptions, from high to low. If all adaptors give an
-     * exception on a method invocation, this list determines which exception is actually
-     * passed on to the user.
-     * Note, this is NOT the order mentioned in the SAGA specs! That one determines which
-     * exception an adaptor method should throw. But, when an implementation tries several
-     * adaptors for a method, and one adaptor gives NotImplemented and another gives
-     * DoesNotExist, to the user, the latter is more specific. So, an attempt is made
-     * here to determine an order to use in a Saga implementation that uses multiple
-     * adaptors.
+     * Order of importance in exceptions, from high to low. If all adaptors give
+     * an exception on a method invocation, this list determines which exception
+     * is actually passed on to the user. Note, this is NOT the order mentioned
+     * in the SAGA specs! That one determines which exception an adaptor method
+     * should throw. But, when an implementation tries several adaptors for a
+     * method, and one adaptor gives NotImplemented and another gives
+     * DoesNotExist, to the user, the latter is more specific. So, an attempt is
+     * made here to determine an order to use in a Saga implementation that uses
+     * multiple adaptors.
      */
     private static Class<?>[] exceptionClasses = {
-        AlreadyExistsException.class,
-        DoesNotExistException.class,
-        SagaIOException.class,
-        IncorrectStateException.class,
-        TimeoutException.class,
-        AuthenticationFailedException.class,
-        AuthorizationFailedException.class,
-        PermissionDeniedException.class,
-        BadParameterException.class,
-        IncorrectURLException.class,
-        NoSuccessException.class,
-        NotImplementedException.class,
-    };
+            AlreadyExistsException.class, DoesNotExistException.class,
+            SagaIOException.class, IncorrectStateException.class,
+            TimeoutException.class, AuthenticationFailedException.class,
+            AuthorizationFailedException.class,
+            PermissionDeniedException.class, BadParameterException.class,
+            IncorrectURLException.class, NoSuccessException.class,
+            NotImplementedException.class, };
 
     /**
      * Returns the most important exception of the two parameters.
-     * @param e1 exception 1.
-     * @param e2 exception 2.
+     * 
+     * @param e1
+     *            exception 1.
+     * @param e2
+     *            exception 2.
      * @return the most important exception.
      */
     private static SagaException compare(SagaException e1, SagaException e2) {
@@ -80,14 +76,14 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         logger.debug("Got exceptions not present in list!");
         return e1;
     }
-    
+
     /** Logger. */
     private static Logger logger = LoggerFactory
-        .getLogger(AdaptorInvocationHandler.class);
+            .getLogger(AdaptorInvocationHandler.class);
 
     /**
-     *  Maintains lists of adaptors per method. The lists are
-     *  self-organizing: succesful adaptors are placed in front.
+     * Maintains lists of adaptors per method. The lists are self-organizing:
+     * succesful adaptors are placed in front.
      */
     private static class AdaptorSorter {
         /**
@@ -100,12 +96,13 @@ public class AdaptorInvocationHandler implements InvocationHandler {
          * List of adaptor class names (Strings) in order of successful
          * execution per method <methodName, LinkedList>.
          */
-        private HashMap<Method, ArrayList<String>> adaptorMethodList
-                = new HashMap<Method, ArrayList<String>>();
+        private HashMap<Method, ArrayList<String>> adaptorMethodList = new HashMap<Method, ArrayList<String>>();
 
         /**
          * Adds the specified adaptor name to the adaptor list.
-         * @param adaptorName the adaptor name to add.
+         * 
+         * @param adaptorName
+         *            the adaptor name to add.
          */
         synchronized void add(String adaptorName) {
             if (!adaptorlist.contains(adaptorName)) {
@@ -115,7 +112,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
 
         /**
          * Returns the current adaptor ordering for the specified method.
-         * @param method the method that is going to be invoked.
+         * 
+         * @param method
+         *            the method that is going to be invoked.
          * @return the list of adaptor names to try, in that order.
          */
         synchronized ArrayList<String> getOrdering(Method method) {
@@ -139,10 +138,13 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
 
         /**
-         * The specified adaptor was successful for the specified method,
-         * so place it in front of the adaptor list specific for this method. 
-         * @param adaptorName the successful adaptor.
-         * @param method the method.
+         * The specified adaptor was successful for the specified method, so
+         * place it in front of the adaptor list specific for this method.
+         * 
+         * @param adaptorName
+         *            the successful adaptor.
+         * @param method
+         *            the method.
          */
         synchronized void success(String adaptorName, Method method) {
             ArrayList<String> l = adaptorMethodList.get(method);
@@ -158,45 +160,52 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
     }
 
-    /** Re-organize adaptor lists per method. When a method succeeds, it is put in front. */
+    /**
+     * Re-organize adaptor lists per method. When a method succeeds, it is put
+     * in front.
+     */
     private static final boolean OPTIMIZE_ADAPTOR_POLICY = true;
 
     /** Maintains lists of adaptors per method. */
     private static AdaptorSorter adaptorSorter = new AdaptorSorter();
 
     /**
-     * The available adaptors. The keys are class names, the elements are
-     * of type Adaptor.
+     * The available adaptors. The keys are class names, the elements are of
+     * type Adaptor.
      */
-    private Hashtable<String, Adaptor> adaptors
-            = new Hashtable<String, Adaptor>();
-    
+    private Hashtable<String, Adaptor> adaptors = new Hashtable<String, Adaptor>();
+
     /**
      * The available adaptor instantiations. The keys, again, are class names,
      * the elements are instantiations.
      */
-    private Hashtable<String, AdaptorBase<?>> adaptorInstantiations
-            = new Hashtable<String, AdaptorBase<?>>();
-    
+    private Hashtable<String, AdaptorBase<?>> adaptorInstantiations = new Hashtable<String, AdaptorBase<?>>();
+
     /**
      * Constructs an <code>AdaptorInvocationHandler</code>, attempting to
      * instantiate adaptors with the specified parameters on the fly.
-     * @param adaptors the list of adaptor names.
-     * @param types the types of the constructor parameters.
-     * @param params the constructor parameters.
-     * @throws SagaException is thrown when no adaptors could be instantiated
-     *    for some reason. Actually, the most specific exception thrown by
-     *    any of the constructors is thrown.
+     * 
+     * @param adaptors
+     *            the list of adaptor names.
+     * @param types
+     *            the types of the constructor parameters.
+     * @param params
+     *            the constructor parameters.
+     * @throws SagaException
+     *             is thrown when no adaptors could be instantiated for some
+     *             reason. Actually, the most specific exception thrown by any
+     *             of the constructors is thrown.
      */
     AdaptorInvocationHandler(AdaptorList adaptors, Class<?>[] types,
             Object[] params) throws SagaException {
 
         // Do we have any adaptors?
         if (adaptors == null || adaptors.size() == 0) {
-            throw new NoSuccessException("no adaptors could be loaded for this object");
+            throw new NoSuccessException(
+                    "no adaptors could be loaded for this object");
         }
-        
-        SagaException exception = null; 
+
+        SagaException exception = null;
         NestedException nested = null;
         boolean multiple = false;
 
@@ -210,9 +219,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                             + adaptor.getShortAdaptorClassName() + " for type "
                             + adaptors.getSpiName());
                 }
-                
+
                 AdaptorBase<?> object = adaptor.instantiate(types, params);
-         
+
                 if (logger.isInfoEnabled()) {
                     logger.info("initAdaptor: instantiated "
                             + adaptor.getShortAdaptorClassName() + " for type "
@@ -225,10 +234,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                 logger.debug("Instantiation of " + adaptorname + " failed", t);
 
                 while (t instanceof InvocationTargetException) {
-                    t = ((InvocationTargetException) t)
-                        .getTargetException();
+                    t = ((InvocationTargetException) t).getTargetException();
                 }
-                
+
                 // keep the most specific exception around. We can throw that
                 // when all adaptors fail.
                 if (t instanceof SagaException) {
@@ -244,8 +252,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                         exception = compare(exception, e);
                     }
                 } else if (exception == null) {
-                    exception = new NoSuccessException("Got exception from constructor of "
-                            + adaptorname, t);
+                    exception = new NoSuccessException(
+                            "Got exception from constructor of " + adaptorname,
+                            t);
                     if (nested == null) {
                         nested = new NestedException();
                     }
@@ -257,40 +266,45 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         if (this.adaptors.size() == 0) {
             if (multiple) {
                 try {
-                   Constructor<?> c = exception.getClass().getConstructor(String.class, Throwable.class);
-                   SagaException ex = (SagaException) c.newInstance(exception.getMessage(), nested);
-                   ex.setStackTrace(exception.getStackTrace());
-                   exception = ex;
-                } catch(Throwable e) {
+                    Constructor<?> c = exception.getClass().getConstructor(
+                            String.class, Throwable.class);
+                    SagaException ex = (SagaException) c.newInstance(exception
+                            .getMessage(), nested);
+                    ex.setStackTrace(exception.getStackTrace());
+                    exception = ex;
+                } catch (Throwable e) {
                     // O well, we tried ...
                     logger.debug("Creation of nested exception failed");
                 }
-                
+
             }
             throw exception;
         }
     }
-    
+
     /**
-     * This is a copying constructor, used in case a clone() was invoked
-     * on a Saga object. In that case, the adaptors associated with the
-     * Saga object must be cloned as well. On the other hand, the adaptors
-     * have a reference to the Saga object (the wrapper), and the adaptor
-     * clones must now refer to the clone of the wrapper (they cannot call
-     * clone() on the wrapper object!).
-     * @param orig the adaptor invocation handler to copy.
-     * @param wrapper the clone of the wrapper object.
+     * This is a copying constructor, used in case a clone() was invoked on a
+     * Saga object. In that case, the adaptors associated with the Saga object
+     * must be cloned as well. On the other hand, the adaptors have a reference
+     * to the Saga object (the wrapper), and the adaptor clones must now refer
+     * to the clone of the wrapper (they cannot call clone() on the wrapper
+     * object!).
+     * 
+     * @param orig
+     *            the adaptor invocation handler to copy.
+     * @param wrapper
+     *            the clone of the wrapper object.
      */
     @SuppressWarnings("unchecked")
     public AdaptorInvocationHandler(AdaptorInvocationHandler orig,
             Object wrapper) {
-        
+
         adaptors = new Hashtable<String, Adaptor>(orig.adaptors);
-        
+
         for (String s : orig.adaptorInstantiations.keySet()) {
             try {
-                AdaptorBase cp = (AdaptorBase)
-                        orig.adaptorInstantiations.get(s).clone();
+                AdaptorBase cp = (AdaptorBase) orig.adaptorInstantiations
+                        .get(s).clone();
                 // This next invocation gives a compiler warning if warnings are
                 // not suppressed, and rightly so.
                 // But this should be correct.
@@ -303,19 +317,23 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             }
         }
     }
-    
+
     /**
-     * Adds a wrapper object to the exception, in case the adaptor or could'nt for some
-     * other reason. This is what makes SAGAException.getObject() work.
-     * @param exception the exception
-     * @param base the adaptor base
+     * Adds a wrapper object to the exception, in case the adaptor or could'nt
+     * for some other reason. This is what makes SAGAException.getObject() work.
+     * 
+     * @param exception
+     *            the exception
+     * @param base
+     *            the adaptor base
      * @return the modified exception.
      */
-    private SagaException addWrapper(SagaException exception, AdaptorBase<?> base) {
+    private SagaException addWrapper(SagaException exception,
+            AdaptorBase<?> base) {
         Object sagaObject = null;
         try {
             sagaObject = exception.getObject();
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
         if (sagaObject != null) {
@@ -325,22 +343,23 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         SagaException ex = exception;
         try {
             if (exception instanceof SagaIOException) {
-                Constructor<?> c = exception.getClass().getConstructor(String.class,
-                        Throwable.class, Integer.TYPE, SagaObject.class);
+                Constructor<?> c = exception.getClass().getConstructor(
+                        String.class, Throwable.class, Integer.TYPE,
+                        SagaObject.class);
 
-                ex = (SagaException) c.newInstance(exception.getMessage(), exception.getCause(),
-                        ((SagaIOException) exception).getPosixErrorCode(),
-                        (SagaObject) sagaObject);
+                ex = (SagaException) c.newInstance(exception.getMessage(),
+                        exception.getCause(), ((SagaIOException) exception)
+                                .getPosixErrorCode(), (SagaObject) sagaObject);
             } else {
-                Constructor<?> c = exception.getClass().getConstructor(String.class,
-                        Throwable.class, SagaObject.class);
+                Constructor<?> c = exception.getClass().getConstructor(
+                        String.class, Throwable.class, SagaObject.class);
 
-                ex = (SagaException) c.newInstance(exception.getMessage(), exception.getCause(),
-                        (SagaObject) sagaObject);
+                ex = (SagaException) c.newInstance(exception.getMessage(),
+                        exception.getCause(), (SagaObject) sagaObject);
             }
             ex.setStackTrace(exception.getStackTrace());
             exception = ex;
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // o well, we tried ...
         }
         return exception;
@@ -353,16 +372,16 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      *      java.lang.reflect.Method, java.lang.Object[])
      */
     public Object invoke(Object proxy, Method m, Object[] params)
-        throws Throwable {
-        
+            throws Throwable {
+
         SagaException exception = null;
         NestedException nested = null;
         boolean multiple = false;
-        
+
         if (logger.isDebugEnabled()) {
             logger.debug("Started invocation of method " + m);
         }
-        
+
         ArrayList<String> adaptornames = adaptorSorter.getOrdering(m);
         boolean first = true;
 
@@ -371,8 +390,10 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             // Only try adaptorInstantiations available for this handler
             if (adaptorInstantiations.containsKey(adaptorName)) {
                 Adaptor adaptor = adaptors.get(adaptorName);
-                ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                AdaptorBase<?> adaptorInstantiation = adaptorInstantiations.get(adaptorName);
+                ClassLoader loader = Thread.currentThread()
+                        .getContextClassLoader();
+                AdaptorBase<?> adaptorInstantiation = adaptorInstantiations
+                        .get(adaptorName);
                 try {
                     // Set context classloader before invoking method.
                     // Some adaptors may need this because some libraries
@@ -394,7 +415,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                                 + " DONE");
                     }
 
-                    if (OPTIMIZE_ADAPTOR_POLICY && ! first) {
+                    if (OPTIMIZE_ADAPTOR_POLICY && !first) {
                         // move successful adaptor to start of list
                         adaptorSorter.success(adaptorName, m);
                     }
@@ -407,9 +428,10 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     }
                     while (t instanceof InvocationTargetException) {
                         t = ((InvocationTargetException) t)
-                            .getTargetException();
+                                .getTargetException();
                     }
-                    // keep the most specific exception around. We can throw that
+                    // keep the most specific exception around. We can throw
+                    // that
                     // when all adaptors fail.
                     if (t instanceof SagaException) {
                         SagaException e = (SagaException) t;
@@ -425,8 +447,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                             exception = compare(exception, e);
                         }
                     } else if (exception == null) {
-                        exception = new NoSuccessException("Got exception from method "
-                                + m.getName(), t,
+                        exception = new NoSuccessException(
+                                "Got exception from method " + m.getName(), t,
                                 (SagaObject) adaptorInstantiation.getWrapper());
                         if (nested == null) {
                             nested = new NestedException();
@@ -438,7 +460,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                         logger.debug("Method " + m.getName() + " on "
                                 + adaptor.getShortAdaptorClassName()
                                 + " failed: " + t, t);
-                    }                    
+                    }
                 } finally {
                     Thread.currentThread().setContextClassLoader(loader);
                 }
@@ -448,41 +470,43 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         if (logger.isInfoEnabled()) {
             logger.info("invoke: All adaptors failed");
         }
-        
+
         if (exception == null) {
             // Can this happen??? I don't think so.
             throw new NoSuccessException("no adaptor found for " + m.getName());
         }
-        
+
         if (multiple) {
             try {
                 Object sagaObject = null;
                 try {
                     sagaObject = exception.getObject();
-                } catch(Throwable e) {
+                } catch (Throwable e) {
                     // ignored
                 }
                 SagaException ex = null;
                 if (exception instanceof SagaIOException) {
-                    Constructor<?> c = exception.getClass().getConstructor(String.class,
-                            Throwable.class, Integer.TYPE, SagaObject.class);
+                    Constructor<?> c = exception.getClass().getConstructor(
+                            String.class, Throwable.class, Integer.TYPE,
+                            SagaObject.class);
 
-                    ex = (SagaException) c.newInstance(exception.getMessage(), nested,
-                            ((SagaIOException) exception).getPosixErrorCode(), sagaObject);
+                    ex = (SagaException) c.newInstance(exception.getMessage(),
+                            nested, ((SagaIOException) exception)
+                                    .getPosixErrorCode(), sagaObject);
                 } else {
-                    Constructor<?> c = exception.getClass().getConstructor(String.class,
-                            Throwable.class, SagaObject.class);
+                    Constructor<?> c = exception.getClass().getConstructor(
+                            String.class, Throwable.class, SagaObject.class);
 
-                    ex = (SagaException) c.newInstance(exception.getMessage(), nested,
-                            sagaObject);
+                    ex = (SagaException) c.newInstance(exception.getMessage(),
+                            nested, sagaObject);
                 }
                 ex.setStackTrace(exception.getStackTrace());
                 exception = ex;
-            } catch(Throwable e) {
+            } catch (Throwable e) {
                 // O well, we tried ...
                 logger.debug("Creation of nested exception failed");
             }
-            
+
         }
         throw exception;
     }

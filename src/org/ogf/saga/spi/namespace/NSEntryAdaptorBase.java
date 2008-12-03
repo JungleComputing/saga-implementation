@@ -27,9 +27,10 @@ import org.ogf.saga.url.URLFactory;
 public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         implements NSEntrySPI {
 
-    private static Logger logger = LoggerFactory.getLogger(NSEntryAdaptorBase.class);
-    private static final int COPY_FLAGS = Flags.CREATEPARENTS.or(Flags.RECURSIVE
-            .or(Flags.OVERWRITE));
+    private static Logger logger = LoggerFactory
+            .getLogger(NSEntryAdaptorBase.class);
+    private static final int COPY_FLAGS = Flags.CREATEPARENTS
+            .or(Flags.RECURSIVE.or(Flags.OVERWRITE));
 
     protected boolean closed = false;
     protected URL nameUrl;
@@ -100,8 +101,9 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public Task<NSEntry, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper, sessionImpl,
-                mode, "close", new Class[] { Float.TYPE }, timeoutInSeconds);
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,
+                sessionImpl, mode, "close", new Class[] { Float.TYPE },
+                timeoutInSeconds);
     }
 
     public URL getCWD() throws NotImplementedException,
@@ -132,8 +134,8 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public Task<NSEntry, URL> getCWD(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, URL>(wrapper, sessionImpl,
-                mode, "getCWD", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, URL>(wrapper,
+                sessionImpl, mode, "getCWD", new Class[] {});
     }
 
     public URL getName() throws NotImplementedException,
@@ -151,8 +153,8 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public Task<NSEntry, URL> getName(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, URL>(wrapper, sessionImpl,
-                mode, "getName", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, URL>(wrapper,
+                sessionImpl, mode, "getName", new Class[] {});
     }
 
     public URL getURL() throws NotImplementedException,
@@ -167,10 +169,10 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public Task<NSEntry, URL> getURL(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, URL>(wrapper, sessionImpl,
-                mode, "getURL", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, URL>(wrapper,
+                sessionImpl, mode, "getURL", new Class[] {});
     }
-    
+
     protected void checkCopyFlags(int flags) throws BadParameterException {
         if ((COPY_FLAGS | flags) != COPY_FLAGS) {
             if (logger.isDebugEnabled()) {
@@ -183,9 +185,9 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public Task<NSEntry, Void> copy(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper, sessionImpl,
-                mode, "copy", new Class[] { URL.class, Integer.TYPE }, target,
-                flags);
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,
+                sessionImpl, mode, "copy", new Class[] { URL.class,
+                        Integer.TYPE }, target, flags);
     }
 
     public Task<NSEntry, Boolean> isDir(TaskMode mode)
@@ -208,42 +210,45 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public Task<NSEntry, Void> link(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper, sessionImpl,
-                mode, "link", new Class[] { URL.class, Integer.TYPE }, target,
-                flags);
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,
+                sessionImpl, mode, "link", new Class[] { URL.class,
+                        Integer.TYPE }, target, flags);
     }
 
     public Task<NSEntry, Void> move(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper, sessionImpl,
-                mode, "move", new Class[] { URL.class, Integer.TYPE }, target,
-                flags);
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,
+                sessionImpl, mode, "move", new Class[] { URL.class,
+                        Integer.TYPE }, target, flags);
     }
 
     public Task<NSEntry, Void> permissionsAllow(TaskMode mode, String id,
             int permissions, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper, sessionImpl,
-                mode, "permissionsAllow", new Class[] { String.class,
-                        Integer.TYPE, Integer.TYPE }, id, permissions, flags);
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,
+                sessionImpl, mode, "permissionsAllow", new Class[] {
+                        String.class, Integer.TYPE, Integer.TYPE }, id,
+                permissions, flags);
     }
 
     public Task<NSEntry, Void> permissionsDeny(TaskMode mode, String id,
             int permissions, int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper, sessionImpl,
-                mode, "permissionsDeny", new Class[] { String.class,
-                        Integer.TYPE, Integer.TYPE }, id, permissions, flags);
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,
+                sessionImpl, mode, "permissionsDeny", new Class[] {
+                        String.class, Integer.TYPE, Integer.TYPE }, id,
+                permissions, flags);
     }
 
     public Task<NSEntry, URL> readLink(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, URL>(wrapper, sessionImpl,
-                mode, "readLink", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, URL>(wrapper,
+                sessionImpl, mode, "readLink", new Class[] {});
     }
 
     public Task<NSEntry, Void> remove(TaskMode mode, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper, sessionImpl,
-                mode, "remove", new Class[] { Integer.TYPE }, flags);
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,
+                sessionImpl, mode, "remove", new Class[] { Integer.TYPE },
+                flags);
     }
 
     public void permissionsAllow(String id, int permissions)
@@ -261,16 +266,16 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public Task<NSEntry, Void> permissionsAllow(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper, sessionImpl,
-                mode, "permissionsAllow", new Class[] { String.class,
-                        Integer.TYPE }, id, permissions);
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,
+                sessionImpl, mode, "permissionsAllow", new Class[] {
+                        String.class, Integer.TYPE }, id, permissions);
     }
 
     public Task<NSEntry, Boolean> permissionsCheck(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Boolean>(wrapper,
-                sessionImpl, mode, "permissionsCheck", new Class[] { String.class,
-                        Integer.TYPE }, id, permissions);
+                sessionImpl, mode, "permissionsCheck", new Class[] {
+                        String.class, Integer.TYPE }, id, permissions);
     }
 
     public void permissionsDeny(String id, int permissions)
@@ -288,9 +293,9 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public Task<NSEntry, Void> permissionsDeny(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper, sessionImpl,
-                mode, "permissionsDeny", new Class[] { String.class,
-                        Integer.TYPE }, id, permissions);
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,
+                sessionImpl, mode, "permissionsDeny", new Class[] {
+                        String.class, Integer.TYPE }, id, permissions);
     }
 
     public Task<NSEntry, String> getGroup(TaskMode mode)

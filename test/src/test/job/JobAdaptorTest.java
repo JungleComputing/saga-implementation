@@ -18,17 +18,18 @@ import test.misc.AdaptorTestResult;
 import test.misc.AdaptorTestResultEntry;
 
 public class JobAdaptorTest {
-    
+
     private static final String DIR = "/tmp/saga-test-data";
 
     /**
      * @param args
-     *     first argument names the JobService adaptor tested, i.e. "javagat", "gridsam";
-     *     second argument gives an URL for the server;
-     *     third argument gives an URL for the "data" sub-directory on THIS host.
-     * Note: Some adaptors may require services running on THIS host. For instance,
-     * to use the gridsam adaptor, you should run an ftp server that can write to the
-     * "data" sub-directory.
+     *            first argument names the JobService adaptor tested, i.e.
+     *            "javagat", "gridsam"; second argument gives an URL for the
+     *            server; third argument gives an URL for the "data"
+     *            sub-directory on THIS host. Note: Some adaptors may require
+     *            services running on THIS host. For instance, to use the
+     *            gridsam adaptor, you should run an ftp server that can write
+     *            to the "data" sub-directory.
      */
     public static void main(String[] args) {
         System.setProperty("JobService.adaptor.name", args[0]);
@@ -36,10 +37,12 @@ public class JobAdaptorTest {
         a.test(args[0], args[1], args[2]).print();
     }
 
-    public AdaptorTestResult test(String adaptor, String serverURL, String dirURL) {
-        
-        AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor, serverURL);
-        
+    public AdaptorTestResult test(String adaptor, String serverURL,
+            String dirURL) {
+
+        AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor,
+                serverURL);
+
         URL url;
         try {
             url = URLFactory.createURL(serverURL);
@@ -48,31 +51,37 @@ public class JobAdaptorTest {
             defaultSession.addContext(context);
         } catch (Throwable e) {
             e.printStackTrace();
-            adaptorTestResult.put("init", new AdaptorTestResultEntry(false, 0, e));
+            adaptorTestResult.put("init", new AdaptorTestResultEntry(false, 0,
+                    e));
             return adaptorTestResult;
         }
-        
+
         adaptorTestResult.put("submit job easy  ", submitJobEasy(url));
         adaptorTestResult.put("submit job parallel", submitJobParallel(url));
-        adaptorTestResult.put("submit job stdout", submitJobStdout(url, dirURL));
-        adaptorTestResult.put("submit job stderr", submitJobStderr(url, dirURL));
-        adaptorTestResult.put("submit job prestage", submitJobPreStage(url, dirURL));
-        adaptorTestResult.put("submit job poststage", submitJobPostStage(url, dirURL));
-        adaptorTestResult.put("submit job environment", submitJobEnvironment(url, dirURL));
+        adaptorTestResult
+                .put("submit job stdout", submitJobStdout(url, dirURL));
+        adaptorTestResult
+                .put("submit job stderr", submitJobStderr(url, dirURL));
+        adaptorTestResult.put("submit job prestage", submitJobPreStage(url,
+                dirURL));
+        adaptorTestResult.put("submit job poststage", submitJobPostStage(url,
+                dirURL));
+        adaptorTestResult.put("submit job environment", submitJobEnvironment(
+                url, dirURL));
         return adaptorTestResult;
     }
 
     private AdaptorTestResultEntry submitJobEasy(URL url) {
         JobService js;
         JobDescription jd;
-        try {      
+        try {
             jd = JobFactory.createJobDescription();
             String serverHost = url.getHost();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
                     new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/echo");
-            jd.setVectorAttribute(JobDescription.ARGUMENTS,
-                    new String[] { "test", "1", "2", "3"});
+            jd.setVectorAttribute(JobDescription.ARGUMENTS, new String[] {
+                    "test", "1", "2", "3" });
 
             js = JobFactory.createJobService(url);
         } catch (Throwable e) {
@@ -93,14 +102,14 @@ public class JobAdaptorTest {
     private AdaptorTestResultEntry submitJobParallel(URL url) {
         JobService js;
         JobDescription jd;
-        try {      
+        try {
             jd = JobFactory.createJobDescription();
             String serverHost = url.getHost();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
                     new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/echo");
-            jd.setVectorAttribute(JobDescription.ARGUMENTS,
-                    new String[] { "test", "1", "2", "3"});
+            jd.setVectorAttribute(JobDescription.ARGUMENTS, new String[] {
+                    "test", "1", "2", "3" });
             jd.setAttribute(JobDescription.NUMBEROFPROCESSES, "2");
             jd.setAttribute(JobDescription.PROCESSESPERHOST, "2");
             js = JobFactory.createJobService(url);
@@ -119,12 +128,11 @@ public class JobAdaptorTest {
         return new AdaptorTestResultEntry(true, (stop - start), null);
     }
 
-
     private AdaptorTestResultEntry submitJobStdout(URL url, String dirURL) {
         JobService js;
         JobDescription jd;
         URL du;
-        try { 
+        try {
             du = URLFactory.createURL(dirURL);
             du.setPath(du.getPath() + "/stdout");
             jd = JobFactory.createJobDescription();
@@ -132,8 +140,8 @@ public class JobAdaptorTest {
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
                     new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/echo");
-            jd.setVectorAttribute(JobDescription.ARGUMENTS,
-                    new String[] { "test", "1", "2", "3"});
+            jd.setVectorAttribute(JobDescription.ARGUMENTS, new String[] {
+                    "test", "1", "2", "3" });
             jd.setAttribute(JobDescription.OUTPUT, "stdout");
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
                     new String[] { du.getString() + " < stdout" });
@@ -155,7 +163,8 @@ public class JobAdaptorTest {
         java.io.InputStream in = null;
         try {
             in = new java.io.FileInputStream(DIR + "/stdout");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(in));
             result = reader.readLine();
             reader.close();
         } catch (Throwable e) {
@@ -164,7 +173,7 @@ public class JobAdaptorTest {
             if (in != null) {
                 try {
                     in.close();
-                } catch(Throwable e) {
+                } catch (Throwable e) {
                     // ignored
                 }
             }
@@ -187,10 +196,10 @@ public class JobAdaptorTest {
                     new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/ls");
             jd.setVectorAttribute(JobDescription.ARGUMENTS,
-                    new String[] { "floep"});
+                    new String[] { "floep" });
             jd.setAttribute(JobDescription.ERROR, "stderr");
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                    new String[] { du.getString() + " < stderr"});
+                    new String[] { du.getString() + " < stderr" });
             js = JobFactory.createJobService(url);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
@@ -202,14 +211,15 @@ public class JobAdaptorTest {
             job.waitFor();
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
-        } 
+        }
 
         long stop = System.currentTimeMillis();
         String result;
         java.io.InputStream in = null;
         try {
             in = new java.io.FileInputStream(DIR + "/stderr");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(in));
             result = reader.readLine();
             reader.close();
         } catch (Exception e) {
@@ -218,7 +228,7 @@ public class JobAdaptorTest {
             if (in != null) {
                 try {
                     in.close();
-                } catch(Throwable e) {
+                } catch (Throwable e) {
                     // ignored
                 }
             }
@@ -234,7 +244,7 @@ public class JobAdaptorTest {
         JobService js;
         JobDescription jd;
         URL du;
-        try {  
+        try {
             du = URLFactory.createURL(dirURL);
             du.setPath(du.getPath() + "/stdout");
             jd = JobFactory.createJobDescription();
@@ -243,11 +253,11 @@ public class JobAdaptorTest {
                     new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/ls");
             jd.setAttribute(JobDescription.OUTPUT, "stdout");
-            jd.setVectorAttribute(JobDescription.ARGUMENTS, new String[] { "floep"});
-            jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                    new String[] {
-                        "ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz > floep",
-                        du.getString() + " < stdout"});
+            jd.setVectorAttribute(JobDescription.ARGUMENTS,
+                    new String[] { "floep" });
+            jd.setVectorAttribute(JobDescription.FILETRANSFER, new String[] {
+                    "ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz > floep",
+                    du.getString() + " < stdout" });
             js = JobFactory.createJobService(url);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
@@ -259,23 +269,24 @@ public class JobAdaptorTest {
             job.waitFor();
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
-        } 
- 
+        }
+
         long stop = System.currentTimeMillis();
         String result;
         java.io.InputStream in = null;
         try {
             in = new java.io.FileInputStream(DIR + "/stdout");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(in));
             result = reader.readLine();
             reader.close();
         } catch (Exception e) {
-            return new AdaptorTestResultEntry(false, 0L, e); 
+            return new AdaptorTestResultEntry(false, 0L, e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
-                } catch(Throwable e) {
+                } catch (Throwable e) {
                     // ignored
                 }
             }
@@ -288,7 +299,7 @@ public class JobAdaptorTest {
         JobService js;
         JobDescription jd;
         URL du;
-        try {  
+        try {
             du = URLFactory.createURL(dirURL);
             du.setPath(du.getPath() + "/flap.txt");
             jd = JobFactory.createJobDescription();
@@ -296,10 +307,10 @@ public class JobAdaptorTest {
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
                     new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/touch");
-            jd.setVectorAttribute(JobDescription.ARGUMENTS, new String[] { "flap.txt"});
+            jd.setVectorAttribute(JobDescription.ARGUMENTS,
+                    new String[] { "flap.txt" });
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                    new String[] {
-                        du.getString() + " < flap.txt"});
+                    new String[] { du.getString() + " < flap.txt" });
             js = JobFactory.createJobService(url);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
@@ -312,11 +323,11 @@ public class JobAdaptorTest {
             job.waitFor();
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
-        } 
- 
+        }
+
         long stop = System.currentTimeMillis();
-        return new AdaptorTestResultEntry(
-                new java.io.File(DIR + "/flap.txt").exists(), (stop - start), null);
+        return new AdaptorTestResultEntry(new java.io.File(DIR + "/flap.txt")
+                .exists(), (stop - start), null);
 
     }
 
@@ -324,7 +335,7 @@ public class JobAdaptorTest {
         JobService js;
         JobDescription jd;
         URL du;
-        try { 
+        try {
             du = URLFactory.createURL(dirURL);
             du.setPath(du.getPath() + "/stdout");
             jd = JobFactory.createJobDescription();
@@ -334,9 +345,9 @@ public class JobAdaptorTest {
             jd.setAttribute(JobDescription.EXECUTABLE, "/usr/bin/env");
             jd.setAttribute(JobDescription.OUTPUT, "stdout");
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                    new String[] { du.getString() + " < stdout"});
+                    new String[] { du.getString() + " < stdout" });
             jd.setVectorAttribute(JobDescription.ENVIRONMENT,
-                    new String[] { "SAGA_TEST_KEY=blablabla"});
+                    new String[] { "SAGA_TEST_KEY=blablabla" });
             js = JobFactory.createJobService(url);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
@@ -348,14 +359,15 @@ public class JobAdaptorTest {
             job.waitFor();
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0L, e);
-        } 
- 
+        }
+
         long stop = System.currentTimeMillis();
         boolean success = false;
         java.io.InputStream in = null;
         try {
             in = new java.io.FileInputStream(DIR + "/stdout");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(in));
             while (true) {
                 String result = reader.readLine();
                 if (result == null) {
@@ -373,11 +385,11 @@ public class JobAdaptorTest {
             if (in != null) {
                 try {
                     in.close();
-                } catch(Throwable e) {
+                } catch (Throwable e) {
                     // ignored
                 }
             }
-   
+
         }
         return new AdaptorTestResultEntry(success, (stop - start), null);
 

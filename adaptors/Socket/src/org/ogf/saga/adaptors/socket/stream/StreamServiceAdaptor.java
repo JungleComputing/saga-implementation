@@ -29,8 +29,9 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
     private ServerSocket server;
 
-    public StreamServiceAdaptor(StreamServiceWrapper wrapper, SessionImpl sessionImpl, URL url)
-            throws NotImplementedException, BadParameterException, NoSuccessException, IncorrectURLException {
+    public StreamServiceAdaptor(StreamServiceWrapper wrapper,
+            SessionImpl sessionImpl, URL url) throws NotImplementedException,
+            BadParameterException, NoSuccessException, IncorrectURLException {
 
         super(wrapper, sessionImpl, url);
         active = true;
@@ -38,7 +39,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         // check URL
 
         String scheme = url.getScheme().toLowerCase();
-        if (! scheme.equals("any") && !scheme.equals("tcp")) {
+        if (!scheme.equals("any") && !scheme.equals("tcp")) {
             throw new IncorrectURLException(
                     "Only tcp scheme is supported in socket implementation");
         }
@@ -47,7 +48,8 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             this.server = new ServerSocket();
             server.bind(new InetSocketAddress(url.getHost(), url.getPort()));
         } catch (IOException e) {
-            throw new NoSuccessException("Caught an exception when doing bind...", e);
+            throw new NoSuccessException(
+                    "Caught an exception when doing bind...", e);
         }
     }
 
@@ -61,24 +63,27 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         active = false;
         try {
             server.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             // ignored
         }
     }
 
-    public URL getUrl() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public URL getUrl() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return url;
     }
 
     public Stream serve(float timeoutInSeconds) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         int invocationTimeout = -1;
 
         if (!active)
-            throw new IncorrectStateException("The service is not active", wrapper);
+            throw new IncorrectStateException("The service is not active",
+                    wrapper);
         if (timeoutInSeconds == 0.0)
             timeoutInSeconds = MINIMAL_TIMEOUT;
 
@@ -103,30 +108,35 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
     }
 
-    public String getGroup() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getGroup() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("getGroup", wrapper);
     }
 
-    public String getOwner() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getOwner() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("getOwner", wrapper);
     }
 
-    public void permissionsAllow(String arg0, int arg1) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public void permissionsAllow(String arg0, int arg1)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public boolean permissionsCheck(String arg0, int arg1)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
-    public void permissionsDeny(String arg0, int arg1) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public void permissionsDeny(String arg0, int arg1)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsDeny", wrapper);
     }

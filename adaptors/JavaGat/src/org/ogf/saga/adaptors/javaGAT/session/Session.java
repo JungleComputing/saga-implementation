@@ -19,14 +19,14 @@ import org.ogf.saga.impl.context.ContextImpl;
 /**
  * Corresponds to a JavaGat Context.
  */
-public class Session implements org.ogf.saga.impl.session.AdaptorSessionInterface, Cloneable {
+public class Session implements
+        org.ogf.saga.impl.session.AdaptorSessionInterface, Cloneable {
 
     private static int numSessions = 0;
 
     private GATContext gatContext = new GATContext();
-    
-    private HashMap<ContextImpl, SecurityContext> contextImpls
-            = new HashMap<ContextImpl, SecurityContext>();
+
+    private HashMap<ContextImpl, SecurityContext> contextImpls = new HashMap<ContextImpl, SecurityContext>();
 
     public Session() {
         synchronized (Session.class) {
@@ -40,16 +40,19 @@ public class Session implements org.ogf.saga.impl.session.AdaptorSessionInterfac
         return gatContext;
     }
 
-    public synchronized void addContext(ContextImpl contextImpl) throws NotImplementedException {
-        
+    public synchronized void addContext(ContextImpl contextImpl)
+            throws NotImplementedException {
+
         try {
-            if ("preferences".equals(contextImpl.getAttribute(ContextImpl.TYPE))) {
+            if ("preferences"
+                    .equals(contextImpl.getAttribute(ContextImpl.TYPE))) {
                 String[] attribs = contextImpl.listAttributes();
                 for (String s : attribs) {
                     // TODO: exclude all keys predefined in the Context
                     // interface???
                     try {
-                        gatContext.addPreference(s, contextImpl.getAttribute(s));
+                        gatContext
+                                .addPreference(s, contextImpl.getAttribute(s));
                     } catch (Exception e) {
                         // ignore
                     }
@@ -59,8 +62,8 @@ public class Session implements org.ogf.saga.impl.session.AdaptorSessionInterfac
         } catch (Throwable e) {
             // ignore
         }
-       
-        if (! contextImpls.containsKey(contextImpl)) {
+
+        if (!contextImpls.containsKey(contextImpl)) {
             SecurityContext c = cvt2GATSecurityContext(contextImpl);
             if (c != null) {
                 gatContext.addSecurityContext(c);
@@ -84,11 +87,12 @@ public class Session implements org.ogf.saga.impl.session.AdaptorSessionInterfac
     @SuppressWarnings("unchecked")
     public synchronized Object clone() throws CloneNotSupportedException {
         Session clone = (Session) super.clone();
-        synchronized(clone) {
+        synchronized (clone) {
             clone.gatContext = (GATContext) gatContext.clone();
-            clone.contextImpls = new HashMap<ContextImpl, SecurityContext>(contextImpls);
+            clone.contextImpls = new HashMap<ContextImpl, SecurityContext>(
+                    contextImpls);
         }
-        return clone;        
+        return clone;
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException {
@@ -97,27 +101,28 @@ public class Session implements org.ogf.saga.impl.session.AdaptorSessionInterfac
 
     public synchronized void removeContext(ContextImpl contextImpl)
             throws NotImplementedException, DoesNotExistException {
-        
+
         SecurityContext c = contextImpls.remove(contextImpl);
-        
+
         if (c != null) {
             gatContext.removeSecurityContext(c);
         }
     }
-    
+
     static SecurityContext cvt2GATSecurityContext(ContextImpl ctxt) {
         String type = ctxt.getValue(ContextImpl.TYPE);
         if ("ftp".equals(type)) {
-            SecurityContext c = new PasswordSecurityContext(ctxt.getValue(ContextImpl.USERID),
-                    ctxt.getValue(ContextImpl.USERPASS));
+            SecurityContext c = new PasswordSecurityContext(ctxt
+                    .getValue(ContextImpl.USERID), ctxt
+                    .getValue(ContextImpl.USERPASS));
             c.addNote("adaptors", "ftp");
             return c;
         } else if ("globus".equals(type) || "gridftp".equals(type)) {
             try {
-                return new CertificateSecurityContext(
-                        new URI(ctxt.getValue(ContextImpl.USERKEY)),
-                        new URI(ctxt.getValue(ContextImpl.USERCERT)),
-                        ctxt.getValue(ContextImpl.USERPASS));
+                return new CertificateSecurityContext(new URI(ctxt
+                        .getValue(ContextImpl.USERKEY)), new URI(ctxt
+                        .getValue(ContextImpl.USERCERT)), ctxt
+                        .getValue(ContextImpl.USERPASS));
             } catch (URISyntaxException e) {
                 // what to do? nothing?
             }
@@ -128,17 +133,16 @@ public class Session implements org.ogf.saga.impl.session.AdaptorSessionInterfac
             }
             if (!ctxt.getValue(ContextImpl.USERKEY).equals("")) {
                 try {
-                    return new CertificateSecurityContext(
-                            new URI(ctxt.getValue(ContextImpl.USERKEY)),
-                            new URI(ctxt.getValue(ContextImpl.USERCERT)),
-                            userId,
-                            ctxt.getValue(ContextImpl.USERPASS));
+                    return new CertificateSecurityContext(new URI(ctxt
+                            .getValue(ContextImpl.USERKEY)), new URI(ctxt
+                            .getValue(ContextImpl.USERCERT)), userId, ctxt
+                            .getValue(ContextImpl.USERPASS));
                 } catch (URISyntaxException e) {
                     // what to do? nothing?
                 }
             } else if (!ctxt.getValue(ContextImpl.USERPASS).equals("")) {
-                return new PasswordSecurityContext(userId,
-                        ctxt.getValue(ContextImpl.USERPASS));
+                return new PasswordSecurityContext(userId, ctxt
+                        .getValue(ContextImpl.USERPASS));
             }
         }
         return null;

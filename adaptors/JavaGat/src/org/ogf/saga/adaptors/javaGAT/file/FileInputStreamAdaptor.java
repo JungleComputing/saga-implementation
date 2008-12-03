@@ -23,26 +23,30 @@ import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.proxies.file.FileInputStreamWrapper;
 import org.ogf.saga.url.URL;
 
-public class FileInputStreamAdaptor extends org.ogf.saga.spi.file.FileInputStreamAdaptorBase {
+public class FileInputStreamAdaptor extends
+        org.ogf.saga.spi.file.FileInputStreamAdaptorBase {
 
     static {
         Initialize.initialize();
     }
-    
+
     private org.gridlab.gat.io.FileInputStream in;
-    
-    public FileInputStreamAdaptor(FileInputStreamWrapper wrapper, SessionImpl sessionImpl, URL source)
+
+    public FileInputStreamAdaptor(FileInputStreamWrapper wrapper,
+            SessionImpl sessionImpl, URL source)
             throws NotImplementedException, IncorrectURLException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, DoesNotExistException, AlreadyExistsException, TimeoutException, NoSuccessException {
-        
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            DoesNotExistException, AlreadyExistsException, TimeoutException,
+            NoSuccessException {
+
         super(sessionImpl, wrapper);
-        
+
         org.ogf.saga.adaptors.javaGAT.session.Session gatSession;
 
-        synchronized(sessionImpl) {
-            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session)
-                    sessionImpl.getAdaptorSession("JavaGAT");
+        synchronized (sessionImpl) {
+            gatSession = (org.ogf.saga.adaptors.javaGAT.session.Session) sessionImpl
+                    .getAdaptorSession("JavaGAT");
             if (gatSession == null) {
                 gatSession = new org.ogf.saga.adaptors.javaGAT.session.Session();
                 sessionImpl.putAdaptorSession("JavaGAT", gatSession);
@@ -50,40 +54,40 @@ public class FileInputStreamAdaptor extends org.ogf.saga.spi.file.FileInputStrea
         }
 
         GATContext gatContext = gatSession.getGATContext();
-        
+
         URI gatURI;
         try {
             gatURI = NSEntryAdaptor.cvtToGatURI(source);
         } catch (URISyntaxException e1) {
             throw new IncorrectURLException(e1);
         }
-         
+
         try {
             in = GAT.createFileInputStream(gatContext, gatURI);
         } catch (GATObjectCreationException e) {
             throw new NoSuccessException("Could not create input stream", e);
         }
     }
-    
+
     public int read() throws IOException {
         return in.read();
     }
-    
+
     public int available() throws IOException {
         return in.available();
     }
-    
+
     public void close() throws IOException {
         in.close();
         in = null;
     }
-      
+
     protected void finalize() {
         try {
             if (in != null) {
                 in.close();
             }
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
     }
@@ -91,11 +95,11 @@ public class FileInputStreamAdaptor extends org.ogf.saga.spi.file.FileInputStrea
     public void mark(int arg0) {
         in.mark(arg0);
     }
-    
+
     public boolean markSupported() {
         return in.markSupported();
     }
-    
+
     public int read(byte[] arg0, int arg1, int arg2) throws IOException {
         return in.read(arg0, arg1, arg2);
     }
@@ -103,7 +107,7 @@ public class FileInputStreamAdaptor extends org.ogf.saga.spi.file.FileInputStrea
     public int read(byte[] arg0) throws IOException {
         return in.read(arg0);
     }
-    
+
     public void reset() throws IOException {
         in.reset();
     }
@@ -111,7 +115,7 @@ public class FileInputStreamAdaptor extends org.ogf.saga.spi.file.FileInputStrea
     public long skip(long arg0) throws IOException {
         return in.skip(arg0);
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
         FileInputStreamAdaptor clone = (FileInputStreamAdaptor) super.clone();
         clone.setWrapper(clone.wrapper);

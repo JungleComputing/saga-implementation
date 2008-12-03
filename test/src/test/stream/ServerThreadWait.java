@@ -18,15 +18,17 @@ import org.ogf.saga.url.URL;
 
 public class ServerThreadWait extends ServerThread {
 
-    private static Logger logger = LoggerFactory.getLogger(ServerThreadWait.class);
+    private static Logger logger = LoggerFactory
+            .getLogger(ServerThreadWait.class);
 
     public ServerThreadWait(URL url) {
         super(url);
     }
 
     protected void processStream(Stream stream) throws NotImplementedException,
-            BadParameterException, NoSuccessException, IncorrectStateException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, SagaIOException,
+            BadParameterException, NoSuccessException, IncorrectStateException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, SagaIOException,
             DoesNotExistException, InterruptedException {
 
         Thread.sleep(10000);

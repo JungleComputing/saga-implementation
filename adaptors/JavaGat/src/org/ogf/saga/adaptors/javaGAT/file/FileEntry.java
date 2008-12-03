@@ -25,37 +25,41 @@ import org.ogf.saga.url.URL;
 class FileEntry extends NSEntryAdaptor {
 
     FileEntry(SessionImpl sessionImpl, URL name, int flags)
-            throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
-            PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
-            TimeoutException, NoSuccessException, AlreadyExistsException {
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
         super(sessionImpl, name, flags);
     }
-    
+
     GATContext getGatContext() {
         return gatContext;
     }
-    
+
     URI getGatURI() {
         return gatURI;
     }
-    
+
     long size() {
         return fileImpl.length();
     }
-    
+
     InputStream getInputStream() throws NoSuccessException {
         try {
             return GAT.createFileInputStream(gatContext, gatURI);
         } catch (GATObjectCreationException e) {
-            throw new NoSuccessException("Could not create input stream", e, wrapper);
+            throw new NoSuccessException("Could not create input stream", e,
+                    wrapper);
         }
     }
-    
+
     OutputStream getOutputStream(boolean append) throws NoSuccessException {
         try {
             return GAT.createFileOutputStream(gatContext, gatURI, append);
         } catch (GATObjectCreationException e) {
-            throw new NoSuccessException("Could not create output stream", e, wrapper);
+            throw new NoSuccessException("Could not create output stream", e,
+                    wrapper);
         }
     }
 }

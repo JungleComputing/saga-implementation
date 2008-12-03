@@ -49,8 +49,8 @@ public class FileWrapperFactory extends FileFactory {
         return new FileInputStreamWrapper(session, name);
     }
 
-    public FileOutputStream doCreateFileOutputStream(Session session,
-            URL name, boolean append) throws NotImplementedException,
+    public FileOutputStream doCreateFileOutputStream(Session session, URL name,
+            boolean append) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, AlreadyExistsException,
@@ -62,8 +62,8 @@ public class FileWrapperFactory extends FileFactory {
     protected Task<FileFactory, Directory> doCreateDirectory(TaskMode mode,
             Session session, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<FileFactory, Directory>(this,
-                session, mode, "doCreateDirectory", new Class[] {
+        return new org.ogf.saga.impl.task.TaskImpl<FileFactory, Directory>(
+                this, session, mode, "doCreateDirectory", new Class[] {
                         Session.class, URL.class, Integer.TYPE }, session,
                 name, flags);
     }

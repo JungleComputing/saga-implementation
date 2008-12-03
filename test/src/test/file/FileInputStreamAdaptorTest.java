@@ -26,13 +26,15 @@ public class FileInputStreamAdaptorTest {
     }
 
     public AdaptorTestResult test(String adaptor, String host) {
-        
+
         Session jobSession = null;
         try {
             jobSession = SessionFactory.createSession(false);
-            Context preferences  = ContextFactory.createContext("preferences");
-            preferences.setAttribute("resourcebroker.adaptor.name", "sshtrilead,commandlinessh,local");
-            preferences.setAttribute("file.adaptor.name", "sshtrilead,commandlinessh,local");
+            Context preferences = ContextFactory.createContext("preferences");
+            preferences.setAttribute("resourcebroker.adaptor.name",
+                    "sshtrilead,commandlinessh,local");
+            preferences.setAttribute("file.adaptor.name",
+                    "sshtrilead,commandlinessh,local");
             jobSession.addContext(preferences);
         } catch (Throwable e) {
             throw new Error("Could not create session", e);
@@ -46,11 +48,13 @@ public class FileInputStreamAdaptorTest {
         FileInputStream in = null;
         URL url;
         try {
-            url = URLFactory.createURL("any://" + host + "/tmp/Saga-test-fileinputstream");
+            url = URLFactory.createURL("any://" + host
+                    + "/tmp/Saga-test-fileinputstream");
 
             in = FileFactory.createFileInputStream(url);
         } catch (Throwable e) {
-            adaptorTestResult.put("open", new AdaptorTestResultEntry(false, 0, e));
+            adaptorTestResult.put("open", new AdaptorTestResultEntry(false, 0,
+                    e));
             run(host, jobSession, "fileinputstream-adaptor-test-clean.sh");
             return adaptorTestResult;
         }
@@ -95,7 +99,7 @@ public class FileInputStreamAdaptorTest {
             jd = JobFactory.createJobDescription();
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/sh");
             jd.setVectorAttribute(JobDescription.ARGUMENTS,
-                     new String[] {script});
+                    new String[] { script });
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
                     new String[] { script + " > " + script });
             URL url = URLFactory.createURL("any://" + host);

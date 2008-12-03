@@ -17,7 +17,7 @@ import test.misc.AdaptorTestResultEntry;
 
 public class LogicalFileAdaptorTest {
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         System.setProperty("LogicalFile.adaptor.name", args[0]);
         LogicalFileAdaptorTest a = new LogicalFileAdaptorTest();
         a.test(args[0], args[1].split(",")).print();
@@ -40,48 +40,61 @@ public class LogicalFileAdaptorTest {
         URL url2;
         try {
             Session session = SessionFactory.createSession(true);
-            
+
             Context ftpContext = ContextFactory.createContext("ftp");
             session.addContext(ftpContext);
-            
+
             Context c = ContextFactory.createContext("preferences");
-            c.setAttribute("file.adaptor.name", "ftp,local,commandlinessh,sshtrilead");
+            c.setAttribute("file.adaptor.name",
+                    "ftp,local,commandlinessh,sshtrilead");
             session.addContext(c);
-            
-            logicalFile = LogicalFileFactory.createLogicalFile(
-                    URLFactory.createURL("test-logical-file"),Flags.CREATE.or(Flags.READWRITE));
-            src = URLFactory.createURL("ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz");
-            url1 = URLFactory.createURL("any://" + hosts[0] + "/tmp/Saga-test-logical-file");
-            url2 = URLFactory.createURL("any://" + hosts[1] + "/tmp/Saga-test-logical-file");
+
+            logicalFile = LogicalFileFactory.createLogicalFile(URLFactory
+                    .createURL("test-logical-file"), Flags.CREATE
+                    .or(Flags.READWRITE));
+            src = URLFactory
+                    .createURL("ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz");
+            url1 = URLFactory.createURL("any://" + hosts[0]
+                    + "/tmp/Saga-test-logical-file");
+            url2 = URLFactory.createURL("any://" + hosts[1]
+                    + "/tmp/Saga-test-logical-file");
         } catch (Throwable e) {
-            adaptorTestResult.put("create", new AdaptorTestResultEntry(false, 0, e));
+            adaptorTestResult.put("create", new AdaptorTestResultEntry(false,
+                    0, e));
             return adaptorTestResult;
         }
-        
-        adaptorTestResult.put("replicate [0]", replicateTest(logicalFile, url1, false));
-        adaptorTestResult.put("addLoc    [0]", addLocationTest(logicalFile, src, true));
-        adaptorTestResult.put("replicate [1]", replicateTest(logicalFile, url1, true));
-        adaptorTestResult.put("removeLoc [1]", removeLocationTest(logicalFile, url1, true));
-        adaptorTestResult.put("addLoc    [1]", addLocationTest(logicalFile, url1, true));
-        adaptorTestResult.put("replicate2[1]", replicateTest(logicalFile, url1, false));
-        adaptorTestResult.put("replicate [2]", replicateTest(logicalFile, url2, true));
+
+        adaptorTestResult.put("replicate [0]", replicateTest(logicalFile, url1,
+                false));
+        adaptorTestResult.put("addLoc    [0]", addLocationTest(logicalFile,
+                src, true));
+        adaptorTestResult.put("replicate [1]", replicateTest(logicalFile, url1,
+                true));
+        adaptorTestResult.put("removeLoc [1]", removeLocationTest(logicalFile,
+                url1, true));
+        adaptorTestResult.put("addLoc    [1]", addLocationTest(logicalFile,
+                url1, true));
+        adaptorTestResult.put("replicate2[1]", replicateTest(logicalFile, url1,
+                false));
+        adaptorTestResult.put("replicate [2]", replicateTest(logicalFile, url2,
+                true));
         adaptorTestResult.put("remove       ", removeTest(logicalFile));
-        
+
         // cleanup
         try {
             NSEntry n = NSFactory.createNSEntry(url1);
             n.remove();
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
-        
+
         try {
             NSEntry n = NSFactory.createNSEntry(url2);
             n.remove();
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
-        
+
         return adaptorTestResult;
 
     }
@@ -127,7 +140,6 @@ public class LogicalFileAdaptorTest {
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
     }
-    
 
     private AdaptorTestResultEntry removeTest(LogicalFile logicalFile) {
         long start = System.currentTimeMillis();

@@ -33,14 +33,16 @@ import org.ogf.saga.job.JobDescription;
 
 class JSDLGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger(JSDLGenerator.class);
+    private static final Logger logger = LoggerFactory
+            .getLogger(JSDLGenerator.class);
 
     private final JobDescription jobDescription;
 
     private final JobDefinitionDocument jobDefinitionDocument;
 
-    JSDLGenerator(JobDescription jd, SagaObject o) throws BadParameterException,
-            NotImplementedException, NoSuccessException {
+    JSDLGenerator(JobDescription jd, SagaObject o)
+            throws BadParameterException, NotImplementedException,
+            NoSuccessException {
         this.jobDescription = jd;
 
         jobDefinitionDocument = JobDefinitionDocument.Factory.newInstance();
@@ -54,7 +56,7 @@ class JSDLGenerator {
 
     private void createJSDLDescription(SagaObject o)
             throws BadParameterException, NotImplementedException,
-                            NoSuccessException {
+            NoSuccessException {
 
         JobDefinitionType jobDef = jobDefinitionDocument.addNewJobDefinition();
         JobDescriptionType jobDescr = jobDef.addNewJobDescription();

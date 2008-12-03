@@ -13,12 +13,12 @@ public interface ContextInitializerSPI {
      * Initializes the specified context with "sensible" default values.
      * 
      * @param context
-     *                the context to initialize.
+     *            the context to initialize.
      * @param type
-     *                the value of the TYPE attribute of this context.
+     *            the value of the TYPE attribute of this context.
      * @throws NotImplementedException
-     *                 is thrown when this adaptor does not recognize the
-     *                 context name.
+     *             is thrown when this adaptor does not recognize the context
+     *             name.
      */
     public void setDefaults(ContextImpl context, String type)
             throws NotImplementedException;

@@ -31,30 +31,30 @@ import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
 /**
- * This LogicalFile adaptor actually stores its contents
- * (the list of replicas) in a Saga NSEntry object.
- * As such, it uses other SAGA packages (namespace and file)
- * for its implementation. The recognized schemes are the schemes
- * of the file and namespace packages.
+ * This LogicalFile adaptor actually stores its contents (the list of replicas)
+ * in a Saga NSEntry object. As such, it uses other SAGA packages (namespace and
+ * file) for its implementation. The recognized schemes are the schemes of the
+ * file and namespace packages.
  */
 public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
     private NSEntry entry;
 
     private HashSet<URL> urls = new HashSet<URL>();
-       
-    public LogicalFileAdaptor(LogicalFileWrapper wrapper, SessionImpl sessionImpl,
-            URL url, int flags) throws NotImplementedException,
-            IncorrectURLException, BadParameterException,
-            DoesNotExistException, PermissionDeniedException,
-            AuthorizationFailedException, AuthenticationFailedException,
-            TimeoutException, NoSuccessException, AlreadyExistsException {
-               
+
+    public LogicalFileAdaptor(LogicalFileWrapper wrapper,
+            SessionImpl sessionImpl, URL url, int flags)
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
+
         super(wrapper, sessionImpl, url, flags);
-        
-        entry = NSFactory.createNSEntry(sessionImpl, url,
-                flags & Flags.ALLNAMESPACEFLAGS.getValue());
-    
+
+        entry = NSFactory.createNSEntry(sessionImpl, url, flags
+                & Flags.ALLNAMESPACEFLAGS.getValue());
+
         if (Flags.READ.isSet(flags)) {
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     FileFactory.createFileInputStream(sessionImpl, url)));
@@ -67,14 +67,14 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
                     try {
                         URL u = URLFactory.createURL(s);
                         urls.add(u);
-                    } catch(Throwable e) {
+                    } catch (Throwable e) {
                         try {
                             in.close();
-                        } catch(Throwable ex) {
+                        } catch (Throwable ex) {
                             // ignored
                         }
-                        throw new NoSuccessException("" + url + " contains " + s
-                                + ", which does not seem to be an URL");
+                        throw new NoSuccessException("" + url + " contains "
+                                + s + ", which does not seem to be an URL");
                     }
                 }
                 in.close();
@@ -84,10 +84,10 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             }
         }
     }
-   
+
     public synchronized Object clone() throws CloneNotSupportedException {
         LogicalFileAdaptor clone = (LogicalFileAdaptor) super.clone();
-        synchronized(clone) {
+        synchronized (clone) {
             clone.entry = (NSEntry) entry.clone();
             clone.urls = new HashSet<URL>(urls);
         }
@@ -105,14 +105,15 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        
+
         if (closed) {
             throw new IncorrectStateException(
                     "addLocation() called on closed LogicalFile", wrapper);
         }
         if (!Flags.WRITE.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "addLocation() called on LogicalFile not opened for writing", wrapper);
+                    "addLocation() called on LogicalFile not opened for writing",
+                    wrapper);
         }
 
         if (doAdd(name)) {
@@ -130,7 +131,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         urls.add(name);
         return true;
     }
-    
+
     public synchronized List<URL> listLocations()
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
@@ -141,7 +142,8 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         }
         if (!Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "listLocations() called on LogicalFile not opened for reading", wrapper);
+                    "listLocations() called on LogicalFile not opened for reading",
+                    wrapper);
         }
         return new ArrayList<URL>(urls);
     }
@@ -158,17 +160,19 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         }
         if (!Flags.WRITE.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "removeLocation() called on LogicalFile not opened for writing", wrapper);
+                    "removeLocation() called on LogicalFile not opened for writing",
+                    wrapper);
         }
 
         if (doRemove(name)) {
             write();
         } else {
-            throw new DoesNotExistException("url " + name + " not found", wrapper);
+            throw new DoesNotExistException("url " + name + " not found",
+                    wrapper);
         }
     }
 
-    private boolean doRemove(URL name) throws DoesNotExistException {       
+    private boolean doRemove(URL name) throws DoesNotExistException {
         name = name.normalize();
         if (!urls.contains(name)) {
             return false;
@@ -176,7 +180,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         urls.remove(name);
         return true;
     }
-    
+
     public synchronized void replicate(URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -190,13 +194,14 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         if (!Flags.WRITE.isSet(logicalFileFlags)
                 || !Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "replicate() called on LogicalFile not opened for reading/writing", wrapper);
+                    "replicate() called on LogicalFile not opened for reading/writing",
+                    wrapper);
         }
         if (Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
                     "replicate() call with RECURSIVE flag", wrapper);
         }
-        if (! name.isAbsolute()) {
+        if (!name.isAbsolute()) {
             throw new BadParameterException(
                     "replicate() call with relative URL " + name, wrapper);
         }
@@ -206,8 +211,8 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         URL url = getClosestURL(name);
         // Create entry so that we can copy.
         try {
-            NSEntry e = NSFactory.createNSEntry(sessionImpl, url,
-                    Flags.NONE.getValue());
+            NSEntry e = NSFactory.createNSEntry(sessionImpl, url, Flags.NONE
+                    .getValue());
 
             // Pick the first location. Exceptions passed on to user.
             // If this fails, the location is not added.
@@ -228,50 +233,54 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        
+
         if (closed) {
             throw new IncorrectStateException(
                     "updateLocation() called on closed LogicalFile", wrapper);
         }
-        
+
         if (!Flags.WRITE.isSet(logicalFileFlags)
                 || !Flags.READ.isSet(logicalFileFlags)) {
             throw new PermissionDeniedException(
-                    "updateLocation() called on LogicalFile not opened for reading/writing", wrapper);
+                    "updateLocation() called on LogicalFile not opened for reading/writing",
+                    wrapper);
         }
-        
-        if (! nameNew.isAbsolute()) {
+
+        if (!nameNew.isAbsolute()) {
             throw new BadParameterException(
-                    "updateLocation() call with relative URL " + nameNew, wrapper);
+                    "updateLocation() call with relative URL " + nameNew,
+                    wrapper);
         }
-        
+
         nameNew = nameNew.normalize();
 
         if (urls.contains(nameNew)) {
             throw new AlreadyExistsException("URL " + nameNew
                     + " already exists in LogicalFile", wrapper);
         }
-        if (! doRemove(nameOld)) {
-            throw new DoesNotExistException("url " + nameOld + " not found", wrapper);
+        if (!doRemove(nameOld)) {
+            throw new DoesNotExistException("url " + nameOld + " not found",
+                    wrapper);
         }
 
         doAdd(nameNew);
         write();
     }
-    
-    private URL getClosestURL(URL location) throws IncorrectStateException, NotImplementedException {
+
+    private URL getClosestURL(URL location) throws IncorrectStateException,
+            NotImplementedException {
         if (urls == null || urls.size() == 0) {
             throw new IncorrectStateException("No files in logical file '"
                     + nameUrl + "' to compare with", wrapper);
         }
-//      first check: same hostname
+        // first check: same hostname
         for (URL file : urls) {
             if (file.getHost().equalsIgnoreCase(location.getHost())) {
                 return file;
             }
         }
-//      check for same suffix. The more parts of the suffix are the same, the
-//      closer the location
+        // check for same suffix. The more parts of the suffix are the same, the
+        // closer the location
         String locationPart = location.getHost();
         while (locationPart.contains(".")) {
             int position = locationPart.indexOf(".");
@@ -293,13 +302,12 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             }
         }
         URL[] array = urls.toArray(new URL[urls.size()]);
-//      return first
+        // return first
         return array[0];
     }
 
-    
     private void write() throws NoSuccessException {
-        
+
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
                     FileFactory.createFileOutputStream(sessionImpl, nameUrl)));
@@ -309,8 +317,8 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             }
             out.close();
         } catch (Throwable e) {
-            throw new NoSuccessException("Exception while writing "
-                    + nameUrl, e, wrapper);
+            throw new NoSuccessException("Exception while writing " + nameUrl,
+                    e, wrapper);
         }
     }
 

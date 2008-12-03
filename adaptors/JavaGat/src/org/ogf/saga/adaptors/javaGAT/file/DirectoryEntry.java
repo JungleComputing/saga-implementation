@@ -17,9 +17,11 @@ import org.ogf.saga.url.URL;
 
 class DirectoryEntry extends NSDirectoryAdaptor {
 
-    public DirectoryEntry(NSDirectoryWrapper wrapper, SessionImpl sessionImpl, URL name, int flags)
-            throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
-            PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
+    public DirectoryEntry(NSDirectoryWrapper wrapper, SessionImpl sessionImpl,
+            URL name, int flags) throws NotImplementedException,
+            IncorrectURLException, BadParameterException,
+            DoesNotExistException, PermissionDeniedException,
+            AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags);
     }

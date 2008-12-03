@@ -19,15 +19,17 @@ import org.ogf.saga.url.URL;
 
 public class ServerThreadWriting extends ServerThread {
 
-    private static Logger logger = LoggerFactory.getLogger(ServerThreadWriting.class);
+    private static Logger logger = LoggerFactory
+            .getLogger(ServerThreadWriting.class);
 
     public ServerThreadWriting(URL url) {
         super(url);
     }
 
     protected void processStream(Stream stream) throws NotImplementedException,
-            BadParameterException, NoSuccessException, IncorrectStateException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, SagaIOException,
+            BadParameterException, NoSuccessException, IncorrectStateException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, SagaIOException,
             DoesNotExistException, InterruptedException {
 
         logger.debug("Server: Attempting to send a message");

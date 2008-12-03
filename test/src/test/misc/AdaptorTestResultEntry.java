@@ -25,5 +25,5 @@ public class AdaptorTestResultEntry {
     public Throwable getThrowable() {
         return e;
     }
-    
+
 }

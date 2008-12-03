@@ -22,10 +22,11 @@ public class StreamListener implements Runnable {
     private MetricImpl streamRead;
     private ErrorInterface err;
 
-    private static Logger logger = LoggerFactory.getLogger(StreamListener.class);
+    private static Logger logger = LoggerFactory
+            .getLogger(StreamListener.class);
 
-    public StreamListener(Pipe pipe, MetricImpl streamRead,
-            int bufferCapacity, ErrorInterface err) {
+    public StreamListener(Pipe pipe, MetricImpl streamRead, int bufferCapacity,
+            ErrorInterface err) {
         this.streamRead = streamRead;
         this.buf = new CircularBuffer(pipe, bufferCapacity);
         this.err = err;
@@ -44,7 +45,9 @@ public class StreamListener implements Runnable {
                 // go into ERROR state
 
                 if (bytesRead == -1) {
-                    error.setCause(new NoSuccessException("Connection dropped"));
+                    error
+                            .setCause(new NoSuccessException(
+                                    "Connection dropped"));
                     error.setTargetState(StreamState.DROPPED);
                     err.signalReaderException(error);
                     buf.onError(CircularBuffer.REASON_DROPPED);
@@ -85,8 +88,9 @@ public class StreamListener implements Runnable {
 
     // No arguments' validation in this method
 
-    public int read(Buffer buffer, int len) throws IncorrectStateException, NoSuccessException,
-            BadParameterException, NotImplementedException, SagaIOException {
+    public int read(Buffer buffer, int len) throws IncorrectStateException,
+            NoSuccessException, BadParameterException, NotImplementedException,
+            SagaIOException {
         return buf.read(buffer, len);
     }
 

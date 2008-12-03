@@ -47,7 +47,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     static {
         Initialize.initialize();
     }
-    
+
     private GATContext gatContext;
     private Pipe pipe;
     private boolean wasOpen = false;
@@ -68,7 +68,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
     public Object clone() throws CloneNotSupportedException {
         StreamAdaptor clone = (StreamAdaptor) super.clone();
-        synchronized(clone) {
+        synchronized (clone) {
             clone.streamListenerException = null;
         }
         clone.gatContext = (GATContext) this.gatContext.clone();
@@ -110,8 +110,9 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
                 listeningReaderThread.interrupt();
                 pipe.close();
             }
-            if (! StreamStateUtils.isFinalState(streamState)) {
-                StreamStateUtils.setStreamState(streamState, StreamState.CLOSED);
+            if (!StreamStateUtils.isFinalState(streamState)) {
+                StreamStateUtils
+                        .setStreamState(streamState, StreamState.CLOSED);
                 onStateChange(StreamState.CLOSED);
             }
         } catch (GATInvocationException e) {
@@ -119,9 +120,10 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         }
     }
 
-    public void connect() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public void connect() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
 
         // on any failure we change state to Error
 
@@ -130,7 +132,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             logger.debug("Successful check for OPEN state [CONNECT]");
         } catch (IncorrectStateException e) {
             logger.debug("Unsuccessful check for OPEN state [CONNECT]");
-            if (! StreamStateUtils.isFinalState(streamState)) {
+            if (!StreamStateUtils.isFinalState(streamState)) {
                 StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
                 onStateChange(StreamState.ERROR);
             }
@@ -144,7 +146,8 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
         String path = url.getString();
         try {
-            URI db = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(getAdvertName(gatContext)));
+            URI db = NSEntryAdaptor.cvtToGatURI(URLFactory
+                    .createURL(getAdvertName(gatContext)));
             AdvertService advService = GAT.createAdvertService(gatContext);
             advService.importDataBase(db);
             Endpoint remoteEndPoint = (Endpoint) advService
@@ -153,8 +156,8 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             StreamStateUtils.setStreamState(streamState, StreamState.OPEN);
             onStateChange(StreamState.OPEN);
             wasOpen = true;
-            this.listeningReader = new StreamListener(pipe, streamRead,
-                    1024, this);
+            this.listeningReader = new StreamListener(pipe, streamRead, 1024,
+                    this);
             this.listeningReaderThread = new Thread(this.listeningReader);
             this.listeningReaderThread.start();
         } catch (GATObjectCreationException e) {
@@ -172,32 +175,37 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         } catch (BadParameterException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
-            throw new NoSuccessException("Incorrect URL for javagat advert service?", e);
+            throw new NoSuccessException(
+                    "Incorrect URL for javagat advert service?", e);
         } catch (URISyntaxException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
-            throw new NoSuccessException("Incorrect URL for javagat advert service?", e);
+            throw new NoSuccessException(
+                    "Incorrect URL for javagat advert service?", e);
         }
     }
 
-    public Context getContext() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public Context getContext() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         if (!wasOpen)
             throw new IncorrectStateException("This stream was never opened");
 
         return ContextFactory.createContext("Unknown");
     }
 
-    public URL getUrl() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public URL getUrl() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return url;
     }
-    
+
     public int read(Buffer buf, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
 
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
@@ -206,7 +214,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             throw new BadParameterException("Length should be non-negative");
 
         int bytesRead = 0;
-        
+
         try {
             bytesRead = listeningReader.read(buf, len);
         } catch (NoSuccessException e) {
@@ -238,8 +246,9 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     }
 
     public int waitFor(int what, float timeoutInSeconds)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, IncorrectStateException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, NoSuccessException {
 
         int cause = 0;
         float actualTimeout = 0.0f;
@@ -264,7 +273,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         // System.out.println("WAIT: time waiting = " + waitTime);
 
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
-        
+
         try {
             do {
                 for (int i = 0; i < NUM_WAIT_TRIES; i++) {
@@ -309,15 +318,17 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     }
 
     public int write(Buffer buf, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
 
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
 
         byte[] data;
         try {
             data = buf.getData();
-        } catch(DoesNotExistException e) {
+        } catch (DoesNotExistException e) {
             throw new BadParameterException("The buffer contains no data");
         }
         if (len > data.length) {
@@ -344,31 +355,36 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         return len;
     }
 
-    public String getGroup() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getGroup() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException();
     }
 
-    public String getOwner() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getOwner() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException();
     }
 
     public void permissionsAllow(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException();
     }
 
     public boolean permissionsCheck(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException();
     }
 
     public void permissionsDeny(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException();
     }
 
@@ -386,7 +402,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
         return gatSession.getGATContext();
     }
-    
+
     static String getAdvertName(GATContext gatContext) {
         String s = SAGAEngine.getProperty("saga.adaptor.javagat.advertService");
         if (s != null) {
@@ -427,21 +443,28 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         else if (newState == StreamState.DROPPED)
             streamDropped.internalFire();
     }
-    
-    
-    public StreamInputStream getInputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+
+    public StreamInputStream getInputStream() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
         try {
-            return new org.ogf.saga.impl.stream.InputStream(sessionImpl, pipe.getInputStream());
+            return new org.ogf.saga.impl.stream.InputStream(sessionImpl, pipe
+                    .getInputStream());
         } catch (GATInvocationException e) {
             throw new SagaIOException(e);
         }
     }
 
-    public StreamOutputStream getOutputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+    public StreamOutputStream getOutputStream() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
         try {
-            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl, pipe.getOutputStream());
+            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl, pipe
+                    .getOutputStream());
         } catch (GATInvocationException e) {
             throw new SagaIOException(e);
         }

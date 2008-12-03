@@ -40,13 +40,13 @@ import org.ogf.saga.url.URL;
 // Likewise, for output create a file output stream. No seeks in this case.
 
 public class FileAdaptor extends FileAdaptorBase implements FileSPI {
-    
+
     private static Logger logger = LoggerFactory.getLogger(FileAdaptor.class);
-    
+
     static {
         Initialize.initialize();
     }
-    
+
     private int flags;
     private long offset = 0L;
     private RandomAccessFile rf = null;
@@ -54,15 +54,18 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     private InputStream in = null;
     private OutputStream out = null;
 
-    public FileAdaptor(FileWrapper wrapper, SessionImpl sessionImpl, URL name, int flags)
-            throws NotImplementedException, IncorrectURLException, BadParameterException, DoesNotExistException,
-            PermissionDeniedException, AuthorizationFailedException, AuthenticationFailedException,
-            TimeoutException, NoSuccessException, AlreadyExistsException {
-        
+    public FileAdaptor(FileWrapper wrapper, SessionImpl sessionImpl, URL name,
+            int flags) throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
+
         super(wrapper, sessionImpl, name, flags);
-        entry = new FileEntry(sessionImpl, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
+        entry = new FileEntry(sessionImpl, name, flags
+                & Flags.ALLNAMESPACEFLAGS.getValue());
         this.flags = flags;
-        
+
         // Determine read/write
         String rfflags = null;
         if (Flags.READ.isSet(flags)) {
@@ -71,25 +74,25 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         if (Flags.WRITE.isSet(flags)) {
             rfflags = "rw";
         }
-        
+
         if (rfflags != null) {
             // Open the file, if needed.
             try {
-                rf = GAT.createRandomAccessFile(entry.getGatContext(), entry.getGatURI(),
-                        rfflags);
+                rf = GAT.createRandomAccessFile(entry.getGatContext(), entry
+                        .getGatURI(), rfflags);
             } catch (GATObjectCreationException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("GAT.createRandomAccessFile failed");
                 }
             }
         }
-           
+
         if (rf != null) {
             // Truncate if needed.
             if (Flags.TRUNCATE.isSet(flags)) {
                 try {
                     rf.setLength(0L);
-                } catch(IOException e) {
+                } catch (IOException e) {
                     throw new NoSuccessException("Truncate failed", e);
                 }
             } else if (Flags.APPEND.isSet(flags)) {
@@ -98,14 +101,14 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                     rf.seek(offset);
                 } catch (IOException e) {
                     throw new NoSuccessException("Append failed", e);
-                }                                
-            }            
+                }
+            }
         } else {
             if (Flags.READ.isSet(flags)) {
                 if (Flags.WRITE.isSet(flags)) {
                     throw new NoSuccessException("READWRITE not supported");
                 }
-                in = entry.getInputStream();                
+                in = entry.getInputStream();
             } else if (Flags.WRITE.isSet(flags)) {
                 boolean append = Flags.APPEND.isSet(flags);
                 out = entry.getOutputStream(append);
@@ -113,17 +116,18 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             }
         }
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
         FileAdaptor clone = (FileAdaptor) super.clone();
         clone.entry = (FileEntry) entry.clone();
         clone.entry.setWrapper(clone.wrapper);
         return clone;
     }
-    
-    public long getSize() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+
+    public long getSize() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         if (closed) {
             if (logger.isDebugEnabled()) {
                 logger.debug("File already closed!");
@@ -133,53 +137,60 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         return entry.size();
     }
 
-   public List<String> modesE() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public List<String> modesE() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         throw new NotImplementedException("modesE", wrapper);
     }
-        
-    public int read(Buffer buffer, int off, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
-        
+
+    public int read(Buffer buffer, int off, int len)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
+
         if (closed) {
             throw new IncorrectStateException("File already closed", wrapper);
         }
-        
+
         if (!Flags.READ.isSet(flags)) {
-            throw new PermissionDeniedException("No permission to read", wrapper);
+            throw new PermissionDeniedException("No permission to read",
+                    wrapper);
         }
-                     
+
         byte[] b;
         try {
             b = buffer.getData();
-        } catch(DoesNotExistException e) {
+        } catch (DoesNotExistException e) {
             if (len < 0) {
-                throw new BadParameterException("read: len < 0 and buffer not allocated yet", wrapper);
+                throw new BadParameterException(
+                        "read: len < 0 and buffer not allocated yet", wrapper);
             }
             buffer.setSize(off + len);
             try {
                 b = buffer.getData();
-            } catch(DoesNotExistException e2) {
+            } catch (DoesNotExistException e2) {
                 // This should not happen after setSize() with size >= 0.
                 throw new NoSuccessException("Internal error", e2, wrapper);
             }
         }
-        
+
         int sz = buffer.getSize();
-        
+
         if (off > sz) {
-            throw new BadParameterException("read: offset > buffer size", wrapper);
+            throw new BadParameterException("read: offset > buffer size",
+                    wrapper);
         }
         if (off + len > sz) {
-            throw new BadParameterException("read: specified len > buffer size", wrapper);
+            throw new BadParameterException(
+                    "read: specified len > buffer size", wrapper);
         } else if (len < 0) {
             len = sz - off;
         }
-               
+
         int result;
-        
+
         try {
             if (rf != null) {
                 result = rf.read(b, off, len);
@@ -198,25 +209,29 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     }
 
     public int readE(String arg0, String arg1, Buffer arg2)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
-            SagaIOException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
         throw new NotImplementedException("readE", wrapper);
     }
 
-    public long seek(long offset, SeekMode whence) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
-        
+    public long seek(long offset, SeekMode whence)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
+
         if (closed) {
             throw new IncorrectStateException("File already closed", wrapper);
         }
-        
-        if (! Flags.READ.isSet(flags) && ! Flags.WRITE.isSet(flags)) {
-            throw new IncorrectStateException("seek() called but not opened for READ or WRITE", wrapper);
+
+        if (!Flags.READ.isSet(flags) && !Flags.WRITE.isSet(flags)) {
+            throw new IncorrectStateException(
+                    "seek() called but not opened for READ or WRITE", wrapper);
         }
-        
-        switch(whence) {
+
+        switch (whence) {
         case START:
             break;
         case CURRENT:
@@ -229,7 +244,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             // Cannot happen
             break;
         }
-        
+
         if (rf != null) {
             try {
                 rf.seek(offset);
@@ -238,7 +253,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                 throw new SagaIOException(e, wrapper);
             }
             return this.offset;
-        } 
+        }
         if (in != null) {
             if (offset >= this.offset) {
                 try {
@@ -248,39 +263,47 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                 } catch (IOException e) {
                     throw new SagaIOException(e, wrapper);
                 }
-            } else throw new NotImplementedException("Backwards seek not implemented", wrapper);
+            } else
+                throw new NotImplementedException(
+                        "Backwards seek not implemented", wrapper);
         } else {
-            throw new NotImplementedException("Seek on output stream not implemented", wrapper);
+            throw new NotImplementedException(
+                    "Seek on output stream not implemented", wrapper);
         }
     }
 
     public int sizeE(String arg0, String arg1) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, IncorrectStateException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            IncorrectStateException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("sizeE", wrapper);
     }
 
-    public int write(Buffer buffer, int off, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
-        
+    public int write(Buffer buffer, int off, int len)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
+
         if (closed) {
             throw new IncorrectStateException("File already closed", wrapper);
         }
-        
+
         if (!Flags.WRITE.isSet(flags)) {
-            throw new PermissionDeniedException("No permission to write", wrapper);
+            throw new PermissionDeniedException("No permission to write",
+                    wrapper);
         }
-        
-        if (rf != null && Flags.APPEND.isSet(flags)) { 
+
+        if (rf != null && Flags.APPEND.isSet(flags)) {
             seek(0L, SeekMode.END);
         }
-        
+
         byte[] b;
         try {
             b = buffer.getData();
-        } catch(DoesNotExistException e) {
-            throw new BadParameterException("write: buffer not allocated yet", wrapper);
+        } catch (DoesNotExistException e) {
+            throw new BadParameterException("write: buffer not allocated yet",
+                    wrapper);
         }
 
         if (len + off > buffer.getSize() || len < 0) {
@@ -289,7 +312,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         if (len < 0) {
             throw new BadParameterException("write: offset too large", wrapper);
         }
-        
+
         try {
             if (rf != null) {
                 rf.write(b, off, len);
@@ -304,19 +327,20 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     }
 
     public int writeE(String arg0, String arg1, Buffer arg2)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException,
-            SagaIOException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException, SagaIOException {
         throw new NotImplementedException("writeE", wrapper);
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
-        
+
         if (closed) {
             return;
         }
-        
+
         super.close(timeoutInSeconds);
         entry.close(timeoutInSeconds);
         try {
@@ -351,70 +375,82 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         entry.move(target, flags);
     }
 
-    public boolean isDir() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public boolean isDir() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         return entry.isDir();
     }
 
-    public boolean isEntry() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public boolean isEntry() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         return entry.isEntry();
     }
 
-    public boolean isLink() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public boolean isLink() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         return entry.isLink();
     }
 
     public void link(URL target, int flags) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, AlreadyExistsException, TimeoutException, NoSuccessException,
-            IncorrectURLException {
-        entry.link(target, flags);        
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, AlreadyExistsException, TimeoutException,
+            NoSuccessException, IncorrectURLException {
+        entry.link(target, flags);
     }
 
     public void permissionsAllow(String id, int permissions, int flags)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, IncorrectStateException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException, TimeoutException,
+            NoSuccessException {
         entry.permissionsAllow(id, permissions, flags);
     }
 
     public void permissionsDeny(String id, int permissions, int flags)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            IncorrectStateException, PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, IncorrectStateException,
+            PermissionDeniedException, BadParameterException, TimeoutException,
+            NoSuccessException {
         entry.permissionsDeny(id, permissions, flags);
-        
+
     }
 
-    public URL readLink() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public URL readLink() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         return entry.readLink();
     }
 
-    public void remove(int flags) throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, BadParameterException,
+    public void remove(int flags) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         entry.remove(flags);
     }
 
-    public String getGroup() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getGroup() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return entry.getGroup();
     }
 
-    public String getOwner() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getOwner() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return entry.getOwner();
     }
 
     public boolean permissionsCheck(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         return entry.permissionsCheck(id, permissions);
     }
 }
-

@@ -29,7 +29,7 @@ public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
      * {@link NSDirectory#isEntry}.
      * 
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return <code>true</code> if the name represents a non-directory entry.
      */
     public boolean isFile(URL name) throws NotImplementedException,
@@ -43,11 +43,11 @@ public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
      * names and matching meta data.
      * 
      * @param namePattern
-     *                pattern for names of entries to be found.
+     *            pattern for names of entries to be found.
      * @param attrPattern
-     *                pattern for meta data keys/values of entries to be found.
+     *            pattern for meta data keys/values of entries to be found.
      * @param flags
-     *                flags defining the operation modus.
+     *            flags defining the operation modus.
      * @return the list of matching entries.
      */
     public List<URL> find(String namePattern, String[] attrPattern, int flags)
@@ -56,17 +56,13 @@ public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException;
 
-    // openLogicalDir and openLogicalFile: names changed with respect
-    // to specs because of Java restriction: cannot redefine methods with
-    // just a different return type.
-
     /**
      * Creates a new <code>LogicalDirectory</code> instance.
      * 
      * @param name
-     *                directory to open.
+     *            directory to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the opened directory instance.
      */
     public LogicalDirectory openLogicalDir(URL name, int flags)
@@ -80,9 +76,9 @@ public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
      * Creates a new <code>LogicalFile</code> instance.
      * 
      * @param name
-     *                logical file to open.
+     *            logical file to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the opened logical file.
      */
     public LogicalFile openLogicalFile(URL name, int flags)
@@ -99,13 +95,13 @@ public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
      * for {@link NSDirectory#isEntry}.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Boolean> isFile(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -115,17 +111,17 @@ public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
      * with matching names and matching meta data.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param namePattern
-     *                pattern for names of entries to be found.
+     *            pattern for names of entries to be found.
      * @param attrPattern
-     *                pattern for meta data keys/values of entries to be found.
+     *            pattern for meta data keys/values of entries to be found.
      * @param flags
-     *                flags defining the operation modus.
+     *            flags defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<LogicalDirectory, List<URL>> find(TaskMode mode,
             String namePattern, String[] attrPattern, int flags)
@@ -136,15 +132,15 @@ public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
      * instance.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                directory to open.
+     *            directory to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(
             TaskMode mode, URL name, int flags) throws NotImplementedException;
@@ -153,15 +149,15 @@ public interface LogicalDirectorySPI extends AsyncAttributes<LogicalDirectory>,
      * Creates a task that creates a new <code>LogicalFile</code> instance.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                the file to open.
+     *            the file to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode,
             URL name, int flags) throws NotImplementedException;

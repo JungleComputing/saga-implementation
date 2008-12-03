@@ -99,9 +99,9 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Copies this entry to another part of the namespace.
      * 
      * @param target
-     *                the name to copy to.
+     *            the name to copy to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void copy(URL target, int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -114,9 +114,9 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Creates a symbolic link from the target to this entry.
      * 
      * @param target
-     *                the name that will have the symbolic link to this entry.
+     *            the name that will have the symbolic link to this entry.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void link(URL target, int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -129,9 +129,9 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * is a directory.
      * 
      * @param target
-     *                the name to move to.
+     *            the name to move to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void move(URL target, int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -144,7 +144,7 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Removes this entry and closes it.
      * 
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void remove(int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -156,7 +156,7 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * throw an IncorrectState exception.
      * 
      * @param timeoutInSeconds
-     *                seconds to wait.
+     *            seconds to wait.
      */
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException;
@@ -166,11 +166,11 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * enables the permissions for all.
      * 
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to enable.
+     *            the permissions to enable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
      */
     public void permissionsAllow(String id, int permissions, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -183,11 +183,11 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * disables the permissions for all.
      * 
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to disable.
+     *            the permissions to disable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
      */
     public void permissionsDeny(String id, int permissions, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -203,11 +203,11 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Creates a task that obtains the complete URL pointing to the entry.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, URL> getURL(TaskMode mode)
             throws NotImplementedException;
@@ -217,11 +217,11 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * directory for the entry.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, URL> getCWD(TaskMode mode)
             throws NotImplementedException;
@@ -230,11 +230,11 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Creates a task that obtains the name part of the URL of this entry.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, URL> getName(TaskMode mode)
             throws NotImplementedException;
@@ -243,11 +243,11 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Creates a task that tests this entry for being a directory.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Boolean> isDir(TaskMode mode)
             throws NotImplementedException;
@@ -259,11 +259,11 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * are namespace entries as well.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Boolean> isEntry(TaskMode mode)
             throws NotImplementedException;
@@ -272,11 +272,11 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Creates a task that tests this entry for being a link.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Boolean> isLink(TaskMode mode)
             throws NotImplementedException;
@@ -286,11 +286,11 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Resolves one link level only.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, URL> readLink(TaskMode mode)
             throws NotImplementedException;
@@ -299,15 +299,15 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Creates a task that copies this entry to another part of the namespace.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param target
-     *                the name to copy to.
+     *            the name to copy to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Void> copy(TaskMode mode, URL target, int flags)
             throws NotImplementedException;
@@ -317,15 +317,15 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * entry.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param target
-     *                the name that will have the symbolic link to this entry.
+     *            the name that will have the symbolic link to this entry.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Void> link(TaskMode mode, URL target, int flags)
             throws NotImplementedException;
@@ -335,15 +335,15 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * to the target if it is a directory.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param target
-     *                the name to move to.
+     *            the name to move to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Void> move(TaskMode mode, URL target, int flags)
             throws NotImplementedException;
@@ -352,13 +352,13 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * Creates a task that removes this entry and closes it.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Void> remove(TaskMode mode, int flags)
             throws NotImplementedException;
@@ -369,13 +369,13 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * exception.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param timeoutInSeconds
-     *                seconds to wait.
+     *            seconds to wait.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException;
@@ -385,17 +385,17 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * id. An id of "*" enables the permissions for all.
      * 
      * @param mode
-     *                determines the initial state of the task.
+     *            determines the initial state of the task.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to enable.
+     *            the permissions to enable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
      * @return the task object.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Void> permissionsAllow(TaskMode mode, String id,
             int permissions, int flags) throws NotImplementedException;
@@ -405,17 +405,17 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      * id. An id of "*" disables the permissions for all.
      * 
      * @param mode
-     *                determines the initial state of the task.
+     *            determines the initial state of the task.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to disable.
+     *            the permissions to disable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
      * @return the task object.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSEntry, Void> permissionsDeny(TaskMode mode, String id,
             int permissions, int flags) throws NotImplementedException;

@@ -16,8 +16,9 @@ import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.buffer.BufferImpl;
 
 class CircularBuffer extends java.io.InputStream {
-    
-    private static final Logger logger = LoggerFactory.getLogger(CircularBuffer.class);
+
+    private static final Logger logger = LoggerFactory
+            .getLogger(CircularBuffer.class);
 
     private static final int DEFAULT_CAPACITY = 4096;
 
@@ -54,29 +55,30 @@ class CircularBuffer extends java.io.InputStream {
     }
 
     public synchronized int read(org.ogf.saga.buffer.Buffer b, int len)
-            throws IncorrectStateException, NoSuccessException, BadParameterException,
-            SagaIOException, NotImplementedException {
-        if (! (b instanceof BufferImpl)) {
+            throws IncorrectStateException, NoSuccessException,
+            BadParameterException, SagaIOException, NotImplementedException {
+        if (!(b instanceof BufferImpl)) {
             throw new BadParameterException("Wrong buffer type");
         }
         BufferImpl bufferImpl = (BufferImpl) b;
-        
+
         byte[] res;
         try {
             res = bufferImpl.getData();
-        } catch(DoesNotExistException e) {
+        } catch (DoesNotExistException e) {
             if (len < 0) {
-                throw new BadParameterException("read: len < 0 and buffer not allocated yet");
+                throw new BadParameterException(
+                        "read: len < 0 and buffer not allocated yet");
             }
             bufferImpl.setSize(len);
             try {
                 res = bufferImpl.getData();
-            } catch(DoesNotExistException e2) {
+            } catch (DoesNotExistException e2) {
                 // This should not happen after setSize() with size >= 0.
                 throw new SagaRuntimeException("Internal error", e2);
             }
         }
-        
+
         if (len < 0) {
             len = bufferImpl.getSize();
         } else if (len > bufferImpl.getSize()) {
@@ -99,14 +101,15 @@ class CircularBuffer extends java.io.InputStream {
             throw new SagaIOException(e);
         }
     }
-    
-    public synchronized int read(byte[] res, int off, int len) throws IOException {
+
+    public synchronized int read(byte[] res, int off, int len)
+            throws IOException {
         int size = getSize();
-        
+
         if (res == null) {
             throw new NullPointerException();
-        } else if ((off < 0) || (off > res.length) || (len < 0) ||
-                   ((off + len) > res.length) || ((off + len) < 0)) {
+        } else if ((off < 0) || (off > res.length) || (len < 0)
+                || ((off + len) > res.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return 0;
@@ -132,24 +135,24 @@ class CircularBuffer extends java.io.InputStream {
 
         if (size < len)
             len = size;
-        
+
         if (logger.isDebugEnabled()) {
             logger.debug("Reading " + len + " bytes, size = " + size);
         }
-        
+
         int index = beg;
         int cnt = buf.length - beg;
         if (cnt > len) {
             cnt = len;
         }
-        
+
         System.arraycopy(buf, index, res, off, cnt);
         index += cnt;
         if (cnt < len) {
             index = len - cnt;
-            System.arraycopy(buf, 0, res, cnt+off, index);
+            System.arraycopy(buf, 0, res, cnt + off, index);
         }
-        
+
         beg = index;
 
         if (size == len)
@@ -165,17 +168,16 @@ class CircularBuffer extends java.io.InputStream {
         this.terminationReason = terminationReason;
         notifyAll();
     }
-    
+
     public void close() {
         onError(REASON_CLOSED);
     }
 
-    public int readFromStream() throws IOException,
-            InterruptedException {
+    public int readFromStream() throws IOException, InterruptedException {
         int len;
         InputStream inputStream = socket.getInputStream();
         int start = 0;
-        synchronized(this) {
+        synchronized (this) {
             // Wait until space becomes available.
             len = buf.length - getSize();
             while (len <= 0) {
@@ -187,14 +189,14 @@ class CircularBuffer extends java.io.InputStream {
                 start = end;
             }
         }
-        
+
         int retval = inputStream.read(buf, start, len);
 
         if (logger.isDebugEnabled()) {
             logger.debug("readFromStream: read " + retval + " bytes");
         }
-        
-        synchronized(this) {
+
+        synchronized (this) {
             if (retval > 0) {
                 if (end == buf.length) {
                     end = retval;
@@ -210,13 +212,13 @@ class CircularBuffer extends java.io.InputStream {
 
     public int read() throws IOException {
         byte[] b = new byte[1];
-        int len = read(b,0,1);
+        int len = read(b, 0, 1);
         if (len < 0) {
             return -1;
         }
         return b[0] & 0377;
     }
-    
+
     public int available() {
         return getSize();
     }

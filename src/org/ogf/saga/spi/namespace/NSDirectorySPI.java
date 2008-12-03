@@ -24,7 +24,7 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Changes the working directory.
      * 
      * @param dir
-     *                the directory to change to.
+     *            the directory to change to.
      */
     public void changeDir(URL dir) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
@@ -38,9 +38,9 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * is DEREFERENCE.
      * 
      * @param pattern
-     *                name or pattern to list.
+     *            name or pattern to list.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the matching entries.
      */
     public List<URL> list(String pattern, int flags)
@@ -54,9 +54,9 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * pattern. If the pattern is an empty string, all entries are listed.
      * 
      * @param pattern
-     *                name or pattern to find.
+     *            name or pattern to find.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the matching entries.
      */
     public List<URL> find(String pattern, int flags)
@@ -69,7 +69,7 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Queries for the existence of an entry.
      * 
      * @param name
-     *                to be tested for existence.
+     *            to be tested for existence.
      * @return <code>true</code> if the name exists.
      */
     public boolean exists(URL name) throws NotImplementedException,
@@ -82,7 +82,7 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Tests the name for being a directory.
      * 
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return <code>true</code> if the name represents a directory.
      */
     public boolean isDir(URL name) throws NotImplementedException,
@@ -95,7 +95,7 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Tests the name for being a namespace entry.
      * 
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return <code>true</code> if the name represents a non-directory entry.
      */
     public boolean isEntry(URL name) throws NotImplementedException,
@@ -108,7 +108,7 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Tests the name for being a link.
      * 
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return <code>true</code> if the name represents a link.
      */
     public boolean isLink(URL name) throws NotImplementedException,
@@ -121,7 +121,7 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Returns the URL representing the link target.
      * 
      * @param name
-     *                the name of the link.
+     *            the name of the link.
      * @return the resolved name.
      */
     public URL readLink(URL name) throws NotImplementedException,
@@ -148,10 +148,10 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * defined by getNumEntries().
      * 
      * @param entry
-     *                index of the entry to get.
+     *            index of the entry to get.
      * @return the name of the entry.
      * @exception DoesNotExistException
-     *                    is thrown when the index is invalid.
+     *                is thrown when the index is invalid.
      */
     public URL getEntry(int entry) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -162,11 +162,11 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Copies the source entry to another part of the namespace.
      * 
      * @param source
-     *                name to copy.
+     *            name to copy.
      * @param target
-     *                name to copy to.
+     *            name to copy to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void copy(URL source, URL target, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -179,11 +179,11 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Copies the source entry to another part of the namespace.
      * 
      * @param source
-     *                name to copy.
+     *            name to copy.
      * @param target
-     *                name to copy to.
+     *            name to copy to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void copy(String source, URL target, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -197,11 +197,11 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * source.
      * 
      * @param source
-     *                name to link to.
+     *            name to link to.
      * @param target
-     *                name of the link.
+     *            name of the link.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void link(URL source, URL target, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -215,11 +215,11 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * source.
      * 
      * @param source
-     *                name to link to.
+     *            name to link to.
      * @param target
-     *                name of the link.
+     *            name of the link.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void link(String source, URL target, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -233,11 +233,11 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * specified source to the specified target if the target is a directory.
      * 
      * @param source
-     *                name to move.
+     *            name to move.
      * @param target
-     *                name to move to.
+     *            name to move to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void move(URL source, URL target, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -251,11 +251,11 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * specified source to the specified target if the target is a directory.
      * 
      * @param source
-     *                name to move.
+     *            name to move.
      * @param target
-     *                name to move to.
+     *            name to move to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void move(String source, URL target, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -268,9 +268,9 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Removes the specified entry.
      * 
      * @param target
-     *                name to remove.
+     *            name to remove.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void remove(URL target, int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -282,9 +282,9 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Removes the specified entry.
      * 
      * @param target
-     *                name to remove.
+     *            name to remove.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void remove(String target, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -297,9 +297,9 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a new directory.
      * 
      * @param target
-     *                directory to create.
+     *            directory to create.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      */
     public void makeDir(URL target, int flags) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
@@ -312,9 +312,9 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a new <code>NamespaceDirectory</code> instance.
      * 
      * @param name
-     *                directory to open.
+     *            directory to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the opened directory instance.
      */
     public NSDirectory openDir(URL name, int flags)
@@ -328,9 +328,9 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a new <code>NamespaceEntry</code> instance.
      * 
      * @param name
-     *                entry to open.
+     *            entry to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the opened entry instance.
      */
     public NSEntry open(URL name, int flags) throws NotImplementedException,
@@ -345,54 +345,56 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * enables the permissions for all.
      * 
      * @param target
-     *                the entry affected.
+     *            the entry affected.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to enable.
+     *            the permissions to enable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
-     * @throws IncorrectURLException 
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @throws IncorrectURLException
      */
     public void permissionsAllow(URL target, String id, int permissions,
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException;
+            BadParameterException, TimeoutException, NoSuccessException,
+            IncorrectURLException;
 
     /**
      * Allows the specified permissions for the specified id. An id of "*"
      * enables the permissions for all.
      * 
      * @param target
-     *                the entry affected.
+     *            the entry affected.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to enable.
+     *            the permissions to enable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
-     * @throws IncorrectURLException 
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @throws IncorrectURLException
      */
     public void permissionsAllow(String target, String id, int permissions,
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException;
+            BadParameterException, TimeoutException, NoSuccessException,
+            IncorrectURLException;
 
     /**
      * Denies the specified permissions for the specified id. An id of "*"
      * disables the permissions for all.
      * 
      * @param target
-     *                the entry affected.
+     *            the entry affected.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to disable.
+     *            the permissions to disable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
-     * @throws IncorrectURLException 
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @throws IncorrectURLException
      */
     public void permissionsDeny(URL target, String id, int permissions,
             int flags) throws NotImplementedException,
@@ -405,14 +407,14 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * disables the permissions for all.
      * 
      * @param target
-     *                the entry affected.
+     *            the entry affected.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to disable.
+     *            the permissions to disable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
-     * @throws IncorrectURLException 
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
+     * @throws IncorrectURLException
      */
     public void permissionsDeny(String target, String id, int permissions,
             int flags) throws NotImplementedException,
@@ -428,13 +430,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that changes the working directory.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param dir
-     *                the directory to change to.
+     *            the directory to change to.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> changeDir(TaskMode mode, URL dir)
             throws NotImplementedException;
@@ -445,15 +447,15 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * listed. The only allowed flag is DEREFERENCE.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param pattern
-     *                name or pattern to list.
+     *            name or pattern to list.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, List<URL>> list(TaskMode mode, String pattern,
             int flags) throws NotImplementedException;
@@ -464,16 +466,16 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * listed.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @param pattern
-     *                name or pattern to find.
+     *            name or pattern to find.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, List<URL>> find(TaskMode mode, String pattern,
             int flags) throws NotImplementedException;
@@ -482,13 +484,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that queries for the existence of an entry.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                to be tested for existence.
+     *            to be tested for existence.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Boolean> exists(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -497,13 +499,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that tests the name for being a directory.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Boolean> isDir(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -512,13 +514,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that tests the name for being a namespace entry.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Boolean> isEntry(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -527,13 +529,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that tests the name for being a link.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                to be tested.
+     *            to be tested.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Boolean> isLink(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -542,13 +544,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that returns the URL representing the link target.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                the name of the link.
+     *            the name of the link.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, URL> readLink(TaskMode mode, URL name)
             throws NotImplementedException;
@@ -557,11 +559,11 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that obtains the number of entries in this directory.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Integer> getNumEntries(TaskMode mode)
             throws NotImplementedException;
@@ -571,13 +573,13 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * upon the enumeration defined by getNumEntries().
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param entry
-     *                index of the entry to get.
+     *            index of the entry to get.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, URL> getEntry(TaskMode mode, int entry)
             throws NotImplementedException;
@@ -587,17 +589,17 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * namespace.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param source
-     *                name to copy.
+     *            name to copy.
      * @param target
-     *                name to copy to.
+     *            name to copy to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException;
@@ -607,17 +609,17 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * namespace.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param source
-     *                name to copy.
+     *            name to copy.
      * @param target
-     *                name to copy to.
+     *            name to copy to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> copy(TaskMode mode, String source,
             URL target, int flags) throws NotImplementedException;
@@ -627,17 +629,17 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * the specified source.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param source
-     *                name to link to.
+     *            name to link to.
      * @param target
-     *                name of the link.
+     *            name of the link.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> link(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException;
@@ -647,17 +649,17 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * the specified source.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param source
-     *                name to link to.
+     *            name to link to.
      * @param target
-     *                name of the link.
+     *            name of the link.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> link(TaskMode mode, String source,
             URL target, int flags) throws NotImplementedException;
@@ -668,17 +670,17 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * directory.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param source
-     *                name to move.
+     *            name to move.
      * @param target
-     *                name to move to.
+     *            name to move to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> move(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException;
@@ -689,17 +691,17 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * directory.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param source
-     *                name to move.
+     *            name to move.
      * @param target
-     *                name to move to.
+     *            name to move to.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> move(TaskMode mode, String source,
             URL target, int flags) throws NotImplementedException;
@@ -708,15 +710,15 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that removes the specified entry.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param target
-     *                name to remove.
+     *            name to remove.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> remove(TaskMode mode, URL target, int flags)
             throws NotImplementedException;
@@ -725,15 +727,15 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that removes the specified entry.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param target
-     *                name to remove.
+     *            name to remove.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> remove(TaskMode mode, String target,
             int flags) throws NotImplementedException;
@@ -742,15 +744,15 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that creates a new directory.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param target
-     *                directory to create.
+     *            directory to create.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> makeDir(TaskMode mode, URL target, int flags)
             throws NotImplementedException;
@@ -760,15 +762,15 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * instance.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                directory to open.
+     *            directory to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, NSDirectory> openDir(TaskMode mode, URL name,
             int flags) throws NotImplementedException;
@@ -777,15 +779,15 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * Creates a task that creates a new <code>NamespaceEntry</code> instance.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param name
-     *                entry to open.
+     *            entry to open.
      * @param flags
-     *                defining the operation modus.
+     *            defining the operation modus.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, NSEntry> open(TaskMode mode, URL name, int flags)
             throws NotImplementedException;
@@ -795,19 +797,19 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * id. An id of "*" enables the permissions for all.
      * 
      * @param mode
-     *                determines the initial state of the task.
+     *            determines the initial state of the task.
      * @param target
-     *                the entry affected.
+     *            the entry affected.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to enable.
+     *            the permissions to enable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
      * @return the task object.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL target,
             String id, int permissions, int flags)
@@ -818,19 +820,19 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * id. An id of "*" enables the permissions for all.
      * 
      * @param mode
-     *                determines the initial state of the task.
+     *            determines the initial state of the task.
      * @param target
-     *                the entry affected.
+     *            the entry affected.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to enable.
+     *            the permissions to enable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
      * @return the task object.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> permissionsAllow(TaskMode mode,
             String target, String id, int permissions, int flags)
@@ -841,19 +843,19 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * id. An id of "*" disables the permissions for all.
      * 
      * @param mode
-     *                determines the initial state of the task.
+     *            determines the initial state of the task.
      * @param target
-     *                the entry affected.
+     *            the entry affected.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to disable.
+     *            the permissions to disable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
      * @return the task object.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL target,
             String id, int permissions, int flags)
@@ -864,19 +866,19 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * id. An id of "*" disables the permissions for all.
      * 
      * @param mode
-     *                determines the initial state of the task.
+     *            determines the initial state of the task.
      * @param target
-     *                the entry affected.
+     *            the entry affected.
      * @param id
-     *                the id.
+     *            the id.
      * @param permissions
-     *                the permissions to disable.
+     *            the permissions to disable.
      * @param flags
-     *                the only allowed flags are RECURSIVE and DEREFERENCE.
+     *            the only allowed flags are RECURSIVE and DEREFERENCE.
      * @return the task object.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<NSDirectory, Void> permissionsDeny(TaskMode mode,
             String target, String id, int permissions, int flags)

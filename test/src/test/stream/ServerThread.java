@@ -30,7 +30,7 @@ public class ServerThread implements Runnable {
     private static Logger logger = LoggerFactory.getLogger(ServerThread.class);
 
     private URL url;
-    
+
     Throwable throwable = null;
 
     public ServerThread(URL url) {
@@ -105,10 +105,11 @@ public class ServerThread implements Runnable {
 
                 stream.getMetric(Stream.STREAM_READ).addCallback(readable);
                 stream.getMetric(Stream.STREAM_WRITE).addCallback(writeable);
-                stream.getMetric(Stream.STREAM_EXCEPTION).addCallback(exception);
+                stream.getMetric(Stream.STREAM_EXCEPTION)
+                        .addCallback(exception);
                 stream.getMetric(Stream.STREAM_STATE).addCallback(stateChanged);
                 stream.getMetric(Stream.STREAM_DROPPED).addCallback(dropped);
-                
+
                 try {
                     processStream(stream);
                 } finally {
@@ -122,7 +123,7 @@ public class ServerThread implements Runnable {
         } finally {
             try {
                 service.close();
-            } catch(Throwable e) {
+            } catch (Throwable e) {
                 // ignored
             }
         }
@@ -132,18 +133,19 @@ public class ServerThread implements Runnable {
     public void stopServer() {
         this.stop = true;
     }
-    
+
     public synchronized Throwable getException() {
         return throwable;
     }
-    
+
     private synchronized void setException(Throwable e) {
         throwable = e;
     }
 
     protected void processStream(Stream stream) throws NotImplementedException,
-            BadParameterException, NoSuccessException, IncorrectStateException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, SagaIOException,
+            BadParameterException, NoSuccessException, IncorrectStateException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, SagaIOException,
             DoesNotExistException, InterruptedException {
         // The default just keeps the server around for 10 seconds.
         Thread.sleep(10000);

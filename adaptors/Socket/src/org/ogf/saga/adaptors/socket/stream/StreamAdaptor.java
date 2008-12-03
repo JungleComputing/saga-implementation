@@ -48,13 +48,14 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     private static Logger logger = LoggerFactory.getLogger(StreamAdaptor.class);
 
     public StreamAdaptor(StreamWrapper wrapper, SessionImpl sessionImpl, URL url)
-            throws NotImplementedException, BadParameterException, IncorrectURLException {
+            throws NotImplementedException, BadParameterException,
+            IncorrectURLException {
         super(wrapper, sessionImpl, url);
 
         // check URL
 
         String scheme = url.getScheme().toLowerCase();
-        if (! scheme.equals("any") && !scheme.equals("tcp"))
+        if (!scheme.equals("any") && !scheme.equals("tcp"))
             throw new IncorrectURLException(
                     "Only tcp scheme is supported in socket implementation");
     }
@@ -62,43 +63,45 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     public Object clone() throws CloneNotSupportedException {
         // TODO
         StreamAdaptor clone = (StreamAdaptor) super.clone();
-        synchronized(clone) {
+        synchronized (clone) {
             clone.streamListenerException = null;
         }
         return clone;
     }
 
-
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
         if (StreamStateUtils.equalsStreamState(streamState, StreamState.NEW)) {
-            throw new IncorrectStateException("close() called on new stream", wrapper);
+            throw new IncorrectStateException("close() called on new stream",
+                    wrapper);
         }
         try {
             if (listeningReader != null) {
                 listeningReaderThread.interrupt();
                 socket.close();
             }
-            if (! StreamStateUtils.isFinalState(streamState)) {
-                StreamStateUtils.setStreamState(streamState, StreamState.CLOSED);
+            if (!StreamStateUtils.isFinalState(streamState)) {
+                StreamStateUtils
+                        .setStreamState(streamState, StreamState.CLOSED);
                 onStateChange(StreamState.CLOSED);
             }
         } catch (IOException e) {
             throw new NoSuccessException("close", e, wrapper);
         }
     }
-    
+
     protected void finalize() {
         try {
             close(0.0f);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
     }
 
-    public void connect() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public void connect() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         // on any failure we change state to Error
 
         try {
@@ -106,7 +109,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             logger.debug("Successful check for OPEN state [CONNECT]");
         } catch (IncorrectStateException e) {
             logger.debug("Unsuccessful check for OPEN state [CONNECT]");
-            if (! StreamStateUtils.isFinalState(streamState)) {
+            if (!StreamStateUtils.isFinalState(streamState)) {
                 StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
                 onStateChange(StreamState.ERROR);
             }
@@ -126,8 +129,8 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             StreamStateUtils.setStreamState(streamState, StreamState.OPEN);
             onStateChange(StreamState.OPEN);
             wasOpen = true;
-            this.listeningReader = new StreamListener(socket, streamRead,
-                    1024, this);
+            this.listeningReader = new StreamListener(socket, streamRead, 1024,
+                    this);
             this.listeningReaderThread = new Thread(this.listeningReader,
                     "clientListener");
             this.listeningReaderThread.start();
@@ -138,10 +141,11 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         } catch (NoSuchElementException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
-            throw new NoSuccessException("Incorrect entry information", e, wrapper);
+            throw new NoSuccessException("Incorrect entry information", e,
+                    wrapper);
         }
     }
-    
+
     private void setSendBufferSize(String sz) throws IOException {
         if (sz == null || sz.equals("")) {
             return;
@@ -151,14 +155,14 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             socket.setSendBufferSize(size);
         }
     }
-    
+
     private void setNoDelay(String v) throws IOException {
         if (v == null || v.equals("")) {
             return;
         }
         socket.setTcpNoDelay(v.equals(Attributes.TRUE));
     }
-    
+
     private void setCurrentAttributes() {
         try {
             String bufSizeStr = this.getAttribute(Stream.BUFSIZE);
@@ -173,8 +177,12 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             // ignored
         }
     }
-    
-    public void setAttribute(String key, String value) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
+
+    public void setAttribute(String key, String value)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         super.setAttribute(key, value);
         if (socket == null) {
             return;
@@ -182,42 +190,48 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         if (Stream.BUFSIZE.equals(key)) {
             try {
                 setSendBufferSize(value);
-            } catch(Throwable e) {
+            } catch (Throwable e) {
                 // ignored
             }
         }
         if (Stream.NODELAY.equals(key)) {
             try {
                 setNoDelay(value);
-            } catch(Throwable e) {
+            } catch (Throwable e) {
                 // ignored
             }
         }
     }
 
-    public Context getContext() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public Context getContext() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         if (!wasOpen)
-            throw new IncorrectStateException("This stream was never opened", wrapper);
+            throw new IncorrectStateException("This stream was never opened",
+                    wrapper);
 
         return ContextFactory.createContext("Unknown");
     }
 
-    public URL getUrl() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public URL getUrl() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return url;
     }
 
     public int read(Buffer buffer, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
 
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
 
         if (len < 0)
-            throw new BadParameterException("Length should be non-negative", wrapper);
+            throw new BadParameterException("Length should be non-negative",
+                    wrapper);
 
         int bytesRead = 0;
 
@@ -252,8 +266,9 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     }
 
     public int waitFor(int what, float timeoutInSeconds)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, IncorrectStateException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, NoSuccessException {
 
         int cause = 0;
         float actualTimeout = 0.0f;
@@ -312,7 +327,8 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         } catch (SagaException e) {
             throw new NoSuccessException("waitFor", e, wrapper);
         } catch (InterruptedException e) {
-            throw new NoSuccessException("waitFor -- thread interrupted", e, wrapper);
+            throw new NoSuccessException("waitFor -- thread interrupted", e,
+                    wrapper);
         }
 
         if ((what & Activity.WRITE.getValue()) != 0) {
@@ -323,15 +339,18 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     }
 
     public int write(Buffer buffer, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
 
         byte[] data;
         try {
             data = buffer.getData();
-        } catch(DoesNotExistException e) {
-            throw new BadParameterException("The buffer contains no data", wrapper);
+        } catch (DoesNotExistException e) {
+            throw new BadParameterException("The buffer contains no data",
+                    wrapper);
         }
         if (len > data.length) {
             len = data.length;
@@ -350,30 +369,35 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         return len;
     }
 
-    public String getGroup() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getGroup() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("getGroup", wrapper);
     }
 
-    public String getOwner() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getOwner() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("getOwner", wrapper);
     }
 
-    public void permissionsAllow(String arg0, int arg1) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public void permissionsAllow(String arg0, int arg1)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public boolean permissionsCheck(String arg0, int arg1)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
-    public void permissionsDeny(String arg0, int arg1) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
+    public void permissionsDeny(String arg0, int arg1)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsDeny", wrapper);
     }
@@ -401,16 +425,24 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         else if (newState == StreamState.DROPPED)
             streamDropped.internalFire();
     }
-    
-    public StreamInputStream getInputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+
+    public StreamInputStream getInputStream() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
-        return new org.ogf.saga.impl.stream.InputStream(sessionImpl, listeningReader.getInputStream());
+        return new org.ogf.saga.impl.stream.InputStream(sessionImpl,
+                listeningReader.getInputStream());
     }
 
-    public StreamOutputStream getOutputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+    public StreamOutputStream getOutputStream() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
         try {
-            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl, socket.getOutputStream());
+            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl,
+                    socket.getOutputStream());
         } catch (IOException e) {
             throw new SagaIOException(e, wrapper);
         }

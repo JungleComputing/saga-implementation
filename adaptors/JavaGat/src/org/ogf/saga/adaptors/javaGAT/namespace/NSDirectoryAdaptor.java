@@ -51,12 +51,13 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         this(null, sessionImpl, name, flags);
     }
 
-    public NSDirectoryAdaptor(NSDirectoryWrapper wrapper, SessionImpl sessionImpl,
-            URL name, int flags) throws NotImplementedException,
-            IncorrectURLException, BadParameterException,
-            DoesNotExistException, PermissionDeniedException,
-            AuthorizationFailedException, AuthenticationFailedException,
-            TimeoutException, NoSuccessException, AlreadyExistsException {
+    public NSDirectoryAdaptor(NSDirectoryWrapper wrapper,
+            SessionImpl sessionImpl, URL name, int flags)
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags);
         entry = new NSEntryAdaptor(wrapper, sessionImpl, name, flags, true);
     }
@@ -236,10 +237,12 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             throw new NoSuccessException(e, wrapper);
         }
         if (entryNo >= resultFiles.length) {
-            throw new DoesNotExistException("Invalid index: " + entryNo, wrapper);
+            throw new DoesNotExistException("Invalid index: " + entryNo,
+                    wrapper);
         }
         try {
-            return URLFactory.createURL(resultFiles[entryNo].toGATURI().toString());
+            return URLFactory.createURL(resultFiles[entryNo].toGATURI()
+                    .toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException(e, wrapper);
         }
@@ -390,8 +393,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         if (resultFiles != null) {
             for (File resultFile : resultFiles) {
                 try {
-                    resultList.add(URLFactory.createURL(resultFile.getFileInterface()
-                            .getName()));
+                    resultList.add(URLFactory.createURL(resultFile
+                            .getFileInterface().getName()));
                 } catch (GATInvocationException e) {
                     throw new NoSuccessException(e, wrapper);
                 }
@@ -422,8 +425,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
                     "Flags not allowed for makeDir method: " + flags, wrapper);
         }
         target = resolveToDir(target);
-        NSDirectoryAdaptor dir = new NSDirectoryAdaptor(null, sessionImpl, target,
-                Flags.CREATE.or(flags));
+        NSDirectoryAdaptor dir = new NSDirectoryAdaptor(null, sessionImpl,
+                target, Flags.CREATE.or(flags));
         dir.close(0);
     }
 
@@ -454,7 +457,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         URL source1 = resolveToDir(source);
 
         NSEntryAdaptor sourceEntry = new NSEntryAdaptor(null, sessionImpl,
-                    source1, Flags.NONE.getValue(), isDir(source));
+                source1, Flags.NONE.getValue(), isDir(source));
         // Don't resolve target with respect to source!!!
         sourceEntry.nonResolvingMove(target, flags);
         sourceEntry.close(0.0F);
@@ -584,8 +587,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
         NSEntryAdaptor targetEntry = null;
         try {
-            targetEntry = new NSEntryAdaptor(null, sessionImpl,
-                    target1, Flags.NONE.getValue(), isDir(target));
+            targetEntry = new NSEntryAdaptor(null, sessionImpl, target1,
+                    Flags.NONE.getValue(), isDir(target));
         } catch (AlreadyExistsException e) {
             // cannot happen because create flag is not allowed for this method
             throw new NoSuccessException("Should not happen!: " + e, wrapper);
@@ -629,12 +632,13 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             NSEntryAdaptor targetEntry = null;
             URL s1 = resolveToDir(s);
             try {
-                targetEntry = new NSEntryAdaptor(null, sessionImpl,
-                        s1, Flags.NONE.getValue(), isDir(s));
+                targetEntry = new NSEntryAdaptor(null, sessionImpl, s1,
+                        Flags.NONE.getValue(), isDir(s));
             } catch (AlreadyExistsException e) {
                 // cannot happen because create flag is not allowed for this
                 // method
-                throw new NoSuccessException("Should not happen!: " + e, wrapper);
+                throw new NoSuccessException("Should not happen!: " + e,
+                        wrapper);
             }
 
             targetEntry.remove(flags);
@@ -650,9 +654,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         entry.copy(target, flags);
     }
 
-    public void move(URL target, int flags)
-            throws IncorrectStateException, NoSuccessException,
-            BadParameterException, AlreadyExistsException,
+    public void move(URL target, int flags) throws IncorrectStateException,
+            NoSuccessException, BadParameterException, AlreadyExistsException,
             NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, IncorrectURLException, DoesNotExistException {

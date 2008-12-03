@@ -35,7 +35,8 @@ import org.ogf.saga.url.URLFactory;
 
 public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
-    private static Logger logger = LoggerFactory.getLogger(NSEntryAdaptor.class);
+    private static Logger logger = LoggerFactory
+            .getLogger(NSEntryAdaptor.class);
 
     static {
         Initialize.initialize();
@@ -58,12 +59,12 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         this(null, sessionImpl, name, flags, false);
     }
 
-    public NSEntryAdaptor(NSEntryWrapper wrapper, SessionImpl sessionImpl, URL name,
-            int flags) throws NotImplementedException, IncorrectURLException,
-            BadParameterException, DoesNotExistException,
-            PermissionDeniedException, AuthorizationFailedException,
-            AuthenticationFailedException, TimeoutException,
-            NoSuccessException, AlreadyExistsException {
+    public NSEntryAdaptor(NSEntryWrapper wrapper, SessionImpl sessionImpl,
+            URL name, int flags) throws NotImplementedException,
+            IncorrectURLException, BadParameterException,
+            DoesNotExistException, PermissionDeniedException,
+            AuthorizationFailedException, AuthenticationFailedException,
+            TimeoutException, NoSuccessException, AlreadyExistsException {
         this(wrapper, sessionImpl, name, flags, false);
     }
 
@@ -271,7 +272,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
     protected void nonResolvingCopy(URL target, int flags)
             throws IncorrectStateException, NoSuccessException,
             BadParameterException, AlreadyExistsException,
-            IncorrectURLException, NotImplementedException, DoesNotExistException {
+            IncorrectURLException, NotImplementedException,
+            DoesNotExistException {
         if (closed) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Entry already closed!");
@@ -303,7 +305,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             throw new NoSuccessException(e, wrapper);
         } catch (URISyntaxException e) {
             throw new BadParameterException(e, wrapper);
-        } 
+        }
 
         // a 'BadParameter' exception is thrown if the source is a directory
         // and the 'Recursive' flag is not set
@@ -318,7 +320,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
         if (!isDirectory && Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
-                    "Source is not a directory and recursive flag is set", wrapper);
+                    "Source is not a directory and recursive flag is set",
+                    wrapper);
         }
 
         if (isDirectory && Flags.RECURSIVE.isSet(flags) && targetFile.isFile()) {
@@ -380,7 +383,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                 if (logger.isDebugEnabled()) {
                     logger.debug("targetParentFile does not exist!");
                 }
-                throw new DoesNotExistException("Target parent file does not exist", wrapper);
+                throw new DoesNotExistException(
+                        "Target parent file does not exist", wrapper);
             }
         }
         // if the target already exists, it will be overwritten if the
@@ -543,11 +547,13 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
         if (!isDirectory && Flags.RECURSIVE.isSet(flags)) {
             throw new BadParameterException(
-                    "Target is not directory and recursive flag is set", wrapper);
+                    "Target is not directory and recursive flag is set",
+                    wrapper);
         }
         try {
             if (!file.delete()) {
-                throw new NoSuccessException("Remove operation failed!", wrapper);
+                throw new NoSuccessException("Remove operation failed!",
+                        wrapper);
             }
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e, wrapper);

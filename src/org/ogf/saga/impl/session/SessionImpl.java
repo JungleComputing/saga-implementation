@@ -9,44 +9,46 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.SagaRuntimeException;
 
-public class SessionImpl extends SagaObjectBase
-        implements org.ogf.saga.session.Session {
+public class SessionImpl extends SagaObjectBase implements
+        org.ogf.saga.session.Session {
 
     private HashSet<Context> contexts = new HashSet<Context>();
-    
-    private HashMap<String, AdaptorSessionInterface> adaptorSessions
-            = new HashMap<String, AdaptorSessionInterface>();
+
+    private HashMap<String, AdaptorSessionInterface> adaptorSessions = new HashMap<String, AdaptorSessionInterface>();
 
     SessionImpl(boolean defaults) {
         super((org.ogf.saga.session.Session) null);
     }
-    
+
     public synchronized AdaptorSessionInterface getAdaptorSession(String name) {
         return adaptorSessions.get(name);
     }
-    
+
     public synchronized void putAdaptorSession(String name,
             AdaptorSessionInterface session) {
         adaptorSessions.put(name, session);
         for (Context ctxt : contexts) {
             try {
-                session.addContext((org.ogf.saga.impl.context.ContextImpl) ctxt);
-            } catch(Throwable e) {
+                session
+                        .addContext((org.ogf.saga.impl.context.ContextImpl) ctxt);
+            } catch (Throwable e) {
                 // ignored
             }
         }
     }
 
-    public synchronized void addContext(Context context) throws NotImplementedException {
+    public synchronized void addContext(Context context)
+            throws NotImplementedException {
         try {
             context = (Context) context.clone();
-        } catch(CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             throw new SagaRuntimeException("Context.clone() not supported?", e);
         }
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
-                session.addContext((org.ogf.saga.impl.context.ContextImpl) context);
-            } catch(Throwable e) {
+                session
+                        .addContext((org.ogf.saga.impl.context.ContextImpl) context);
+            } catch (Throwable e) {
                 // ignored
             }
         }
@@ -57,7 +59,7 @@ public class SessionImpl extends SagaObjectBase
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
                 session.close();
-            } catch(Throwable e) {
+            } catch (Throwable e) {
                 // ignored
             }
         }
@@ -75,14 +77,14 @@ public class SessionImpl extends SagaObjectBase
     @SuppressWarnings("unchecked")
     public synchronized Object clone() throws CloneNotSupportedException {
         SessionImpl clone = (SessionImpl) super.clone();
-        synchronized(clone) {
+        synchronized (clone) {
             clone.contexts = new HashSet<Context>(contexts);
-            clone.adaptorSessions
-            = new HashMap<String, AdaptorSessionInterface>();
-        
+            clone.adaptorSessions = new HashMap<String, AdaptorSessionInterface>();
+
             for (String key : adaptorSessions.keySet()) {
                 clone.adaptorSessions.put(key,
-                        (AdaptorSessionInterface) adaptorSessions.get(key).clone());
+                        (AdaptorSessionInterface) adaptorSessions.get(key)
+                                .clone());
             }
         }
         return clone;
@@ -108,12 +110,14 @@ public class SessionImpl extends SagaObjectBase
             throws NotImplementedException, DoesNotExistException {
 
         if (!contexts.remove(context)) {
-            throw new DoesNotExistException("Element " + context + " does not exist");
+            throw new DoesNotExistException("Element " + context
+                    + " does not exist");
         }
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
-                session.removeContext((org.ogf.saga.impl.context.ContextImpl) context);
-            } catch(Throwable e) {
+                session
+                        .removeContext((org.ogf.saga.impl.context.ContextImpl) context);
+            } catch (Throwable e) {
                 // ignored
             }
         }

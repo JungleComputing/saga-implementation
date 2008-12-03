@@ -73,9 +73,9 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * expires, an empty list is returned.
      * 
      * @param what
-     *                the activities to wait for.
+     *            the activities to wait for.
      * @param timeoutInSeconds
-     *                the timeout in seconds.
+     *            the timeout in seconds.
      * @return the activities that apply.
      */
     public int waitFor(int what, float timeoutInSeconds)
@@ -88,7 +88,7 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * in state CLOSED.
      * 
      * @param timeoutInSeconds
-     *                the timeout in seconds.
+     *            the timeout in seconds.
      */
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException;
@@ -119,15 +119,15 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * Reads a raw buffer from the stream.
      * 
      * @param len
-     *                the maximum number of bytes to be read.
+     *            the maximum number of bytes to be read.
      * @param buffer
-     *                the buffer to store into.
+     *            the buffer to store into.
      * @return the number of bytes read.
      * @exception SagaIOException
-     *                    deviation from the SAGA specs: thrown in case of an
-     *                    error, where the SAGA specs describe a return of a
-     *                    negative value, corresponding to negatives of the
-     *                    respective ERRNO error code.
+     *                deviation from the SAGA specs: thrown in case of an error,
+     *                where the SAGA specs describe a return of a negative
+     *                value, corresponding to negatives of the respective ERRNO
+     *                error code.
      */
     public int read(Buffer buffer, int len) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -140,15 +140,15 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * than the specified len, only the data in the buffer are written.
      * 
      * @param len
-     *                the number of bytes of data in the buffer.
+     *            the number of bytes of data in the buffer.
      * @param buffer
-     *                the data to be sent.
+     *            the data to be sent.
      * @return the number of bytes written.
      * @exception SagaIOException
-     *                    deviation from the SAGA specs: thrown in case of an
-     *                    error, where the SAGA specs describe a return of a
-     *                    negative value, corresponding to negatives of the
-     *                    respective ERRNO error code.
+     *                deviation from the SAGA specs: thrown in case of an error,
+     *                where the SAGA specs describe a return of a negative
+     *                value, corresponding to negatives of the respective ERRNO
+     *                error code.
      */
     public int write(Buffer buffer, int len) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
@@ -168,11 +168,11 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * the URL will be <code>null</code>.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<Stream, URL> getUrl(TaskMode mode)
             throws NotImplementedException;
@@ -182,11 +182,11 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * context is deep-copied.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<Stream, Context> getContext(TaskMode mode)
             throws NotImplementedException;
@@ -198,11 +198,11 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * the construction of the stream.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<Stream, Void> connect(TaskMode mode)
             throws NotImplementedException;
@@ -213,15 +213,15 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * If the timeout expires, the task will return an empty list.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param what
-     *                the activities to wait for.
+     *            the activities to wait for.
      * @param timeoutInSeconds
-     *                the timout in seconds.
+     *            the timout in seconds.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<Stream, Integer> waitFor(TaskMode mode, int what,
             float timeoutInSeconds) throws NotImplementedException;
@@ -230,13 +230,13 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * Returns a task that closes an active connection.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param timeoutInSeconds
-     *                the timeout in seconds.
+     *            the timeout in seconds.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<Stream, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException;
@@ -263,15 +263,15 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * Creates a task that reads a raw buffer from the stream.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param len
-     *                the maximum number of bytes to be read.
+     *            the maximum number of bytes to be read.
      * @param buffer
-     *                the buffer to store into.
+     *            the buffer to store into.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<Stream, Integer> read(TaskMode mode, Buffer buffer, int len)
             throws NotImplementedException;
@@ -282,19 +282,18 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * buffer are written.
      * 
      * @param mode
-     *                the task mode.
+     *            the task mode.
      * @param len
-     *                the number of bytes of data in the buffer.
+     *            the number of bytes of data in the buffer.
      * @param buffer
-     *                the data to be sent.
+     *            the data to be sent.
      * @return the number of bytes written.
      * @exception SagaIOException
-     *                    deviation from the SAGA specs: thrown in case of an
-     *                    error.
+     *                deviation from the SAGA specs: thrown in case of an error.
      * @return the task.
      * @exception NotImplementedException
-     *                    is thrown when the task version of this method is not
-     *                    implemented.
+     *                is thrown when the task version of this method is not
+     *                implemented.
      */
     public Task<Stream, Integer> write(TaskMode mode, Buffer buffer, int len)
             throws NotImplementedException;

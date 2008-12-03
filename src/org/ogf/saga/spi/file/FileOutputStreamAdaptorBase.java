@@ -24,15 +24,17 @@ public abstract class FileOutputStreamAdaptorBase extends
 
     public Task<FileOutputStream, Void> write(TaskMode mode, int b)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<FileOutputStream, Void>(wrapper,
-                sessionImpl, mode, "write", new Class[] { Integer.TYPE }, b);
+        return new org.ogf.saga.impl.task.TaskImpl<FileOutputStream, Void>(
+                wrapper, sessionImpl, mode, "write",
+                new Class[] { Integer.TYPE }, b);
     }
 
     public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf,
             int off, int len) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<FileOutputStream, Void>(wrapper,
-                sessionImpl, mode, "write", new Class[] { byte[].class,
-                        Integer.TYPE, Integer.TYPE }, buf, off, len);
+        return new org.ogf.saga.impl.task.TaskImpl<FileOutputStream, Void>(
+                wrapper, sessionImpl, mode, "write", new Class[] {
+                        byte[].class, Integer.TYPE, Integer.TYPE }, buf, off,
+                len);
     }
 
     public Task<FileOutputStream, Void> write(TaskMode mode, byte[] buf)
@@ -42,13 +44,13 @@ public abstract class FileOutputStreamAdaptorBase extends
 
     public Task<FileOutputStream, Void> flush(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<FileOutputStream, Void>(wrapper,
-                sessionImpl, mode, "flush", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<FileOutputStream, Void>(
+                wrapper, sessionImpl, mode, "flush", new Class[] {});
     }
 
     public Task<FileOutputStream, Void> close(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<FileOutputStream, Void>(wrapper,
-                sessionImpl, mode, "close", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<FileOutputStream, Void>(
+                wrapper, sessionImpl, mode, "close", new Class[] {});
     }
 }

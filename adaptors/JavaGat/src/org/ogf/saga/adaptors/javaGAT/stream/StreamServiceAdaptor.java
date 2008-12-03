@@ -39,13 +39,15 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
 
     private static float MINIMAL_TIMEOUT = 0.001f;
 
-    private static Logger logger = LoggerFactory.getLogger(StreamServiceAdaptor.class);
-    
+    private static Logger logger = LoggerFactory
+            .getLogger(StreamServiceAdaptor.class);
+
     private boolean active = false;
     private GATContext gatContext;
-    
-    public StreamServiceAdaptor(StreamServiceWrapper wrapper, SessionImpl sessionImpl, URL url)
-            throws NotImplementedException, BadParameterException {
+
+    public StreamServiceAdaptor(StreamServiceWrapper wrapper,
+            SessionImpl sessionImpl, URL url) throws NotImplementedException,
+            BadParameterException {
         super(wrapper, sessionImpl, url);
         gatContext = StreamAdaptor.initializeGatContext(sessionImpl);
         active = true;
@@ -73,19 +75,22 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         active = false;
     }
 
-    public URL getUrl() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public URL getUrl() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return url;
     }
 
     public Stream serve(float timeoutInSeconds) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         int invocationTimeout = -1;
 
         if (!active)
-            throw new IncorrectStateException("The service is not active", wrapper);
+            throw new IncorrectStateException("The service is not active",
+                    wrapper);
         if (timeoutInSeconds == 0.0)
             timeoutInSeconds = MINIMAL_TIMEOUT;
 
@@ -93,12 +98,12 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             invocationTimeout = 0;
         else if (timeoutInSeconds > 0.0)
             invocationTimeout = (int) (timeoutInSeconds * 1000);
-        
+
         AdvertService advertService = null;
         URI db = null;
         try {
-            db = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(
-                    StreamAdaptor.getAdvertName(gatContext)));
+            db = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(StreamAdaptor
+                    .getAdvertName(gatContext)));
             advertService = GAT.createAdvertService(gatContext);
             Endpoint serverSide = GAT.createEndpoint(gatContext);
             advertService.add(serverSide, new MetaData(), url.getString());
@@ -132,9 +137,11 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
             // we have no other clues
             throw new NoSuccessException(e, wrapper);
         } catch (BadParameterException e) {
-            throw new NoSuccessException("Incorrect URL for javagat advert service?", e, wrapper);
+            throw new NoSuccessException(
+                    "Incorrect URL for javagat advert service?", e, wrapper);
         } catch (URISyntaxException e) {
-            throw new NoSuccessException("Incorrect URL for javagat advert service?", e, wrapper);
+            throw new NoSuccessException(
+                    "Incorrect URL for javagat advert service?", e, wrapper);
         } finally {
             try {
                 advertService.delete(url.getString());
@@ -145,31 +152,36 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         }
     }
 
-    public String getGroup() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getGroup() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("getGroup", wrapper);
     }
 
-    public String getOwner() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public String getOwner() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("getOwner", wrapper);
     }
 
     public void permissionsAllow(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsAllow", wrapper);
     }
 
     public boolean permissionsCheck(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsCheck", wrapper);
     }
 
     public void permissionsDeny(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException, TimeoutException, NoSuccessException {
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsDeny", wrapper);
     }
 

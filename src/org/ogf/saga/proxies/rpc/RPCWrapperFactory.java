@@ -29,9 +29,9 @@ public class RPCWrapperFactory extends RPCFactory {
 
     protected Task<RPCFactory, RPC> doCreateRPC(TaskMode mode, Session session,
             URL funcname) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<RPCFactory, RPC>(this, session,
-                mode, "doCreateRPC", new Class[] { Session.class, URL.class },
-                session, funcname);
+        return new org.ogf.saga.impl.task.TaskImpl<RPCFactory, RPC>(this,
+                session, mode, "doCreateRPC", new Class[] { Session.class,
+                        URL.class }, session, funcname);
     }
 
     protected org.ogf.saga.rpc.Parameter doCreateParameter(Object data,

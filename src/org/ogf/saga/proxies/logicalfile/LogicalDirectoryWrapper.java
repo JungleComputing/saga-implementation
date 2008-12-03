@@ -42,8 +42,8 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             proxy = (LogicalDirectorySPI) SAGAEngine.createAdaptorProxy(
                     LogicalDirectorySPI.class, new Class[] {
                             LogicalDirectoryWrapper.class,
-                            org.ogf.saga.impl.session.SessionImpl.class, URL.class,
-                            Integer.TYPE }, parameters);
+                            org.ogf.saga.impl.session.SessionImpl.class,
+                            URL.class, Integer.TYPE }, parameters);
             super.setProxy(proxy);
         } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {
@@ -164,11 +164,10 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             String key) throws NotImplementedException {
         return proxy.isReadOnlyAttribute(mode, key);
     }
-    
-    public boolean existsAttribute(String key)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            TimeoutException, NoSuccessException {
+
+    public boolean existsAttribute(String key) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return proxy.existsAttribute(key);
     }
 

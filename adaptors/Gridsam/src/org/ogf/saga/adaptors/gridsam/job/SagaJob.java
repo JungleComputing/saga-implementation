@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
  * attributes JobDescription.INTERACTIVE, JobDescription.THREADSPERPROCESS.
  * JobDescription.JOBCONTACT, JobDescription.JOBSTARTTIME, the Job attribute
  * Job.EXECUTIONHOSTS, the Job Metrics JOB_CPUTIME, JOB_MEMORYUSE,
- * JOB_VMEMORYUSE, JOB_PERFORMANCE. In addition, the
- * method {@link #signal(int)} cannot be implemented.
+ * JOB_VMEMORYUSE, JOB_PERFORMANCE. In addition, the method {@link #signal(int)}
+ * cannot be implemented.
  */
 
 public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
@@ -61,20 +61,20 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
     private JobState savedState = null;
 
     /**
-     * Some methods of this class are called directly, not through a
-     * Saga engine dispatcher. Therefore, these methods have to set
-     * the context classloader.
+     * Some methods of this class are called directly, not through a Saga engine
+     * dispatcher. Therefore, these methods have to set the context classloader.
      */
     private static ClassLoader loader = SagaJob.class.getClassLoader();
 
-    public SagaJob(JobServiceAdaptor service, JobDescriptionImpl jobDescriptionImpl,
-            SessionImpl sessionImpl) throws NotImplementedException,
-            BadParameterException, NoSuccessException {
+    public SagaJob(JobServiceAdaptor service,
+            JobDescriptionImpl jobDescriptionImpl, SessionImpl sessionImpl)
+            throws NotImplementedException, BadParameterException,
+            NoSuccessException {
         super(jobDescriptionImpl, sessionImpl);
         this.service = service;
 
-        jobDefinitionDocument = new JSDLGenerator(jobDescriptionImpl,
-                service.getWrapper()).getJSDL();
+        jobDefinitionDocument = new JSDLGenerator(jobDescriptionImpl, service
+                .getWrapper()).getJSDL();
 
         if (logger.isDebugEnabled()) {
             logger.debug("Created JSDL " + jobDefinitionDocument.toString());
@@ -82,7 +82,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
 
         JobInstance jobInstance;
 
-        synchronized(this) {
+        synchronized (this) {
             // Take care of axis.ClientConfigFile system property: it may
             // be set by some Globus adaptor, but GridSAM cannot stand that.
             // So, save and restore it.
@@ -92,8 +92,8 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             }
 
             try {
-                jobInstance = service.jobManager.submitJob(jobDefinitionDocument,
-                        true);
+                jobInstance = service.jobManager.submitJob(
+                        jobDefinitionDocument, true);
                 // Unfortunately, notification is not yet supported!!
                 // So, we use a polling thread instead.
                 // service.jobManager.registerChangeListener(jobInstance.getID(),
@@ -194,10 +194,11 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
 
         setState(State.RUNNING);
 
-        ClassLoader savedLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader savedLoader = Thread.currentThread()
+                .getContextClassLoader();
         Thread.currentThread().setContextClassLoader(loader);
 
-        synchronized(this) {
+        synchronized (this) {
             // Take care of axis.ClientConfigFile system property: it may
             // be set by some Globus adaptor, but GridSAM cannot stand that.
             // So, save and restore it.
@@ -276,7 +277,8 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        throw new NotImplementedException("checkpoint() is not implemented", this);
+        throw new NotImplementedException("checkpoint() is not implemented",
+                this);
     }
 
     public InputStream getStderr() throws NotImplementedException,
@@ -352,14 +354,16 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsAllow not supported", this);
+        throw new NotImplementedException("permissionsAllow not supported",
+                this);
     }
 
     public boolean permissionsCheck(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsCheck not supported", this);
+        throw new NotImplementedException("permissionsCheck not supported",
+                this);
     }
 
     public void permissionsDeny(String id, int permissions)
@@ -444,8 +448,8 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             logger.warn("unknown job state: " + jobState.toString());
         }
         synchronized (this) {
-            notifyAll();        // findbugs complains about a naked notify ...
-                                // but this is OK.
+            notifyAll(); // findbugs complains about a naked notify ...
+            // but this is OK.
         }
     }
 
@@ -466,7 +470,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 // Take care of axis.ClientConfigFile system property: it may
                 // be set by some Globus adaptor, but GridSAM cannot stand that.
                 // So, save and restore it.
-                synchronized(parent) {
+                synchronized (parent) {
                     String saved = System.getProperty("axis.ClientConfigFile");
                     if (saved != null) {
                         System.clearProperty("axis.ClientConfigFile");
@@ -485,10 +489,12 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 }
                 if (logger.isDebugEnabled()) {
                     StringBuilder props = new StringBuilder();
-                    Map<Object,Object> properties = jobInstance.getProperties();
-                    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-                        props.append("\n    ").append(entry.getKey()).append("=").append(
-                                properties.get(entry.getValue()));
+                    Map<Object, Object> properties = jobInstance
+                            .getProperties();
+                    for (Map.Entry<Object, Object> entry : properties
+                            .entrySet()) {
+                        props.append("\n    ").append(entry.getKey()).append(
+                                "=").append(properties.get(entry.getValue()));
                     }
                     logger.debug("job properties (from GridSAM)="
                             + props.toString());

@@ -8,8 +8,8 @@ import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.impl.context.ContextImpl;
 import org.ogf.saga.impl.context.ContextInitializerSPI;
 
-public class ContextInitializerAdaptor  extends AdaptorBase<Object>
-        implements ContextInitializerSPI {
+public class ContextInitializerAdaptor extends AdaptorBase<Object> implements
+        ContextInitializerSPI {
 
     public ContextInitializerAdaptor() {
         super(null, null);
@@ -21,8 +21,9 @@ public class ContextInitializerAdaptor  extends AdaptorBase<Object>
             if ("ftp".equals(type)) {
                 // Default is anonymous
                 context.setValueIfEmpty(Context.USERID, "anonymous");
-                context.setValueIfEmpty(Context.USERPASS,
-                        "anonymous@localhost");
+                context
+                        .setValueIfEmpty(Context.USERPASS,
+                                "anonymous@localhost");
             } else if ("ssh".equals(type) || "sftp".equals(type)) {
                 // setValue(Context.USERID, "");
                 // setValue(Context.USERPASS, "");
@@ -42,7 +43,7 @@ public class ContextInitializerAdaptor  extends AdaptorBase<Object>
                         "This adaptor does not recognize the " + type
                                 + " context");
             }
-        } catch(NotImplementedException e) {
+        } catch (NotImplementedException e) {
             throw e;
         } catch (Throwable e) {
             // Should not happen.

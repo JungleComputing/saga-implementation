@@ -28,7 +28,8 @@ public class StreamAdaptorTest {
 
     private static final int SERVER_WAIT = 3000;
 
-    private static Logger logger = LoggerFactory.getLogger(StreamAdaptorTest.class);
+    private static Logger logger = LoggerFactory
+            .getLogger(StreamAdaptorTest.class);
 
     private final URL serverUrl;
 
@@ -43,7 +44,7 @@ public class StreamAdaptorTest {
         URL u = null;
         try {
             u = URLFactory.createURL(url);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             logger.error("URL error", e);
             throw new Error("Got exception", e);
         }
@@ -51,108 +52,115 @@ public class StreamAdaptorTest {
     }
 
     public AdaptorTestResult test(String adaptor) {
-        AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor, serverUrl.getString());
+        AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor,
+                serverUrl.getString());
 
         adaptorTestResult.put("connect   [1]", testConnect1());
         adaptorTestResult.put("connect   [2]", testConnect2());
         adaptorTestResult.put("connect   [3]", testConnect3());
-        
+
         adaptorTestResult.put("read      [1]", testRead1());
         adaptorTestResult.put("read      [2]", testRead2());
-        adaptorTestResult.put("read      [3]", testRead3());   
-                
+        adaptorTestResult.put("read      [3]", testRead3());
+
         adaptorTestResult.put("write     [1]", testWrite1());
         adaptorTestResult.put("write     [2]", testWrite2());
-        adaptorTestResult.put("write     [3]", testWrite3()); 
-        adaptorTestResult.put("write     [4]", testWrite4()); 
-        
+        adaptorTestResult.put("write     [3]", testWrite3());
+        adaptorTestResult.put("write     [4]", testWrite4());
+
         adaptorTestResult.put("close     [1]", testClose1());
         adaptorTestResult.put("close     [2]", testClose2());
-        adaptorTestResult.put("close     [3]", testClose3());   
-        
+        adaptorTestResult.put("close     [3]", testClose3());
+
         adaptorTestResult.put("waitfor   [1]", testWaitFor1());
         adaptorTestResult.put("waitfor   [2]", testWaitFor2());
-        adaptorTestResult.put("waitfor   [3]", testWaitFor3());   
-        
+        adaptorTestResult.put("waitfor   [3]", testWaitFor3());
+
         adaptorTestResult.put("getContext[1]", testGetContext1());
         adaptorTestResult.put("getContext[2]", testGetContext2());
         adaptorTestResult.put("getContext[3]", testGetContext3());
- 
+
         return adaptorTestResult;
     }
 
     public AdaptorTestResultEntry testConnect1() {
         Stream stream;
-        
+
         logger.debug("testConnect1 ...");
         // connect to server while it is down, should throw NoSuccess
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
         long start = System.currentTimeMillis();
         try {
             stream.connect();
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Connect without server should throw NoSuccess"));
-        } catch(NoSuccessException e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Connect without server should throw NoSuccess"));
+        } catch (NoSuccessException e) {
             // OK
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Connect without server should throw NoSucces, not "  + e, e));
+                    new Exception(
+                            "Connect without server should throw NoSucces, not "
+                                    + e, e));
         }
 
         // should now throw IncorrectState exception because stream should be
         // in error state
         try {
             stream.connect();
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Connect on stream in error state should throw IncorrectState"));
+            return new AdaptorTestResultEntry(
+                    false,
+                    0,
+                    new Exception(
+                            "Connect on stream in error state should throw IncorrectState"));
         } catch (IncorrectStateException e) {
             // OK
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Connect on stream in error state should throw IncorrectState, not "  + e, e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Connect on stream in error state should throw IncorrectState, not "
+                            + e, e));
         }
 
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
     }
-    
-    private AdaptorTestResultEntry close(Stream stream, 
+
+    private AdaptorTestResultEntry close(Stream stream,
             AdaptorTestResultEntry e1) {
         AdaptorTestResultEntry e2 = null;
         try {
             stream.close();
-        } catch(Throwable e) {
-            e2 = new AdaptorTestResultEntry(false, 0,
-                    new Exception("Close gave exception", e));
+        } catch (Throwable e) {
+            e2 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Close gave exception", e));
         }
         try {
             Thread.sleep(2000);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
         return e1 == null ? e2 : e1;
     }
-    
+
     private AdaptorTestResultEntry checkServer(ServerThread server,
             Thread sThread, AdaptorTestResultEntry e1) {
 
         AdaptorTestResultEntry e2 = null;
-        
+
         try {
             sThread.join();
         } catch (InterruptedException e) {
             // ignored
         }
-        
+
         Throwable ex = server.getException();
         if (ex != null) {
-            e2 = new AdaptorTestResultEntry(false, 0,
-                    new Exception("Reader gave exception", ex));
+            e2 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Reader gave exception", ex));
         }
 
         try {
@@ -172,11 +180,11 @@ public class StreamAdaptorTest {
         logger.debug("testConnect2 ...");
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
-        
+
         AdaptorTestResultEntry e1 = null;
         ServerThread server = new ServerThread(serverUrl);
         Thread sThread = new Thread(server);
@@ -184,8 +192,8 @@ public class StreamAdaptorTest {
         sThread.start();
 
         try {
-            Thread.sleep(SERVER_WAIT);            
-        } catch(Throwable e) {
+            Thread.sleep(SERVER_WAIT);
+        } catch (Throwable e) {
             // ignored
         }
 
@@ -195,17 +203,17 @@ public class StreamAdaptorTest {
             try {
                 stream.connect();
             } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0,
-                        new Exception("Connect gave exception", e));
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Connect gave exception", e));
             } finally {
                 server.stopServer();
             }
         }
 
         long stop = System.currentTimeMillis();
-        
+
         e1 = close(stream, e1);
-        
+
         e1 = checkServer(server, sThread, e1);
         if (e1 != null) {
             return e1;
@@ -220,11 +228,11 @@ public class StreamAdaptorTest {
         Stream stream;
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
-        
+
         ServerThread server = new ServerThreadWriting(serverUrl);
         Thread sThread = new Thread(server);
         AdaptorTestResultEntry e1 = null;
@@ -232,7 +240,7 @@ public class StreamAdaptorTest {
 
         try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
@@ -240,9 +248,9 @@ public class StreamAdaptorTest {
         if (e1 == null) {
             try {
                 stream.connect();
-            } catch(Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0,
-                        new Exception("Connect failed: " + e, e));
+            } catch (Throwable e) {
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Connect failed: " + e, e));
             } finally {
                 server.stopServer();
             }
@@ -259,8 +267,8 @@ public class StreamAdaptorTest {
                 logger.debug("Message content:");
                 logger.debug(new String(buffer.getData()).trim());
             } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0,
-                        new Exception("Read failed: " + e, e));
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Read failed: " + e, e));
             }
         }
 
@@ -271,12 +279,12 @@ public class StreamAdaptorTest {
                 logger.debug("Attempting to read a second message");
                 int bytesCnt = stream.read(buffer, buffer.getSize());
                 if (bytesCnt != 0) {
-                    e1 = new AdaptorTestResultEntry(false, 0,
-                            new Exception("return value of read != 0 at EOF"));
+                    e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                            "return value of read != 0 at EOF"));
                 }
-            } catch(Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0,
-                        new Exception("Read[2] failed: " + e, e));
+            } catch (Throwable e) {
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Read[2] failed: " + e, e));
             }
         }
 
@@ -300,30 +308,28 @@ public class StreamAdaptorTest {
         Stream stream;
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
         ServerThread server = new ServerThreadWriting(serverUrl);
         Thread sThread = new Thread(server);
         AdaptorTestResultEntry e1 = null;
-        
+
         sThread.start();
 
-        
         if (e1 == null) {
             try {
-                stream.getMetric(Stream.STREAM_READ)
-                        .addCallback(readable);
-            } catch(Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0,
-                        new Exception("addCallback failed", e));
+                stream.getMetric(Stream.STREAM_READ).addCallback(readable);
+            } catch (Throwable e) {
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "addCallback failed", e));
             }
         }
 
         try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
@@ -331,9 +337,9 @@ public class StreamAdaptorTest {
             try {
                 stream.connect();
             } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0,
-                        new Exception("Connect failed", e));
-            } finally { 
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Connect failed", e));
+            } finally {
                 server.stopServer();
             }
         }
@@ -342,26 +348,26 @@ public class StreamAdaptorTest {
 
         if (e1 == null) {
             try {
-                int outcome = stream.waitFor(Activity.EXCEPTION.or(Activity.WRITE),
-                        8.0f);
+                int outcome = stream.waitFor(Activity.EXCEPTION
+                        .or(Activity.WRITE), 8.0f);
 
                 if (outcome == 0) {
                     // OK
                     logger.debug("Client: nothing detected [WAIT]");
                 } else if ((outcome & Activity.EXCEPTION.getValue()) != 0) {
-                    e1 = new AdaptorTestResultEntry(false, 0,
-                            new Exception("Client: exceptional condition detected"));
+                    e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                            "Client: exceptional condition detected"));
                 } else if ((outcome & Activity.READ.getValue()) != 0) {
-                    e1 = new AdaptorTestResultEntry(false, 0,
-                            new Exception("Client: readable detected"));
+                    e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                            "Client: readable detected"));
                 } else if ((outcome & Activity.WRITE.getValue()) != 0) {
-                    e1 = new AdaptorTestResultEntry(false, 0,
-                            new Exception("Client: writable detected"));
+                    e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                            "Client: writable detected"));
                 } else {
-                    e1 = new AdaptorTestResultEntry(false, 0,
-                            new Exception("Client: outcome = outcome"));
+                    e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                            "Client: outcome = outcome"));
                 }
-            } catch(NotImplementedException e) {
+            } catch (NotImplementedException e) {
                 logger.info("waitFor gave NotImplemented", e);
             } catch (Throwable e) {
                 e1 = new AdaptorTestResultEntry(false, 0, e);
@@ -369,11 +375,11 @@ public class StreamAdaptorTest {
         }
 
         long stop = System.currentTimeMillis();
-        
+
         e1 = close(stream, e1);
         e1 = checkServer(server, sThread, e1);
 
-        if (e1  != null) {
+        if (e1 != null) {
             return e1;
         }
         return new AdaptorTestResultEntry(true, (stop - start), null);
@@ -388,11 +394,11 @@ public class StreamAdaptorTest {
         Stream stream;
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
-        
+
         ServerThread server = new ServerThreadReading(serverUrl);
         Thread sThread = new Thread(server);
         sThread.start();
@@ -400,7 +406,7 @@ public class StreamAdaptorTest {
 
         try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
@@ -408,8 +414,8 @@ public class StreamAdaptorTest {
             try {
                 stream.connect();
             } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0,
-                        new Exception("Could not connect", e));
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Could not connect", e));
             } finally {
                 server.stopServer();
             }
@@ -426,8 +432,8 @@ public class StreamAdaptorTest {
                 stream.write(buffer);
                 stream.write(buffer);
             } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0,
-                        new Exception("Write failed", e));
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Write failed", e));
             }
         }
 
@@ -446,8 +452,8 @@ public class StreamAdaptorTest {
     public AdaptorTestResultEntry testClose2() {
         long start = System.currentTimeMillis();
         try {
-            StreamService service = StreamFactory.createStreamService(
-                    serverUrl);
+            StreamService service = StreamFactory
+                    .createStreamService(serverUrl);
             service.close();
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
@@ -489,12 +495,12 @@ public class StreamAdaptorTest {
     public AdaptorTestResultEntry testGetContext1() {
 
         Stream stream;
-        
+
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
 
         long start = System.currentTimeMillis();
@@ -502,14 +508,15 @@ public class StreamAdaptorTest {
         // the stream should be or have been in Open state before
         try {
             stream.getContext();
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("getContext() should have thrown IncorrectState exception"));
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "getContext() should have thrown IncorrectState exception"));
         } catch (IncorrectStateException e) {
             // OK
             logger.debug("OK: Should have thrown IncorrectState exception");
         } catch (Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("getContext() should have thrown IncorrectState exception, not " + e, e));
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "getContext() should have thrown IncorrectState exception, not "
+                            + e, e));
         }
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
@@ -522,22 +529,23 @@ public class StreamAdaptorTest {
 
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
 
         long start = System.currentTimeMillis();
         try {
-            stream.getContext();    // should not give context because the
-                                    // stream wasn't opened
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Should have thrown IncorrectState exception"));
+            stream.getContext(); // should not give context because the
+            // stream wasn't opened
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Should have thrown IncorrectState exception"));
         } catch (IncorrectStateException e) {
             logger.debug("OK: Should have thrown IncorrectState exception");
         } catch (Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Should have thrown IncorrectState exception and not " + e, e));
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Should have thrown IncorrectState exception and not " + e,
+                    e));
         }
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
@@ -552,11 +560,10 @@ public class StreamAdaptorTest {
 
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
-
 
         ServerThread server = new ServerThreadOneRead(serverUrl);
         Thread sThread = new Thread(server);
@@ -566,15 +573,15 @@ public class StreamAdaptorTest {
 
         try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
         try {
             stream.connect(); // should be successful
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not connect", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
         } finally {
             server.stopServer();
         }
@@ -582,26 +589,33 @@ public class StreamAdaptorTest {
         AdaptorTestResultEntry e1 = null;
 
         long start = System.currentTimeMillis();
-        
+
         try {
             buffer = BufferFactory.createBuffer();
             buffer.setData("Hello World".getBytes());
 
             stream.write(buffer);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             e1 = new AdaptorTestResultEntry(false, 0, e);
         }
-        
-        e1 = checkServer(server, sThread, e1);       
-      
+
+        e1 = checkServer(server, sThread, e1);
+
         if (e1 == null) {
             try {
                 stream.write(buffer);
-                e1 = new AdaptorTestResultEntry(false, 0, new Exception("Should have thrown IncorrectState -- the server is down"));
+                e1 = new AdaptorTestResultEntry(
+                        false,
+                        0,
+                        new Exception(
+                                "Should have thrown IncorrectState -- the server is down"));
             } catch (IncorrectStateException e) {
-                logger.debug("OK: Should have thrown IncorrectState -- the server is down");
+                logger
+                        .debug("OK: Should have thrown IncorrectState -- the server is down");
             } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0, new Exception("Should have thrown IncorrectState -- the server is down -- and not " + e, e));
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Should have thrown IncorrectState -- the server is down -- and not "
+                                + e, e));
             }
         }
 
@@ -632,27 +646,26 @@ public class StreamAdaptorTest {
         logger.debug("testConnect3 ...");
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
-        
 
         ServerThread server = new ServerThreadWait(serverUrl);
         Thread sThread = new Thread(server);
         sThread.start();
 
-        try {           
+        try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
         try {
             stream.connect(); // should be successful
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not connect", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
         } finally {
             server.stopServer();
         }
@@ -662,16 +675,18 @@ public class StreamAdaptorTest {
 
         try {
             stream.connect();
-            e1 = new AdaptorTestResultEntry(false, 0, new Exception("2nd connect should throw IncorrectState"));
+            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "2nd connect should throw IncorrectState"));
         } catch (IncorrectStateException e) {
             logger.debug("OK: Should detect incorrect state");
         } catch (Throwable e) {
-            e1 = new AdaptorTestResultEntry(false, 0, new Exception("2nd connect should throw IncorrectState and not " + e, e));
+            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "2nd connect should throw IncorrectState and not " + e, e));
         }
-        
+
         long stop = System.currentTimeMillis();
 
-        e1 = checkServer(server, sThread, e1);    
+        e1 = checkServer(server, sThread, e1);
         e1 = close(stream, e1);
         if (e1 != null) {
             return e1;
@@ -688,9 +703,9 @@ public class StreamAdaptorTest {
 
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
 
         long start = System.currentTimeMillis();
@@ -699,39 +714,40 @@ public class StreamAdaptorTest {
 
         try {
             stream.close();
-            e1 = new AdaptorTestResultEntry(false, 0,
-                    new Exception("close on unconnected stream should give IncorrectState"));
-        } catch(IncorrectStateException e) {
+            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "close on unconnected stream should give IncorrectState"));
+        } catch (IncorrectStateException e) {
             logger.debug("OK, close on NEW stream threw IncorrectState");
         } catch (Throwable e) {
-            e1 = new AdaptorTestResultEntry(false, 0,
-                    new Exception("close on unconnected stream should give IncorrectState"));
+            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "close on unconnected stream should give IncorrectState"));
         }
 
         if (e1 == null) {
             try {
                 stream = StreamFactory.createStream(serverUrl);
-            } catch(Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0,
-                        new Exception("Could not create stream", e));
+            } catch (Throwable e) {
+                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Could not create stream", e));
             }
         }
-        
+
         if (e1 == null) {
             try {
                 stream.connect(); // should fail
-                return new AdaptorTestResultEntry(false, 0,
-                        new Exception("connect should fail"));
+                return new AdaptorTestResultEntry(false, 0, new Exception(
+                        "connect should fail"));
             } catch (NoSuccessException e) {
-                logger.debug("OK: Connect not succeeded -- should switch to Error state");
+                logger
+                        .debug("OK: Connect not succeeded -- should switch to Error state");
             } catch (Throwable e) {
-                return new AdaptorTestResultEntry(false, 0,
-                        new Exception("connect should fail with NoSuccess, not " + e, e));
+                return new AdaptorTestResultEntry(false, 0, new Exception(
+                        "connect should fail with NoSuccess, not " + e, e));
             }
         }
-        
+
         long stop = System.currentTimeMillis();
-        
+
         e1 = close(stream, e1);
         if (e1 != null) {
             return e1;
@@ -742,31 +758,31 @@ public class StreamAdaptorTest {
     // read with negative length
 
     public AdaptorTestResultEntry testRead2() {
-        
+
         Stream stream;
 
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
 
         ServerThread server = new ServerThreadWriting(serverUrl);
         Thread sThread = new Thread(server);
         sThread.start();
-        
-        try {           
+
+        try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
         try {
             stream.connect(); // should be successful
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not connect", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
         } finally {
             server.stopServer();
         }
@@ -779,7 +795,8 @@ public class StreamAdaptorTest {
 
             stream.read(b, -223);
 
-            e1 = new AdaptorTestResultEntry(false, 0, new Exception("Should throw BadParameter"));
+            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Should throw BadParameter"));
 
         } catch (BadParameterException e) {
             logger.debug("OK: BadParameter thrown");
@@ -802,36 +819,36 @@ public class StreamAdaptorTest {
     public AdaptorTestResultEntry testRead3() {
 
         Stream stream;
-        
+
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
-        
+
         ServerThread server = new ServerThreadWriting(serverUrl);
         Thread sThread = new Thread(server);
         sThread.start();
 
-        try {           
+        try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
         try {
             stream.connect(); // should be successful
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not connect", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
         } finally {
             server.stopServer();
         }
 
         AdaptorTestResultEntry e1 = null;
         long start = System.currentTimeMillis();
-        
+
         try {
             Buffer b = BufferFactory.createBuffer();
 
@@ -863,39 +880,40 @@ public class StreamAdaptorTest {
         Stream stream;
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
-        
+
         ServerThread server = new ServerThreadOneRead(serverUrl);
         Thread sThread = new Thread(server);
         sThread.start();
 
-        try {           
+        try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
         try {
             stream.connect(); // should be successful
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not connect", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
         } finally {
             server.stopServer();
         }
 
         AdaptorTestResultEntry e1 = null;
         long start = System.currentTimeMillis();
-        
+
         try {
             Buffer buffer = BufferFactory.createBuffer();
             buffer.setData("Hello world".getBytes());
 
             stream.write(buffer, -323);
-            logger.debug("OK: Implementation figured out how to handle negative value of length");
+            logger
+                    .debug("OK: Implementation figured out how to handle negative value of length");
         } catch (Throwable e) {
             e1 = new AdaptorTestResultEntry(false, 0, e);
         }
@@ -916,26 +934,26 @@ public class StreamAdaptorTest {
         Stream stream;
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
-        
+
         ServerThread server = new ServerThreadOneRead(serverUrl);
         Thread sThread = new Thread(server);
         sThread.start();
 
-        try {           
+        try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
         try {
             stream.connect(); // should be successful
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not connect", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
         } finally {
             server.stopServer();
         }
@@ -971,33 +989,33 @@ public class StreamAdaptorTest {
     public AdaptorTestResultEntry testWrite4() {
 
         Stream stream;
-        
+
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
 
         ServerThread server = new ServerThreadOneRead(serverUrl);
         Thread sThread = new Thread(server);
         sThread.start();
 
-        try {           
+        try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
         try {
             stream.connect(); // should be successful
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not connect", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
         } finally {
             server.stopServer();
         }
-        
+
         long start = System.currentTimeMillis();
 
         AdaptorTestResultEntry e1 = null;
@@ -1006,7 +1024,8 @@ public class StreamAdaptorTest {
             Buffer buffer = BufferFactory.createBuffer(1000);
 
             stream.write(buffer, -323);
-            logger.debug("OK: Implementation figured out how to handle negative value of length");
+            logger
+                    .debug("OK: Implementation figured out how to handle negative value of length");
         } catch (Throwable e) {
             e1 = new AdaptorTestResultEntry(false, 0, e);
         }
@@ -1027,35 +1046,36 @@ public class StreamAdaptorTest {
         Stream stream;
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
 
         ServerThread server = new ServerThreadWriting(serverUrl);
         Thread sThread = new Thread(server);
         sThread.start();
 
-        try {           
+        try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
         try {
             stream.connect(); // should be successful
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not connect", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
         } finally {
             server.stopServer();
         }
-        
+
         long start = System.currentTimeMillis();
         AdaptorTestResultEntry e1 = null;
         try {
             int val = stream.waitFor(0, 5.0f);
-            logger.debug("OK: Survived with 'incorrect' input. Result = "
+            logger
+                    .debug("OK: Survived with 'incorrect' input. Result = "
                             + val);
 
         } catch (Throwable e) {
@@ -1080,22 +1100,22 @@ public class StreamAdaptorTest {
 
         try {
             stream = StreamFactory.createStream(serverUrl);
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not create stream", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not create stream", e));
         }
 
-        try {           
+        try {
             Thread.sleep(SERVER_WAIT);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             // ignored
         }
 
         try {
             stream.connect(); // should be successful
-        } catch(Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Could not connect", e));
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
         } finally {
             server.stopServer();
         }
@@ -1106,13 +1126,13 @@ public class StreamAdaptorTest {
         if (e != null) {
             return e;
         }
-        
+
         long start = System.currentTimeMillis();
 
         try {
             stream.waitFor(0, 5.0f);
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("waitFor should have thrown IncorrectState"));
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "waitFor should have thrown IncorrectState"));
         } catch (IncorrectStateException ex) {
             logger.debug("OK: Threw IncorrectState");
         } catch (Throwable ex) {
@@ -1131,4 +1151,3 @@ public class StreamAdaptorTest {
         }
     };
 }
-

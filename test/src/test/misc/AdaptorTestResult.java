@@ -33,8 +33,7 @@ public class AdaptorTestResult {
             Throwable t = entry.getThrowable();
             System.out.print(key);
             if (entry.getResult()) {
-                System.out.print("\t SUCCESS \t"
-                        + entry.getTime() + " msec");
+                System.out.print("\t SUCCESS \t" + entry.getTime() + " msec");
                 if (t != null) {
                     System.out.println("\t" + t);
                 } else {

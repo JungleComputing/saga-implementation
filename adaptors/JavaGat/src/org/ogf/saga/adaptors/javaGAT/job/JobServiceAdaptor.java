@@ -31,22 +31,22 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
     static {
         Initialize.initialize();
     }
-    
-    final ResourceBroker broker; 
+
+    final ResourceBroker broker;
     private final GATContext gatContext;
     private HashMap<String, SagaJob> jobs = new HashMap<String, SagaJob>();
 
     static final String JAVAGAT = "JavaGAT";
 
-    public JobServiceAdaptor(JobServiceWrapper wrapper, SessionImpl sessionImpl, URL rm) 
-            throws NoSuccessException {
+    public JobServiceAdaptor(JobServiceWrapper wrapper,
+            SessionImpl sessionImpl, URL rm) throws NoSuccessException {
         super(wrapper, sessionImpl, rm);
-              
+
         org.ogf.saga.adaptors.javaGAT.session.Session s;
-              
-        synchronized(sessionImpl) {           
-            s = (org.ogf.saga.adaptors.javaGAT.session.Session)
-                    sessionImpl.getAdaptorSession(JAVAGAT);
+
+        synchronized (sessionImpl) {
+            s = (org.ogf.saga.adaptors.javaGAT.session.Session) sessionImpl
+                    .getAdaptorSession(JAVAGAT);
             if (s == null) {
                 s = new org.ogf.saga.adaptors.javaGAT.session.Session();
                 sessionImpl.putAdaptorSession(JAVAGAT, s);
@@ -54,36 +54,43 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         }
         gatContext = s.getGATContext();
         Preferences prefs = gatContext.getPreferences();
-        
+
         String r = rm.toString();
         try {
             URI gatURI = new URI(r);
-            if (! "".equals(r)) {
-                prefs.put("ResourceBroker.jobmanagerContact", gatURI.toString());
+            if (!"".equals(r)) {
+                prefs
+                        .put("ResourceBroker.jobmanagerContact", gatURI
+                                .toString());
             }
-            
+
             broker = GAT.createResourceBroker(gatContext, prefs, gatURI);
         } catch (Throwable e) {
-            throw new NoSuccessException("Could not create GAT resource broker", e);
+            throw new NoSuccessException(
+                    "Could not create GAT resource broker", e);
         }
     }
-    
+
     public Job createJob(JobDescription jd) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, TimeoutException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, TimeoutException,
+            NoSuccessException {
         SagaJob job = new SagaJob(this,
-                (org.ogf.saga.impl.job.JobDescriptionImpl) jd, sessionImpl, gatContext);
+                (org.ogf.saga.impl.job.JobDescriptionImpl) jd, sessionImpl,
+                gatContext);
         return job;
     }
-    
+
     synchronized void addJob(SagaJob job, String id) {
         jobs.put(id, job);
     }
 
-    public synchronized Job getJob(String jobId) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
-        if (! jobId.startsWith("[" + JAVAGAT + "]-")) {
+    public synchronized Job getJob(String jobId)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
+        if (!jobId.startsWith("[" + JAVAGAT + "]-")) {
             throw new BadParameterException("Unrecognized job id " + jobId);
         }
         Job job = jobs.get(jobId);
@@ -93,14 +100,16 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         return job;
     }
 
-    public JobSelf getSelf() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public JobSelf getSelf() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         // TODO Implement this!
         throw new NotImplementedException("getSelf");
     }
 
-    public List<String> list() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
+    public List<String> list() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, TimeoutException, NoSuccessException {
         return new ArrayList<String>(jobs.keySet());
     }
 }

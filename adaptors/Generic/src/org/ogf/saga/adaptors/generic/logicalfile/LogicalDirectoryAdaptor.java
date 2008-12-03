@@ -57,9 +57,8 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
         entry.copy(target, flags);
     }
 
-    public void move(URL target, int flags)
-            throws IncorrectStateException, NoSuccessException,
-            BadParameterException, AlreadyExistsException,
+    public void move(URL target, int flags) throws IncorrectStateException,
+            NoSuccessException, BadParameterException, AlreadyExistsException,
             NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, IncorrectURLException, DoesNotExistException {
@@ -159,7 +158,8 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
+            BadParameterException, TimeoutException, NoSuccessException,
+            IncorrectURLException {
         entry.permissionsAllow(target, id, permissions, flags);
     }
 
@@ -296,7 +296,8 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
-            BadParameterException, TimeoutException, NoSuccessException, IncorrectURLException {
+            BadParameterException, TimeoutException, NoSuccessException,
+            IncorrectURLException {
         entry.permissionsAllow(target, id, permissions, flags);
     }
 

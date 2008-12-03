@@ -33,17 +33,19 @@ public class NSEntryAdaptorTest {
         try {
             Session session = SessionFactory.createSession(true);
             jobSession = SessionFactory.createSession(false);
-            
+
             Context ftpContext = ContextFactory.createContext("ftp");
             session.addContext(ftpContext);
-            Context preferences  = ContextFactory.createContext("preferences");
-            preferences.setAttribute("resourcebroker.adaptor.name", "sshtrilead,commandlinessh,local");
-            preferences.setAttribute("file.adaptor.name", "sshtrilead,commandlinessh,local");
+            Context preferences = ContextFactory.createContext("preferences");
+            preferences.setAttribute("resourcebroker.adaptor.name",
+                    "sshtrilead,commandlinessh,local");
+            preferences.setAttribute("file.adaptor.name",
+                    "sshtrilead,commandlinessh,local");
             jobSession.addContext(preferences);
         } catch (Throwable e) {
             throw new Error("Got exception while creating session: ", e);
         }
-        
+
         run(host, jobSession, "nsentry-adaptor-test-init.sh");
         run("localhost", jobSession, "nsentry-adaptor-test-init.sh");
 
@@ -52,34 +54,38 @@ public class NSEntryAdaptorTest {
 
         adaptorTestResult.put("exists: absolute existing file     ", existTest(
                 "any://" + host + "/tmp/Saga-test-exists-file", true));
-        adaptorTestResult.put("exists: absolute existing dir      ", existDirTest(
-                "any://" + host + "/tmp/Saga-test-exists-dir", true));
+        adaptorTestResult.put("exists: absolute existing dir      ",
+                existDirTest("any://" + host + "/tmp/Saga-test-exists-dir",
+                        true));
         adaptorTestResult.put("exists: absolute non-existing file ", existTest(
                 "any://" + host + "/tmp/Saga-test-exists-fake", false));
 
         adaptorTestResult.put("exists: relative existing file     ", existTest(
                 "/tmp/Saga-test-exists-file", true));
-        adaptorTestResult.put("exists: absolute existing dir      ", existDirTest(
-                "/tmp/Saga-test-exists-dir", true));
+        adaptorTestResult.put("exists: absolute existing dir      ",
+                existDirTest("/tmp/Saga-test-exists-dir", true));
         adaptorTestResult.put("exists: absolute non-existing file ", existTest(
                 "/tmp/Saga-test-exists-fake", false));
 
         adaptorTestResult.put("copy: absolute existing file       ", copyTest(
-                "any://" + host + "/tmp/Saga-test-exists-file",
-                "any://" + host + "/tmp/Saga-test-exists-file.copy"));
-        adaptorTestResult.put("copy: relative existing file       ", copyTest(
-                "/tmp/Saga-test-exists-file", "/tmp/Saga-test-exists-file.copy"));
+                "any://" + host + "/tmp/Saga-test-exists-file", "any://" + host
+                        + "/tmp/Saga-test-exists-file.copy"));
+        adaptorTestResult.put("copy: relative existing file       ",
+                copyTest("/tmp/Saga-test-exists-file",
+                        "/tmp/Saga-test-exists-file.copy"));
 
-        adaptorTestResult.put("remove: absolute existing file     ", removeTest(
-                "any://" + host + "/tmp/Saga-test-exists-file.copy"));
-        adaptorTestResult.put("remove: relative existing file     ", removeTest(
-                "/tmp/Saga-test-exists-file.copy"));
+        adaptorTestResult
+                .put("remove: absolute existing file     ", removeTest("any://"
+                        + host + "/tmp/Saga-test-exists-file.copy"));
+        adaptorTestResult.put("remove: relative existing file     ",
+                removeTest("/tmp/Saga-test-exists-file.copy"));
 
         adaptorTestResult.put("move: absolute existing file       ", moveTest(
-                "any://" + host + "/tmp/Saga-test-exists-file",
-                "any://" + host + "/tmp/Saga-test-exists-file.copy"));
-        adaptorTestResult.put("move: relative existing file       ", moveTest(
-                "/tmp/Saga-test-exists-file", "/tmp/Saga-test-exists-file.copy"));
+                "any://" + host + "/tmp/Saga-test-exists-file", "any://" + host
+                        + "/tmp/Saga-test-exists-file.copy"));
+        adaptorTestResult.put("move: relative existing file       ",
+                moveTest("/tmp/Saga-test-exists-file",
+                        "/tmp/Saga-test-exists-file.copy"));
 
         run(host, jobSession, "nsentry-adaptor-test-clean.sh");
         run("localhost", jobSession, "nsentry-adaptor-test-clean.sh");
@@ -95,10 +101,11 @@ public class NSEntryAdaptorTest {
             jd = JobFactory.createJobDescription();
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/sh");
             jd.setVectorAttribute(JobDescription.ARGUMENTS,
-                     new String[] {script});
+                    new String[] { script });
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
                     new String[] { script + " > " + script });
-            jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS, new String[] {host});
+            jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
+                    new String[] { host });
             URL url = URLFactory.createURL("any://" + host);
             js = JobFactory.createJobService(jobSession, url);
             Job job = js.createJob(jd);
@@ -108,13 +115,13 @@ public class NSEntryAdaptorTest {
             throw new Error("Got exception in run(): ", e);
         }
     }
-    
+
     private void doClose(NSEntry e) {
         try {
             if (e != null) {
                 e.close();
             }
-        } catch(Throwable ex) {
+        } catch (Throwable ex) {
             // ignored
         }
     }
@@ -125,16 +132,16 @@ public class NSEntryAdaptorTest {
         URL url;
         try {
             url = URLFactory.createURL(u);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
         }
-        
+
         NSEntry entry = null;
         try {
             entry = NSFactory.createNSEntry(url);
-            if (! correctValue) {
-                return new AdaptorTestResultEntry(false, 0, 
-                        new Exception("Should throw DoesNotExist"));
+            if (!correctValue) {
+                return new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Should throw DoesNotExist"));
             }
         } catch (DoesNotExistException e) {
             if (correctValue) {
@@ -148,7 +155,6 @@ public class NSEntryAdaptorTest {
         long stop = System.currentTimeMillis();
         return new AdaptorTestResultEntry(true, (stop - start), null);
     }
-    
 
     private AdaptorTestResultEntry existDirTest(String u, boolean correctValue) {
         long start = System.currentTimeMillis();
@@ -156,15 +162,15 @@ public class NSEntryAdaptorTest {
         URL url;
         try {
             url = URLFactory.createURL(u);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
         }
         NSEntry entry = null;
         try {
             entry = NSFactory.createNSDirectory(url);
-            if (! correctValue) {
-                return new AdaptorTestResultEntry(false, 0, 
-                        new Exception("Should throw DoesNotExist"));
+            if (!correctValue) {
+                return new AdaptorTestResultEntry(false, 0, new Exception(
+                        "Should throw DoesNotExist"));
             }
         } catch (DoesNotExistException e) {
             if (correctValue) {
@@ -185,7 +191,7 @@ public class NSEntryAdaptorTest {
         URL url;
         try {
             url = URLFactory.createURL(u);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
         }
         try {
@@ -208,7 +214,7 @@ public class NSEntryAdaptorTest {
         try {
             url1 = URLFactory.createURL(u1);
             url2 = URLFactory.createURL(u2);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
         }
 
@@ -224,8 +230,8 @@ public class NSEntryAdaptorTest {
         try {
             entry = NSFactory.createNSEntry(url2);
         } catch (Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Copy does not seem to exist?", e));
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Copy does not seem to exist?", e));
         } finally {
             doClose(entry);
         }
@@ -240,7 +246,7 @@ public class NSEntryAdaptorTest {
         try {
             url1 = URLFactory.createURL(u1);
             url2 = URLFactory.createURL(u2);
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
         }
 
@@ -256,21 +262,21 @@ public class NSEntryAdaptorTest {
         try {
             entry = NSFactory.createNSEntry(url2);
         } catch (Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Destination does not seem to exist?", e));
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Destination does not seem to exist?", e));
         } finally {
             doClose(entry);
         }
         entry = null;
         try {
             entry = NSFactory.createNSEntry(url1);
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("Source still seems to exist after move"));
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Source still seems to exist after move"));
         } catch (DoesNotExistException e) {
             // OK
         } catch (Throwable e) {
-            return new AdaptorTestResultEntry(false, 0,
-                    new Exception("wrong exception", e));
+            return new AdaptorTestResultEntry(false, 0, new Exception(
+                    "wrong exception", e));
         } finally {
             doClose(entry);
         }

@@ -63,9 +63,9 @@ public class Falls {
      * Creates the FALLS pattern information from the specified string.
      * 
      * @param s
-     *                the FALLS pattern as a string.
+     *            the FALLS pattern as a string.
      * @exception BadParameterException
-     *                    when the string is not recognized as a FALLS pattern.
+     *                when the string is not recognized as a FALLS pattern.
      */
     public Falls(String s) throws BadParameterException {
         tokenizer = new Tokenizer(s);

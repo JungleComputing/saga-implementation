@@ -30,12 +30,13 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
     protected int directoryFlags;
     protected DirectoryWrapper directoryWrapper;
 
-    public DirectoryAdaptorBase(DirectoryWrapper wrapper, SessionImpl sessionImpl,
-            URL name, int flags) throws NotImplementedException,
-            IncorrectURLException, BadParameterException,
-            DoesNotExistException, PermissionDeniedException,
-            AuthorizationFailedException, AuthenticationFailedException,
-            TimeoutException, NoSuccessException, AlreadyExistsException {
+    public DirectoryAdaptorBase(DirectoryWrapper wrapper,
+            SessionImpl sessionImpl, URL name, int flags)
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags
                 & Flags.ALLNAMESPACEFLAGS.getValue());
         this.directoryWrapper = wrapper;
@@ -54,15 +55,16 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
 
     public Task<Directory, Long> getSize(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Directory, Long>(directoryWrapper,
-                sessionImpl, mode, "getSize",
-                new Class[] { URL.class, Integer.TYPE }, name, flags);
+        return new org.ogf.saga.impl.task.TaskImpl<Directory, Long>(
+                directoryWrapper, sessionImpl, mode, "getSize", new Class[] {
+                        URL.class, Integer.TYPE }, name, flags);
     }
 
     public Task<Directory, Boolean> isFile(TaskMode mode, URL arg1)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Directory, Boolean>(directoryWrapper,
-                sessionImpl, mode, "isFile", new Class[] { URL.class }, arg1);
+        return new org.ogf.saga.impl.task.TaskImpl<Directory, Boolean>(
+                directoryWrapper, sessionImpl, mode, "isFile",
+                new Class[] { URL.class }, arg1);
     }
 
     public Directory openDirectory(URL name, int flags)
@@ -77,9 +79,9 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
 
     public Task<Directory, Directory> openDirectory(TaskMode mode, URL name,
             int flags) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Directory, Directory>(directoryWrapper,
-                sessionImpl, mode, "openDirectory", new Class[] { URL.class,
-                        Integer.TYPE }, name, flags);
+        return new org.ogf.saga.impl.task.TaskImpl<Directory, Directory>(
+                directoryWrapper, sessionImpl, mode, "openDirectory",
+                new Class[] { URL.class, Integer.TYPE }, name, flags);
     }
 
     public File openFile(URL name, int flags) throws NotImplementedException,
@@ -94,9 +96,9 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
 
     public Task<Directory, File> openFile(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<Directory, File>(directoryWrapper,
-                sessionImpl, mode, "openFile", new Class[] { URL.class,
-                        Integer.TYPE }, name, flags);
+        return new org.ogf.saga.impl.task.TaskImpl<Directory, File>(
+                directoryWrapper, sessionImpl, mode, "openFile", new Class[] {
+                        URL.class, Integer.TYPE }, name, flags);
     }
 
     public FileInputStream openFileInputStream(URL name)
@@ -130,8 +132,8 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
             TaskMode mode, URL name, boolean append)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<Directory, FileOutputStream>(
-                directoryWrapper, sessionImpl, mode, "openFileOutputStream", new Class[] {
-                        URL.class, Boolean.TYPE }, name, append);
+                directoryWrapper, sessionImpl, mode, "openFileOutputStream",
+                new Class[] { URL.class, Boolean.TYPE }, name, append);
     }
 
 }

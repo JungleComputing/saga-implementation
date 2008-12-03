@@ -6,12 +6,13 @@ import org.ogf.saga.impl.monitoring.MetricImpl;
 import org.ogf.saga.stream.StreamState;
 
 class StreamStateUtils {
-    
-    static boolean equalsStreamState(MetricImpl streamState, StreamState state) throws NoSuccessException {
+
+    static boolean equalsStreamState(MetricImpl streamState, StreamState state)
+            throws NoSuccessException {
         String val;
         try {
             val = streamState.getAttribute(MetricImpl.VALUE);
-        } catch (Throwable  e) {
+        } catch (Throwable e) {
             throw new NoSuccessException("Internal error", e);
         }
         return state.toString().equals(val);
@@ -22,7 +23,7 @@ class StreamStateUtils {
         String val;
         try {
             val = streamState.getAttribute(MetricImpl.VALUE);
-        } catch (Throwable  e) {
+        } catch (Throwable e) {
             throw new NoSuccessException("Internal error", e);
         }
         if (!state.toString().equals(val)) {
@@ -39,15 +40,15 @@ class StreamStateUtils {
             throw new NoSuccessException("Internal error", e);
         }
     }
-    
+
     static boolean isFinalState(MetricImpl streamState)
             throws NoSuccessException {
         try {
             String val = streamState.getAttribute(MetricImpl.VALUE);
             return (val.equals(StreamState.DROPPED.toString())
-                    || val.equals(StreamState.CLOSED.toString())
-                    || val.equals(StreamState.ERROR.toString()));
-        } catch(Throwable e) {
+                    || val.equals(StreamState.CLOSED.toString()) || val
+                    .equals(StreamState.ERROR.toString()));
+        } catch (Throwable e) {
             throw new NoSuccessException("Internal error", e);
         }
     }

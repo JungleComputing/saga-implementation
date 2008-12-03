@@ -31,8 +31,9 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
 
     String url;
 
-    public JobServiceAdaptor(JobServiceWrapper wrapper, SessionImpl sessionImpl, URL rm)
-            throws NoSuccessException, NotImplementedException, IncorrectURLException {
+    public JobServiceAdaptor(JobServiceWrapper wrapper,
+            SessionImpl sessionImpl, URL rm) throws NoSuccessException,
+            NotImplementedException, IncorrectURLException {
         super(wrapper, sessionImpl, rm);
         String scheme = rm.getScheme();
 
@@ -47,15 +48,16 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         if ("http".equals(scheme) || "https".equals(scheme)) {
             // this is OK.
         } else {
-            throw new IncorrectURLException(
-                    "Wrong scheme for gridsam adaptor", wrapper);
+            throw new IncorrectURLException("Wrong scheme for gridsam adaptor",
+                    wrapper);
         }
         url = rm.toString();
         try {
             jobManager = new ClientSideJobManager(new String[] { "-s", url },
                     ClientSideJobManager.getStandardOptions());
         } catch (ConfigurationException e) {
-            throw new NoSuccessException("Could not create job service", e, wrapper);
+            throw new NoSuccessException("Could not create job service", e,
+                    wrapper);
         }
     }
 
@@ -79,7 +81,8 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             NoSuccessException {
         Job job = jobs.get(jobId);
         if (job == null) {
-            throw new DoesNotExistException("Job " + jobId + " does not exist", wrapper);
+            throw new DoesNotExistException("Job " + jobId + " does not exist",
+                    wrapper);
         }
         return job;
     }

@@ -7,22 +7,23 @@ import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.session.Session;
 
 public class SagaObjectBase implements SagaObject {
-    
+
     protected org.ogf.saga.impl.session.SessionImpl sessionImpl;
     private UUID uuid = UUID.randomUUID();
 
     public SagaObjectBase() {
         this((Session) null);
     }
-    
+
     public SagaObjectBase(Session session) {
         if (session != null
-                && ! (session instanceof org.ogf.saga.impl.session.SessionImpl)) {
-            throw new SagaRuntimeException("Wrong session type: " + session.getClass().getName());
+                && !(session instanceof org.ogf.saga.impl.session.SessionImpl)) {
+            throw new SagaRuntimeException("Wrong session type: "
+                    + session.getClass().getName());
         }
         this.sessionImpl = (org.ogf.saga.impl.session.SessionImpl) session;
     }
-    
+
     protected SagaObjectBase(SagaObjectBase cp) {
         sessionImpl = cp.sessionImpl;
         uuid = UUID.randomUUID();
@@ -38,7 +39,7 @@ public class SagaObjectBase implements SagaObject {
         }
         return sessionImpl;
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
         SagaObjectBase clone = (SagaObjectBase) super.clone();
         // Should we generate a new uuid here ??? I think yes.

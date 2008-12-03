@@ -76,10 +76,12 @@ class ContextAttributes extends AttributesImpl {
             IncorrectStateException, BadParameterException {
         super.setValueIfEmpty(userid, string);
     }
-    
+
     // Makes addAttribute available for this package.
-    protected void addAttribute(String name, AttributeType type, boolean vector,
-            boolean readOnly, boolean notImplemented, boolean removeable) {
-        super.addAttribute(name, type, vector, readOnly, notImplemented, removeable);
+    protected void addAttribute(String name, AttributeType type,
+            boolean vector, boolean readOnly, boolean notImplemented,
+            boolean removeable) {
+        super.addAttribute(name, type, vector, readOnly, notImplemented,
+                removeable);
     }
 }

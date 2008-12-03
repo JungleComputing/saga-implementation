@@ -26,10 +26,12 @@ public class FileOutputStreamAdaptorTest {
         FileOutputStream out = null;
         URL url;
         try {
-            url = URLFactory.createURL("any://" + host + "/tmp/JavaGAT-test-fileoutputstream");
+            url = URLFactory.createURL("any://" + host
+                    + "/tmp/JavaGAT-test-fileoutputstream");
             out = FileFactory.createFileOutputStream(url);
         } catch (Throwable e) {
-            adaptorTestResult.put("create", new AdaptorTestResultEntry(false, 0, e));
+            adaptorTestResult.put("create", new AdaptorTestResultEntry(false,
+                    0, e));
             return adaptorTestResult;
         }
         byte[] large = new byte[10 * 1024 * 1024];

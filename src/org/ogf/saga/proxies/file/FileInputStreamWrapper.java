@@ -41,11 +41,11 @@ public class FileInputStreamWrapper extends FileInputStream {
             NoSuccessException {
         Object[] parameters = { this, session, name };
         try {
-            proxy = (FileInputStreamSPI) SAGAEngine
-                    .createAdaptorProxy(FileInputStreamSPI.class,
-                            new Class[] { FileInputStreamWrapper.class,
-                                    org.ogf.saga.impl.session.SessionImpl.class,
-                                    URL.class }, parameters);
+            proxy = (FileInputStreamSPI) SAGAEngine.createAdaptorProxy(
+                    FileInputStreamSPI.class, new Class[] {
+                            FileInputStreamWrapper.class,
+                            org.ogf.saga.impl.session.SessionImpl.class,
+                            URL.class }, parameters);
             sagaObject = new InputSagaObject(session);
         } catch (org.ogf.saga.error.SagaException e) {
             if (e instanceof NotImplementedException) {

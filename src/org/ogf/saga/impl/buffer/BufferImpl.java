@@ -7,18 +7,21 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 
-public class BufferImpl extends SagaObjectBase implements org.ogf.saga.buffer.Buffer, Cloneable {
+public class BufferImpl extends SagaObjectBase implements
+        org.ogf.saga.buffer.Buffer, Cloneable {
 
     protected byte[] buf;
     protected boolean implementationManaged;
     protected int size;
     protected boolean closed = false;
 
-    protected BufferImpl() throws NotImplementedException, BadParameterException {
+    protected BufferImpl() throws NotImplementedException,
+            BadParameterException {
         this(-1);
     }
 
-    protected BufferImpl(int size) throws NotImplementedException, BadParameterException {
+    protected BufferImpl(int size) throws NotImplementedException,
+            BadParameterException {
         super((Session) null);
         try {
             setSize(size);
@@ -27,15 +30,16 @@ public class BufferImpl extends SagaObjectBase implements org.ogf.saga.buffer.Bu
         }
     }
 
-    protected BufferImpl(byte[] buf) throws BadParameterException, NotImplementedException {
+    protected BufferImpl(byte[] buf) throws BadParameterException,
+            NotImplementedException {
         super((Session) null);
         try {
             setData(buf);
-        } catch(IncorrectStateException e) {
+        } catch (IncorrectStateException e) {
             // Cannot happen.
         }
     }
-    
+
     protected BufferImpl(BufferImpl orig) {
         super(orig);
         implementationManaged = orig.implementationManaged;
@@ -45,7 +49,7 @@ public class BufferImpl extends SagaObjectBase implements org.ogf.saga.buffer.Bu
             buf = orig.buf.clone();
         } else {
             buf = null;
-        }       
+        }
     }
 
     public void close() throws NotImplementedException {
@@ -57,44 +61,49 @@ public class BufferImpl extends SagaObjectBase implements org.ogf.saga.buffer.Bu
         close();
     }
 
-    public byte[] getData() throws NotImplementedException, DoesNotExistException, IncorrectStateException {
+    public byte[] getData() throws NotImplementedException,
+            DoesNotExistException, IncorrectStateException {
         if (closed) {
             throw new IncorrectStateException("Buffer is closed");
         }
         if (buf == null) {
-            throw new DoesNotExistException("Implementation-managed buffer not allocated yet");
+            throw new DoesNotExistException(
+                    "Implementation-managed buffer not allocated yet");
         }
-        return buf;             // findbugs complains about this ...
+        return buf; // findbugs complains about this ...
     }
-    
+
     public byte[] getBuf() {
-        return buf;             // findbugs complains about this ...
+        return buf; // findbugs complains about this ...
     }
-    
+
     public boolean isImplementationManaged() {
         return implementationManaged;
     }
 
-    public int getSize() throws NotImplementedException, IncorrectStateException {
+    public int getSize() throws NotImplementedException,
+            IncorrectStateException {
         if (closed) {
             throw new IncorrectStateException("Buffer is closed");
         }
         return size;
     }
 
-    public void setData(byte[] data) throws NotImplementedException, BadParameterException, IncorrectStateException {
+    public void setData(byte[] data) throws NotImplementedException,
+            BadParameterException, IncorrectStateException {
         if (closed) {
             throw new IncorrectStateException("Buffer is closed");
         }
         if (data == null) {
             throw new BadParameterException("null buffer specified");
         }
-        this.buf = data;        // findbugs complains about this ...
+        this.buf = data; // findbugs complains about this ...
         size = buf.length;
         implementationManaged = false;
     }
 
-    public void setSize(int size) throws NotImplementedException, BadParameterException, IncorrectStateException {
+    public void setSize(int size) throws NotImplementedException,
+            BadParameterException, IncorrectStateException {
         if (closed) {
             throw new IncorrectStateException("Buffer is closed");
         }
@@ -108,7 +117,8 @@ public class BufferImpl extends SagaObjectBase implements org.ogf.saga.buffer.Bu
         }
     }
 
-    public void setSize() throws NotImplementedException, BadParameterException, IncorrectStateException {
+    public void setSize() throws NotImplementedException,
+            BadParameterException, IncorrectStateException {
         setSize(-1);
     }
 
@@ -116,8 +126,7 @@ public class BufferImpl extends SagaObjectBase implements org.ogf.saga.buffer.Bu
         BufferImpl o = (BufferImpl) super.clone();
         if (buf != null) {
             o.buf = buf.clone();
-        }      
+        }
         return o;
     }
 }
-

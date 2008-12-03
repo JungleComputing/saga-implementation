@@ -38,15 +38,15 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
 
     private static float MINIMAL_TIMEOUT = 0.001f;
     private static int NUM_WAIT_TRIES = 10;
-    
+
     public ConnectedStreamImpl(Session session, URL url, Socket socket) {
         super(session, url);
         this.socket = socket;
         try {
             StreamStateUtils.setStreamState(streamState, StreamState.OPEN);
             onStateChange(StreamState.OPEN);
-            this.listeningReader = new StreamListener(socket, streamRead,
-                    1024, this);
+            this.listeningReader = new StreamListener(socket, streamRead, 1024,
+                    this);
             this.listeningReaderThread = new Thread(this.listeningReader,
                     "serverListener");
             this.listeningReaderThread.start();
@@ -58,7 +58,7 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
     public Object clone() throws CloneNotSupportedException {
         // TODO
         ConnectedStreamImpl clone = (ConnectedStreamImpl) super.clone();
-        synchronized(clone) {
+        synchronized (clone) {
             clone.streamListenerException = null;
         }
         return clone;
@@ -71,25 +71,27 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
             socket.close();
         } catch (IOException e) {
             throw new NoSuccessException("close", e);
-        }            
-        if (! StreamStateUtils.isFinalState(streamState)) {
+        }
+        if (!StreamStateUtils.isFinalState(streamState)) {
             StreamStateUtils.setStreamState(streamState, StreamState.CLOSED);
             onStateChange(StreamState.CLOSED);
         }
     }
 
-    public Context getContext() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public Context getContext() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return ContextFactory.createContext("Unknown");
     }
 
-    public URL getUrl() throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException,
-            NoSuccessException {
+    public URL getUrl() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return url;
     }
-    
+
     private void setSendBufferSize(String sz) throws IOException {
         if (sz == null || sz.equals("")) {
             return;
@@ -99,38 +101,44 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
             socket.setSendBufferSize(size);
         }
     }
-    
+
     private void setNoDelay(String v) throws IOException {
         if (v == null || v.equals("")) {
             return;
         }
         socket.setTcpNoDelay(v.equals(Attributes.TRUE));
     }
-    
-    public void setAttribute(String key, String value) throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
+
+    public void setAttribute(String key, String value)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, BadParameterException,
+            DoesNotExistException, TimeoutException, NoSuccessException {
         super.setAttribute(key, value);
         if (Stream.BUFSIZE.equals(key)) {
             try {
                 setSendBufferSize(value);
-            } catch(Throwable e) {
+            } catch (Throwable e) {
                 // ignored
             }
         }
         if (Stream.NODELAY.equals(key)) {
             try {
                 setNoDelay(value);
-            } catch(Throwable e) {
+            } catch (Throwable e) {
                 // ignored
             }
         }
     }
 
     public int read(Buffer buffer, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
 
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
-        
+
         if (len < 0)
             throw new BadParameterException("Length should be non-negative");
 
@@ -167,8 +175,9 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
     }
 
     public int waitFor(int what, float timeout) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, NoSuccessException {
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            NoSuccessException {
         int cause = 0;
         float actualTimeout = 0.0f;
         int waitTime = 0;
@@ -178,7 +187,7 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
         if ((what & Activity.WRITE.getValue()) != 0) {
             throw new NotImplementedException("wait(): writeable");
         }
-        
+
         if (timeout == 0.0f)
             once = true;
         else if (timeout < 0.0f) {
@@ -193,7 +202,7 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
         waitTime /= NUM_WAIT_TRIES;
 
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
-        
+
         try {
             do {
                 for (int i = 0; i < NUM_WAIT_TRIES; i++) {
@@ -232,15 +241,17 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
     }
 
     public int write(Buffer buffer, int len) throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
-        
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            SagaIOException {
+
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
-        
+
         byte[] data;
         try {
             data = buffer.getData();
-        } catch(DoesNotExistException e) {
+        } catch (DoesNotExistException e) {
             throw new BadParameterException("The buffer contains no data");
         }
         if (len > data.length) {
@@ -274,15 +285,23 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
             streamDropped.internalFire();
     }
 
-    public StreamInputStream getInputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+    public StreamInputStream getInputStream() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
-        return new org.ogf.saga.impl.stream.InputStream(sessionImpl, listeningReader.getInputStream());
+        return new org.ogf.saga.impl.stream.InputStream(sessionImpl,
+                listeningReader.getInputStream());
     }
 
-    public StreamOutputStream getOutputStream() throws NotImplementedException, AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, TimeoutException, NoSuccessException, SagaIOException {
+    public StreamOutputStream getOutputStream() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException, SagaIOException {
         StreamStateUtils.checkStreamState(streamState, StreamState.OPEN);
         try {
-            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl, socket.getOutputStream());
+            return new org.ogf.saga.impl.stream.OutputStream(sessionImpl,
+                    socket.getOutputStream());
         } catch (IOException e) {
             throw new SagaIOException(e);
         }

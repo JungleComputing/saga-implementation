@@ -11,15 +11,15 @@ import org.ogf.saga.error.SagaException;
  * This class defines an exception that can have multiple causes. The causes can
  * again be nested exceptions. This exception is used by the Saga engine. If a
  * file.copy method is invoked, for instance, the Saga engine will try all
- * loaded file adaptors until one succeeds. If none of the adaptors can copy
- * the file, a NestedException is used, containing the exceptions thrown by each
+ * loaded file adaptors until one succeeds. If none of the adaptors can copy the
+ * file, a NestedException is used, containing the exceptions thrown by each
  * separate adaptor. The methods getMessage and printStrackTrace will reflect
  * this hierarchy.
  */
 class NestedException extends Exception {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     ArrayList<SagaException> exceptions = new ArrayList<SagaException>();
     ArrayList<String> adaptors = new ArrayList<String>();
 
@@ -31,8 +31,8 @@ class NestedException extends Exception {
     }
 
     /**
-     * Constructs a NestedException which includes the information
-     * that the specified adaptor threw the specified exception.
+     * Constructs a NestedException which includes the information that the
+     * specified adaptor threw the specified exception.
      */
     public NestedException(String adaptor, SagaException t) {
         super();
@@ -44,9 +44,9 @@ class NestedException extends Exception {
      * adaptor
      * 
      * @param adaptor
-     *                the adaptor that caused the exception
+     *            the adaptor that caused the exception
      * @param t
-     *                the exception that is caused by the adaptor
+     *            the exception that is caused by the adaptor
      */
     public void add(String adaptor, SagaException t) {
         exceptions.add(t);
@@ -55,6 +55,7 @@ class NestedException extends Exception {
 
     /**
      * Gets the String representation of the NestedException.
+     * 
      * @return the String representation of the exception
      */
     public String toString() {
@@ -91,7 +92,7 @@ class NestedException extends Exception {
     public void printStackTrace(PrintStream s) {
         s.println(stackTrace());
     }
-    
+
     public void printStackTrace(PrintWriter s) {
         s.println(stackTrace());
     }

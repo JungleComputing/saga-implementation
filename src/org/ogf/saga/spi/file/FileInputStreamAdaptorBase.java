@@ -42,8 +42,9 @@ public abstract class FileInputStreamAdaptorBase extends
 
     public Task<FileInputStream, Long> skip(TaskMode mode, long n)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<FileInputStream, Long>(wrapper,
-                sessionImpl, mode, "skip", new Class[] { Long.TYPE }, n);
+        return new org.ogf.saga.impl.task.TaskImpl<FileInputStream, Long>(
+                wrapper, sessionImpl, mode, "skip", new Class[] { Long.TYPE },
+                n);
     }
 
     public Task<FileInputStream, Integer> available(TaskMode mode)
@@ -54,20 +55,21 @@ public abstract class FileInputStreamAdaptorBase extends
 
     public Task<FileInputStream, Void> close(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<FileInputStream, Void>(wrapper,
-                sessionImpl, mode, "close", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<FileInputStream, Void>(
+                wrapper, sessionImpl, mode, "close", new Class[] {});
     }
 
     public Task<FileInputStream, Void> mark(TaskMode mode, int readlimit)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<FileInputStream, Void>(wrapper,
-                sessionImpl, mode, "mark", new Class[] { Integer.TYPE }, readlimit);
+        return new org.ogf.saga.impl.task.TaskImpl<FileInputStream, Void>(
+                wrapper, sessionImpl, mode, "mark",
+                new Class[] { Integer.TYPE }, readlimit);
     }
 
     public Task<FileInputStream, Void> reset(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<FileInputStream, Void>(wrapper,
-                sessionImpl, mode, "reset", new Class[] {});
+        return new org.ogf.saga.impl.task.TaskImpl<FileInputStream, Void>(
+                wrapper, sessionImpl, mode, "reset", new Class[] {});
     }
 
     public Task<FileInputStream, Boolean> markSupported(TaskMode mode)

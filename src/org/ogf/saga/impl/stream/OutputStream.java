@@ -22,33 +22,38 @@ public class OutputStream extends org.ogf.saga.stream.StreamOutputStream {
     }
 
     public void write(byte[] b) throws IOException {
-        write(b, 0, b.length);        
+        write(b, 0, b.length);
     }
-    
-    public Task<org.ogf.saga.stream.StreamOutputStream, Void> write(TaskMode mode, int b) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.stream.StreamOutputStream, Void>(this, session, mode, "write",
-            new Class[] { Integer.TYPE }, b);
+
+    public Task<org.ogf.saga.stream.StreamOutputStream, Void> write(
+            TaskMode mode, int b) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.stream.StreamOutputStream, Void>(
+                this, session, mode, "write", new Class[] { Integer.TYPE }, b);
     }
-    
-    public Task<org.ogf.saga.stream.StreamOutputStream, Void> write(TaskMode mode, byte[] buf, int off, int len)
+
+    public Task<org.ogf.saga.stream.StreamOutputStream, Void> write(
+            TaskMode mode, byte[] buf, int off, int len)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.stream.StreamOutputStream, Void>(this, session, mode, "write",
-                new Class[] { byte[].class, Integer.TYPE, Integer.TYPE },
-                buf, off, len);
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.stream.StreamOutputStream, Void>(
+                this, session, mode, "write", new Class[] { byte[].class,
+                        Integer.TYPE, Integer.TYPE }, buf, off, len);
     }
-    
-    public Task<org.ogf.saga.stream.StreamOutputStream, Void> write(TaskMode mode, byte[] buf) throws NotImplementedException {
+
+    public Task<org.ogf.saga.stream.StreamOutputStream, Void> write(
+            TaskMode mode, byte[] buf) throws NotImplementedException {
         return write(mode, buf, 0, buf.length);
     }
-    
-    public Task<org.ogf.saga.stream.StreamOutputStream, Void> flush(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.stream.StreamOutputStream, Void>(this, session, mode, "flush",
-                new Class[] { });
+
+    public Task<org.ogf.saga.stream.StreamOutputStream, Void> flush(
+            TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.stream.StreamOutputStream, Void>(
+                this, session, mode, "flush", new Class[] {});
     }
-    
-    public Task<org.ogf.saga.stream.StreamOutputStream, Void> close(TaskMode mode) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.stream.StreamOutputStream, Void>(this, session, mode, "close",
-                new Class[] { });
+
+    public Task<org.ogf.saga.stream.StreamOutputStream, Void> close(
+            TaskMode mode) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.TaskImpl<org.ogf.saga.stream.StreamOutputStream, Void>(
+                this, session, mode, "close", new Class[] {});
     }
 
     public String getId() {
