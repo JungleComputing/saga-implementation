@@ -40,6 +40,8 @@ public class SAGAEngine {
 
     /** This member variable holds reference to the single SAGAEngine. */
     private static SAGAEngine sagaEngine = null;
+    
+    private static final ClassLoader systemLoader = ClassLoader.getSystemClassLoader();
 
     private boolean ended = false;
 
@@ -160,16 +162,25 @@ public class SAGAEngine {
         // choose the child.
         ClassLoader callerLoader = callerClass.getClassLoader();
         ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader result;
         
         if (isChild(contextLoader, callerLoader)) {
-            return callerLoader;
+            result = callerLoader;
+        } else if (isChild(callerLoader, contextLoader)) {
+            result = contextLoader;
+        } else {
+            // Apparently there is no relation. The following may not be right,
+            // but then, there is no "right".
+            result = contextLoader;
         }
-        if (isChild(callerLoader, contextLoader)) {
-            return contextLoader;
+        
+        // If the system classloader is a child of the result found so far,
+        // use the system classloader instead.
+        if (isChild (result, systemLoader)) {
+            result = systemLoader;
         }
-        // Apparently there is no relation. The following may not be right,
-        // but then, there is no "right".
-        return contextLoader;
+        
+        return result;
     }
     
     /**
