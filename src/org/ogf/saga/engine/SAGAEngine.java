@@ -43,6 +43,9 @@ public class SAGAEngine {
 
     private boolean ended = false;
 
+    /** Classloader to be used as parent classloader for the URL classloaders. */
+    private final ClassLoader parentLoader;
+    
     /** Keys are SPI names, elements are AdaptorLists. */
     private HashMap<String, AdaptorList> adaptors;
 
@@ -53,20 +56,38 @@ public class SAGAEngine {
 
     private static String sagaLocation = getProperty("saga.location");
 
+    /**
+     * A helper class to compare URLs, so that they can be sorted,
+     * and the order becomes predictable and reproducable.
+     */
     private static class URLComparator implements Comparator<URL>,
             java.io.Serializable {
         private static final long serialVersionUID = 1L;
 
-        // Serializable, because findbugs wants it.
+        // Serializable, because findbugs wants that.
         public int compare(URL u1, URL u2) {
             return u1.toString().compareTo(u2.toString());
         }
     }
+    
+    /**
+     * A helper class to get the call context. It subclasses SecurityManager
+     * to make getClassContext() accessible. Don't install this as an actual
+     * security manager!
+     */
+    private static final class CallerResolver extends SecurityManager {
+        protected Class<?>[] getClassContext() {
+            return super.getClassContext ();
+        }
+    }
+
 
     /** Constructs a default SAGAEngine instance. */
     private SAGAEngine() {
 
         adaptors = new HashMap<String, AdaptorList>();
+        
+        parentLoader = getParentClassLoader();
 
         readJarFiles();
 
@@ -105,6 +126,72 @@ public class SAGAEngine {
 
         return sagaEngine;
     }
+    
+    /**
+     * This method tries to determine a suitable classloader to be used
+     * as parent classloader for the URLClassloaders of the adaptors.
+     * Sometimes, the classloader that loaded the GATEngine class is not
+     * a good candidate because this probably is just the system classloader.
+     * A better candidate might be the classloader of the class that prompted
+     * the loading of javaGAT in the first place, or the context classloader.
+     * 
+     * @return the classloader to be used.
+     */
+    private ClassLoader getParentClassLoader() {
+        // Find the Class instance of the class that prompted the loading
+        // of JavaGAT.
+        Class<?>[] callers = (new CallerResolver()).getClassContext();
+        Class<?> callerClass = null;
+        for (Class<?> c : callers) {
+            String name = c.getCanonicalName();
+            if (name != null && name.startsWith("org.ogf.saga")) {
+                continue;
+            }
+            callerClass = c;
+            break;
+        }
+        // If we cannot find it, use the GATEngine class instance, for lack of
+        // a better choice.
+        if (callerClass == null) {
+            callerClass = SAGAEngine.class;
+        }
+        // Now, there are basically two choices: the classloader that loaded the
+        // caller class, or the context classloader. If there is a parent-relation,
+        // choose the child.
+        ClassLoader callerLoader = callerClass.getClassLoader();
+        ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+        
+        if (isChild(contextLoader, callerLoader)) {
+            return callerLoader;
+        }
+        if (isChild(callerLoader, contextLoader)) {
+            return contextLoader;
+        }
+        // Apparently there is no relation. The following may not be right,
+        // but then, there is no "right".
+        return contextLoader;
+    }
+    
+    /**
+     * Determines if loader l2 is a child of loader l1.
+     * @param l1
+     * @param l2
+     * @return true if l2 is a child of l1.
+     */
+    private static boolean isChild(ClassLoader l1, ClassLoader l2) {
+        if (l1 == null) {
+            // Primordial loader is parent of all classloaders.
+            return true;
+        }
+        while (l2 != null) {
+            if (l1 == l2) {
+                return true;
+            }
+            l2 = l2.getParent();
+        }
+        return false;
+    }
+
 
     /**
      * Returns a list of adaptors for the specified service provider interface.
@@ -268,8 +355,7 @@ public class SAGAEngine {
         // Sort, so that the results are reproducable.
         Arrays.sort(urls, new URLComparator());
 
-        URLClassLoader adaptorLoader = new URLClassLoader(urls, this.getClass()
-                .getClassLoader());
+        URLClassLoader adaptorLoader = new URLClassLoader(urls, parentLoader);
 
         // Now we have a class loader.
         // Next, we find out which adaptors are inside the adaptor jar.
