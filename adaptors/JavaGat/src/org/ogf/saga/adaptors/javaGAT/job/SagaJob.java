@@ -419,6 +419,8 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             gatJob.stop();
         } catch (GATInvocationException e) {
             throw new NoSuccessException("Could not cancel job", this);
+        } catch(UnsupportedOperationException e) {
+            throw new NotImplementedException("cancel() not implemented", e, this);
         }
         setState(State.CANCELED);
     }
@@ -703,6 +705,8 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             gatJob.resume();
         } catch (GATInvocationException e) {
             throw new NoSuccessException("resume failed", e, this);
+        } catch(UnsupportedOperationException e) {
+            throw new NotImplementedException("resume() not implemented", e, this);
         }
         setState(State.RUNNING);
     }
@@ -728,7 +732,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         try {
             gatJob.hold();
         } catch (GATInvocationException e) {
-            throw new NoSuccessException("resume failed", e, this);
+            throw new NoSuccessException("suspend() failed", e, this);
+        } catch(UnsupportedOperationException e) {
+            throw new NotImplementedException("suspend() not implemented", e, this);
         }
         setState(State.SUSPENDED);
     }
