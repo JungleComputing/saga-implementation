@@ -16,6 +16,7 @@ public class JobAttributes extends AsyncAttributesImpl<org.ogf.saga.job.Job> {
         addAttribute(Job.JOBID, AttributeType.STRING, false, true, false, false);
         addAttribute(Job.EXECUTIONHOSTS, AttributeType.STRING, true, true,
                 false, false);
+        addAttribute(Job.WORKINGDIRECTORY, AttributeType.STRING, false, true, false, false);
         addAttribute(Job.CREATED, AttributeType.TIME, false, true, false, false);
         addAttribute(Job.STARTED, AttributeType.TIME, false, true, false, false);
         addAttribute(Job.FINISHED, AttributeType.TIME, false, true, false,
