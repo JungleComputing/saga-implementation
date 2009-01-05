@@ -34,6 +34,7 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.job.JobDescriptionImpl;
 import org.ogf.saga.impl.session.SessionImpl;
+import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.task.State;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
@@ -95,6 +96,12 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Created gatJobDescription " + gatJobDescription);
+        }
+        try {
+            String w = jobDescriptionImpl.getAttribute(JobDescription.WORKINGDIRECTORY);
+            setValue(WORKINGDIRECTORY, w);
+        } catch(Throwable e) {
+            // ignored, should not happen.
         }
     }
 

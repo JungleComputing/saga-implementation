@@ -21,6 +21,7 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.job.JobDescriptionImpl;
 import org.ogf.saga.impl.session.SessionImpl;
+import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.task.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,6 +116,12 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             setValue(JOBID, id);
         } catch (Throwable e) {
             // Should not happen.
+        }
+        try {
+            String w = jobDescriptionImpl.getAttribute(JobDescription.WORKINGDIRECTORY);
+            setValue(WORKINGDIRECTORY, w);
+        } catch(Throwable e) {
+            // ignored, should not happen.
         }
         service.addJob(this, id);
 
