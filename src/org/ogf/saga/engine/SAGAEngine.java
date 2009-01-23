@@ -132,10 +132,10 @@ public class SAGAEngine {
     /**
      * This method tries to determine a suitable classloader to be used
      * as parent classloader for the URLClassloaders of the adaptors.
-     * Sometimes, the classloader that loaded the GATEngine class is not
+     * Sometimes, the classloader that loaded the SAGAEngine class is not
      * a good candidate because this probably is just the system classloader.
      * A better candidate might be the classloader of the class that prompted
-     * the loading of javaGAT in the first place, or the context classloader.
+     * the loading of SAGA in the first place, or the context classloader.
      * 
      * @return the classloader to be used.
      */
@@ -152,7 +152,7 @@ public class SAGAEngine {
             callerClass = c;
             break;
         }
-        // If we cannot find it, use the GATEngine class instance, for lack of
+        // If we cannot find it, use the SAGAEngine class instance, for lack of
         // a better choice.
         if (callerClass == null) {
             callerClass = SAGAEngine.class;
