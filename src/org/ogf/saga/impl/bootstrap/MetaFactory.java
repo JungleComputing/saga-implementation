@@ -10,6 +10,7 @@ import org.ogf.saga.logicalfile.LogicalFileFactory;
 import org.ogf.saga.monitoring.MonitoringFactory;
 import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.rpc.RPCFactory;
+import org.ogf.saga.sd.SDFactory;
 import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.stream.StreamFactory;
 import org.ogf.saga.task.TaskFactory;
@@ -51,6 +52,10 @@ public class MetaFactory implements SagaFactory {
         return new org.ogf.saga.proxies.rpc.RPCWrapperFactory();
     }
 
+    public SDFactory createSDFactory() throws NotImplementedException {
+        return new org.ogf.saga.proxies.sd.SDWrapperFactory();
+    }
+    
     public SessionFactory createSessionFactory() {
         return new org.ogf.saga.impl.session.SessionFactoryImpl();
     }
