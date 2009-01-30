@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# This script runs the SAGA sd test for the glite adaptor.
+# The server is listed below, and should be replaced by your own
+# server.
+
+export JAVA_SAGA_LOCATION=`cd .. && pwd`
+
+infoUrl=http://`hostname`/infosys
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
+    test.sd.SDAdaptorTest glite $infoUrl
