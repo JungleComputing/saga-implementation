@@ -89,6 +89,7 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
 	} catch (IncorrectStateException e) {
 	} catch (DoesNotExistException e) {
 	}
+	// TODO: relatedServices can be null here --Ceriel
 	for (String service : relatedServices) {
 	    /*
 	     * TODO need to do a listServices call to get the serviceDescription
@@ -96,6 +97,7 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
 	     */
 	    ServiceDescription serviceDescription = new ServiceDescriptionImpl(
 		    new ServiceDataImpl());
+	    // TODO: descriptions IS null here --Ceriel
 	    descriptions.add(serviceDescription);
 	}
 	return descriptions;
