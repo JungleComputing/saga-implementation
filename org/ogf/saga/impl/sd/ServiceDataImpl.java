@@ -52,7 +52,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean existsAttribute(String key) throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
 	    PermissionDeniedException, TimeoutException, NoSuccessException {
@@ -81,7 +80,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      *                 ...
      * 
      */
-    @Override
     public String[] findAttributes(String... patterns)
 	    throws NotImplementedException, BadParameterException,
 	    AuthenticationFailedException, AuthorizationFailedException,
@@ -114,7 +112,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * 
      * @see #setAttribute
      */
-    @Override
     public String getAttribute(String key) throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
 	    PermissionDeniedException, IncorrectStateException,
@@ -147,7 +144,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * 
      * @see #setVectorAttribute
      */
-    @Override
     public String[] getVectorAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -177,7 +173,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean isReadOnlyAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -206,7 +201,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean isRemovableAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -235,7 +229,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean isVectorAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -264,7 +257,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean isWritableAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -290,7 +282,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      *                 ...
      * 
      */
-    @Override
     public String[] listAttributes() throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
 	    PermissionDeniedException, TimeoutException, NoSuccessException {
@@ -318,7 +309,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      *                 ...
      * 
      */
-    @Override
     public void removeAttribute(String key) throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
 	    PermissionDeniedException, DoesNotExistException, TimeoutException,
@@ -354,7 +344,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * 
      * @see #getAttribute
      */
-    @Override
     public void setAttribute(String key, String value)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -391,7 +380,6 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * 
      * @see #getVectorAttribute
      */
-    @Override
     public void setVectorAttribute(String key, String[] values)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
