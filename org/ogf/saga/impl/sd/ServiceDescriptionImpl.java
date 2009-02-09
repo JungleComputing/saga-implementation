@@ -1,5 +1,7 @@
 package org.ogf.saga.impl.sd;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -79,17 +81,20 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
     public Set<ServiceDescription> getRelatedServices()
 	    throws AuthorizationFailedException, AuthenticationFailedException,
 	    TimeoutException, NoSuccessException {
-	Set<ServiceDescription> descriptions = null;
+	Set<ServiceDescription> descriptions = new HashSet<ServiceDescription>();
 	String[] relatedServices = null;
 	try {
 	    relatedServices = m_attributes
 		    .getVectorAttribute(ServiceDescription.RELATED_SERVICES);
 	} catch (NotImplementedException e) {
+	    return descriptions;
 	} catch (PermissionDeniedException e) {
+	    return descriptions;
 	} catch (IncorrectStateException e) {
+	    return descriptions;
 	} catch (DoesNotExistException e) {
+	    return descriptions;
 	}
-	// TODO: relatedServices can be null here --Ceriel
 	for (String service : relatedServices) {
 	    /*
 	     * TODO need to do a listServices call to get the serviceDescription
@@ -97,7 +102,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
 	     */
 	    ServiceDescription serviceDescription = new ServiceDescriptionImpl(
 		    new ServiceDataImpl());
-	    // TODO: descriptions IS null here --Ceriel
 	    descriptions.add(serviceDescription);
 	}
 	return descriptions;
