@@ -49,7 +49,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * @return the service data for this service. This may be empty, i.e.has no
      *         attributes at all.
      */
-    @Override
     public ServiceData getData() {
 	return m_serviceData;
     }
@@ -77,7 +76,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      *                 if no result can be returned because of information
      *                 system or other internal problems
      */
-    @Override
     public Set<ServiceDescription> getRelatedServices()
 	    throws AuthorizationFailedException, AuthenticationFailedException,
 	    TimeoutException, NoSuccessException {
@@ -110,7 +108,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * 
      * @return a string containing the URL to contact this service
      */
-    @Override
     public String getUrl() {
 	String url = null;
 	try {
@@ -146,7 +143,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean existsAttribute(String key) throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
 	    PermissionDeniedException, TimeoutException, NoSuccessException {
@@ -175,7 +171,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      *                 ...
      * 
      */
-    @Override
     public String[] findAttributes(String... patterns)
 	    throws NotImplementedException, BadParameterException,
 	    AuthenticationFailedException, AuthorizationFailedException,
@@ -208,7 +203,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * 
      * @see #setAttribute
      */
-    @Override
     public String getAttribute(String key) throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
 	    PermissionDeniedException, IncorrectStateException,
@@ -241,7 +235,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * 
      * @see #setVectorAttribute
      */
-    @Override
     public String[] getVectorAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -271,7 +264,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean isReadOnlyAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -300,7 +292,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean isRemovableAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -329,7 +320,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean isVectorAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -358,7 +348,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * @throws NoSuccessException
      *                 ...
      */
-    @Override
     public boolean isWritableAttribute(String key)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -384,7 +373,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      *                 ...
      * 
      */
-    @Override
     public String[] listAttributes() throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
 	    PermissionDeniedException, TimeoutException, NoSuccessException {
@@ -412,7 +400,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      *                 ...
      * 
      */
-    @Override
     public void removeAttribute(String key) throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
 	    PermissionDeniedException, DoesNotExistException, TimeoutException,
@@ -448,7 +435,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * 
      * @see #getAttribute
      */
-    @Override
     public void setAttribute(String key, String value)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
@@ -485,7 +471,6 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * 
      * @see #getVectorAttribute
      */
-    @Override
     public void setVectorAttribute(String key, String[] values)
 	    throws NotImplementedException, AuthenticationFailedException,
 	    AuthorizationFailedException, PermissionDeniedException,
