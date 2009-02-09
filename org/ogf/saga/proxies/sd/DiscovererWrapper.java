@@ -168,7 +168,6 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
      *                 if no result can be returned because of information
      *                 system or other internal problems
      */
-    @Override
     public Set<ServiceDescription> listServices(String serviceFilter,
 	    String dataFilter) throws BadParameterException,
 	    AuthorizationFailedException, AuthenticationFailedException,
@@ -213,7 +212,6 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
      *                 if no result can be returned because of information
      *                 system or other internal problems
      */
-    @Override
     public Set<ServiceDescription> listServices(String serviceFilter,
 	    String dataFilter, String authzFilter)
 	    throws BadParameterException, AuthorizationFailedException,
