@@ -1,6 +1,5 @@
 package org.ogf.saga.impl.sd;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -95,14 +94,16 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
 	} catch (DoesNotExistException e) {
 	    return descriptions;
 	}
-	for (String service : relatedServices) {
-	    /*
-	     * TODO need to do a listServices call to get the serviceDescription
-	     * for the service
-	     */
-	    ServiceDescription serviceDescription = new ServiceDescriptionImpl(
-		    new ServiceDataImpl());
-	    descriptions.add(serviceDescription);
+	if (relatedServices != null) {
+	    for (String service : relatedServices) {
+	        /*
+	         * TODO need to do a listServices call to get the serviceDescription
+	         * for the service
+	         */
+	        ServiceDescription serviceDescription = new ServiceDescriptionImpl(
+	                new ServiceDataImpl());
+	        descriptions.add(serviceDescription);
+	    }
 	}
 	return descriptions;
     }

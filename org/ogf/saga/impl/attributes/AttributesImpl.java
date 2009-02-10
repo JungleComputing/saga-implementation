@@ -61,7 +61,9 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
             this(info.name, info.type, info.vector, info.readOnly,
                     info.notImplemented, info.removable);
             value = info.value;
-            vectorValue = info.vectorValue.clone();
+            if (vectorValue != null) {
+                vectorValue = info.vectorValue.clone();
+            }
         }
 
         public int hashCode() {
@@ -84,6 +86,12 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
 
             if (!vector) {
                 return info.value.equals(value);
+            }
+            if (info.vectorValue == null) {
+                return vectorValue == null;
+            }
+            if (vectorValue == null) {
+                return false;
             }
             if (info.vectorValue.length != vectorValue.length) {
                 return false;
@@ -285,8 +293,11 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-
-        return getInfoCheckVector(key, true).vectorValue.clone();
+        AttributeInfo inf = getInfoCheckVector(key, true);
+        if (inf.vectorValue == null) {
+            return null;
+        }
+        return inf.vectorValue.clone();
     }
 
     public synchronized boolean existsAttribute(String key)
@@ -384,19 +395,21 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
             throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         AttributeInfo info = getInfoCheckVector(key, true);
+        
+        if (values != null) {
+            values = values.clone();
 
-        values = values.clone();
-
-        for (int i = 0; i < values.length; i++) {
-            if (info.type == AttributeType.TIME) {
-                try {
-                    long v = Long.parseLong(values[i]);
-                    values[i] = dateFormat(new Date(v));
-                } catch (NumberFormatException e) {
-                    // ignored. checkValueType will check the format.
+            for (int i = 0; i < values.length; i++) {
+                if (info.type == AttributeType.TIME) {
+                    try {
+                        long v = Long.parseLong(values[i]);
+                        values[i] = dateFormat(new Date(v));
+                    } catch (NumberFormatException e) {
+                        // ignored. checkValueType will check the format.
+                    }
                 }
+                checkValueType(key, info.type, values[i]);
             }
-            checkValueType(key, info.type, values[i]);
         }
         info.vectorValue = values;
     }
@@ -496,17 +509,19 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
                     + " is readOnly");
         }
 
-        values = values.clone();
-        for (int i = 0; i < values.length; i++) {
-            if (info.type == AttributeType.TIME) {
-                try {
-                    long v = Long.parseLong(values[i]);
-                    values[i] = dateFormat(new Date(v));
-                } catch (NumberFormatException e) {
-                    // ignored. checkValueType will check the format.
+        if (values != null) {
+            values = values.clone();
+            for (int i = 0; i < values.length; i++) {
+                if (info.type == AttributeType.TIME) {
+                    try {
+                        long v = Long.parseLong(values[i]);
+                        values[i] = dateFormat(new Date(v));
+                    } catch (NumberFormatException e) {
+                        // ignored. checkValueType will check the format.
+                    }
                 }
+                checkValueType(key, info.type, values[i]);
             }
-            checkValueType(key, info.type, values[i]);
         }
         info.vectorValue = values;
     }
