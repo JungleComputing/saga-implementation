@@ -349,13 +349,13 @@ public class AdaptorInvocationHandler implements InvocationHandler {
 
                 ex = (SagaException) c.newInstance(exception.getMessage(),
                         exception.getCause(), ((SagaIOException) exception)
-                                .getPosixErrorCode(), (SagaObject) sagaObject);
+                                .getPosixErrorCode(), sagaObject);
             } else {
                 Constructor<?> c = exception.getClass().getConstructor(
                         String.class, Throwable.class, SagaObject.class);
 
                 ex = (SagaException) c.newInstance(exception.getMessage(),
-                        exception.getCause(), (SagaObject) sagaObject);
+                        exception.getCause(), sagaObject);
             }
             ex.setStackTrace(exception.getStackTrace());
             exception = ex;

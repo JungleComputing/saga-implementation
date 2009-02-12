@@ -126,7 +126,7 @@ public class AsyncAttributesImpl<T> extends AttributesImpl implements
             String[] values) throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<T, Void>(object, session,
                 mode, "setVectorAttribute", new Class[] { String.class,
-                        String[].class }, key, (Object) values);
+                        String[].class }, key, values);
     }
 
 }

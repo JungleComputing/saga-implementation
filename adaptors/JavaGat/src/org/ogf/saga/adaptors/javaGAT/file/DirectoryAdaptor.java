@@ -242,22 +242,22 @@ public class DirectoryAdaptor extends
 
     public boolean isDir() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return dir.isDir();
     }
 
     public boolean isEntry() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return dir.isEntry();
     }
 
     public boolean isLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return dir.isLink();
     }
 
@@ -275,7 +275,6 @@ public class DirectoryAdaptor extends
             IncorrectStateException, BadParameterException, TimeoutException,
             NoSuccessException {
         dir.permissionsAllow(id, permissions, flags);
-
     }
 
     public void permissionsDeny(String id, int permissions, int flags)
@@ -288,8 +287,8 @@ public class DirectoryAdaptor extends
 
     public URL readLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return dir.readLink();
     }
 

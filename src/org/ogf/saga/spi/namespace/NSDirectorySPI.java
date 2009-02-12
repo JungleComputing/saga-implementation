@@ -400,7 +400,7 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException, IncorrectURLException;
+            NoSuccessException, IncorrectURLException, IncorrectStateException;
 
     /**
      * Denies the specified permissions for the specified id. An id of "*"
@@ -420,7 +420,7 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException, IncorrectURLException;
+            NoSuccessException, IncorrectURLException, IncorrectStateException;
 
     //
     // Task versions ...

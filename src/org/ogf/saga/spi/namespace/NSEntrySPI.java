@@ -59,8 +59,8 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      */
     public boolean isDir() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException;
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException;
 
     /**
      * Tests this entry for being a namespace entry. If this entry represents a
@@ -71,8 +71,8 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      */
     public boolean isEntry() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException;
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException;
 
     /**
      * Tests this entry for being a link.
@@ -81,8 +81,8 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      */
     public boolean isLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException;
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException;
 
     /**
      * Returns the URL representing the link target. Resolves one link level
@@ -92,8 +92,8 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      */
     public URL readLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException;
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException;
 
     /**
      * Copies this entry to another part of the namespace.

@@ -42,7 +42,6 @@ public class DiscovererAdaptor extends DiscovererAdaptorBase {
 	super(wrapper, sessionImpl, infoSystemUrl);
     }
 
-    @Override
     public Set<ServiceDescription> listServices(String serviceFilter,
 	    String dataFilter) throws BadParameterException,
 	    AuthorizationFailedException, AuthenticationFailedException,
@@ -57,7 +56,6 @@ public class DiscovererAdaptor extends DiscovererAdaptorBase {
 	return serviceDescriptions;
     }
 
-    @Override
     public Set<ServiceDescription> listServices(String serviceFilter,
 	    String dataFilter, String authzFilter)
 	    throws BadParameterException, AuthorizationFailedException,

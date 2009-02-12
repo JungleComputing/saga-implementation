@@ -477,7 +477,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException, IncorrectURLException {
+            NoSuccessException, IncorrectURLException, IncorrectStateException {
         proxy.permissionsDeny(target, id, permissions, flags);
     }
 
@@ -485,7 +485,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException,
-            IncorrectURLException {
+            IncorrectURLException, IncorrectStateException {
         permissionsDeny(target, id, permissions, Flags.NONE.getValue());
     }
 
@@ -619,7 +619,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException, IncorrectURLException {
+            NoSuccessException, IncorrectURLException, IncorrectStateException {
         proxy.permissionsDeny(target, id, permissions, flags);
     }
 
@@ -705,7 +705,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException,
-            IncorrectURLException {
+            IncorrectURLException, IncorrectStateException {
         permissionsDeny(target, id, permissions, Flags.NONE.getValue());
 
     }

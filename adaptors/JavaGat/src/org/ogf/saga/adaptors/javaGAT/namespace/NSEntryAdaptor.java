@@ -138,7 +138,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         }
         File parentFile;
         try {
-            parentFile = (org.gridlab.gat.io.File) file.getParentFile();
+            parentFile = file.getParentFile();
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e);
         }
@@ -452,8 +452,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     public boolean isDir() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
@@ -462,8 +462,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     public boolean isEntry() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
@@ -472,8 +472,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     public boolean isLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         throw new NotImplementedException("isLink", wrapper);
     }
 
@@ -523,8 +523,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     public URL readLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         throw new NotImplementedException("readLink", wrapper);
     }
 

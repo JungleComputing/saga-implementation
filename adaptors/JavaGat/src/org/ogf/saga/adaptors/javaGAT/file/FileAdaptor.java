@@ -377,22 +377,22 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
 
     public boolean isDir() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return entry.isDir();
     }
 
     public boolean isEntry() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return entry.isEntry();
     }
 
     public boolean isLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return entry.isLink();
     }
 
@@ -423,8 +423,8 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
 
     public URL readLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return entry.readLink();
     }
 

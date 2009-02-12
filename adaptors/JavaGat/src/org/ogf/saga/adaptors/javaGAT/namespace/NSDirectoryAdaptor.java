@@ -232,7 +232,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         }
         File[] resultFiles;
         try {
-            resultFiles = (org.gridlab.gat.io.File[]) entry.file.listFiles();
+            resultFiles = entry.file.listFiles();
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e, wrapper);
         }
@@ -261,7 +261,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         }
         File[] resultFiles;
         try {
-            resultFiles = (org.gridlab.gat.io.File[]) entry.file.listFiles();
+            resultFiles = entry.file.listFiles();
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e, wrapper);
         }
@@ -385,7 +385,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
         File[] resultFiles;
         try {
-            resultFiles = (org.gridlab.gat.io.File[]) entry.file.listFiles();
+            resultFiles = entry.file.listFiles();
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e, wrapper);
         }
@@ -664,22 +664,22 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
     public boolean isDir() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return entry.isDir();
     }
 
     public boolean isEntry() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return entry.isEntry();
     }
 
     public boolean isLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         throw new NotImplementedException("isLink", wrapper);
     }
 
@@ -709,8 +709,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
     public URL readLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return entry.readLink();
     }
 

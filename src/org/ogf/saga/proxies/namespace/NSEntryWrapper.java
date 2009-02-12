@@ -198,8 +198,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public boolean isDir() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException, TimeoutException,
+            NoSuccessException {
         return proxy.isDir();
     }
 
@@ -210,8 +210,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public boolean isEntry() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return proxy.isEntry();
     }
 
@@ -222,8 +222,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public boolean isLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return proxy.isLink();
     }
 
@@ -350,8 +350,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public URL readLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
         return proxy.readLink();
     }
 
