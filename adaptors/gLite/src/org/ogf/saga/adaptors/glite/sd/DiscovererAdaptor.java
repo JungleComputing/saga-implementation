@@ -17,7 +17,6 @@ import org.ogf.saga.impl.sd.ServiceDataImpl;
 import org.ogf.saga.impl.sd.ServiceDescriptionImpl;
 import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.proxies.sd.DiscovererWrapper;
-import org.ogf.saga.sd.ServiceData;
 import org.ogf.saga.sd.ServiceDescription;
 import org.ogf.saga.spi.sd.DiscovererAdaptorBase;
 import org.ogf.saga.url.URL;
@@ -88,7 +87,7 @@ public class DiscovererAdaptor extends DiscovererAdaptorBase {
 	} catch (NoSuccessException e) {
 	}
 	ServiceDescriptionImpl serviceDescription = new ServiceDescriptionImpl(
-		(ServiceData)serviceData);
+		serviceData);
 
 	try {
 	    serviceDescription.setValue(ServiceDescription.URL,
@@ -99,7 +98,7 @@ public class DiscovererAdaptor extends DiscovererAdaptorBase {
 	} catch (DoesNotExistException e) {
 	} catch (BadParameterException e) {
 	}
-	return (ServiceDescription) serviceDescription;
+	return serviceDescription;
     }
 
 }
