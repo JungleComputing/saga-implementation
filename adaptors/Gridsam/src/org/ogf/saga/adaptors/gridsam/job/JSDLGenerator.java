@@ -171,7 +171,7 @@ class JSDLGenerator {
                 .newInstance();
         POSIXApplicationType posixAppl = posixDoc.addNewPOSIXApplication();
         FileNameType f = posixAppl.addNewExecutable();
-        f.setStringValue(exec);
+        f.setStringValue(protectAgainstShellMetas(exec));
         String[] arguments;
         try {
             arguments = getVec(JobDescription.ARGUMENTS);
@@ -180,7 +180,7 @@ class JSDLGenerator {
                     logger.debug("argument=" + argument);
                 }
                 ArgumentType arg = posixAppl.addNewArgument();
-                arg.setStringValue(argument);
+                arg.setStringValue(protectAgainstShellMetas(argument));
             }
         } catch (Throwable e) {
             if (logger.isDebugEnabled()) {
@@ -296,5 +296,20 @@ class JSDLGenerator {
             addDataStage(jobDescr, parts[1], prestage, parts[0], true);
         }
     }
-
+    
+    private static String protectAgainstShellMetas(String s) {
+        char[] chars = s.toCharArray();
+        StringBuffer b = new StringBuffer();
+        b.append('\'');
+        for (char c : chars) {
+            if (c == '\'') {
+                b.append('\'');
+                b.append('\\');
+                b.append('\'');
+            }
+            b.append(c);
+        }
+        b.append('\'');
+        return b.toString();
+    }
 }
