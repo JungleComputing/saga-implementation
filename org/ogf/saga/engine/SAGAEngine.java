@@ -94,6 +94,9 @@ public class SAGAEngine {
         readJarFiles();
 
         if (adaptors.size() == 0) {
+            if (sagaLocation == null) {
+                throw new Error("SAGA: No adaptors could be loaded. Apparently, saga.location is not set");
+            }
             throw new Error("SAGA: No adaptors could be loaded");
         }
 
