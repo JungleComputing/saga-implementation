@@ -46,6 +46,8 @@
 	<jar jarfile="${lib}/${adaptor}.jar" basedir="${tmp}" includes="**/glite/**/*.class,LICENSE.txt">
 	    <manifest>
 		<attribute name="DiscovererSpi-class" value="org.ogf.saga.adaptors.glite.sd.DiscovererAdaptor" />
+		<attribute name="ContextInitializerSpi-class"
+			value="org.ogf.saga.adaptors.glite.ContextInitializerAdaptor" />
 	    </manifest>
 	</jar>
 

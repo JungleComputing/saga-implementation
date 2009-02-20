@@ -27,7 +27,8 @@ import test.misc.AdaptorTestResult;
 import test.misc.AdaptorTestResultEntry;
 
 public class SDAdaptorTest {
-    private static Logger m_logger = LoggerFactory.getLogger(SDAdaptorTest.class);
+    private static Logger m_logger = LoggerFactory
+	    .getLogger(SDAdaptorTest.class);
 
     public static void main(String[] args) {
 	System.setProperty("Discoverer.adaptor.name", args[0]);
@@ -38,22 +39,10 @@ public class SDAdaptorTest {
     public AdaptorTestResult test(String adaptor, String host) {
 
 	// Create a session and add a context to it
-	Session session = null;
-	try {
-	    session = SessionFactory.createSession(false);
-	    Context context = ContextFactory.createContext();
-	    session.addContext(context);
-	} catch (Throwable e) {
-	    throw new Error("Got exception while creating session: ", e);
-	}
+	Session session = getSession(adaptor);
 
 	// create a url
-	URL url = null;
-	try {
-	    url = URLFactory.createURL("any://" + host);
-	} catch (Throwable e) {
-	    throw new Error("Got exception while creating url: ", e);
-	}
+	URL url = getUrl(host);
 
 	AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor,
 		host);
@@ -62,11 +51,11 @@ public class SDAdaptorTest {
 	adaptorTestResult.put("Create Discoverer with default session and url",
 		discovererCreationTest());
 	adaptorTestResult.put(
-		"Create Discoverer with  user defined session and default url",
-		discovererCreationTest(session));
-	adaptorTestResult.put(
 		"Create Discoverer with default session and user defined url",
 		discovererCreationTest(url));
+	adaptorTestResult.put(
+		"Create Discoverer with  user defined session and default url",
+		discovererCreationTest(session));
 	adaptorTestResult.put(
 		"Create Discoverer with user defined session and url",
 		discovererCreationTest(session, url));
@@ -78,7 +67,41 @@ public class SDAdaptorTest {
 	return adaptorTestResult;
     }
 
+    private URL getUrl(String host) throws Error {
+	URL url = null;
+	try {
+	    url = URLFactory.createURL("any://" + host);
+	} catch (Throwable e) {
+	    throw new Error("Got exception while creating url: ", e);
+	}
+	return url;
+    }
+
+    private Session getSession(String adaptor) throws Error {
+	Session session = null;
+	try {
+	    session = SessionFactory.createSession(true);
+	} catch (Throwable e) {
+	    throw new Error("Got exception while creating session: ", e);
+	}
+	Context context;
+	try {
+	    context = ContextFactory.createContext(adaptor);
+	} catch (Throwable e) {
+	    throw new Error("Got exception while creating context: ", e);
+	}
+
+	try {
+	    session.addContext(context);
+	} catch (NotImplementedException e) {
+	    throw new Error("Got exception while adding context to session: ",
+		    e);
+	}
+	return session;
+    }
+
     private AdaptorTestResultEntry discovererCreationTest() {
+	m_logger.info("default session and url");
 	long start = System.currentTimeMillis();
 	Discoverer discoverer;
 	try {
@@ -92,6 +115,7 @@ public class SDAdaptorTest {
     }
 
     private AdaptorTestResultEntry discovererCreationTest(Session session) {
+	m_logger.info("user defined session and default url");
 	long start = System.currentTimeMillis();
 	Discoverer discoverer;
 	try {
@@ -105,6 +129,7 @@ public class SDAdaptorTest {
     }
 
     private AdaptorTestResultEntry discovererCreationTest(URL url) {
+	m_logger.info("default session and user defined url");
 	long start = System.currentTimeMillis();
 	Discoverer discoverer;
 	try {
@@ -119,6 +144,7 @@ public class SDAdaptorTest {
 
     private AdaptorTestResultEntry discovererCreationTest(Session session,
 	    URL url) {
+	m_logger.info("user defined session and url");
 	long start = System.currentTimeMillis();
 	Discoverer discoverer;
 	try {
@@ -166,14 +192,20 @@ public class SDAdaptorTest {
 	    AuthenticationFailedException, AuthorizationFailedException,
 	    PermissionDeniedException, TimeoutException, NoSuccessException,
 	    IncorrectStateException {
+	m_logger.debug("Checking discoverer for context");
 	Session session = discoverer.getSession();
 	Context[] contexts = session.listContexts();
-	m_logger.debug("Checking discoverer for context");
+	if (contexts.length < 1) {
+	    throw new Error("No context found in session");
+	}
 	for (Context context : contexts) {
 	    for (String key : context.listAttributes()) {
 		m_logger.debug("context - " + key + ":"
 			+ context.getAttribute(key));
 	    }
+
+	    m_logger.debug("context - UserProxy:"
+		    + context.getAttribute("UserProxy"));
 	}
     }
 
@@ -186,7 +218,14 @@ public class SDAdaptorTest {
 	for (ServiceDescription serviceDescription : serviceDescriptions) {
 	    m_logger.debug("Checking serviceDescription for attributes");
 	    for (String key : serviceDescription.listAttributes()) {
-		if (!(key.equals("relatedServices"))) {
+		if (key.equals("relatedServices")) {
+		    m_logger.debug("description - " + key + " size:" + serviceDescription.getVectorAttribute(key).length);
+		    for (String relatedService : serviceDescription
+			    .getVectorAttribute(key)) {
+			m_logger.debug("description - " + key + ":"
+				+ relatedService);
+		    }
+		} else {
 		    m_logger.debug("description - " + key + ":"
 			    + serviceDescription.getAttribute(key));
 		}
@@ -196,6 +235,8 @@ public class SDAdaptorTest {
 	    for (String s : data.listAttributes()) {
 		m_logger.debug("data - " + s + ":" + data.getAttribute(s));
 	    }
+	    m_logger.debug("getRelatedServices - "
+		    + serviceDescription.getRelatedServices());
 	}
     }
 }
