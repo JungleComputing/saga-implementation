@@ -110,7 +110,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                 throw new BadParameterException(name.toString()
                         + " points to directory");
             }
-        } catch (GATInvocationException e) {
+        } catch (Throwable e) {
             // TODO: isDirectory fails, is a problem for GAT http adaptor.
             // For now, ignore the exception and assume that it is not a
             // directory.

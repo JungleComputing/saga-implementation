@@ -303,8 +303,12 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         }
         try {
             return isDirFile.getFileInterface().isDirectory();
-        } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+        } catch (Throwable e) {
+            // TODO: isDirectory fails, is a problem for GAT http adaptor.
+            // For now, ignore the exception and assume that it is not a
+            // directory.
+            // throw new NoSuccess(e);
+            return false;
         }
     }
 
