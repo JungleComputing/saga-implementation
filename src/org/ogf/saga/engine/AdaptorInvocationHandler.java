@@ -206,9 +206,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
 
         SagaException exception = null;
-        NestedException nested = null;
-        boolean multiple = false;
-
+        ArrayList<SagaException> exceptions = null;
+        
         for (Adaptor adaptor : adaptors) {
             String adaptorname = adaptor.getAdaptorName();
 
@@ -239,44 +238,36 @@ public class AdaptorInvocationHandler implements InvocationHandler {
 
                 // keep the most specific exception around. We can throw that
                 // when all adaptors fail.
-                if (t instanceof SagaException) {
-                    SagaException e = (SagaException) t;
-                    if (nested == null) {
-                        nested = new NestedException();
-                    }
-                    nested.add(adaptors.getSpiName(), e);
-                    if (exception == null) {
-                        exception = e;
-                    } else {
-                        multiple = true;
-                        exception = compare(exception, e);
-                    }
-                } else if (exception == null) {
-                    exception = new NoSuccessException(
+
+                if (! (t instanceof SagaException)) {
+                    t = new NoSuccessException(
                             "Got exception from constructor of " + adaptorname,
                             t);
-                    if (nested == null) {
-                        nested = new NestedException();
+                }
+                SagaException e = (SagaException) t;
+                if (exception == null) {
+                    exception = e;
+                } else {
+                    if (exceptions == null) {
+                        exceptions = new ArrayList<SagaException>();
                     }
-                    nested.add(adaptors.getSpiName(), exception);
+                    SagaException e1 = compare(exception, e);
+                    if (e1 == e) {
+                        exceptions.add(exception);
+                        exception = e1;
+                    } else {
+                        exceptions.add(e);
+                    }
                 }
             }
         }
+        
 
         if (this.adaptors.size() == 0) {
-            if (multiple) {
-                try {
-                    Constructor<?> c = exception.getClass().getConstructor(
-                            String.class, Throwable.class);
-                    SagaException ex = (SagaException) c.newInstance(exception
-                            .getMessage(), nested);
-                    ex.setStackTrace(exception.getStackTrace());
-                    exception = ex;
-                } catch (Throwable e) {
-                    // O well, we tried ...
-                    logger.debug("Creation of nested exception failed");
-                }
-
+            if (exceptions != null) {
+                for (SagaException e : exceptions) {
+                    exception.addNestedException(e);
+                } 
             }
             throw exception;
         }
@@ -375,8 +366,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             throws Throwable {
 
         SagaException exception = null;
-        NestedException nested = null;
-        boolean multiple = false;
+        ArrayList<SagaException> exceptions = null;
 
         if (logger.isDebugEnabled()) {
             logger.debug("Started invocation of method " + m);
@@ -422,44 +412,43 @@ public class AdaptorInvocationHandler implements InvocationHandler {
 
                     return res; // return on first successful adaptor
                 } catch (Throwable t) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Method " + m.getName() + " on "
+                                + adaptor.getShortAdaptorClassName()
+                                + " failed: " + t, t);
+                    }
                     first = false;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Got throwable", t);
                     }
                     while (t instanceof InvocationTargetException) {
                         t = ((InvocationTargetException) t)
-                                .getTargetException();
-                    }
-                    // keep the most specific exception around. We can throw
-                    // that
-                    // when all adaptors fail.
-                    if (t instanceof SagaException) {
-                        SagaException e = (SagaException) t;
-                        addWrapper(e, adaptorInstantiation);
-                        if (nested == null) {
-                            nested = new NestedException();
-                        }
-                        nested.add(adaptorName, e);
-                        if (exception == null) {
-                            exception = e;
-                        } else {
-                            multiple = true;
-                            exception = compare(exception, e);
-                        }
-                    } else if (exception == null) {
-                        exception = new NoSuccessException(
-                                "Got exception from method " + m.getName(), t,
-                                (SagaObject) adaptorInstantiation.getWrapper());
-                        if (nested == null) {
-                            nested = new NestedException();
-                        }
-                        nested.add(adaptorName, exception);
+                        .getTargetException();
                     }
 
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Method " + m.getName() + " on "
-                                + adaptor.getShortAdaptorClassName()
-                                + " failed: " + t, t);
+                    if (! (t instanceof SagaException)) {
+                        t = new NoSuccessException(
+                                "Got exception from method " + m.getName(), t,
+                                (SagaObject) adaptorInstantiation.getWrapper());
+                    }
+                    // keep the most specific exception around. We can throw
+                    // that when all adaptors fail.
+                    SagaException e = (SagaException) t;
+                    addWrapper(e, adaptorInstantiation);
+                    
+                    if (exception == null) {
+                        exception = e;
+                    } else {
+                        if (exceptions == null) {
+                            exceptions = new ArrayList<SagaException>();
+                        }
+                        SagaException e1 = compare(exception, e);
+                        if (e1 == e) {
+                            exceptions.add(exception);
+                            exception = e1;
+                        } else {
+                            exceptions.add(e);
+                        }
                     }
                 } finally {
                     Thread.currentThread().setContextClassLoader(loader);
@@ -476,38 +465,12 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             throw new NoSuccessException("no adaptor found for " + m.getName());
         }
 
-        if (multiple) {
-            try {
-                Object sagaObject = null;
-                try {
-                    sagaObject = exception.getObject();
-                } catch (Throwable e) {
-                    // ignored
-                }
-                SagaException ex = null;
-                if (exception instanceof SagaIOException) {
-                    Constructor<?> c = exception.getClass().getConstructor(
-                            String.class, Throwable.class, Integer.TYPE,
-                            SagaObject.class);
-
-                    ex = (SagaException) c.newInstance(exception.getMessage(),
-                            nested, ((SagaIOException) exception)
-                                    .getPosixErrorCode(), sagaObject);
-                } else {
-                    Constructor<?> c = exception.getClass().getConstructor(
-                            String.class, Throwable.class, SagaObject.class);
-
-                    ex = (SagaException) c.newInstance(exception.getMessage(),
-                            nested, sagaObject);
-                }
-                ex.setStackTrace(exception.getStackTrace());
-                exception = ex;
-            } catch (Throwable e) {
-                // O well, we tried ...
-                logger.debug("Creation of nested exception failed");
+        if (exceptions != null) {
+            for (SagaException e : exceptions) {
+                exception.addNestedException(e);
             }
-
         }
+ 
         throw exception;
     }
 }
