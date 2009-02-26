@@ -8,8 +8,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -57,21 +57,7 @@ public class SAGAEngine {
     private static Logger logger = LoggerFactory.getLogger(SAGAEngine.class);
 
     private static String sagaLocation = getProperty("saga.location");
-
-    /**
-     * A helper class to compare URLs, so that they can be sorted,
-     * and the order becomes predictable and reproducable.
-     */
-    private static class URLComparator implements Comparator<URL>,
-            java.io.Serializable {
-        private static final long serialVersionUID = 1L;
-
-        // Serializable, because findbugs wants that.
-        public int compare(URL u1, URL u2) {
-            return u1.toString().compareTo(u2.toString());
-        }
-    }
-    
+   
     /**
      * A helper class to get the call context. It subclasses SecurityManager
      * to make getClassContext() accessible. Don't install this as an actual
@@ -130,6 +116,19 @@ public class SAGAEngine {
         }
 
         return sagaEngine;
+    }
+    
+    private ClassLoader getSharedLoader(String path, ClassLoader parent) {
+        ClassLoader sharedLoader = parent;
+
+        File f = new File(path, "shared");
+        try {
+            sharedLoader = loadDirectory(f, sharedLoader, false);
+        } catch (Throwable e) {
+            // ignored
+        }
+
+        return sharedLoader;
     }
     
     /**
@@ -290,6 +289,7 @@ public class SAGAEngine {
                             + " is not a directory");
                     continue;
                 }
+                ClassLoader sharedLoader = getSharedLoader(dir, parentLoader);
                 // Now get the adaptor directories from the adaptor path.
                 // Adaptor directories are directories whose name ends
                 // with "Adaptor".
@@ -306,7 +306,7 @@ public class SAGAEngine {
 
                         try {
                             adaptorClassLoaders.put(adaptorDir.getName(),
-                                    loadDirectory(adaptorDir));
+                                    loadDirectory(adaptorDir, sharedLoader, true));
                         } catch (Exception e) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Unable to load adaptor '"
@@ -331,17 +331,28 @@ public class SAGAEngine {
      * @throws Exception
      *             is thrown in case of trouble.
      */
-    private ClassLoader loadDirectory(File adaptorDir) throws Exception {
-
-        // Construct a file object for the adaptor jar file.
-        File adaptorJarFile = new File(adaptorDir.getPath() + File.separator
-                + adaptorDir.getName() + ".jar");
-        logger.debug("adaptorJarFile: " + adaptorJarFile.getPath());
-        if (!adaptorJarFile.exists()) {
-            // TODO: deal with exceptions better.
-            throw new Exception("found adaptor dir '" + adaptorDir.getPath()
-                    + "' that doesn't contain an adaptor named '"
-                    + adaptorJarFile.getPath() + "'");
+    private ClassLoader loadDirectory(File adaptorDir,
+            ClassLoader parentForDir, boolean mustContainAdaptorJar) throws Exception {
+        
+        final Attributes attributes;
+        List<URL> adaptorPathURLs = new ArrayList<URL>();
+        
+        if (mustContainAdaptorJar) {
+            // Construct a file object for the adaptor jar file.
+            File adaptorJarFile = new File(adaptorDir.getPath(),
+                    adaptorDir.getName() + ".jar");
+            logger.debug("adaptorJarFile: " + adaptorJarFile.getPath());
+            if (!adaptorJarFile.exists()) {
+                // TODO: deal with exceptions better.
+                throw new Exception("found adaptor dir '" + adaptorDir.getPath()
+                        + "' that doesn't contain an adaptor named '"
+                        + adaptorJarFile.getPath() + "'");
+            }
+            JarFile adaptorJar = new JarFile(adaptorJarFile, true);
+            attributes = adaptorJar.getManifest().getMainAttributes();
+            adaptorPathURLs.add(adaptorJarFile.toURI().toURL());
+        } else {
+            attributes = new Attributes();
         }
 
         // Obtain list of jar files in the specified directory.
@@ -350,31 +361,22 @@ public class SAGAEngine {
                 return name.endsWith(".jar");
             }
         });
-
-        // Since we create an URLClassLoader, we want URLS.
-        ArrayList<URL> adaptorPathURLs = new ArrayList<URL>();
-        adaptorPathURLs.add(adaptorJarFile.toURI().toURL());
+        
+        // Sort, so that results are reproducable.
+        Arrays.sort(externalJars);
+        
         if (externalJars != null) {
             for (String externalJar : externalJars) {
-                if (!externalJar.equals(adaptorJarFile.getName())) {
-                    adaptorPathURLs.add(new URL(adaptorJarFile.getParentFile()
-                            .toURI().toURL().toString()
-                            + externalJar));
-                }
+                adaptorPathURLs.add(new File(adaptorDir, externalJar).toURI().toURL());                           
             }
         }
 
         URL[] urls = adaptorPathURLs.toArray(new URL[adaptorPathURLs.size()]);
 
-        // Sort, so that the results are reproducable.
-        Arrays.sort(urls, new URLComparator());
-
-        URLClassLoader adaptorLoader = new URLClassLoader(urls, parentLoader);
+        URLClassLoader adaptorLoader = new URLClassLoader(urls, parentForDir);
 
         // Now we have a class loader.
         // Next, we find out which adaptors are inside the adaptor jar.
-        JarFile adaptorJar = new JarFile(adaptorJarFile, true);
-        Attributes attributes = adaptorJar.getManifest().getMainAttributes();
         for (Map.Entry<Object, Object> entry : attributes.entrySet()) {
             Attributes.Name key = (Attributes.Name) entry.getKey();
             if (key.toString().endsWith("Spi-class")) {
