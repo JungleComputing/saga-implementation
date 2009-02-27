@@ -469,6 +469,10 @@ public class StreamAdaptorTest {
         StreamService service = null;
         try {
             service = StreamFactory.createStreamService(serverUrl);
+        } catch (Throwable e) {
+            return new AdaptorTestResultEntry(false, 0, e);
+        }
+        try {
             service.serve(1.0f);
             logger.debug("TEST");
         } catch (TimeoutException t) {

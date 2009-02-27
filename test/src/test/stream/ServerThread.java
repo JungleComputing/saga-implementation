@@ -116,13 +116,14 @@ public class ServerThread implements Runnable {
                     stream.close();
                 }
             }
-            service.close();
         } catch (Throwable e) {
             logger.debug("Caught exception: Aborting server....", e);
             setException(e);
         } finally {
             try {
-                service.close();
+                if (service != null) {
+                    service.close();
+                }
             } catch (Throwable e) {
                 // ignored
             }

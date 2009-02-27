@@ -144,8 +144,10 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
                     "Incorrect URL for javagat advert service?", e, wrapper);
         } finally {
             try {
-                advertService.delete(url.getString());
-                advertService.exportDataBase(db);
+                if (advertService != null) {
+                    advertService.delete(url.getString());
+                    advertService.exportDataBase(db);
+                }
             } catch (Throwable e) {
                 // ignored
             }

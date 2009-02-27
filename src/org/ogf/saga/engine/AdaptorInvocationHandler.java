@@ -263,7 +263,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
         
 
-        if (this.adaptors.size() == 0) {
+        if (this.adaptors.size() == 0 && exception != null) {
             if (exceptions != null) {
                 for (SagaException e : exceptions) {
                     exception.addNestedException(e);
