@@ -1,5 +1,9 @@
 package org.ogf.saga.adaptors.javaGAT.session;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
@@ -7,11 +11,14 @@ import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.URI;
 import org.gridlab.gat.security.CertificateSecurityContext;
+import org.gridlab.gat.security.CredentialSecurityContext;
 import org.gridlab.gat.security.PasswordSecurityContext;
 import org.gridlab.gat.security.SecurityContext;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.context.ContextImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // Question: where to call GAT.end() ??? When there are no sessions left?
 // But the default session is never removed ???
@@ -21,6 +28,8 @@ import org.ogf.saga.impl.context.ContextImpl;
  */
 public class Session implements
         org.ogf.saga.impl.session.AdaptorSessionInterface, Cloneable {
+    
+    private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
     private static int numSessions = 0;
 
@@ -112,17 +121,39 @@ public class Session implements
     static SecurityContext cvt2GATSecurityContext(ContextImpl ctxt) {
         String type = ctxt.getValue(ContextImpl.TYPE);
         if ("ftp".equals(type)) {
-            SecurityContext c = new PasswordSecurityContext(ctxt
-                    .getValue(ContextImpl.USERID), ctxt
-                    .getValue(ContextImpl.USERPASS));
+            SecurityContext c = new PasswordSecurityContext(
+                    ctxt.getValue(ContextImpl.USERID),
+                    ctxt.getValue(ContextImpl.USERPASS));
             c.addNote("adaptors", "ftp");
             return c;
         } else if ("globus".equals(type) || "gridftp".equals(type)) {
+            String proxy = ctxt.getValue(ContextImpl.USERPROXY);
+            if (proxy != null) {
+                // JavaGAT does not have a security context that refers to
+                // a proxy file, but it does have a CredentialSecurityContext
+                // that has the credential itself as a byte array. So, we
+                // try to read the proxy file here.
+                try {
+                    long length = new File(proxy).length();
+                    FileInputStream f = new FileInputStream(proxy);
+                    byte[] buf = new byte[(int) length];
+                    int len = f.read(buf, 0, buf.length);
+                    if (len > 0) {
+                        return new CredentialSecurityContext(buf);
+                    } else {
+                        logger.info("read from proxy file gave " + len);
+                    }
+                } catch (FileNotFoundException e) {
+                    logger.info("Could not open proxy file " + proxy, e);
+                } catch (IOException e) {
+                    logger.info("Could not read proxy file " + proxy, e);
+                }
+            }
             try {
-                return new CertificateSecurityContext(new URI(ctxt
-                        .getValue(ContextImpl.USERKEY)), new URI(ctxt
-                        .getValue(ContextImpl.USERCERT)), ctxt
-                        .getValue(ContextImpl.USERPASS));
+                return new CertificateSecurityContext(
+                        new URI(ctxt.getValue(ContextImpl.USERKEY)),
+                        new URI(ctxt.getValue(ContextImpl.USERCERT)),
+                        ctxt.getValue(ContextImpl.USERPASS));
             } catch (URISyntaxException e) {
                 // what to do? nothing?
             }
@@ -133,16 +164,16 @@ public class Session implements
             }
             if (!ctxt.getValue(ContextImpl.USERKEY).equals("")) {
                 try {
-                    return new CertificateSecurityContext(new URI(ctxt
-                            .getValue(ContextImpl.USERKEY)), new URI(ctxt
-                            .getValue(ContextImpl.USERCERT)), userId, ctxt
-                            .getValue(ContextImpl.USERPASS));
+                    return new CertificateSecurityContext(
+                            new URI(ctxt.getValue(ContextImpl.USERKEY)),
+                            new URI(ctxt.getValue(ContextImpl.USERCERT)), userId,
+                            ctxt.getValue(ContextImpl.USERPASS));
                 } catch (URISyntaxException e) {
                     // what to do? nothing?
                 }
             } else if (!ctxt.getValue(ContextImpl.USERPASS).equals("")) {
-                return new PasswordSecurityContext(userId, ctxt
-                        .getValue(ContextImpl.USERPASS));
+                return new PasswordSecurityContext(userId,
+                        ctxt.getValue(ContextImpl.USERPASS));
             }
         }
         return null;
