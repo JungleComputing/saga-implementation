@@ -95,7 +95,7 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
 	    return descriptions;
 	}
 	if (relatedServices != null) {
-	    for (String service : relatedServices) {
+	    for (@SuppressWarnings("unused") String service : relatedServices) {
 	        /*
 	         * TODO need to do a listServices call to get the serviceDescription
 	         * for the service
