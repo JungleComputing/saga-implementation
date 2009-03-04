@@ -83,10 +83,10 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
 
         JobInstance jobInstance;
 
-        synchronized (this) {
-            // Take care of axis.ClientConfigFile system property: it may
-            // be set by some Globus adaptor, but GridSAM cannot stand that.
-            // So, save and restore it.
+        // Take care of axis.ClientConfigFile system property: it may
+        // be set by some Globus adaptor, but GridSAM cannot stand that.
+        // So, save and restore it.
+        synchronized(SagaJob.class) {
             String saved = System.getProperty("axis.ClientConfigFile");
             if (saved != null) {
                 System.clearProperty("axis.ClientConfigFile");
@@ -108,7 +108,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 }
             }
         }
-
+ 
         jobID = jobInstance.getID();
 
         String id = "[" + service.url + "]-[" + jobID + "]";
@@ -205,7 +205,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 .getContextClassLoader();
         Thread.currentThread().setContextClassLoader(loader);
 
-        synchronized (this) {
+        synchronized (SagaJob.class) {
             // Take care of axis.ClientConfigFile system property: it may
             // be set by some Globus adaptor, but GridSAM cannot stand that.
             // So, save and restore it.
@@ -477,7 +477,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 // Take care of axis.ClientConfigFile system property: it may
                 // be set by some Globus adaptor, but GridSAM cannot stand that.
                 // So, save and restore it.
-                synchronized (parent) {
+                synchronized (SagaJob.class) {
                     String saved = System.getProperty("axis.ClientConfigFile");
                     if (saved != null) {
                         System.clearProperty("axis.ClientConfigFile");
