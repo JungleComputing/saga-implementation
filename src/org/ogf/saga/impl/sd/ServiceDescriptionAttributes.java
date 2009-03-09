@@ -100,4 +100,11 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
 	    IncorrectStateException, BadParameterException {
 	super.setValue(key, value);
     }
+    
+    @Override
+    protected synchronized void setVectorValue(String key, String[] values)
+	    throws DoesNotExistException, NotImplementedException,
+	    IncorrectStateException, BadParameterException {
+	super.setVectorValue(key, values);
+    }
 }
