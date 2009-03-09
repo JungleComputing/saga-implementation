@@ -8,11 +8,14 @@ import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
+import org.ogf.saga.sd.Discoverer;
+import org.ogf.saga.sd.SDFactory;
 import org.ogf.saga.sd.ServiceData;
 import org.ogf.saga.sd.ServiceDescription;
 import org.ogf.saga.session.Session;
@@ -94,16 +97,40 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
 	} catch (DoesNotExistException e) {
 	    return descriptions;
 	}
-	if (relatedServices != null) {
-	    for (@SuppressWarnings("unused") String service : relatedServices) {
-	        /*
-	         * TODO need to do a listServices call to get the serviceDescription
-	         * for the service
-	         */
-	        ServiceDescription serviceDescription = new ServiceDescriptionImpl(
-	                new ServiceDataImpl());
-	        descriptions.add(serviceDescription);
+	if (relatedServices == null) {
+	    // This cannot happen
+	    throw new NoSuccessException(
+		    "Internal error, list of related services is null");
+	}
+	if (relatedServices.length == 0) {
+	    return descriptions;
+	}
+	String filter = "";
+	for (String service : relatedServices) {
+	    if (filter.equals("")) {
+		filter = filter + "uid = '" + service + "'";
+	    } else {
+		filter = filter + " or uid = '" + service + "'";
 	    }
+	}
+	Discoverer discoverer = null;
+	try {
+	    discoverer = SDFactory.createDiscoverer();
+	} catch (NotImplementedException e) {
+	    throw new NoSuccessException(
+		    "Internal error, unable to get related services");
+	} catch (IncorrectURLException e) {
+	    throw new NoSuccessException(
+		    "Internal error, unable to get related services");
+	} catch (DoesNotExistException e) {
+	    throw new NoSuccessException(
+		    "Internal error, unable to get related services");
+	}
+	try {
+	    descriptions = discoverer.listServices(filter, "", "");
+	} catch (BadParameterException e) {
+	    throw new NoSuccessException(
+		    "Internal error, unable to get related services");
 	}
 	return descriptions;
     }
@@ -511,4 +538,28 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
 	m_attributes.setValue(key, value);
     }
 
+    /**
+     * Set method without checks for readOnly.
+     * 
+     * Sets an attribute to an array of values without checks for readOnly. This
+     * method has been made available for use by adaptors.
+     * 
+     * @param key
+     *                the attribute key
+     * @param values
+     *                array of values to set the attribute to
+     * @throws DoesNotExistException
+     *                 ...
+     * @throws NotImplementedException
+     *                 ...
+     * @throws IncorrectStateException
+     *                 ...
+     * @throws BadParameterException
+     *                 ...
+     */
+    public void setVectorValue(String key, String[] values)
+	    throws DoesNotExistException, NotImplementedException,
+	    IncorrectStateException, BadParameterException {
+	m_attributes.setVectorValue(key, values);
+    }
 }
