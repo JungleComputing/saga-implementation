@@ -3,6 +3,7 @@ package org.ogf.saga.adaptors.javaGAT;
 import java.io.File;
 
 import org.ogf.saga.context.Context;
+import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.AdaptorBase;
 import org.ogf.saga.impl.context.ContextImpl;
@@ -29,12 +30,25 @@ public class ContextInitializerAdaptor extends AdaptorBase<Object> implements
                 // setValue(Context.USERPASS, "");
                 // setValue(Context.USERKEY, "");
             } else if ("globus".equals(type) || "gridftp".equals(type)) {
-                // Default: taken from .globus dir in user home.
-                String home = System.getProperty("user.home");
-                context.setValueIfEmpty(Context.USERKEY, home + File.separator
-                        + ".globus" + File.separator + "userkey.pem");
-                context.setValueIfEmpty(Context.USERCERT, home + File.separator
-                        + ".globus" + File.separator + "usercert.pem");
+                String proxy = System.getenv("X509_USER_PROXY");
+                if (proxy == null) {
+                    proxy = SAGAEngine.getProperty("x509.user.proxy");
+                }
+                if (proxy != null && new File(proxy).exists()) {
+                    context.setValueIfEmpty(Context.USERPROXY, proxy);
+                } else {
+                    String home = System.getProperty("user.home");
+                    String key = home + File.separator
+                    + ".globus" + File.separator + "userkey.pem";
+                    String cert = home + File.separator
+                    + ".globus" + File.separator + "usercert.pem";
+                    if (new File(key).exists()) {
+                        context.setValueIfEmpty(Context.USERKEY, key);
+                    }
+                    if (new File(cert).exists()) {
+                        context.setValueIfEmpty(Context.USERCERT, cert);
+                    }
+                }
                 // attributes.setValue(Context.USERPASS, "");
             } else if ("preferences".equals(type)) {
                 // nothing
