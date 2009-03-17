@@ -120,7 +120,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             isDirectory = false;
         }
         try {
-            if (!file.exists() && !Flags.CREATE.isSet(flags)) {
+            if (!Flags.CREATE.isSet(flags) && !file.exists()) {
                 throw new DoesNotExistException(name.toString()
                         + " does not exist");
             }
@@ -128,39 +128,36 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             throw new NoSuccessException(e);
         }
         try {
-            if (file.exists() && Flags.CREATE.isSet(flags)
-                    && Flags.EXCL.isSet(flags)) {
+            if (Flags.CREATE.isSet(flags)
+                    && Flags.EXCL.isSet(flags) && file.exists()) {
                 throw new AlreadyExistsException(name.toString()
                         + " already exists");
             }
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e);
         }
-        File parentFile;
-        try {
-            parentFile = file.getParentFile();
-        } catch (GATInvocationException e) {
-            throw new NoSuccessException(e);
-        }
-        if (parentFile == null) {
+        
+        // Check existence of parent dir, and create it if required.
+        if (Flags.CREATE.isSet(flags)) {
+            File parentFile;
             try {
-                parentFile = GAT.createFile(gatContext, ".");
-            } catch (GATObjectCreationException e) {
+                parentFile = file.getParentFile();
+            } catch (GATInvocationException e) {
                 throw new NoSuccessException(e);
             }
-        }
-        if (!parentFile.exists() && Flags.CREATE.isSet(flags)
-                && Flags.CREATEPARENTS.isSet(flags)) {
-            parentFile.mkdirs();
-        }
-        if (!parentFile.exists() && Flags.CREATE.isSet(flags)
-                && !Flags.CREATEPARENTS.isSet(flags)) {
-            throw new DoesNotExistException("Parent file does not exist: "
-                    + name.toString());
+            boolean parentExists = parentFile == null || parentFile.exists();
+            if (Flags.CREATEPARENTS.isSet(flags) && ! parentExists) {
+                parentExists = parentFile.mkdirs();
+            }
+
+            if (! parentExists) {
+                throw new DoesNotExistException("Parent file does not exist: "
+                        + name.toString());
+            }
         }
         // below not specified...
         try {
-            if (!file.exists() && Flags.CREATE.isSet(flags)) {
+            if (Flags.CREATE.isSet(flags) && ! file.exists()) {
                 if (!isDir) {
                     if (!file.createNewFile()) {
                         throw new NoSuccessException(
