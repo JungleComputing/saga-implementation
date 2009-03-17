@@ -245,18 +245,19 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                             t);
                 }
                 SagaException e = (SagaException) t;
+                
+                if (exceptions == null) {
+                    exceptions = new ArrayList<SagaException>();
+                }
+                
+                exceptions.add(e);
+                
                 if (exception == null) {
                     exception = e;
                 } else {
-                    if (exceptions == null) {
-                        exceptions = new ArrayList<SagaException>();
-                    }
                     SagaException e1 = compare(exception, e);
                     if (e1 == e) {
-                        exceptions.add(exception);
-                        exception = e1;
-                    } else {
-                        exceptions.add(e);
+                         exception = e1;
                     }
                 }
             }
@@ -264,11 +265,10 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         
 
         if (this.adaptors.size() == 0 && exception != null) {
-            if (exceptions != null) {
-                for (SagaException e : exceptions) {
-                    exception.addNestedException(e);
-                } 
-            }
+            for (SagaException e : exceptions) {
+                exception.addNestedException(e);
+            } 
+
             throw exception;
         }
     }
@@ -436,18 +436,18 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     SagaException e = (SagaException) t;
                     addWrapper(e, adaptorInstantiation);
                     
+                    if (exceptions == null) {
+                        exceptions = new ArrayList<SagaException>();
+                    }
+                    
+                    exceptions.add(e);
+                    
                     if (exception == null) {
                         exception = e;
                     } else {
-                        if (exceptions == null) {
-                            exceptions = new ArrayList<SagaException>();
-                        }
                         SagaException e1 = compare(exception, e);
                         if (e1 == e) {
-                            exceptions.add(exception);
-                            exception = e1;
-                        } else {
-                            exceptions.add(e);
+                             exception = e1;
                         }
                     }
                 } finally {
@@ -465,10 +465,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             throw new NoSuccessException("no adaptor found for " + m.getName());
         }
 
-        if (exceptions != null) {
-            for (SagaException e : exceptions) {
-                exception.addNestedException(e);
-            }
+        for (SagaException e : exceptions) {
+            exception.addNestedException(e);
         }
  
         throw exception;
