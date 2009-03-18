@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
+import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.URI;
 import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
@@ -41,8 +42,12 @@ class FileEntry extends NSEntryAdaptor {
         return gatURI;
     }
 
-    long size() {
-        return fileImpl.length();
+    long size() throws NoSuccessException {
+        try {
+            return file.length();
+        } catch (GATInvocationException e) {
+            throw new NoSuccessException("Got exception", e);
+        }
     }
 
     InputStream getInputStream() throws NoSuccessException {
