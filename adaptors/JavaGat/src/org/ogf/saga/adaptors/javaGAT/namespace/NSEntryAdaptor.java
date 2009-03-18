@@ -103,13 +103,27 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             }
             throw new NoSuccessException(e);
         }
+        
+        boolean exists = false;
+        try {
+            exists = file.exists();
+        } catch(Throwable e) {
+            // ignore ...
+        }
+        
+        if (!Flags.CREATE.isSet(flags) && ! exists) {
+            throw new DoesNotExistException(name.toString()
+                    + " does not exist");
+        }
+
+        if (Flags.CREATE.isSet(flags)
+                && Flags.EXCL.isSet(flags) && exists) {
+            throw new AlreadyExistsException(name.toString()
+                    + " already exists");
+        }
 
         try {
-            isDirectory = file.isDirectory();
-            if (isDirectory && !isDir) {
-                throw new BadParameterException(name.toString()
-                        + " points to directory");
-            }
+            isDirectory = exists && file.isDirectory();
         } catch (Throwable e) {
             // TODO: isDirectory fails, is a problem for GAT http adaptor.
             // For now, ignore the exception and assume that it is not a
@@ -119,24 +133,15 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                     e);
             isDirectory = false;
         }
-        try {
-            if (!Flags.CREATE.isSet(flags) && !file.exists()) {
-                throw new DoesNotExistException(name.toString()
-                        + " does not exist");
-            }
-        } catch (GATInvocationException e) {
-            throw new NoSuccessException(e);
+        if (isDirectory && !isDir) {
+            throw new BadParameterException(name.toString()
+                    + " indicates a directory");
         }
-        try {
-            if (Flags.CREATE.isSet(flags)
-                    && Flags.EXCL.isSet(flags) && file.exists()) {
-                throw new AlreadyExistsException(name.toString()
-                        + " already exists");
-            }
-        } catch (GATInvocationException e) {
-            throw new NoSuccessException(e);
+        if (isDir && exists && ! isDirectory) {
+            throw new BadParameterException(name.toString()
+                    + " does not indicate a directory");
         }
-        
+    
         // Check existence of parent dir, and create it if required.
         if (Flags.CREATE.isSet(flags)) {
             File parentFile;
@@ -157,7 +162,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         }
         // below not specified...
         try {
-            if (Flags.CREATE.isSet(flags) && ! file.exists()) {
+            if (Flags.CREATE.isSet(flags) && ! exists) {
                 if (!isDir) {
                     if (!file.createNewFile()) {
                         throw new NoSuccessException(
