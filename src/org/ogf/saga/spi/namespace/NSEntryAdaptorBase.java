@@ -43,8 +43,15 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(sessionImpl, wrapper);
         nameUrl = name.normalize();
+        String path = nameUrl.getPath();
+
         if (name == nameUrl) {
             nameUrl = URLFactory.createURL(name.toString());
+        }
+        
+        if (this instanceof NSDirectoryAdaptorBase
+                && ! path.equals("/") && path.endsWith("/")) {
+            nameUrl.setPath(path.substring(0, path.length() - 1));
         }
 
         if (logger.isDebugEnabled()) {

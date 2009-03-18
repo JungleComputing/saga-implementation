@@ -59,7 +59,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags);
-        entry = new NSEntryAdaptor(wrapper, sessionImpl, name, flags, true);
+        entry = new NSEntryAdaptor(wrapper, sessionImpl, nameUrl, flags, true);
     }
 
     public Object clone() throws CloneNotSupportedException {
