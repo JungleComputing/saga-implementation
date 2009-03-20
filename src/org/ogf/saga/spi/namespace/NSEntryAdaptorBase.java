@@ -49,9 +49,12 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
             nameUrl = URLFactory.createURL(name.toString());
         }
         
-        if (this instanceof NSDirectoryAdaptorBase
-                && ! path.equals("/") && path.endsWith("/")) {
-            nameUrl.setPath(path.substring(0, path.length() - 1));
+        if (! path.equals("/") && path.endsWith("/")) {
+            if (this instanceof NSDirectoryAdaptorBase) {
+                nameUrl.setPath(path.substring(0, path.length() - 1));
+            } else {
+                throw new BadParameterException("Bad parameter: " + name + " cannot indicate a non-directory");
+            }
         }
 
         if (logger.isDebugEnabled()) {
