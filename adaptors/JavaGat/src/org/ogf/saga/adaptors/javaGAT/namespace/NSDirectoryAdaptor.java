@@ -397,8 +397,12 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         if (resultFiles != null) {
             for (File resultFile : resultFiles) {
                 try {
-                    resultList.add(URLFactory.createURL(resultFile
-                            .getFileInterface().getName()));
+                    // Watch out for special characters. Therefore, create the
+                    // URL in two steps: First create an empty one, and then
+                    // set the path.
+                    URL u = URLFactory.createURL("");
+                    u.setPath(resultFile.getFileInterface().getName());
+                    resultList.add(u);
                 } catch (GATInvocationException e) {
                     throw new NoSuccessException(e, wrapper);
                 }
