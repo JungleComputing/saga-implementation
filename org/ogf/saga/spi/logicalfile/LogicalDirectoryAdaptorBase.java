@@ -133,7 +133,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
                     "openLogicalDir with CREATE flag "
                             + "on logicalDirectory not opened for writing");
         }
-        name = resolve(name);
+        name = resolveToDir(name);
         return LogicalFileFactory.createLogicalDirectory(sessionImpl, name,
                 flags);
     }
@@ -160,7 +160,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
                             + "logicalDirectory not opened for writing");
         }
 
-        name = resolve(name);
+        name = resolveToDir(name);
         return LogicalFileFactory.createLogicalFile(sessionImpl, name, flags);
     }
 
