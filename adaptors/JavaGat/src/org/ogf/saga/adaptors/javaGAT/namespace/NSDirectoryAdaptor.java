@@ -387,25 +387,21 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
     private List<URL> listDir() throws NoSuccessException,
             NotImplementedException, BadParameterException {
 
-        File[] resultFiles;
+        String[] resultFiles;
         try {
-            resultFiles = entry.file.listFiles();
+            resultFiles = entry.file.list();
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e, wrapper);
         }
         List<URL> resultList = new ArrayList<URL>();
         if (resultFiles != null) {
-            for (File resultFile : resultFiles) {
-                try {
-                    // Watch out for special characters. Therefore, create the
-                    // URL in two steps: First create an empty one, and then
-                    // set the path.
-                    URL u = URLFactory.createURL("");
-                    u.setPath(resultFile.getFileInterface().getName());
-                    resultList.add(u);
-                } catch (GATInvocationException e) {
-                    throw new NoSuccessException(e, wrapper);
-                }
+            for (String resultFile : resultFiles) {
+                // Watch out for special characters. Therefore, create the
+                // URL in two steps: First create an empty one, and then
+                // set the path.
+                URL u = URLFactory.createURL("");
+                u.setPath(resultFile);
+                resultList.add(u);
             }
         }
         return resultList;
