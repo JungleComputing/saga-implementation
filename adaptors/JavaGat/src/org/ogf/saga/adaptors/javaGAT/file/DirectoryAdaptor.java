@@ -71,7 +71,7 @@ public class DirectoryAdaptor extends
                     + flags, directoryWrapper);
         }
 
-        name = resolve(name);
+        name = resolveToDir(name);
 
         FileEntry file = null;
         try {
