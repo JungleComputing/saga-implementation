@@ -73,7 +73,7 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        name = resolve(name);
+        name = resolveToDir(name);
         return FileFactory.createDirectory(sessionImpl, name, flags);
     }
 
@@ -90,7 +90,7 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        name = resolve(name);
+        name = resolveToDir(name);
         return FileFactory.createFile(sessionImpl, name, flags);
     }
 
@@ -107,7 +107,7 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        name = resolve(name);
+        name = resolveToDir(name);
         return FileFactory.createFileInputStream(sessionImpl, name);
     }
 
@@ -117,7 +117,7 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        name = resolve(name);
+        name = resolveToDir(name);
         return FileFactory.createFileOutputStream(sessionImpl, name, append);
     }
 
