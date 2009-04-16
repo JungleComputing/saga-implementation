@@ -95,7 +95,6 @@
 	    <zipfileset dir="adaptors/Socket/src" includes="**/*.java" prefix="${sources-filename}" />
 	    <zipfileset dir="adaptors/XMLRPC/src" includes="**/*.java" prefix="${sources-filename}" />
 	    <zipfileset dir="adaptors/Generic/src" includes="**/*.java" prefix="${sources-filename}" />
-	    <zipfileset dir="adaptors/gLite/src" includes="**/*.java" prefix="${sources-filename}" />
             <zipfileset dir="." includes="LICENSE.txt" prefix="${sources-filename}" />
         </zip>
 

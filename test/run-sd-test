@@ -6,6 +6,7 @@
 
 export JAVA_SAGA_LOCATION=`cd .. && pwd`
 
-infoUrl=http://`hostname`/infosys
+host=`hostname`
+infoUrl=http://rgma04.pp.rl.ac.uk:2170
 $JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
-    test.sd.SDAdaptorTest glite $infoUrl
+    test.sd.SDAdaptorTest glite $host $infoUrl

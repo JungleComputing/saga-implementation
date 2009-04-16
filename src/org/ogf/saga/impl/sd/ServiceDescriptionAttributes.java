@@ -43,50 +43,50 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
 		READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
 	try {
 	    setValue(ServiceDescription.TYPE, "Not Set");
-	} catch (DoesNotExistException e) {
-	} catch (NotImplementedException e) {
-	} catch (IncorrectStateException e) {
 	} catch (BadParameterException e) {
+	} catch (DoesNotExistException e) {
+	} catch (IncorrectStateException e) {
+	} catch (NotImplementedException e) {
 	}
 
 	addAttribute(ServiceDescription.UID, AttributeType.STRING, SCALAR,
 		READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
 	try {
 	    setValue(ServiceDescription.UID, "Not Set");
-	} catch (DoesNotExistException e) {
-	} catch (NotImplementedException e) {
-	} catch (IncorrectStateException e) {
 	} catch (BadParameterException e) {
+	} catch (DoesNotExistException e) {
+	} catch (IncorrectStateException e) {
+	} catch (NotImplementedException e) {
 	}
 
 	addAttribute(ServiceDescription.SITE, AttributeType.STRING, SCALAR,
 		READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
 	try {
 	    setValue(ServiceDescription.SITE, "Not Set");
-	} catch (DoesNotExistException e) {
-	} catch (NotImplementedException e) {
-	} catch (IncorrectStateException e) {
 	} catch (BadParameterException e) {
+	} catch (DoesNotExistException e) {
+	} catch (IncorrectStateException e) {
+	} catch (NotImplementedException e) {
 	}
 
 	addAttribute(ServiceDescription.NAME, AttributeType.STRING, SCALAR,
 		READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
 	try {
 	    setValue(ServiceDescription.NAME, "Not Set");
-	} catch (DoesNotExistException e) {
-	} catch (NotImplementedException e) {
-	} catch (IncorrectStateException e) {
 	} catch (BadParameterException e) {
+	} catch (DoesNotExistException e) {
+	} catch (IncorrectStateException e) {
+	} catch (NotImplementedException e) {
 	}
 
 	addAttribute(ServiceDescription.IMPLEMENTOR, AttributeType.STRING,
 		SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
 	try {
 	    setValue(ServiceDescription.IMPLEMENTOR, "Not Set");
-	} catch (DoesNotExistException e) {
-	} catch (NotImplementedException e) {
-	} catch (IncorrectStateException e) {
 	} catch (BadParameterException e) {
+	} catch (DoesNotExistException e) {
+	} catch (IncorrectStateException e) {
+	} catch (NotImplementedException e) {
 	}
 
 	addAttribute(ServiceDescription.RELATED_SERVICES, AttributeType.STRING,
@@ -96,15 +96,15 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
 
     @Override
     protected synchronized void setValue(String key, String value)
-	    throws DoesNotExistException, NotImplementedException,
-	    IncorrectStateException, BadParameterException {
+	    throws BadParameterException, DoesNotExistException,
+	    IncorrectStateException, NotImplementedException {
 	super.setValue(key, value);
     }
-    
+
     @Override
     protected synchronized void setVectorValue(String key, String[] values)
-	    throws DoesNotExistException, NotImplementedException,
-	    IncorrectStateException, BadParameterException {
+	    throws BadParameterException, DoesNotExistException,
+	    IncorrectStateException, NotImplementedException {
 	super.setVectorValue(key, values);
     }
 }

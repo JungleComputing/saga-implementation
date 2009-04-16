@@ -6,7 +6,7 @@ import org.ogf.saga.proxies.sd.DiscovererWrapper;
 import org.ogf.saga.url.URL;
 
 /**
- * Base class for Service Discovery adaptors.
+ * Base class for Service Discovery adapters.
  * 
  */
 public abstract class DiscovererAdaptorBase extends
@@ -21,7 +21,7 @@ public abstract class DiscovererAdaptorBase extends
      * @param wrapper
      *                the wrapper object
      * @param sessionImpl
-     *                the session of the adaptor
+     *                the session of the adapter
      * @param infoSystemUrl
      *                the url of the information system
      */

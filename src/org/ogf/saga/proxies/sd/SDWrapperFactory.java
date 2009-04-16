@@ -26,37 +26,19 @@ public class SDWrapperFactory extends SDFactory {
      * @param session
      *                the session handle
      * @return the discoverer wrapper
-     * @throws NotImplementedException
-     *                 if not implemented by that SAGA implementation at all
-     * @throws IncorrectURLException
-     *                 if an implementation cannot handle the specified
-     *                 protocol, or that access to the specified entity via the
-     *                 given protocol is impossible
-     * @throws DoesNotExistException
-     *                 if the url is syntactically valid, but no service can be
-     *                 contacted at that URL
-     * @throws AuthorizationFailedException
-     *                 if none of the available contexts of the used session
-     *                 could be used for successful authorization. That error
-     *                 indicates that the resource could not be accessed at all,
-     *                 and not that an operation was not available due to
-     *                 restricted permissions.
      * @throws AuthenticationFailedException
-     *                 if none of the available session contexts could
-     *                 successfully be used for authentication
-     * @throws TimeoutException
-     *                 if a remote operation did not complete successfully
-     *                 because the network communication or the remote service
-     *                 timed out
+     * @throws AuthorizationFailedException
+     * @throws DoesNotExistException
+     * @throws IncorrectURLException
      * @throws NoSuccessException
-     *                 if no result can be returned because of information
-     *                 system or other internal problems
+     * @throws NotImplementedException
+     * @throws TimeoutException
      */
     @Override
     protected Discoverer doCreateDiscoverer(Session session)
-	    throws NotImplementedException, IncorrectURLException,
-	    DoesNotExistException, AuthorizationFailedException,
-	    AuthenticationFailedException, TimeoutException, NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    DoesNotExistException, IncorrectURLException, NoSuccessException,
+	    NotImplementedException, TimeoutException {
 	return new DiscovererWrapper(session);
     }
 
@@ -68,37 +50,19 @@ public class SDWrapperFactory extends SDFactory {
      * @param url
      *                the URL to guide the implementation
      * @return the discoverer wrapper
-     * @throws NotImplementedException
-     *                 if not implemented by that SAGA implementation at all
-     * @throws IncorrectURLException
-     *                 if an implementation cannot handle the specified
-     *                 protocol, or that access to the specified entity via the
-     *                 given protocol is impossible
-     * @throws DoesNotExistException
-     *                 if the url is syntactically valid, but no service can be
-     *                 contacted at that URL
-     * @throws AuthorizationFailedException
-     *                 if none of the available contexts of the used session
-     *                 could be used for successful authorization. That error
-     *                 indicates that the resource could not be accessed at all,
-     *                 and not that an operation was not available due to
-     *                 restricted permissions.
      * @throws AuthenticationFailedException
-     *                 if none of the available session contexts could
-     *                 successfully be used for authentication
-     * @throws TimeoutException
-     *                 if a remote operation did not complete successfully
-     *                 because the network communication or the remote service
-     *                 timed out
+     * @throws AuthorizationFailedException
+     * @throws DoesNotExistException
+     * @throws IncorrectURLException
      * @throws NoSuccessException
-     *                 if no result can be returned because of information
-     *                 system or other internal problems
+     * @throws NotImplementedException
+     * @throws TimeoutException
      */
     @Override
     protected Discoverer doCreateDiscoverer(Session session, URL url)
-	    throws NotImplementedException, IncorrectURLException,
-	    DoesNotExistException, AuthorizationFailedException,
-	    AuthenticationFailedException, TimeoutException, NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    DoesNotExistException, IncorrectURLException, NoSuccessException,
+	    NotImplementedException, TimeoutException {
 	return new DiscovererWrapper(session, url);
     }
 
