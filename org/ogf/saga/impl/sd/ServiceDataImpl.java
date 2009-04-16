@@ -39,22 +39,17 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @param key
      *                the attribute key.
      * @return <code>true</code> if the attribute exists.
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      */
-    public boolean existsAttribute(String key) throws NotImplementedException,
-	    AuthenticationFailedException, AuthorizationFailedException,
-	    PermissionDeniedException, TimeoutException, NoSuccessException {
+    public boolean existsAttribute(String key)
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    NoSuccessException, NotImplementedException,
+	    PermissionDeniedException, TimeoutException {
 	return m_attributes.existsAttribute(key);
     }
 
@@ -64,26 +59,18 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @param patterns
      *                the search patterns
      * @return the list of matching attribute keys
-     * @throws NotImplementedException
-     *                 ...
-     * @throws BadParameterException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
+     * @throws BadParameterException
      * @throws NoSuccessException
-     *                 ...
-     * 
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      */
     public String[] findAttributes(String... patterns)
-	    throws NotImplementedException, BadParameterException,
-	    AuthenticationFailedException, AuthorizationFailedException,
-	    PermissionDeniedException, TimeoutException, NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    BadParameterException, NotImplementedException, NoSuccessException,
+	    PermissionDeniedException, TimeoutException {
 	return m_attributes.findAttributes(patterns);
     }
 
@@ -93,29 +80,22 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @param key
      *                the attribute key
      * @return the value of this attribute
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
-     * @throws IncorrectStateException
-     *                 ...
      * @throws DoesNotExistException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
+     * @throws IncorrectStateException
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      * 
      * @see #setAttribute
      */
-    public String getAttribute(String key) throws NotImplementedException,
-	    AuthenticationFailedException, AuthorizationFailedException,
-	    PermissionDeniedException, IncorrectStateException,
-	    DoesNotExistException, TimeoutException, NoSuccessException {
+    public String getAttribute(String key)
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    DoesNotExistException, IncorrectStateException, NoSuccessException,
+	    NotImplementedException, PermissionDeniedException,
+	    TimeoutException {
 	return m_attributes.getAttribute(key);
     }
 
@@ -125,30 +105,22 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @param key
      *                the attribute key
      * @return the values of this attribute, or <code>null</code>
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
-     * @throws IncorrectStateException
-     *                 ...
      * @throws DoesNotExistException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
+     * @throws IncorrectStateException
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      * 
      * @see #setVectorAttribute
      */
     public String[] getVectorAttribute(String key)
-	    throws NotImplementedException, AuthenticationFailedException,
-	    AuthorizationFailedException, PermissionDeniedException,
-	    IncorrectStateException, DoesNotExistException, TimeoutException,
-	    NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    DoesNotExistException, IncorrectStateException, NoSuccessException,
+	    NotImplementedException, PermissionDeniedException,
+	    TimeoutException {
 	return m_attributes.getVectorAttribute(key);
     }
 
@@ -158,25 +130,18 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @param key
      *                the attribute key
      * @return <code>true</code> if the attribute exists and is read-only
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
      * @throws DoesNotExistException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      */
     public boolean isReadOnlyAttribute(String key)
-	    throws NotImplementedException, AuthenticationFailedException,
-	    AuthorizationFailedException, PermissionDeniedException,
-	    DoesNotExistException, TimeoutException, NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    DoesNotExistException, NoSuccessException, NotImplementedException,
+	    PermissionDeniedException, TimeoutException {
 	return m_attributes.isReadOnlyAttribute(key);
     }
 
@@ -186,25 +151,18 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @param key
      *                the attribute key
      * @return <code>true</code> if the attribute exists and is removable
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
      * @throws DoesNotExistException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      */
     public boolean isRemovableAttribute(String key)
-	    throws NotImplementedException, AuthenticationFailedException,
-	    AuthorizationFailedException, PermissionDeniedException,
-	    DoesNotExistException, TimeoutException, NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    DoesNotExistException, NoSuccessException, NotImplementedException,
+	    PermissionDeniedException, TimeoutException {
 	return m_attributes.isRemovableAttribute(key);
     }
 
@@ -214,25 +172,18 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @param key
      *                the attribute key
      * @return <code>true</code> if the attribute is a vector attribute
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
      * @throws DoesNotExistException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      */
     public boolean isVectorAttribute(String key)
-	    throws NotImplementedException, AuthenticationFailedException,
-	    AuthorizationFailedException, PermissionDeniedException,
-	    DoesNotExistException, TimeoutException, NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    DoesNotExistException, NoSuccessException, NotImplementedException,
+	    PermissionDeniedException, TimeoutException {
 	return m_attributes.isVectorAttribute(key);
     }
 
@@ -242,25 +193,18 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * @param key
      *                the attribute key
      * @return <code>true</code> if the attribute exists and is writable
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
      * @throws DoesNotExistException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      */
     public boolean isWritableAttribute(String key)
-	    throws NotImplementedException, AuthenticationFailedException,
-	    AuthorizationFailedException, PermissionDeniedException,
-	    DoesNotExistException, TimeoutException, NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    DoesNotExistException, NoSuccessException, NotImplementedException,
+	    PermissionDeniedException, TimeoutException {
 	return m_attributes.isWritableAttribute(key);
     }
 
@@ -268,23 +212,17 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * Gets the list of attribute keys.
      * 
      * @return the list of attribute keys
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      * 
      */
     public String[] listAttributes() throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
-	    PermissionDeniedException, TimeoutException, NoSuccessException {
+	    NoSuccessException, PermissionDeniedException, TimeoutException {
 	return m_attributes.listAttributes();
     }
 
@@ -293,26 +231,19 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * 
      * @param key
      *                the attribute key
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
      * @throws DoesNotExistException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      * 
      */
     public void removeAttribute(String key) throws NotImplementedException,
 	    AuthenticationFailedException, AuthorizationFailedException,
-	    PermissionDeniedException, DoesNotExistException, TimeoutException,
-	    NoSuccessException {
+	    DoesNotExistException, NoSuccessException,
+	    PermissionDeniedException, TimeoutException {
 	m_attributes.removeAttribute(key);
     }
 
@@ -323,32 +254,24 @@ public class ServiceDataImpl extends SagaObjectBase implements
      *                the attribute key
      * @param value
      *                value to set the attribute to
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
-     * @throws IncorrectStateException
-     *                 ...
      * @throws BadParameterException
-     *                 ...
      * @throws DoesNotExistException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
+     * @throws IncorrectStateException
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      * 
      * @see #getAttribute
      */
     public void setAttribute(String key, String value)
-	    throws NotImplementedException, AuthenticationFailedException,
-	    AuthorizationFailedException, PermissionDeniedException,
-	    IncorrectStateException, BadParameterException,
-	    DoesNotExistException, TimeoutException, NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    BadParameterException, DoesNotExistException,
+	    IncorrectStateException, NoSuccessException,
+	    NotImplementedException, PermissionDeniedException,
+	    TimeoutException {
 	m_attributes.setAttribute(key, value);
     }
 
@@ -359,32 +282,24 @@ public class ServiceDataImpl extends SagaObjectBase implements
      *                the attribute key
      * @param values
      *                values to set the attribute to
-     * @throws NotImplementedException
-     *                 ...
      * @throws AuthenticationFailedException
-     *                 ...
      * @throws AuthorizationFailedException
-     *                 ...
-     * @throws PermissionDeniedException
-     *                 ...
-     * @throws IncorrectStateException
-     *                 ...
      * @throws BadParameterException
-     *                 ...
      * @throws DoesNotExistException
-     *                 ...
-     * @throws TimeoutException
-     *                 ...
+     * @throws IncorrectStateException
      * @throws NoSuccessException
-     *                 ...
+     * @throws NotImplementedException
+     * @throws PermissionDeniedException
+     * @throws TimeoutException
      * 
      * @see #getVectorAttribute
      */
     public void setVectorAttribute(String key, String[] values)
-	    throws NotImplementedException, AuthenticationFailedException,
-	    AuthorizationFailedException, PermissionDeniedException,
-	    IncorrectStateException, BadParameterException,
-	    DoesNotExistException, TimeoutException, NoSuccessException {
+	    throws AuthenticationFailedException, AuthorizationFailedException,
+	    BadParameterException, DoesNotExistException,
+	    IncorrectStateException, NoSuccessException,
+	    NotImplementedException, PermissionDeniedException,
+	    TimeoutException {
 	m_attributes.setVectorAttribute(key, values);
     }
 
@@ -409,6 +324,48 @@ public class ServiceDataImpl extends SagaObjectBase implements
 	    boolean readOnly, boolean notImplemented, boolean removable) {
 	m_attributes.addAttribute(name, type, vector, readOnly, notImplemented,
 		removable);
+    }
+
+    /**
+     * Set method without checks for readOnly.
+     * 
+     * Sets an attribute to a value without checks for readOnly. This method has
+     * been made available for use by adaptors.
+     * 
+     * @param key
+     *                the attribute key
+     * @param value
+     *                value to set the attribute to
+     * @throws BadParameterException
+     * @throws DoesNotExistException
+     * @throws IncorrectStateException
+     * @throws NotImplementedException
+     */
+    public void setValue(String key, String value)
+	    throws BadParameterException, DoesNotExistException,
+	    IncorrectStateException, NotImplementedException {
+	m_attributes.setValue(key, value);
+    }
+
+    /**
+     * Set method without checks for readOnly.
+     * 
+     * Sets an attribute to an array of values without checks for readOnly. This
+     * method has been made available for use by adaptors.
+     * 
+     * @param key
+     *                the attribute key
+     * @param values
+     *                array of values to set the attribute to
+     * @throws BadParameterException
+     * @throws DoesNotExistException
+     * @throws IncorrectStateException
+     * @throws NotImplementedException
+     */
+    public void setVectorValue(String key, String[] values)
+	    throws BadParameterException, DoesNotExistException,
+	    IncorrectStateException, NotImplementedException {
+	m_attributes.setVectorValue(key, values);
     }
 
 }
