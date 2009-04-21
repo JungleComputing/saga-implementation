@@ -21,15 +21,14 @@ import org.ogf.saga.url.URLFactory;
 
 public class ListTest {
     
-    private static String getPassphrase() {
+    private static String getPassphrase(String m) {
         JPasswordField pwd = new JPasswordField();
-        Object[] message = { "grid-proxy-init\nPlease enter your passphrase.",
+        Object[] message = { m + "\nPlease enter your passphrase.",
                 pwd };
-        JOptionPane.showMessageDialog(null, message, "Grid-Proxy-Init",
+        JOptionPane.showMessageDialog(null, message, m,
                 JOptionPane.QUESTION_MESSAGE);
         return new String(pwd.getPassword());
     }
-
 
     public static void main(String[] args) {
         try {
@@ -38,15 +37,16 @@ public class ListTest {
             Session session = SessionFactory.createSession(true);
             
             String scheme = directory.getScheme();
+            
             if ("ftp".equals(scheme)) {
                 // FTP context. Default is anonymous.
                 session.addContext(ContextFactory.createContext("ftp"));
             } else if ("gsiftp".equals(scheme)) {
                 // Gridftp context.
                 Context context = ContextFactory.createContext("gridftp");
-                context.setAttribute(Context.USERPASS, getPassphrase());
+                context.setAttribute(Context.USERPASS, getPassphrase("Grid-Proxy-Init"));
                 session.addContext(context);
-            }
+            }            
 
             // Print a listing of the directory indicated in the first argument.
             NSDirectory entry = NSFactory.createNSDirectory(directory);
