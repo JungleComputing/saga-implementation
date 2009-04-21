@@ -163,19 +163,19 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
 			    org.ogf.saga.impl.session.SessionImpl.class,
 			    URL.class }, parameters);
 	} catch (AuthenticationFailedException e) {
-	    throw (AuthenticationFailedException) e;
+	    throw e;
 	} catch (AuthorizationFailedException e) {
-	    throw (AuthorizationFailedException) e;
+	    throw e;
 	} catch (DoesNotExistException e) {
-	    throw (DoesNotExistException) e;
+	    throw e;
 	} catch (IncorrectURLException e) {
-	    throw (IncorrectURLException) e;
+	    throw e;
 	} catch (NoSuccessException e) {
-	    throw (NoSuccessException) e;
+	    throw e;
 	} catch (NotImplementedException e) {
-	    throw (NotImplementedException) e;
+	    throw e;
 	} catch (TimeoutException e) {
-	    throw (TimeoutException) e;
+	    throw e;
 	} catch (SagaException e) {
 	    throw new NoSuccessException("Constructor failed", e);
 	}
