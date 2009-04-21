@@ -4,7 +4,7 @@ JavaGAT adaptor README
 Introduction.
   The JavaGAT adaptor actually consists of several adaptors:
   it has implementations for streams, namespace, file, job.
-  The JavaGAT version supplied is version 2.0.2.
+  The JavaGAT version supplied is version 2.0.5.
 
 Not implemented.
   Permissions are not implemented, there is no support for it in JavaGAT.
@@ -28,8 +28,8 @@ Not implemented.
     waitFor(Activity.WRITE). Also, Stream attributes are not supported yet.
   Jobs:
     The JavaGAT adaptor for the job package is built on JavaGAT Resources,
-    for which various adaptors are available: ssh, globus, gridsam, glite, to name
-    a few.
+    for which various adaptors are available: ssh, globus, gridsam, glite,
+    unicore, to name a few.
     The following methods are not implemented: getSelf(),  signal(),
     checkpoint(), migrate().
     The following JobDescription attributes are not implemented:
@@ -38,7 +38,7 @@ Not implemented.
     The following Job attributes are not supported: TERMSIG.
   Namespace:
     the SAGA namespace package is built on JavaGAT File, for which various
-    adaptors are available: ssh, globus, sftp, to name a few.
+    adaptors are available: ssh, globus, sftp, glite, to name a few.
     Links are not supported.
   File:
     the File methods modesE(), readE(), writeE(), sizeE() are not implemented.
