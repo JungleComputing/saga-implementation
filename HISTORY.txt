@@ -1,3 +1,5 @@
+1.1 (24 April 2009)
+
 1.0 (16 September 2008)
    This release contains a new version of the JavaGAT, which now includes
    a glite adaptor for the Job (in JavaGAT terms: ResourceBroker) package.
