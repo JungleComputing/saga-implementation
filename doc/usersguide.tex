@@ -33,7 +33,7 @@ implementation in
 \noindent
 {\small
 \begin{verbatim}
-$HOME/workspace/saga-impl-1.0
+$HOME/workspace/SagaImplementation
 \end{verbatim}
 }
 \noindent
@@ -43,7 +43,7 @@ then you should have
 \noindent
 {\small
 \begin{verbatim}
-JAVA_SAGA_LOCATION=$HOME/workspace/saga-impl-1.0.
+JAVA_SAGA_LOCATION=$HOME/workspace/SagaImplementation.
 \end{verbatim}
 }
 \noindent
@@ -53,7 +53,7 @@ by adding the line
 \noindent
 {\small
 \begin{verbatim}
-export JAVA_SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
+export JAVA_SAGA_LOCATION=$HOME/workspace/SagaImplementation
 \end{verbatim}
 }
 \noindent
@@ -61,7 +61,7 @@ or
 \noindent
 {\small
 \begin{verbatim}
-set JAVA_SAGA_LOCATION=$HOME/workspace/saga-impl-1.0
+set JAVA_SAGA_LOCATION=$HOME/workspace/SagaImplementation
 \end{verbatim}
 }
 \noindent
@@ -72,7 +72,7 @@ On Windows 2000 or Windows XP you may have installed it in, for instance,
 \noindent
 {\small
 \begin{verbatim}
-c:\Program Files\saga-impl-1.0
+c:\Program Files\SagaImplementation
 \end{verbatim}
 }
 \noindent
@@ -89,13 +89,15 @@ overrides \texttt{SAGA\_LOCATION}.
 
 The only thing that is particular to compiling an application for
 Java SAGA is that the SAGA api jar-file must be on the classpath.
-In this release, the SAGA API jar-file can be found
-in the \texttt{lib} directory, its name is \texttt{saga-api-1.0.jar}, so
-the command
+The SAGA API jar-file can be found
+in the \texttt{lib} directory, its name starts with \texttt{saga-api-} and
+ends with \texttt{.jar}. In between, there is a version number. In this
+document, we'll call this file \texttt{saga-api.jar}.
+The command
 \noindent
 {\small
 \begin{verbatim}
-javac -classpath $JAVA_SAGA_LOCATION/lib/saga-api-1.0.jar \
+javac -classpath $JAVA_SAGA_LOCATION/lib/saga-api.jar \
     <yourapplication>
 \end{verbatim}
 }
@@ -104,7 +106,7 @@ will do the trick on Unix-like systems. On windows,
 \noindent
 {\small
 \begin{verbatim}
-javac -classpath "%JAVA_SAGA_LOCATION%"\lib\saga-api-1.0.jar
+javac -classpath "%JAVA_SAGA_LOCATION%"\lib\saga-api.jar
     <yourapplication>
 \end{verbatim}
 }
@@ -414,7 +416,8 @@ are described in \url{http://saga.cct.lsu.edu/images/SAGA/publications/saga_core
 
 For the Java language bindings, detailed javadoc is available
 in the \texttt{doc} directory. Just point your favorite webbrowser
-to the \texttt{saga-api-1.0} sub-directory.
+to the \texttt{saga-api} sub-directory. Note: there may be a version
+number in the directory name.
 
 Last but not least, SAGA has its own website,
 which can be found at \url{http://saga.cct.lsu.edu},
