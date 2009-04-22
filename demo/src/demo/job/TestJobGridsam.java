@@ -18,30 +18,30 @@ public class TestJobGridsam implements Callback {
 
     public static void main(String[] args) {
         
-        String serverURL = "https://titan.cs.vu.nl:18443/gridsam/services/gridsam";
+        String server = "https://titan.cs.vu.nl:18443/gridsam/services/gridsam";
 
         if (args.length > 1) {
-            System.err.println("Usage: java demo.job.TestJob1 [<serverURL>]");
+            System.err.println("Usage: java demo.job.TestJobGridsam [<serverURL>]");
             System.exit(1);
         } else if (args.length == 1) {
-            serverURL = args[0];
+            server = args[0];
         }
         
         try {
             // Make sure the gridsam adaptor is selected.
             System.setProperty("JobService.adaptor.name", "gridsam");
             
-            URL url = URLFactory.createURL(serverURL);
+            URL serverURL = URLFactory.createURL(server);
 
             // Create the JobService. Gridsam service assumed on specified url.
-            JobService js = JobFactory.createJobService(url);
+            JobService js = JobFactory.createJobService(serverURL);
 
             // Create a job description to execute "/bin/uname -a" on
             // host of specified url.
             // The output will be staged out to the current directory.
             JobDescription jd = JobFactory.createJobDescription();
             
-            String serverHost = url.getHost();
+            String serverHost = serverURL.getHost();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
                     new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/uname");

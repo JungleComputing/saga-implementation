@@ -11,68 +11,65 @@ import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
-import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
-public class TestJobGT2 implements Callback {
+public class TestJobSsh implements Callback {
 
    public static void main(String[] args) {
        // Make sure that the SAGA engine picks the javagat adaptor for JobService.
        System.setProperty("JobService.adaptor.name", "javaGAT");
      
-       String server = "any://ngs.rl.ac.uk";
+       String serverNode = "fs0.das3.cs.vu.nl";
 
        if (args.length > 1) {
-           System.err.println("Usage: java demo.job.TestJob [<serverURL>]");
+           System.err.println("Usage: java demo.job.TestJobSsh [<serverNode>]");
            System.exit(1);
        } else if (args.length == 1) {
-           server = args[0];
+           serverNode = args[0];
        }
        
-       System.out.println("try to submit gt2 job to: "+server);
+       System.out.println("try to submit ssh job to: " + serverNode);
        
        try {
-           URL serverURL = URLFactory.createURL(server);
            Session session = SessionFactory.createSession(true);
           
            // Create a preferences context for JavaGAT.
            // The "preferences" context is special: it is extensible.
            Context context = ContextFactory.createContext("preferences");
          
-           // Make sure that javaGAT picks the globus adaptor
-           context.setAttribute("ResourceBroker.adaptor.name", "globus"); //wsgt4new
-           context.setAttribute("machine.node", serverURL.getHost());
-           // context.setAttribute("resourcebroker.jobmanager", "lsf");          
-           // context.setAttribute(Context.USERPROXY, "/tmp/x509up_u13449");
-           context.setAttribute("File.adaptor.name", "Local,GridFTP");
+           // Make sure that javaGAT picks the ssh adaptor
+           context.setAttribute("ResourceBroker.adaptor.name", "commandlinessh");
+           // context.setAttribute("machine.node", serverNode);
+           context.setAttribute("File.adaptor.name", "Local,commandlinessh");
          
            session.addContext(context);
                       
            // Create the JobService.
-           JobService js = JobFactory.createJobService(serverURL);
-           // JobService js = JobFactory.createJobService(session);
-           //JobService js = JobFactory.createJobService();
+           JobService js = JobFactory.createJobService(URLFactory.createURL("any://" + serverNode));
 
-           // Create a job: /bin/hostname executed on 1 nodes.
+           // Create a job: /bin/hostname executed on 1 node.
            JobDescription jd = JobFactory.createJobDescription();
            jd.setAttribute(JobDescription.EXECUTABLE, "/bin/hostname");
            jd.setAttribute(JobDescription.NUMBEROFPROCESSES, "1"); //10
            jd.setAttribute(JobDescription.OUTPUT, "hostname.out");
            jd.setAttribute(JobDescription.ERROR, "hostname.err");
-          
+           
            jd.setVectorAttribute(JobDescription.FILETRANSFER,
                    new String[] { "hostname.out < hostname.out", "hostname.err < hostname.err"});
-
+           
            // Create the job, run it, and wait for it.
            Job job = js.createJob(jd);
-           job.addCallback(Job.JOB_STATE, new TestJobGT2());
-           job.addCallback(Job.JOB_STATEDETAIL, new TestJobGT2());
+           job.addCallback(Job.JOB_STATE, new TestJobSsh());
+           job.addCallback(Job.JOB_STATEDETAIL, new TestJobSsh());
            job.run();
            job.waitFor();
        } catch (Throwable e) {
            System.out.println("Got exception " + e);
            e.printStackTrace();
-           e.getCause().printStackTrace();
+           e = e.getCause();
+           if (e != null) {
+               e.printStackTrace();
+           }
        }
    }
 

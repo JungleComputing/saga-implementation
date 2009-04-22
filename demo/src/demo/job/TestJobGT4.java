@@ -11,6 +11,7 @@ import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
+import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
 public class TestJobGT4 implements Callback {
@@ -21,17 +22,19 @@ public class TestJobGT4 implements Callback {
         // JobService.
         System.setProperty("JobService.adaptor.name", "javaGAT");
 
-        String serverURL = "https://fs0.das3.cs.vu.nl";
+        String server = "https://fs0.das3.cs.vu.nl";
 
         if (args.length > 1) {
             System.err.println("Usage: java demo.job.TestJob [<serverURL>]");
             System.exit(1);
         } else if (args.length == 1) {
-            serverURL = args[0];
+            server = args[0];
         }
         
         try {
             Session session = SessionFactory.createSession(true);
+            
+            URL serverURL = URLFactory.createURL(server);
             
             // Create a preferences context for JavaGAT.
             // The "preferences" context is special: it is extensible.
@@ -45,18 +48,16 @@ public class TestJobGT4 implements Callback {
             session.addContext(context);
                         
             // Create the JobService.
-            JobService js = JobFactory.createJobService(URLFactory.createURL(
-                    serverURL));
+            JobService js = JobFactory.createJobService(serverURL);
 
             // Create a job: /bin/hostname executed on 10 nodes.
             JobDescription jd = JobFactory.createJobDescription();
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/hostname");
             jd.setAttribute(JobDescription.NUMBEROFPROCESSES, "10");
             jd.setAttribute(JobDescription.OUTPUT, "hostname.out");
-            
             jd.setVectorAttribute(JobDescription.FILETRANSFER,
                     new String[] { "hostname.out < hostname.out" });
-
+            
             // Create the job, run it, and wait for it.
             Job job = js.createJob(jd);
             job.addCallback(Job.JOB_STATE, new TestJobGT4());

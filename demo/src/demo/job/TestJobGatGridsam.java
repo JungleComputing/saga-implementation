@@ -22,13 +22,13 @@ public class TestJobGatGridsam implements Callback {
         // JobService.
         System.setProperty("JobService.adaptor.name", "javaGAT");
         
-        String serverURL = "https://titan.cs.vu.nl:18443/gridsam/services/gridsam";
+        String server = "https://titan.cs.vu.nl:18443/gridsam/services/gridsam";
 
         if (args.length > 1) {
             System.err.println("Usage: java demo.job.TestJobGatGridsam [<serverURL>]");
             System.exit(1);
         } else if (args.length == 1) {
-            serverURL = args[0];
+            server = args[0];
         }
         
         try {
@@ -45,34 +45,26 @@ public class TestJobGatGridsam implements Callback {
             
             session.addContext(context);
             
-            URL url = URLFactory.createURL(serverURL);
+            URL serverURL = URLFactory.createURL(server);
                         
             // Create the JobService.
-            JobService js = JobFactory.createJobService(url);
+            JobService js = JobFactory.createJobService(serverURL);
 
             // Create a job description to execute "/bin/uname -a" on
             // the server host.
             // The output will be staged out to the current directory.
             JobDescription jd = JobFactory.createJobDescription();
-            String serverHost = url.getHost();
+            String serverHost = serverURL.getHost();
             jd.setVectorAttribute(JobDescription.CANDIDATEHOSTS,
                     new String[] { serverHost });
             jd.setAttribute(JobDescription.EXECUTABLE, "/bin/uname");
             jd.setVectorAttribute(JobDescription.ARGUMENTS,
                     new String[] { "-a" });
             jd.setAttribute(JobDescription.OUTPUT, "uname.out");
-            
-            // Get hostname and current directory for poststage target.
-            String host = java.net.InetAddress.getLocalHost()
-                    .getCanonicalHostName();
-            // Note: this does not work on windows, which gives a
-            // directory string like c:\...\...., which does not give
-            // a valid url.
-            String dir = System.getProperty("user.dir");
-            jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                    new String[] { "file://" + host + dir
-                            + "/uname.out < uname.out" });
 
+            jd.setVectorAttribute(JobDescription.FILETRANSFER,
+                    new String[] { "uname.out < uname.out" });
+            
             // Create the job, run it, and wait for it.
             Job job = js.createJob(jd);
             job.addCallback(Job.JOB_STATE, new TestJobGatGridsam());
