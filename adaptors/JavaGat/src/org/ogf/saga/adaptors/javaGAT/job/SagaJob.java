@@ -50,6 +50,11 @@ import org.ogf.saga.url.URLFactory;
  * cannot be implemented. Apart from that, JavaGAT at least has the interface to
  * support SAGA Jobs. How much actually is implemented depends on the JavaGAT
  * adaptor at hand.
+ * 
+ * One thing to note is that in JavaGAT job descriptions using setStdin, setStdout,
+ * setStderr, the filenames specified there (if not absolute) are relative to
+ * the working directory on the submitting host. In Saga, they are supposed
+ * to be relative to the directory in which the job is run.
  */
 
 public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
@@ -240,6 +245,10 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         URI stdout = getURI(JobDescriptionImpl.OUTPUT);
 
         URI stderr = getURI(JobDescriptionImpl.ERROR);
+        
+        boolean stdinReplaced = false;
+        boolean stdoutReplaced = false;
+        boolean stderrReplaced = false;
 
         String[] transfers = null;
 
@@ -295,11 +304,13 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                         // and is probably staged-out explicitly.
                         // In javaGAT we should use the destination instead.
                         stdout = s1;
+                        stdoutReplaced = true;
                         continue;
                     }
                     if (stderr != null && !stderr.isAbsolute()
                             && s2.equals(stderr)) {
                         stderr = s1;
+                        stderrReplaced = true;
                         continue;
                     }
                 } else if (stdin != null && !stdin.isAbsolute()
@@ -308,6 +319,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                     // and is probably staged-in explicitly.
                     // In javaGAT we should use the source instead.
                     stdin = s1;
+                    stdinReplaced = true;
                     continue;
                 }
 
@@ -331,14 +343,23 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         }
 
         if (stdin != null) {
+            if (! stdinReplaced && ! stdin.isAbsolute()) {
+                throw new NotImplementedException("Relative non-staged-in Input is not supported");
+            }
             sd.setStdin(createFile(stdin));
         }
 
         if (stdout != null) {
+            if (! stdoutReplaced && ! stdout.isAbsolute()) {
+                throw new NotImplementedException("Relative non-staged-out Output is not supported");
+            }
             sd.setStdout(createFile(stdout));
         }
 
         if (stderr != null) {
+            if (! stderrReplaced && ! stderr.isAbsolute()) {
+                throw new NotImplementedException("Relative non-staged-out Error is not supported");
+            }
             sd.setStderr(createFile(stderr));
         }
 
