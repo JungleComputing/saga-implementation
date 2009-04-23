@@ -10,7 +10,7 @@
     <property name="tmp" location="tmp" />
     <property name="lib" location="lib" />
     <property name="jar" location="${lib}/saga-impl${version}.jar" />
-    <property name="sources-filename" value="saga-impl${version}-src" />
+    <property name="sources-filename" value="saga-impl${version}" />
 
     <target name="init" depends="clean">
 	<!-- Create the time stamp -->
@@ -85,7 +85,7 @@
     </target>
 
     <target name="zip" depends="build,doc">
-        <delete file="saga-impl${version}.zip" />
+        <delete file="saga-impl${version}-binary.zip" />
 	<delete file="sources/${sources-filename}.zip" />
 
 	<zip destfile="sources/${sources-filename}.zip">
@@ -98,10 +98,10 @@
             <zipfileset dir="." includes="LICENSE.txt" prefix="${sources-filename}" />
         </zip>
 
-        <zip destfile="saga-impl${version}.zip">
+        <zip destfile="saga-impl${version}-binary.zip">
             <zipfileset dir="."
                         prefix="saga-impl${version}"
-			includes="doc/**,lib/**,demo/**,test/**,licenses/**,LICENSE.txt,README.txt,log4j.properties,saga.properties,sources/**"
+			includes="doc/**,lib/**,demo/**,test/**,licenses/**,LICENSE.txt,README.txt,HISTORY.txt,log4j.properties,saga.properties,sources/**"
 			excludes="doc/build.xml,doc/usersguide.tex,demo/demo?,test/run*"/>
             <zipfileset dir="."
                         prefix="saga-impl${version}"
