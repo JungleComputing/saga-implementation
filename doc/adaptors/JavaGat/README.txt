@@ -63,3 +63,64 @@ JavaGAT Preferences.
   properties to select which SAGA adaptor to use. See for instance the
   code in demo/src/demo/job/TestJob2.java for an example.
   The file JavaGat-doc/javagat.properties describes the available preferences.
+  It is also possible to use preferences to select specific javagat adaptors.
+  Below is a list preference names and possible values:
+
+  resourcebroker.adaptor.name: local, globus, wsgt4new, sshtrilead, glite,
+    gridsam, sge, localq, commandlinessh, unicore
+  file.adaptor.name: local, gridftp, sftptrilead, commandlinessh, sshtrilead,
+    gliteguid, glitesrm, glitelfn, streaming, ftp, gt4gridftp, rftgt4,
+    srctolocaltodestcopy
+  fileinputstream.adaptor.name: local, gridftp, sftptrilead, ftp, http, https,
+    copying
+  fileoutputstream.adaptor.name: local, gridftp, sftptrilead, ftp, http, https
+
+JavaGAT schemes.
+  It is also possible to use URI schemes to trigger specific javagat adaptors:
+  below is a list of schemes and matching adaptors:
+  Resourcebroker:
+      any: local, globus, wsgt4new, sshtrilead, glite, gridsam, sge, localq,
+           commandlinessh, unicore
+      ssh: commandlinessh, sshtrilead
+      ldap: glite
+      ldaps: glite
+      http: glite, globus
+      https: glite, globus, wsgt4new, gridsam
+      local: local
+      localq: localq
+      sge: sge
+      unicore6: unicore
+  File:
+      (Note: most file adaptors deal with the file: scheme combined with
+      no host or local host, because they must be able to copy them
+      to remote locations from their own scheme).
+      any: local, gridftp, sftptrilead, commandlinessh, sshtrilead,
+	   gliteguid, glitesrm, glitelfn, streaming, ftp, gt4gridftp, rftgt4,
+           srctolocaltodestcopy
+      ssh: commandlinessh, sshtrilead
+      file: commandlinessh, gliteguid, glitelfn, glitesrm, ftp, gridftp,
+            gt4gridftp, rftgt4, sftptrilead, sshtrilead, local
+      guid: gliteguid
+      lfn: glitelfn
+      srm: glitesrm
+      ftp: ftp
+      sftp: sftptrilead
+      gsiftp: gridftp, rftgt4
+      gridftp: gt4gridftp, rftgt4
+  FileInputStream:
+      any: local, frp, gridftp, http, https, sftptrilead
+      ftp: ftp
+      gsiftp: gridftp
+      http: http
+      https: https
+      file: local
+      sftp: sftptrilead
+  FileOutputStream:
+      any: local, frp, gridftp, http, https, sftptrilead
+      ftp: ftp
+      gsiftp: gridftp
+      http: http
+      https: https
+      file: local
+      sftp: sftptrilead
+      
