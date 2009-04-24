@@ -90,7 +90,9 @@ public class ContextImpl extends SagaObjectBase implements
             throw new SagaRuntimeException("could not get TYPE attribute", e);
         }
 
-        if (type.equals("preferences")) {
+        if ("Unknown".equals(type) || "".equals(type)) {
+            // nothing.
+        } else if ("preferences".equals(type)) {
             // Special context, no defaults.
         } else {
             try {
