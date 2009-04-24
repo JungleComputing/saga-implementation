@@ -22,7 +22,8 @@ Using a GridSAM service.
   When creating the job service, you need to specify an URL to contact
   the GridSAM service. The adaptor recognizes the following schemes:
   "https", "gridsam", and "any". The "gridsam" and "any" scheme are
-  translated into a "https" scheme.
+  translated into a "https" scheme. The URL usually looks like:
+  https://<host>:18443/gridsam/services/gridsam.
   You need, of course, a certificate for the Gridsam service. Also, you
   need a file crypto.properties on your classpath. An example is included
   in this directory. You will probably need to adapt some values there,
