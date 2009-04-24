@@ -38,9 +38,9 @@ public class NSEntryAdaptorTest {
             session.addContext(ftpContext);
             Context preferences = ContextFactory.createContext("preferences");
             preferences.setAttribute("resourcebroker.adaptor.name",
-                    "sshtrilead,commandlinessh,local");
+                    "local,commandlinessh");
             preferences.setAttribute("file.adaptor.name",
-                    "sshtrilead,commandlinessh,local");
+                    "local,commandlinessh");
             jobSession.addContext(preferences);
         } catch (Throwable e) {
             throw new Error("Got exception while creating session: ", e);
