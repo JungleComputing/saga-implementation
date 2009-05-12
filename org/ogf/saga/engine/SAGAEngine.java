@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,15 @@ public class SAGAEngine {
         }
     }
 
+    /**
+     * A helper class to compare file names, so that they can be sorted,
+     * and the order becomes predictable and reproducible.
+     */
+    private static class FileComparator implements Comparator<File> {
+        public int compare(File f1, File f2) {
+            return f1.getName().compareTo(f2.getName());
+        }
+    }
 
     /** Constructs a default SAGAEngine instance. */
     private SAGAEngine() {
@@ -302,6 +312,7 @@ public class SAGAEngine {
 
                 // Create a separate classloader for each adaptor directory.
                 if (adaptorDirs != null) {
+                    Arrays.sort(adaptorDirs, new FileComparator());
                     for (File adaptorDir : adaptorDirs) {
 
                         try {
