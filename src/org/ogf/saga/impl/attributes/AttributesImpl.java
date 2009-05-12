@@ -380,7 +380,8 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
         if (info.type == AttributeType.TIME) {
             try {
                 long v = Long.parseLong(value);
-                value = dateFormat(new Date(v));
+                // v is in seconds, but the Date constructor expects milliseconds.
+                value = dateFormat(new Date(v * 1000));
             } catch (NumberFormatException e) {
                 // ignored. checkValueType will check the format.
             }
@@ -403,7 +404,8 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
                 if (info.type == AttributeType.TIME) {
                     try {
                         long v = Long.parseLong(values[i]);
-                        values[i] = dateFormat(new Date(v));
+                        // v is in seconds, but the Date constructor expects milliseconds.
+                        values[i] = dateFormat(new Date(v * 1000));
                     } catch (NumberFormatException e) {
                         // ignored. checkValueType will check the format.
                     }
@@ -488,7 +490,8 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
         if (info.type == AttributeType.TIME) {
             try {
                 long v = Long.parseLong(value);
-                value = dateFormat(new Date(v));
+                // v is in seconds, but the Date constructor expects milliseconds.
+                value = dateFormat(new Date(v * 1000));
             } catch (NumberFormatException e) {
                 // ignored. Try and parse value here?
             }
@@ -515,7 +518,8 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
                 if (info.type == AttributeType.TIME) {
                     try {
                         long v = Long.parseLong(values[i]);
-                        values[i] = dateFormat(new Date(v));
+                        // v is in seconds, but the Date constructor expects milliseconds.
+                        values[i] = dateFormat(new Date(v * 1000));
                     } catch (NumberFormatException e) {
                         // ignored. checkValueType will check the format.
                     }
@@ -541,7 +545,7 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
         AttributesImpl attribs = new AttributesImpl(false);
         attribs.addAttribute("time", AttributeType.TIME, false, false, false,
                 false);
-        attribs.setAttribute("time", "" + System.currentTimeMillis());
+        attribs.setAttribute("time", "" + System.currentTimeMillis() / 1000);
         System.out.println("time = " + attribs.getAttribute("time"));
         String[] keys = attribs
                 .findAttributes(new String[] { "t{i,k}?*=[A-Z]*" });
@@ -558,7 +562,8 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
             if (info.type == AttributeType.TIME) {
                 try {
                     long v = Long.parseLong(value);
-                    value = dateFormat(new Date(v));
+                    // v is in seconds, but the Date constructor expects milliseconds.
+                    value = dateFormat(new Date(v * 1000));
                 } catch (NumberFormatException e) {
                     // ignored. checkValueType will check the format.
                 }
