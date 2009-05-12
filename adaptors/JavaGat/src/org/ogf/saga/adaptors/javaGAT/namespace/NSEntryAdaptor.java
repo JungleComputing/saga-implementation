@@ -552,8 +552,12 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                     "Target is not directory and recursive flag is set",
                     wrapper);
         }
+        
         try {
-            if (!file.delete()) {
+            if (isDirectory && Flags.RECURSIVE.isSet(flags)) {
+                file.recursivelyDeleteDirectory();
+            }
+            else if (!file.delete()) {
                 throw new NoSuccessException("Remove operation failed!",
                         wrapper);
             }
