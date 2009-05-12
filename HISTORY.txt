@@ -1,3 +1,8 @@
+  - recursively deleting a directory did not work.
+  - attributes of type Time used milliseconds instead of seconds.
+  - updated JavaGAT with fixed FTP file adaptor.
+  - sort adaptor directory list for deterministic behaviour.
+
 Release 1.0.1 (24 April 2009)
   This release fixes various problems in release 1.0:
   - This release now contains JavaGAT release 2.0.5, which fixes many problems
