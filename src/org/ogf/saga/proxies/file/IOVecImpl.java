@@ -68,6 +68,9 @@ public class IOVecImpl extends BufferImpl implements org.ogf.saga.file.IOVec {
     }
 
     public void setOffset(int offset) throws BadParameterException {
+        if (offset < 0) {
+            throw new BadParameterException("offset < 0");
+        }
         if (size >= 0 && (offset + lenIn > size)) {
             throw new BadParameterException(
                     "Specified lenIn + offset larger than size");
