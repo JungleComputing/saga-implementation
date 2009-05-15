@@ -278,14 +278,14 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
             int len) throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
                 sessionImpl, mode, "read", new Class[] { Buffer.class,
-                        Integer.TYPE, Integer.TYPE }, buffer, len);
+                        Integer.TYPE, Integer.TYPE }, buffer, offset, len);
     }
 
     public Task<File, Integer> write(TaskMode mode, Buffer buffer, int offset,
             int len) throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
                 sessionImpl, mode, "write", new Class[] { Buffer.class,
-                        Integer.TYPE, Integer.TYPE }, buffer, len);
+                        Integer.TYPE, Integer.TYPE }, buffer, offset, len);
     }
 
     public Task<File, Long> seek(TaskMode mode, long arg1, SeekMode arg2)
