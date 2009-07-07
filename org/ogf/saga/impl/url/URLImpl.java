@@ -129,7 +129,7 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
             u = new URI(u.getScheme(), u.getUserInfo(), u.getHost(), u
                     .getPort(), path, u.getQuery(), u.getFragment());
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in host", e);
+            throw new BadParameterException("syntax error in path", e);
         }
     }
 
