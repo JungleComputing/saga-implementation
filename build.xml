@@ -43,7 +43,7 @@
 
     </target>
 
-    <target name="build" depends="compile" description="build the JAR file">
+    <target name="build-engine" depends="compile" description="build the SAGA engine">
 	<!-- Create the lib directory -->
 	<mkdir dir="${lib}" />
 
@@ -56,7 +56,9 @@
 	<copy todir="lib">
 	    <fileset dir="external"/>
 	</copy>
+    </target>
 
+    <target name="build" depends="build-engine" description="build SAGA">
 	<!-- Build adaptors. -->
 	<ant inheritAll="false" dir="adaptors" target="build"/>
 
