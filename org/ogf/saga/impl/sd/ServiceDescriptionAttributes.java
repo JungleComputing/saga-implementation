@@ -36,75 +36,95 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
      * 
      */
     protected ServiceDescriptionAttributes() {
-	addAttribute(ServiceDescription.URL, AttributeType.STRING, SCALAR,
-		READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
 
-	addAttribute(ServiceDescription.TYPE, AttributeType.STRING, SCALAR,
-		READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
-	try {
-	    setValue(ServiceDescription.TYPE, "Not Set");
-	} catch (BadParameterException e) {
-	} catch (DoesNotExistException e) {
-	} catch (IncorrectStateException e) {
-	} catch (NotImplementedException e) {
-	}
+        addAttribute(ServiceDescription.CAPABILITIES, AttributeType.STRING, VECTOR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
 
-	addAttribute(ServiceDescription.UID, AttributeType.STRING, SCALAR,
-		READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
-	try {
-	    setValue(ServiceDescription.UID, "Not Set");
-	} catch (BadParameterException e) {
-	} catch (DoesNotExistException e) {
-	} catch (IncorrectStateException e) {
-	} catch (NotImplementedException e) {
-	}
+        addAttribute(ServiceDescription.IMPLEMENTATION_VERSION, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
+                NOT_REMOVABLE);
 
-	addAttribute(ServiceDescription.SITE, AttributeType.STRING, SCALAR,
-		READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
-	try {
-	    setValue(ServiceDescription.SITE, "Not Set");
-	} catch (BadParameterException e) {
-	} catch (DoesNotExistException e) {
-	} catch (IncorrectStateException e) {
-	} catch (NotImplementedException e) {
-	}
+        addAttribute(ServiceDescription.IMPLEMENTOR, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
+                NOT_REMOVABLE);
+        try {
+            setValue(ServiceDescription.IMPLEMENTOR, "Not Set");
+        } catch (BadParameterException e) {
+        } catch (DoesNotExistException e) {
+        } catch (IncorrectStateException e) {
+        } catch (NotImplementedException e) {
+        }
 
-	addAttribute(ServiceDescription.NAME, AttributeType.STRING, SCALAR,
-		READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
-	try {
-	    setValue(ServiceDescription.NAME, "Not Set");
-	} catch (BadParameterException e) {
-	} catch (DoesNotExistException e) {
-	} catch (IncorrectStateException e) {
-	} catch (NotImplementedException e) {
-	}
+        addAttribute(ServiceDescription.INTERFACE_VERSION, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
+                NOT_REMOVABLE);
 
-	addAttribute(ServiceDescription.IMPLEMENTOR, AttributeType.STRING,
-		SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
-	try {
-	    setValue(ServiceDescription.IMPLEMENTOR, "Not Set");
-	} catch (BadParameterException e) {
-	} catch (DoesNotExistException e) {
-	} catch (IncorrectStateException e) {
-	} catch (NotImplementedException e) {
-	}
+        addAttribute(ServiceDescription.INFORMATION_SERVICE_URL, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
+                NOT_REMOVABLE);
 
-	addAttribute(ServiceDescription.RELATED_SERVICES, AttributeType.STRING,
-		VECTOR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
+        addAttribute(ServiceDescription.NAME, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
+        try {
+            setValue(ServiceDescription.NAME, "Not Set");
+        } catch (BadParameterException e) {
+        } catch (DoesNotExistException e) {
+        } catch (IncorrectStateException e) {
+        } catch (NotImplementedException e) {
+        }
 
+        addAttribute(ServiceDescription.RELATED_SERVICES, AttributeType.STRING, VECTOR, READ_ONLY, IMPLEMENTED,
+                NOT_REMOVABLE);
+
+        addAttribute(ServiceDescription.SITE, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
+        try {
+            setValue(ServiceDescription.SITE, "Not Set");
+        } catch (BadParameterException e) {
+        } catch (DoesNotExistException e) {
+        } catch (IncorrectStateException e) {
+        } catch (NotImplementedException e) {
+        }
+
+        addAttribute(ServiceDescription.TYPE, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
+        try {
+            setValue(ServiceDescription.TYPE, "Not Set");
+        } catch (BadParameterException e) {
+        } catch (DoesNotExistException e) {
+        } catch (IncorrectStateException e) {
+        } catch (NotImplementedException e) {
+        }
+
+        addAttribute(ServiceDescription.UID, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
+        try {
+            setValue(ServiceDescription.UID, "Not Set");
+        } catch (BadParameterException e) {
+        } catch (DoesNotExistException e) {
+        } catch (IncorrectStateException e) {
+        } catch (NotImplementedException e) {
+        }
+
+        addAttribute(ServiceDescription.URL, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * This method has been made available for use by adaptors.
+     * 
+     * @see org.ogf.saga.attributes.Attributes#setValue(java.lang.String,
+     *      java.lang.String)
+     */
     @Override
-    protected synchronized void setValue(String key, String value)
-	    throws BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NotImplementedException {
-	super.setValue(key, value);
+    protected synchronized void setValue(String key, String value) throws BadParameterException, DoesNotExistException,
+            IncorrectStateException, NotImplementedException {
+        super.setValue(key, value);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * This method has been made available for use by adaptors.
+     * 
+     * @see org.ogf.saga.attributes.Attributes#setVectorValue(java.lang.String,
+     *      java.lang.String[])
+     */
     @Override
-    protected synchronized void setVectorValue(String key, String[] values)
-	    throws BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NotImplementedException {
-	super.setVectorValue(key, values);
+    protected synchronized void setVectorValue(String key, String[] values) throws BadParameterException,
+            DoesNotExistException, IncorrectStateException, NotImplementedException {
+        super.setVectorValue(key, values);
     }
 }

@@ -12,58 +12,38 @@ import org.ogf.saga.sd.SDFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.url.URL;
 
-/**
- * The implementation of the service discovery factory.
+/*
+ * (non-Javadoc)
  * 
+ * @see org.ogf.saga.sd.SDFactory
  */
 public class SDWrapperFactory extends SDFactory {
     public SDWrapperFactory() {
     }
 
-    /**
-     * Creates a <code>Discoverer</code> with the default <code>URL</code>.
+    /*
+     * (non-Javadoc)
      * 
-     * @param session
-     *                the session handle
-     * @return the discoverer wrapper
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws IncorrectURLException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.sd.SDFactory#doCreateDiscoverer(org.ogf.saga.Session)
      */
     @Override
-    protected Discoverer doCreateDiscoverer(Session session)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, IncorrectURLException, NoSuccessException,
-	    NotImplementedException, TimeoutException {
-	return new DiscovererWrapper(session);
+    protected Discoverer doCreateDiscoverer(Session session) throws AuthenticationFailedException,
+            AuthorizationFailedException, DoesNotExistException, IncorrectURLException, NoSuccessException,
+            NotImplementedException, TimeoutException {
+        return new DiscovererWrapper(session);
     }
 
-    /**
-     * Creates a <code>Discoverer</code>.
+    /*
+     * (non-Javadoc)
      * 
-     * @param session
-     *                the session handle
-     * @param url
-     *                the URL to guide the implementation
-     * @return the discoverer wrapper
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws IncorrectURLException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.sd.SDFactory#doCreateDiscoverer(org.ogf.saga.session.Session,
+     *      org.ogf.saga.url.URL)
      */
     @Override
-    protected Discoverer doCreateDiscoverer(Session session, URL url)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, IncorrectURLException, NoSuccessException,
-	    NotImplementedException, TimeoutException {
-	return new DiscovererWrapper(session, url);
+    protected Discoverer doCreateDiscoverer(Session session, URL url) throws AuthenticationFailedException,
+            AuthorizationFailedException, DoesNotExistException, IncorrectURLException, NoSuccessException,
+            NotImplementedException, TimeoutException {
+        return new DiscovererWrapper(session, url);
     }
 
 }

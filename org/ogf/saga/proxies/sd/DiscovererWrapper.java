@@ -21,15 +21,15 @@ import org.ogf.saga.url.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Create a service discovery adapter.
+/*
+ * (non-Javadoc)
  * 
+ * @see org.ogf.saga.sd.Discoverer
  */
 public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
 
     /** The logger. */
-    private static Logger m_logger = LoggerFactory
-	    .getLogger(DiscovererWrapper.class);
+    private static Logger m_logger = LoggerFactory.getLogger(DiscovererWrapper.class);
 
     /** The URL of the information system. */
     private URL m_infoSystemUrl;
@@ -41,7 +41,7 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
      * Create a discoverer wrapper.
      * 
      * @param session
-     *                the session handle
+     *            the session handle
      * @throws AuthenticationFailedException
      * @throws AuthorizationFailedException
      * @throws DoesNotExistException
@@ -50,22 +50,20 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
      * @throws NotImplementedException
      * @throws TimeoutException
      */
-    protected DiscovererWrapper(Session session)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, IncorrectURLException, NoSuccessException,
-	    NotImplementedException, TimeoutException {
-	super(session);
-	Object[] parameters = { this, session, m_infoSystemUrl };
-	createProxy(parameters);
+    protected DiscovererWrapper(Session session) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, IncorrectURLException, NoSuccessException, NotImplementedException, TimeoutException {
+        super(session);
+        Object[] parameters = { this, session, m_infoSystemUrl };
+        createProxy(parameters);
     }
 
     /**
      * Create a discoverer wrapper.
      * 
      * @param session
-     *                the session handle
+     *            the session handle
      * @param infoSystemUrl
-     *                a URL, this value is no longer used
+     *            a URL, this value is no longer used
      * @throws AuthenticationFailedException
      * @throws AuthorizationFailedException
      * @throws DoesNotExistException
@@ -74,71 +72,47 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
      * @throws NotImplementedException
      * @throws TimeoutException
      */
-    protected DiscovererWrapper(Session session, URL infoSystemUrl)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, IncorrectURLException, NoSuccessException,
-	    NotImplementedException, TimeoutException {
-	super(session);
-	m_infoSystemUrl = infoSystemUrl;
-	Object[] parameters = { this, session, m_infoSystemUrl };
-	createProxy(parameters);
+    protected DiscovererWrapper(Session session, URL infoSystemUrl) throws AuthenticationFailedException,
+            AuthorizationFailedException, DoesNotExistException, IncorrectURLException, NoSuccessException,
+            NotImplementedException, TimeoutException {
+        super(session);
+        m_infoSystemUrl = infoSystemUrl;
+        Object[] parameters = { this, session, m_infoSystemUrl };
+        createProxy(parameters);
     }
 
-    /**
-     * Returns the set of services that pass the set of specified filters, an
-     * implicit <code>authzFilter</code> is constructed from the contexts of
-     * the session. Note that this is different from an empty
-     * <code>authzFilter</code>, as that would apply no authorization filter
-     * at all.
+    /*
+     * (non-Javadoc)
      * 
-     * @param serviceFilter
-     * @param dataFilter
-     * @return list of service descriptions, in a random order, matching the
-     *         filter criteria
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws BadParameterException
-     * @throws NoSuccessException
-     * @throws TimeoutException
+     * @see org.ogf.saga.sd.Discoverer#listServices(java.lang.String,
+     *      java.lang.String)
      */
-    public List<ServiceDescription> listServices(String serviceFilter,
-	    String dataFilter) throws AuthenticationFailedException,
-	    AuthorizationFailedException, BadParameterException,
-	    NoSuccessException, TimeoutException {
-	return m_proxy.listServices(serviceFilter, dataFilter);
+    public List<ServiceDescription> listServices(String serviceFilter, String dataFilter)
+            throws AuthenticationFailedException, AuthorizationFailedException, BadParameterException,
+            NoSuccessException, TimeoutException {
+        return m_proxy.listServices(serviceFilter, dataFilter);
     }
 
-    /**
-     * Returns the set of services that pass the set of specified filters. A
-     * service will only be included once in the returned list of services.
+    /*
+     * (non-Javadoc)
      * 
-     * @param serviceFilter
-     * @param dataFilter
-     * @param authzFilter
-     * @return list of service descriptions, in a random order, matching the
-     *         filter criteria
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws BadParameterException
-     * @throws NoSuccessException
-     * @throws TimeoutException
+     * @see org.ogf.saga.sd.Discoverer#listServices(java.lang.String,
+     *      java.lang.String, java.lang.String)
      */
-    public List<ServiceDescription> listServices(String serviceFilter,
-	    String dataFilter, String authzFilter)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    BadParameterException, NoSuccessException, TimeoutException {
-	return m_proxy.listServices(serviceFilter, dataFilter, authzFilter);
+    public List<ServiceDescription> listServices(String serviceFilter, String dataFilter, String authzFilter)
+            throws AuthenticationFailedException, AuthorizationFailedException, BadParameterException,
+            NoSuccessException, TimeoutException {
+        return m_proxy.listServices(serviceFilter, dataFilter, authzFilter);
     }
 
     @Override
     public String toString() {
-	String s = null;
-	try {
-	    s = "Session:" + this.getSession().toString()
-		    + " Information System URL:" + m_infoSystemUrl;
-	} catch (DoesNotExistException e) {
-	}
-	return s;
+        String s = null;
+        try {
+            s = "Session:" + this.getSession().toString() + " Information System URL:" + m_infoSystemUrl;
+        } catch (DoesNotExistException e) {
+        }
+        return s;
     }
 
     /**
@@ -153,33 +127,29 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
      * @throws NotImplementedException
      * @throws TimeoutException
      */
-    private void createProxy(Object[] parameters)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, IncorrectURLException, NoSuccessException,
-	    NotImplementedException, TimeoutException {
-	try {
-	    m_proxy = (DiscovererSPI) SAGAEngine.createAdaptorProxy(
-		    DiscovererSPI.class, new Class[] { DiscovererWrapper.class,
-			    org.ogf.saga.impl.session.SessionImpl.class,
-			    URL.class }, parameters);
-	} catch (AuthenticationFailedException e) {
-	    throw e;
-	} catch (AuthorizationFailedException e) {
-	    throw e;
-	} catch (DoesNotExistException e) {
-	    throw e;
-	} catch (IncorrectURLException e) {
-	    throw e;
-	} catch (NoSuccessException e) {
-	    throw e;
-	} catch (NotImplementedException e) {
-	    throw e;
-	} catch (TimeoutException e) {
-	    throw e;
-	} catch (SagaException e) {
-	    throw new NoSuccessException("Constructor failed", e);
-	}
+    private void createProxy(Object[] parameters) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, IncorrectURLException, NoSuccessException, NotImplementedException, TimeoutException {
+        try {
+            m_proxy = (DiscovererSPI) SAGAEngine.createAdaptorProxy(DiscovererSPI.class, new Class[] {
+                    DiscovererWrapper.class, org.ogf.saga.impl.session.SessionImpl.class, URL.class }, parameters);
+        } catch (AuthenticationFailedException e) {
+            throw e;
+        } catch (AuthorizationFailedException e) {
+            throw e;
+        } catch (DoesNotExistException e) {
+            throw e;
+        } catch (IncorrectURLException e) {
+            throw e;
+        } catch (NoSuccessException e) {
+            throw e;
+        } catch (NotImplementedException e) {
+            throw e;
+        } catch (TimeoutException e) {
+            throw e;
+        } catch (SagaException e) {
+            throw new NoSuccessException("Constructor failed", e);
+        }
 
-	m_logger.info("Created Discoverer with " + this.toString());
+        m_logger.info("Created Discoverer with " + this.toString());
     }
 }
