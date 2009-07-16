@@ -13,12 +13,12 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.session.Session;
 
-/**
- * Provides access to the service data attributes.
+/*
+ * (non-Javadoc)
  * 
+ * @see org.ogf.saga.sd.ServiceData
  */
-public class ServiceDataImpl extends SagaObjectBase implements
-	org.ogf.saga.sd.ServiceData, Cloneable {
+public class ServiceDataImpl extends SagaObjectBase implements org.ogf.saga.sd.ServiceData, Cloneable {
 
     /** The service data attributes */
     private ServiceDataAttributes m_attributes;
@@ -29,343 +29,180 @@ public class ServiceDataImpl extends SagaObjectBase implements
      * 
      */
     public ServiceDataImpl() {
-	super((Session) null);
-	m_attributes = new ServiceDataAttributes();
+        super((Session) null);
+        m_attributes = new ServiceDataAttributes();
     }
 
-    /**
-     * Checks the existence of an attribute.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key.
-     * @return <code>true</code> if the attribute exists.
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#existsAttribute(java.lang.String)
      */
-    public boolean existsAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.existsAttribute(key);
+    public boolean existsAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            NoSuccessException, NotImplementedException, PermissionDeniedException, TimeoutException {
+        return m_attributes.existsAttribute(key);
     }
 
-    /**
-     * Finds matching attributes.
+    /*
+     * (non-Javadoc)
      * 
-     * @param patterns
-     *                the search patterns
-     * @return the list of matching attribute keys
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws BadParameterException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#findAttributes(java.lang.String[])
      */
-    public String[] findAttributes(String... patterns)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    BadParameterException, NotImplementedException, NoSuccessException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.findAttributes(patterns);
+    public String[] findAttributes(String... patterns) throws AuthenticationFailedException,
+            AuthorizationFailedException, BadParameterException, NotImplementedException, NoSuccessException,
+            PermissionDeniedException, TimeoutException {
+        return m_attributes.findAttributes(patterns);
     }
 
-    /**
-     * Gets the value of an attribute.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return the value of this attribute
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
-     * @see #setAttribute
+     * @see org.ogf.saga.attributes.Attributes#getAttribute(java.lang.String)
      */
-    public String getAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, IncorrectStateException, NoSuccessException,
-	    NotImplementedException, PermissionDeniedException,
-	    TimeoutException {
-	return m_attributes.getAttribute(key);
+    public String getAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, IncorrectStateException, NoSuccessException, NotImplementedException,
+            PermissionDeniedException, TimeoutException {
+        return m_attributes.getAttribute(key);
     }
 
-    /**
-     * Gets the array of values associated with an attribute.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return the values of this attribute, or <code>null</code>
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
-     * @see #setVectorAttribute
+     * @see org.ogf.saga.attributes.Attributes#getVectorAttribute(java.lang.String)
      */
-    public String[] getVectorAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, IncorrectStateException, NoSuccessException,
-	    NotImplementedException, PermissionDeniedException,
-	    TimeoutException {
-	return m_attributes.getVectorAttribute(key);
+    public String[] getVectorAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, IncorrectStateException, NoSuccessException, NotImplementedException,
+            PermissionDeniedException, TimeoutException {
+        return m_attributes.getVectorAttribute(key);
     }
 
-    /**
-     * Checks the attribute for being read-only.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return <code>true</code> if the attribute exists and is read-only
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#isReadOnlyAttribute(java.lang.String)
      */
-    public boolean isReadOnlyAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.isReadOnlyAttribute(key);
+    public boolean isReadOnlyAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, NoSuccessException, NotImplementedException, PermissionDeniedException,
+            TimeoutException {
+        return m_attributes.isReadOnlyAttribute(key);
     }
 
-    /**
-     * Checks the attribute for being removable.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return <code>true</code> if the attribute exists and is removable
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#isRemovableAttribute(java.lang.String)
      */
-    public boolean isRemovableAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.isRemovableAttribute(key);
+    public boolean isRemovableAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, NoSuccessException, NotImplementedException, PermissionDeniedException,
+            TimeoutException {
+        return m_attributes.isRemovableAttribute(key);
     }
 
-    /**
-     * Checks the attribute for being a vector.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return <code>true</code> if the attribute is a vector attribute
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#isVectorAttribute(java.lang.String)
      */
-    public boolean isVectorAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.isVectorAttribute(key);
+    public boolean isVectorAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, NoSuccessException, NotImplementedException, PermissionDeniedException,
+            TimeoutException {
+        return m_attributes.isVectorAttribute(key);
     }
 
-    /**
-     * Checks the attribute for being writable.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return <code>true</code> if the attribute exists and is writable
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#isWritableAttribute(java.lang.String)
      */
-    public boolean isWritableAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.isWritableAttribute(key);
+    public boolean isWritableAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, NoSuccessException, NotImplementedException, PermissionDeniedException,
+            TimeoutException {
+        return m_attributes.isWritableAttribute(key);
     }
 
-    /**
-     * Gets the list of attribute keys.
+    /*
+     * (non-Javadoc)
      * 
-     * @return the list of attribute keys
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
+     * @see org.ogf.saga.attributes.Attributes#listAttributes()
      */
-    public String[] listAttributes() throws NotImplementedException,
-	    AuthenticationFailedException, AuthorizationFailedException,
-	    NoSuccessException, PermissionDeniedException, TimeoutException {
-	return m_attributes.listAttributes();
+    public String[] listAttributes() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, NoSuccessException, PermissionDeniedException, TimeoutException {
+        return m_attributes.listAttributes();
     }
 
-    /**
-     * Removes an attribute.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
+     * @see org.ogf.saga.attributes.Attributes#removeAttribute(java.lang.String)
      */
-    public void removeAttribute(String key) throws NotImplementedException,
-	    AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException,
-	    PermissionDeniedException, TimeoutException {
-	m_attributes.removeAttribute(key);
+    public void removeAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, DoesNotExistException, NoSuccessException, PermissionDeniedException,
+            TimeoutException {
+        m_attributes.removeAttribute(key);
     }
 
-    /**
-     * Sets an attribute to a value.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @param value
-     *                value to set the attribute to
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws BadParameterException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
-     * @see #getAttribute
+     * @see org.ogf.saga.attributes.Attributes#setAttribute(java.lang.String,
+     *      java.lang.String)
      */
-    public void setAttribute(String key, String value)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NoSuccessException,
-	    NotImplementedException, PermissionDeniedException,
-	    TimeoutException {
-	m_attributes.setAttribute(key, value);
+    public void setAttribute(String key, String value) throws AuthenticationFailedException,
+            AuthorizationFailedException, BadParameterException, DoesNotExistException, IncorrectStateException,
+            NoSuccessException, NotImplementedException, PermissionDeniedException, TimeoutException {
+        m_attributes.setAttribute(key, value);
     }
 
-    /**
-     * Sets an attribute to an array of values.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @param values
-     *                values to set the attribute to
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws BadParameterException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
-     * @see #getVectorAttribute
+     * @see org.ogf.saga.attributes.Attributes#setVectorAttribute(java.lang.String,
+     *      java.lang.String[])
      */
-    public void setVectorAttribute(String key, String[] values)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NoSuccessException,
-	    NotImplementedException, PermissionDeniedException,
-	    TimeoutException {
-	m_attributes.setVectorAttribute(key, values);
+    public void setVectorAttribute(String key, String[] values) throws AuthenticationFailedException,
+            AuthorizationFailedException, BadParameterException, DoesNotExistException, IncorrectStateException,
+            NoSuccessException, NotImplementedException, PermissionDeniedException, TimeoutException {
+        m_attributes.setVectorAttribute(key, values);
     }
 
-    /**
-     * Stores information about a specific attribute. This method has been made
-     * available for use by adaptors.
+    /*
+     * (non-Javadoc)
      * 
-     * @param name
-     *                name of attribute
-     * @param type
-     *                the attribute type
-     * @param vector
-     *                true if attribute is vector
-     * @param readOnly
-     *                true if attribute is read only
-     * @param notImplemented
-     *                true if attribute is not available in this implementation
-     * @param removable
-     *                true if attribute is removable
+     * This method has been made available for use by adaptors.
+     * 
+     * @see org.ogf.saga.attributes.Attributes#addAttribute(java.lang.String,
+     *      org.ogf.saga.attributes.AttributeType, boolean, boolean, boolean,
+     *      boolean)
      */
-    public void addAttribute(String name, AttributeType type, boolean vector,
-	    boolean readOnly, boolean notImplemented, boolean removable) {
-	m_attributes.addAttribute(name, type, vector, readOnly, notImplemented,
-		removable);
+    public void addAttribute(String name, AttributeType type, boolean vector, boolean readOnly, boolean notImplemented,
+            boolean removable) {
+        m_attributes.addAttribute(name, type, vector, readOnly, notImplemented, removable);
     }
 
-    /**
-     * Set method without checks for readOnly.
+    /*
+     * (non-Javadoc)
      * 
-     * Sets an attribute to a value without checks for readOnly. This method has
-     * been made available for use by adaptors.
+     * This method has been made available for use by adaptors.
      * 
-     * @param key
-     *                the attribute key
-     * @param value
-     *                value to set the attribute to
-     * @throws BadParameterException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NotImplementedException
+     * @see org.ogf.saga.attributes.Attributes#setValue(java.lang.String,
+     *      java.lang.String)
      */
-    public void setValue(String key, String value)
-	    throws BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NotImplementedException {
-	m_attributes.setValue(key, value);
+    public void setValue(String key, String value) throws BadParameterException, DoesNotExistException,
+            IncorrectStateException, NotImplementedException {
+        m_attributes.setValue(key, value);
     }
 
-    /**
-     * Set method without checks for readOnly.
+    /*
+     * (non-Javadoc)
      * 
-     * Sets an attribute to an array of values without checks for readOnly. This
-     * method has been made available for use by adaptors.
+     * This method has been made available for use by adaptors.
      * 
-     * @param key
-     *                the attribute key
-     * @param values
-     *                array of values to set the attribute to
-     * @throws BadParameterException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NotImplementedException
+     * @see org.ogf.saga.attributes.Attributes#setVectorValue(java.lang.String,
+     *      java.lang.String[])
      */
-    public void setVectorValue(String key, String[] values)
-	    throws BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NotImplementedException {
-	m_attributes.setVectorValue(key, values);
+    public void setVectorValue(String key, String[] values) throws BadParameterException, DoesNotExistException,
+            IncorrectStateException, NotImplementedException {
+        m_attributes.setVectorValue(key, values);
     }
 
 }

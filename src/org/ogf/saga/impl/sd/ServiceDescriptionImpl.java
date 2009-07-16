@@ -20,19 +20,17 @@ import org.ogf.saga.sd.ServiceData;
 import org.ogf.saga.sd.ServiceDescription;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
-/**
- * Provides access to the service description attributes.
+/*
+ * (non-Javadoc)
  * 
+ * @see org.ogf.saga.sd.ServiceDescription
  */
-public class ServiceDescriptionImpl extends SagaObjectBase implements
-	org.ogf.saga.sd.ServiceDescription, Cloneable {
+public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.saga.sd.ServiceDescription, Cloneable {
 
     /** The service description attributes */
     private ServiceDescriptionAttributes m_attributes;
-
-    /** The URL of the information system */
-    private URL m_infoSysUrl;
 
     /** A container for the service data attributes */
     private ServiceData m_serviceData;
@@ -42,431 +40,265 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements
      * added functionality for use by adaptors.
      * 
      * @param serviceData
-     *                a ServiceData object
-     * @param infoSysUrl
-     *                the URL of the information system
+     *            a ServiceData object
      */
-    public ServiceDescriptionImpl(ServiceData serviceData, URL infoSysUrl) {
-	super((Session) null);
-	m_attributes = new ServiceDescriptionAttributes();
-	m_infoSysUrl = infoSysUrl;
-	m_serviceData = serviceData;
+    public ServiceDescriptionImpl(ServiceData serviceData) {
+        super((Session) null);
+        m_attributes = new ServiceDescriptionAttributes();
+        m_serviceData = serviceData;
     }
 
-    /**
-     * Returns a <code>ServiceData</code> object with the service data
-     * key/value pairs.
+    /*
+     * (non-Javadoc)
      * 
-     * @return the service data for this service. This may be empty, i.e.has no
-     *         attributes at all.
+     * @see org.ogf.saga.sd.ServiceDescription#getData()
      */
     public ServiceData getData() {
-	return m_serviceData;
+        return m_serviceData;
     }
 
-    /**
-     * Returns the set of related services. Alternatively, the
-     * <code>org.ogf.saga.attributes.Attributes</code> interface may be used
-     * to get the uids of the related services.
+    /*
+     * (non-Javadoc)
      * 
-     * @return a set of related services. This may be an empty set.
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws NoSuccessException
-     * @throws TimeoutException
+     * @see org.ogf.saga.sd.ServiceDescription#getRelatedServices()
      */
-    public Set<ServiceDescription> getRelatedServices()
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    NoSuccessException, TimeoutException {
-	Set<ServiceDescription> descriptions = new HashSet<ServiceDescription>();
-	String[] relatedServices = null;
-	try {
-	    relatedServices = m_attributes
-		    .getVectorAttribute(ServiceDescription.RELATED_SERVICES);
-	} catch (NotImplementedException e) {
-	    return descriptions;
-	} catch (PermissionDeniedException e) {
-	    return descriptions;
-	} catch (IncorrectStateException e) {
-	    return descriptions;
-	} catch (DoesNotExistException e) {
-	    return descriptions;
-	}
-	if (relatedServices == null) {
-	    // This cannot happen
-	    throw new NoSuccessException(
-		    "Internal error, list of related services is null");
-	}
-	if (relatedServices.length == 0) {
-	    return descriptions;
-	}
-	String filter = "";
-	for (String service : relatedServices) {
-	    if (filter.equals("")) {
-		filter = filter + "uid = '" + service + "'";
-	    } else {
-		filter = filter + " or uid = '" + service + "'";
-	    }
-	}
-	Discoverer discoverer = null;
-	try {
-	    if (m_infoSysUrl == null) {
-		discoverer = SDFactory.createDiscoverer();
-	    } else {
-		discoverer = SDFactory.createDiscoverer(m_infoSysUrl);
-	    }
-	} catch (NotImplementedException e) {
-	    throw new NoSuccessException(
-		    "Internal error, unable to get related services");
-	} catch (IncorrectURLException e) {
-	    throw new NoSuccessException(
-		    "Internal error, unable to get related services");
-	} catch (DoesNotExistException e) {
-	    throw new NoSuccessException(
-		    "Internal error, unable to get related services");
-	}
-	try {
-	    descriptions = new HashSet<ServiceDescription>(discoverer
-		    .listServices(filter, "", ""));
-	} catch (BadParameterException e) {
-	    throw new NoSuccessException(
-		    "Internal error, unable to get related services");
-	}
-	return descriptions;
+    public Set<ServiceDescription> getRelatedServices() throws AuthenticationFailedException,
+            AuthorizationFailedException, NoSuccessException, TimeoutException {
+        Set<ServiceDescription> descriptions = new HashSet<ServiceDescription>();
+        String[] relatedServices = null;
+        try {
+            relatedServices = m_attributes.getVectorAttribute(ServiceDescription.RELATED_SERVICES);
+        } catch (NotImplementedException e) {
+            return descriptions;
+        } catch (PermissionDeniedException e) {
+            return descriptions;
+        } catch (IncorrectStateException e) {
+            return descriptions;
+        } catch (DoesNotExistException e) {
+            return descriptions;
+        }
+        if (relatedServices == null) {
+            // This cannot happen
+            throw new NoSuccessException("Internal error, list of related services is null");
+        }
+        if (relatedServices.length == 0) {
+            return descriptions;
+        }
+        String filter = "";
+        for (String service : relatedServices) {
+            if (filter.equals("")) {
+                filter = filter + "uid = '" + service + "'";
+            } else {
+                filter = filter + " or uid = '" + service + "'";
+            }
+        }
+        Discoverer discoverer = null;
+
+        URL informationServiceUrl = null;
+        try {
+            informationServiceUrl = URLFactory.createURL(m_attributes
+                    .getAttribute(ServiceDescription.INFORMATION_SERVICE_URL));
+        } catch (Throwable e) {
+            throw new Error("Got exception while creating url: ", e);
+        }
+
+        try {
+            if (informationServiceUrl == null) {
+                discoverer = SDFactory.createDiscoverer();
+            } else {
+                discoverer = SDFactory.createDiscoverer(informationServiceUrl);
+            }
+        } catch (NotImplementedException e) {
+            throw new NoSuccessException("Internal error, unable to get related services");
+        } catch (IncorrectURLException e) {
+            throw new NoSuccessException("Internal error, unable to get related services");
+        } catch (DoesNotExistException e) {
+            throw new NoSuccessException("Internal error, unable to get related services");
+        }
+        try {
+            descriptions = new HashSet<ServiceDescription>(discoverer.listServices(filter, "", ""));
+        } catch (BadParameterException e) {
+            throw new NoSuccessException("Internal error, unable to get related services");
+        }
+        return descriptions;
     }
 
-    /**
-     * Returns the <code>URL</code> to contact the service. The
-     * <code>URL</code> may also be obtained using the
-     * <code>org.ogf.saga.attributes.Attributes</code> interface.
+    /*
+     * (non-Javadoc)
      * 
-     * @return a string containing the URL to contact this service
+     * @see org.ogf.saga.sd.ServiceDescription#getUrl()
      */
     public String getUrl() {
-	String url = null;
-	try {
-	    url = m_attributes.getAttribute(ServiceDescription.URL);
-	} catch (NotImplementedException e) {
-	} catch (AuthenticationFailedException e) {
-	} catch (AuthorizationFailedException e) {
-	} catch (PermissionDeniedException e) {
-	} catch (IncorrectStateException e) {
-	} catch (DoesNotExistException e) {
-	} catch (TimeoutException e) {
-	} catch (NoSuccessException e) {
-	}
-	return url;
+        String url = null;
+        try {
+            url = m_attributes.getAttribute(ServiceDescription.URL);
+        } catch (NotImplementedException e) {
+        } catch (AuthenticationFailedException e) {
+        } catch (AuthorizationFailedException e) {
+        } catch (PermissionDeniedException e) {
+        } catch (IncorrectStateException e) {
+        } catch (DoesNotExistException e) {
+        } catch (TimeoutException e) {
+        } catch (NoSuccessException e) {
+        }
+        return url;
     }
 
-    /**
-     * Checks the existence of an attribute.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key.
-     * @return <code>true</code> if the attribute exists.
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#existsAttribute(java.lang.String)
      */
-    public boolean existsAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.existsAttribute(key);
+    public boolean existsAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            NoSuccessException, NotImplementedException, PermissionDeniedException, TimeoutException {
+        return m_attributes.existsAttribute(key);
     }
 
-    /**
-     * Finds matching attributes.
+    /*
+     * (non-Javadoc)
      * 
-     * @param patterns
-     *                the search patterns
-     * @return the list of matching attribute keys
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws BadParameterException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#findAttributes(java.lang.String[])
      */
-    public String[] findAttributes(String... patterns)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    BadParameterException, NotImplementedException, NoSuccessException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.findAttributes(patterns);
+    public String[] findAttributes(String... patterns) throws AuthenticationFailedException,
+            AuthorizationFailedException, BadParameterException, NotImplementedException, NoSuccessException,
+            PermissionDeniedException, TimeoutException {
+        return m_attributes.findAttributes(patterns);
     }
 
-    /**
-     * Gets the value of an attribute.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return the value of this attribute
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
-     * @see #setAttribute
+     * @see org.ogf.saga.attributes.Attributes#getAttribute(java.lang.String)
      */
-    public String getAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, IncorrectStateException, NoSuccessException,
-	    NotImplementedException, PermissionDeniedException,
-	    TimeoutException {
-	return m_attributes.getAttribute(key);
+    public String getAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, IncorrectStateException, NoSuccessException, NotImplementedException,
+            PermissionDeniedException, TimeoutException {
+        return m_attributes.getAttribute(key);
     }
 
-    /**
-     * Gets the array of values associated with an attribute.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return the values of this attribute, or <code>null</code>
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
-     * @see #setVectorAttribute
+     * @see org.ogf.saga.attributes.Attributes#getVectorAttribute(java.lang.String)
      */
-    public String[] getVectorAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, IncorrectStateException, NoSuccessException,
-	    NotImplementedException, PermissionDeniedException,
-	    TimeoutException {
-	return m_attributes.getVectorAttribute(key);
+    public String[] getVectorAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, IncorrectStateException, NoSuccessException, NotImplementedException,
+            PermissionDeniedException, TimeoutException {
+        return m_attributes.getVectorAttribute(key);
     }
 
-    /**
-     * Checks the attribute for being read-only.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return <code>true</code> if the attribute exists and is read-only
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#isReadOnlyAttribute(java.lang.String)
      */
-    public boolean isReadOnlyAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.isReadOnlyAttribute(key);
+    public boolean isReadOnlyAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, NoSuccessException, NotImplementedException, PermissionDeniedException,
+            TimeoutException {
+        return m_attributes.isReadOnlyAttribute(key);
     }
 
-    /**
-     * Checks the attribute for being removable.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return <code>true</code> if the attribute exists and is removable
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#isRemovableAttribute(java.lang.String)
      */
-    public boolean isRemovableAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.isRemovableAttribute(key);
+    public boolean isRemovableAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, NoSuccessException, NotImplementedException, PermissionDeniedException,
+            TimeoutException {
+        return m_attributes.isRemovableAttribute(key);
     }
 
-    /**
-     * Checks the attribute for being a vector.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return <code>true</code> if the attribute is a vector attribute
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#isVectorAttribute(java.lang.String)
      */
-    public boolean isVectorAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.isVectorAttribute(key);
+    public boolean isVectorAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, NoSuccessException, NotImplementedException, PermissionDeniedException,
+            TimeoutException {
+        return m_attributes.isVectorAttribute(key);
     }
 
-    /**
-     * Checks the attribute for being writable.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @return <code>true</code> if the attribute exists and is writable
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
+     * @see org.ogf.saga.attributes.Attributes#isWritableAttribute(java.lang.String)
      */
-    public boolean isWritableAttribute(String key)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException, NotImplementedException,
-	    PermissionDeniedException, TimeoutException {
-	return m_attributes.isWritableAttribute(key);
+    public boolean isWritableAttribute(String key) throws AuthenticationFailedException, AuthorizationFailedException,
+            DoesNotExistException, NoSuccessException, NotImplementedException, PermissionDeniedException,
+            TimeoutException {
+        return m_attributes.isWritableAttribute(key);
     }
 
-    /**
-     * Gets the list of attribute keys.
+    /*
+     * (non-Javadoc)
      * 
-     * @return the list of attribute keys
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
+     * @see org.ogf.saga.attributes.Attributes#listAttributes()
      */
-    public String[] listAttributes() throws NotImplementedException,
-	    AuthenticationFailedException, AuthorizationFailedException,
-	    NoSuccessException, PermissionDeniedException, TimeoutException {
-	return m_attributes.listAttributes();
+    public String[] listAttributes() throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, NoSuccessException, PermissionDeniedException, TimeoutException {
+        return m_attributes.listAttributes();
     }
 
-    /**
-     * Removes an attribute.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws DoesNotExistException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
+     * @see org.ogf.saga.attributes.Attributes#removeAttribute(java.lang.String)
      */
-    public void removeAttribute(String key) throws NotImplementedException,
-	    AuthenticationFailedException, AuthorizationFailedException,
-	    DoesNotExistException, NoSuccessException,
-	    PermissionDeniedException, TimeoutException {
-	m_attributes.removeAttribute(key);
+    public void removeAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, DoesNotExistException, NoSuccessException, PermissionDeniedException,
+            TimeoutException {
+        m_attributes.removeAttribute(key);
     }
 
-    /**
-     * Sets an attribute to a value.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @param value
-     *                value to set the attribute to
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws BadParameterException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
-     * @see #getAttribute
+     * @see org.ogf.saga.attributes.Attributes#setAttribute(java.lang.String,
+     *      java.lang.String)
      */
-    public void setAttribute(String key, String value)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NoSuccessException,
-	    NotImplementedException, PermissionDeniedException,
-	    TimeoutException {
-	m_attributes.setAttribute(key, value);
+    public void setAttribute(String key, String value) throws AuthenticationFailedException,
+            AuthorizationFailedException, BadParameterException, DoesNotExistException, IncorrectStateException,
+            NoSuccessException, NotImplementedException, PermissionDeniedException, TimeoutException {
+        m_attributes.setAttribute(key, value);
     }
 
-    /**
-     * Sets an attribute to an array of values.
+    /*
+     * (non-Javadoc)
      * 
-     * @param key
-     *                the attribute key
-     * @param values
-     *                values to set the attribute to
-     * @throws AuthenticationFailedException
-     * @throws AuthorizationFailedException
-     * @throws BadParameterException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NoSuccessException
-     * @throws NotImplementedException
-     * @throws PermissionDeniedException
-     * @throws TimeoutException
-     * 
-     * @see #getVectorAttribute
+     * @see org.ogf.saga.attributes.Attributes#setVectorAttribute(java.lang.String,
+     *      java.lang.String[])
      */
-    public void setVectorAttribute(String key, String[] values)
-	    throws AuthenticationFailedException, AuthorizationFailedException,
-	    BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NoSuccessException,
-	    NotImplementedException, PermissionDeniedException,
-	    TimeoutException {
-	m_attributes.setVectorAttribute(key, values);
+    public void setVectorAttribute(String key, String[] values) throws AuthenticationFailedException,
+            AuthorizationFailedException, BadParameterException, DoesNotExistException, IncorrectStateException,
+            NoSuccessException, NotImplementedException, PermissionDeniedException, TimeoutException {
+        m_attributes.setVectorAttribute(key, values);
     }
 
-    /**
-     * Set method without checks for readOnly.
+    /*
+     * (non-Javadoc)
      * 
-     * Sets an attribute to a value without checks for readOnly. This method has
-     * been made available for use by adaptors.
+     * This method has been made available for use by adaptors.
      * 
-     * @param key
-     *                the attribute key
-     * @param value
-     *                value to set the attribute to
-     * @throws BadParameterException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NotImplementedException
+     * @see org.ogf.saga.attributes.Attributes#setValue(java.lang.String,
+     *      java.lang.String)
      */
-    public void setValue(String key, String value)
-	    throws BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NotImplementedException {
-	m_attributes.setValue(key, value);
+    public void setValue(String key, String value) throws BadParameterException, DoesNotExistException,
+            IncorrectStateException, NotImplementedException {
+        m_attributes.setValue(key, value);
     }
 
-    /**
-     * Set method without checks for readOnly.
+    /*
+     * (non-Javadoc)
      * 
-     * Sets an attribute to an array of values without checks for readOnly. This
-     * method has been made available for use by adaptors.
+     * This method has been made available for use by adaptors.
      * 
-     * @param key
-     *                the attribute key
-     * @param values
-     *                array of values to set the attribute to
-     * @throws BadParameterException
-     * @throws DoesNotExistException
-     * @throws IncorrectStateException
-     * @throws NotImplementedException
+     * @see org.ogf.saga.attributes.Attributes#setVectorValue(java.lang.String,
+     *      java.lang.String[])
      */
-    public void setVectorValue(String key, String[] values)
-	    throws BadParameterException, DoesNotExistException,
-	    IncorrectStateException, NotImplementedException {
-	m_attributes.setVectorValue(key, values);
+    public void setVectorValue(String key, String[] values) throws BadParameterException, DoesNotExistException,
+            IncorrectStateException, NotImplementedException {
+        m_attributes.setVectorValue(key, values);
     }
 }
