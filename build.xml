@@ -11,6 +11,7 @@
     <property name="lib" location="lib" />
     <property name="jar" location="${lib}/saga-impl${version}.jar" />
     <property name="sources-filename" value="saga-impl${version}" />
+    <property name="prefix" value="build/prefix" />
 
     <target name="init" depends="clean">
 	<!-- Create the time stamp -->
@@ -69,6 +70,16 @@
 	<ant inheritAll="false" dir="test" target="build"/>
     </target>
 
+	<target name="install-engine" depends="build-engine">
+		<copy todir="${prefix}/doc/saga" file="LICENSE.txt" />
+		<copy todir="${prefix}/doc/saga" file="README.txt" />
+		<copy todir="${prefix}/doc/saga" file="HISTORY.txt" />
+		<copy todir="${prefix}/etc/saga" file="log4j.properties" />
+		<copy todir="${prefix}/lib" >
+			<fileset dir="${lib}/" includes="*.jar" />
+		</copy>
+	</target>
+
     <target name="doc" description="Create manuals">
         <ant dir="doc" inheritAll="false" />
     </target>
@@ -76,6 +87,7 @@
     <target name="clean" description="clean up">
 	<delete dir="${lib}" />
 	<delete dir="${tmp}" />
+	<delete dir="${prefix}" />
 	<!-- Clean adaptors. -->
 	<ant inheritAll="false" dir="adaptors" target="clean"/>
 	<!-- Clean demo. -->
