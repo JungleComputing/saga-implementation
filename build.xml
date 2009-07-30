@@ -74,7 +74,8 @@
 		<copy todir="${prefix}/doc/saga" file="LICENSE.txt" />
 		<copy todir="${prefix}/doc/saga" file="README.txt" />
 		<copy todir="${prefix}/doc/saga" file="HISTORY.txt" />
-		<copy todir="${prefix}/etc/saga" file="log4j.properties" />
+		<copy todir="${prefix}/etc/saga/java" file="log4j.properties" />
+		<copy todir="${prefix}/etc/saga/java" file="saga.properties" />
 		<copy todir="${prefix}/lib" >
 			<fileset dir="${lib}/" includes="*.jar" />
 		</copy>
