@@ -79,6 +79,7 @@
 		<copy todir="${prefix}/lib" >
 			<fileset dir="${lib}/" includes="*.jar" />
 		</copy>
+		<mkdir dir="${prefix}/lib/adaptors" />
 	</target>
 
     <target name="doc" description="Create manuals">
