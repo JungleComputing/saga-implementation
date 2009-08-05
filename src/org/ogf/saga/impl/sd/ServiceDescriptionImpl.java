@@ -39,11 +39,13 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.sa
      * Constructs a service description implementation object. This provides
      * added functionality for use by adaptors.
      * 
+     * @param session
+     *            the session handle
      * @param serviceData
      *            a ServiceData object
      */
-    public ServiceDescriptionImpl(ServiceData serviceData) {
-        super((Session) null);
+    public ServiceDescriptionImpl(Session session, ServiceData serviceData) {
+        super(session);
         m_attributes = new ServiceDescriptionAttributes();
         m_serviceData = serviceData;
     }
@@ -103,11 +105,7 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.sa
         }
 
         try {
-            if (informationServiceUrl == null) {
-                discoverer = SDFactory.createDiscoverer();
-            } else {
-                discoverer = SDFactory.createDiscoverer(informationServiceUrl);
-            }
+            discoverer = SDFactory.createDiscoverer(getSession(), informationServiceUrl);
         } catch (NotImplementedException e) {
             throw new NoSuccessException("Internal error, unable to get related services");
         } catch (IncorrectURLException e) {
