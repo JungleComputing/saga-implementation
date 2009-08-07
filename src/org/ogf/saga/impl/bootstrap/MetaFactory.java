@@ -5,6 +5,7 @@ import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.file.FileFactory;
+import org.ogf.saga.isn.ISNFactory;
 import org.ogf.saga.job.JobFactory;
 import org.ogf.saga.logicalfile.LogicalFileFactory;
 import org.ogf.saga.monitoring.MonitoringFactory;
@@ -30,6 +31,10 @@ public class MetaFactory implements SagaFactory {
         return new org.ogf.saga.proxies.file.FileWrapperFactory();
     }
 
+    public ISNFactory createISNFactory() throws NotImplementedException {
+        return new org.ogf.saga.proxies.isn.ISNWrapperFactory();
+    }
+    
     public JobFactory createJobFactory() throws NotImplementedException {
         return new org.ogf.saga.proxies.job.JobWrapperFactory();
     }
