@@ -20,6 +20,16 @@ public class ServiceDataAttributes extends AttributesImpl {
     protected ServiceDataAttributes() {
     }
 
+    /**
+     * Constructor for use when cloning.
+     * 
+     * @param orig
+     *            the original object
+     */
+    protected ServiceDataAttributes(ServiceDataAttributes orig) {
+        super(orig);
+    }
+
     /*
      * (non-Javadoc)
      * 

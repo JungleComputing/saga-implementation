@@ -140,7 +140,7 @@ public class SDAdaptorTest {
 	long start = System.currentTimeMillis();
 	Discoverer discoverer;
 	try {
-	    discoverer = SDFactory.createDiscoverer(session);
+	    discoverer = SDFactory.createDiscoverer(session, null);
 	    checkContext(discoverer);
 	} catch (Throwable e) {
 	    m_logger.info(e.getMessage());
@@ -156,7 +156,7 @@ public class SDAdaptorTest {
 	long start = System.currentTimeMillis();
 	Discoverer discoverer;
 	try {
-	    discoverer = SDFactory.createDiscoverer(url);
+	    discoverer = SDFactory.createDiscoverer(null, url);
 	    checkContext(discoverer);
 	} catch (Throwable e) {
 	    m_logger.info(e.getMessage());

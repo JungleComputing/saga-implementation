@@ -8,6 +8,7 @@ import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.attributes.AttributeType;
@@ -31,6 +32,27 @@ public class ServiceDataImpl extends SagaObjectBase implements org.ogf.saga.sd.S
     public ServiceDataImpl() {
         super((Session) null);
         m_attributes = new ServiceDataAttributes();
+    }
+
+    /**
+     * Constructor for use when cloning.
+     * 
+     * @param orig
+     *            the original object
+     */
+    protected ServiceDataImpl(ServiceDataImpl orig) {
+        super(orig);
+        m_attributes = new ServiceDataAttributes(orig.m_attributes);
+    }
+
+    /**
+     * Clone the ServiceData object.
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ServiceDataImpl clone = (ServiceDataImpl) super.clone();
+        clone.m_attributes = new ServiceDataAttributes(m_attributes);
+        return clone;
     }
 
     /*
@@ -203,6 +225,43 @@ public class ServiceDataImpl extends SagaObjectBase implements org.ogf.saga.sd.S
     public void setVectorValue(String key, String[] values) throws BadParameterException, DoesNotExistException,
             IncorrectStateException, NotImplementedException {
         m_attributes.setVectorValue(key, values);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            boolean first = true;
+            for (String attb : listAttributes()) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(",\n");
+                }
+                if (isVectorAttribute(attb)) {
+                    sb.append(attb);
+                    sb.append(":");
+                    sb.append("[");
+                    boolean firstVector = true;
+                    for (String s : getVectorAttribute(attb)) {
+                        if (firstVector) {
+                            firstVector = false;
+                        } else {
+                            sb.append(",\n");
+                        }
+                        sb.append(s);
+                    }
+                    sb.append("]");
+                } else {
+                    sb.append(attb);
+                    sb.append(":");
+                    sb.append(getAttribute(attb));
+                }
+            }
+        } catch (SagaException e) {
+            throw new Error("Internal error: " + e.getMessage());
+        }
+        return sb.toString();
     }
 
 }

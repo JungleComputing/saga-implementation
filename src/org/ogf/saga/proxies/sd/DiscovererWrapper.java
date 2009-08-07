@@ -81,6 +81,17 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
         createProxy(parameters);
     }
 
+    /**
+     * Clone the DiscovererWrapper and attached adapter.
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        DiscovererWrapper clone = (DiscovererWrapper) super.clone();
+        clone.m_proxy = (DiscovererSPI) SAGAEngine.createAdaptorCopy(DiscovererSPI.class, m_proxy, clone);
+        clone.m_infoSystemUrl = (URL) m_infoSystemUrl.clone();
+        return clone;
+    }
+
     /*
      * (non-Javadoc)
      * 
