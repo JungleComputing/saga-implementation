@@ -4,6 +4,7 @@ import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.SagaException;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.impl.attributes.AttributesImpl;
 import org.ogf.saga.sd.ServiceDescription;
@@ -37,7 +38,8 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
      */
     protected ServiceDescriptionAttributes() {
 
-        addAttribute(ServiceDescription.CAPABILITIES, AttributeType.STRING, VECTOR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
+        addAttribute(ServiceDescription.CAPABILITIES, AttributeType.STRING, VECTOR, READ_ONLY, IMPLEMENTED,
+                NOT_REMOVABLE);
 
         addAttribute(ServiceDescription.IMPLEMENTATION_VERSION, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
                 NOT_REMOVABLE);
@@ -46,10 +48,8 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
                 NOT_REMOVABLE);
         try {
             setValue(ServiceDescription.IMPLEMENTOR, "Not Set");
-        } catch (BadParameterException e) {
-        } catch (DoesNotExistException e) {
-        } catch (IncorrectStateException e) {
-        } catch (NotImplementedException e) {
+        } catch (SagaException e) {
+            throw new Error("Internal error, unable to set " + ServiceDescription.IMPLEMENTOR + ": " + e.getMessage());
         }
 
         addAttribute(ServiceDescription.INTERFACE_VERSION, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
@@ -61,10 +61,8 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
         addAttribute(ServiceDescription.NAME, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
         try {
             setValue(ServiceDescription.NAME, "Not Set");
-        } catch (BadParameterException e) {
-        } catch (DoesNotExistException e) {
-        } catch (IncorrectStateException e) {
-        } catch (NotImplementedException e) {
+        } catch (SagaException e) {
+            throw new Error("Internal error, unable to set " + ServiceDescription.NAME + ": " + e.getMessage());
         }
 
         addAttribute(ServiceDescription.RELATED_SERVICES, AttributeType.STRING, VECTOR, READ_ONLY, IMPLEMENTED,
@@ -73,31 +71,35 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
         addAttribute(ServiceDescription.SITE, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
         try {
             setValue(ServiceDescription.SITE, "Not Set");
-        } catch (BadParameterException e) {
-        } catch (DoesNotExistException e) {
-        } catch (IncorrectStateException e) {
-        } catch (NotImplementedException e) {
+        } catch (SagaException e) {
+            throw new Error("Internal error, unable to set " + ServiceDescription.SITE + ": " + e.getMessage());
         }
 
         addAttribute(ServiceDescription.TYPE, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
         try {
             setValue(ServiceDescription.TYPE, "Not Set");
-        } catch (BadParameterException e) {
-        } catch (DoesNotExistException e) {
-        } catch (IncorrectStateException e) {
-        } catch (NotImplementedException e) {
+        } catch (SagaException e) {
+            throw new Error("Internal error, unable to set " + ServiceDescription.TYPE + ": " + e.getMessage());
         }
 
         addAttribute(ServiceDescription.UID, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
         try {
             setValue(ServiceDescription.UID, "Not Set");
-        } catch (BadParameterException e) {
-        } catch (DoesNotExistException e) {
-        } catch (IncorrectStateException e) {
-        } catch (NotImplementedException e) {
+        } catch (SagaException e) {
+            throw new Error("Internal error, unable to set " + ServiceDescription.UID + ": " + e.getMessage());
         }
 
         addAttribute(ServiceDescription.URL, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED, NOT_REMOVABLE);
+    }
+
+    /**
+     * Constructor for use when cloning.
+     * 
+     * @param orig
+     *            the original object
+     */
+    protected ServiceDescriptionAttributes(ServiceDescriptionAttributes orig) {
+        super(orig);
     }
 
     /*

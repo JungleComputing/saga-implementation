@@ -8,10 +8,10 @@ import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
-import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.sd.Discoverer;
@@ -50,6 +50,17 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.sa
         m_serviceData = serviceData;
     }
 
+    /**
+     * Clone the ServiceDescription and attached ServiceData object.
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ServiceDescriptionImpl clone = (ServiceDescriptionImpl) super.clone();
+        clone.m_attributes = new ServiceDescriptionAttributes(m_attributes);
+        clone.m_serviceData = new ServiceDataImpl((ServiceDataImpl) m_serviceData);
+        return clone;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -70,53 +81,43 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.sa
         String[] relatedServices = null;
         try {
             relatedServices = m_attributes.getVectorAttribute(ServiceDescription.RELATED_SERVICES);
-        } catch (NotImplementedException e) {
-            return descriptions;
-        } catch (PermissionDeniedException e) {
-            return descriptions;
-        } catch (IncorrectStateException e) {
-            return descriptions;
-        } catch (DoesNotExistException e) {
-            return descriptions;
+        } catch (SagaException e) {
+            throw new Error("Internal error, getVectorAttribute(" + ServiceDescription.RELATED_SERVICES + "): "
+                    + e.getMessage());
         }
         if (relatedServices == null) {
             // This cannot happen
-            throw new NoSuccessException("Internal error, list of related services is null");
+            throw new Error("Internal error, list of related services is null");
         }
         if (relatedServices.length == 0) {
             return descriptions;
         }
-        String filter = "";
+        StringBuilder sb = new StringBuilder();
         for (String service : relatedServices) {
-            if (filter.equals("")) {
-                filter = filter + "uid = '" + service + "'";
+            if (sb != null) {
+                sb = sb.append("uid = '" + service + "'");
             } else {
-                filter = filter + " or uid = '" + service + "'";
+                sb = sb.append(" or uid = '" + service + "'");
             }
         }
-        Discoverer discoverer = null;
-
+        String filter = sb.toString();
         URL informationServiceUrl = null;
         try {
             informationServiceUrl = URLFactory.createURL(m_attributes
                     .getAttribute(ServiceDescription.INFORMATION_SERVICE_URL));
-        } catch (Throwable e) {
-            throw new Error("Got exception while creating url: ", e);
+        } catch (SagaException e) {
+            throw new Error("Internal error, got exception while creating URL: " + e.getMessage());
         }
-
+        Discoverer discoverer = null;
         try {
             discoverer = SDFactory.createDiscoverer(getSession(), informationServiceUrl);
-        } catch (NotImplementedException e) {
-            throw new NoSuccessException("Internal error, unable to get related services");
-        } catch (IncorrectURLException e) {
-            throw new NoSuccessException("Internal error, unable to get related services");
-        } catch (DoesNotExistException e) {
-            throw new NoSuccessException("Internal error, unable to get related services");
+        } catch (SagaException e) {
+            throw new Error("Internal error, unable to get related services: " + e.getMessage());
         }
         try {
             descriptions = new HashSet<ServiceDescription>(discoverer.listServices(filter, "", ""));
         } catch (BadParameterException e) {
-            throw new NoSuccessException("Internal error, unable to get related services");
+            throw new Error("Internal error, unable to get related services: " + e.getMessage());
         }
         return descriptions;
     }
@@ -130,14 +131,8 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.sa
         String url = null;
         try {
             url = m_attributes.getAttribute(ServiceDescription.URL);
-        } catch (NotImplementedException e) {
-        } catch (AuthenticationFailedException e) {
-        } catch (AuthorizationFailedException e) {
-        } catch (PermissionDeniedException e) {
-        } catch (IncorrectStateException e) {
-        } catch (DoesNotExistException e) {
-        } catch (TimeoutException e) {
-        } catch (NoSuccessException e) {
+        } catch (SagaException e) {
+            throw new Error("Internal error, unable to get URL: " + e.getMessage());
         }
         return url;
     }
@@ -299,4 +294,47 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.sa
             IncorrectStateException, NotImplementedException {
         m_attributes.setVectorValue(key, values);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            boolean first = true;
+            for (String attb : listAttributes()) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(",\n");
+                }
+                if (isVectorAttribute(attb)) {
+                    sb.append(attb);
+                    sb.append(":");
+                    sb.append("[");
+                   boolean firstVector = true;
+                   for (String s : getVectorAttribute(attb)) {
+                        if (firstVector) {
+                            firstVector = false;
+                        } else {
+                            sb.append(",\n");
+                        }
+                        sb.append(s);
+                    }
+                    sb.append("]");
+                } else {
+                    sb.append(attb);
+                    sb.append(":");
+                    sb.append(getAttribute(attb));
+                }
+            }
+            if (m_serviceData.listAttributes().length > 0) {
+                sb.append(",\n");
+                sb.append(m_serviceData.toString());
+            }
+            sb.append("\n");
+        } catch (SagaException e) {
+            throw new Error("Internal error: " + e.getMessage());
+        }
+        return sb.toString();
+    }
+
 }
