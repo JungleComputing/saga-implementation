@@ -94,7 +94,7 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.sa
         }
         StringBuilder sb = new StringBuilder();
         for (String service : relatedServices) {
-            if (sb != null) {
+            if (sb.length() == 0) {
                 sb = sb.append("uid = '" + service + "'");
             } else {
                 sb = sb.append(" or uid = '" + service + "'");
