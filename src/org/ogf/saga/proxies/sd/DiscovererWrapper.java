@@ -122,6 +122,7 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
         try {
             s = "Session:" + this.getSession().toString() + " Information System URL:" + m_infoSystemUrl;
         } catch (DoesNotExistException e) {
+            throw new Error("Internal error: " + e.getMessage());
         }
         return s;
     }
