@@ -67,7 +67,8 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
     private final GATContext gatContext;
     private org.gridlab.gat.resources.JobDescription gatJobDescription;
     private JobState savedState = JobState.UNKNOWN;
-
+    private boolean interactive = false;
+    
     private static int jobCount = 0;
 
     public SagaJob(JobServiceAdaptor service,
@@ -124,6 +125,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             gatJobDescription = new org.gridlab.gat.resources.JobDescription(
                     orig.gatJobDescription.getSoftwareDescription(),
                     createHardwareResourceDescription());
+            interactive = orig.interactive;
         }
     }
 
@@ -157,15 +159,15 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
     private SoftwareDescription createSoftwareDescription()
             throws BadParameterException, NotImplementedException,
             NoSuccessException {
-        try {
-            String s = getV(JobDescriptionImpl.INTERACTIVE);
-            if ("True".equals(s)) {
-                throw new NotImplementedException(
-                        "Interactive jobs cannot be implemented on JavaGAT");
-            }
-        } catch (Throwable e) {
-            // ignored
-        }
+//        try {
+//            String s = getV(JobDescriptionImpl.INTERACTIVE);
+//            if ("True".equals(s)) {
+//                throw new NotImplementedException(
+//                        "Interactive jobs cannot be implemented on JavaGAT");
+//            }
+//        } catch (Throwable e) {
+//            // ignored
+//        }
         SoftwareDescription sd = new SoftwareDescription();
 
         // Strange default in JavaGat? Keep sandbox?
@@ -240,11 +242,26 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             // ignored
         }
 
-        URI stdin = getURI(JobDescriptionImpl.INPUT);
+        try {
+            String s = getV(JobDescriptionImpl.INTERACTIVE);
+            interactive = "True".equals(s);
+        } catch (Throwable ignored) {
+            // ignore
+        }
+                
+        sd.enableStreamingStdin(interactive);
+        sd.enableStreamingStdout(interactive);
+        sd.enableStreamingStderr(interactive);
 
-        URI stdout = getURI(JobDescriptionImpl.OUTPUT);
-
-        URI stderr = getURI(JobDescriptionImpl.ERROR);
+        URI stdin = null;
+        URI stdout = null;
+        URI stderr = null;
+        
+        if (!interactive) {
+            stdin = getURI(JobDescriptionImpl.INPUT);
+            stdout = getURI(JobDescriptionImpl.OUTPUT);
+            stderr = getURI(JobDescriptionImpl.ERROR);
+        }
         
         boolean stdinReplaced = false;
         boolean stdoutReplaced = false;
@@ -684,13 +701,31 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 this);
     }
 
+    private void checkInteractive(String stream) 
+    throws IncorrectStateException, DoesNotExistException 
+    {
+        if (!interactive) {
+            throw new IncorrectStateException("The job is not interactive");
+        }
+        if (gatJob == null) {
+            throw new DoesNotExistException(stream + " is not available yet");
+        }
+    }
+    
     public InputStream getStderr() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             DoesNotExistException, TimeoutException, IncorrectStateException,
             NoSuccessException {
-        throw new NotImplementedException("getStderr is not implemented, "
-                + "javaGAT does not support interactive jobs", this);
+        checkInteractive("stderr");
+        try {
+            return gatJob.getStderr();
+        } catch (GATInvocationException e) {
+            throw new NoSuccessException("getStderr() failed", e, this);
+        } catch(UnsupportedOperationException e) {
+            throw new NotImplementedException("getStderr() not implemented", e, this);
+        }
+        
     }
 
     public OutputStream getStdin() throws NotImplementedException,
@@ -698,8 +733,14 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             PermissionDeniedException, BadParameterException,
             DoesNotExistException, TimeoutException, IncorrectStateException,
             NoSuccessException {
-        throw new NotImplementedException("getStdin is not implemented, "
-                + "javaGAT does not support interactive jobs", this);
+        checkInteractive("stdin");
+        try {
+            return gatJob.getStdin();
+        } catch (GATInvocationException e) {
+            throw new NoSuccessException("getStdin() failed", e, this);
+        } catch(UnsupportedOperationException e) {
+            throw new NotImplementedException("getStdin() not implemented", e, this);
+        }
     }
 
     public InputStream getStdout() throws NotImplementedException,
@@ -707,8 +748,14 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             PermissionDeniedException, BadParameterException,
             DoesNotExistException, TimeoutException, IncorrectStateException,
             NoSuccessException {
-        throw new NotImplementedException("getStdout is not implemented, "
-                + "javaGAT does not support interactive jobs", this);
+        checkInteractive("stdout");
+        try {
+            return gatJob.getStdout();
+        } catch (GATInvocationException e) {
+            throw new NoSuccessException("getStdout() failed", e, this);
+        } catch(UnsupportedOperationException e) {
+            throw new NotImplementedException("getStdout() not implemented", e, this);
+        }
     }
 
     public void migrate(org.ogf.saga.job.JobDescription jd)
