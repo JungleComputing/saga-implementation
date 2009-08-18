@@ -17,6 +17,7 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.monitoring.MetricImpl;
+import org.ogf.saga.job.Job;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.session.Session;
@@ -110,7 +111,11 @@ public class TaskContainerImpl extends SagaObjectBase implements
         tasks.put(cookie, task);
         reverseMap.put(task, cookie);
         try {
-            callbackCookies.put(task, task.addCallback(Task.TASK_STATE, cb));
+            if (task instanceof Job) {
+                callbackCookies.put(task, task.addCallback(Job.JOB_STATE, cb));
+            } else {
+                callbackCookies.put(task, task.addCallback(Task.TASK_STATE, cb));
+            }
         } catch (IncorrectStateException e) {
             // Ignore, the task is already in a final state.
         } catch (Throwable e) {
