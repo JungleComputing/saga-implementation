@@ -267,11 +267,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         checkCopyFlags(flags);
         nonResolvingCopy(resolve(target), flags);
     }
-
-    // Copy, without resolving target.
-    // It has already been resolved, either with respect to this NSEntry or
-    // with respect to the NSDirectory object that invoked this method.
-    protected void nonResolvingCopy(URL target, int flags)
+    
+    private File copyOrMoveChecks(URL target, int flags, String method) 
             throws IncorrectStateException, NoSuccessException,
             BadParameterException, AlreadyExistsException,
             IncorrectURLException, NotImplementedException,
@@ -291,7 +288,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                 logger.debug("Wrong flags used!");
             }
             throw new BadParameterException(
-                    "Flags not allowed for NSEntry copy: " + flags, wrapper);
+                    "Flags not allowed for NSEntry " + method + ": " + flags, wrapper);
         }
         File targetFile = null;
         try {
@@ -338,7 +335,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             if (targetFile.isDirectory() && file.isFile()) {
                 targetParentFile = targetFile;
                 try {
-                    targetChildFile = GAT.createFile(gatContext, target
+                    targetChildFile = GAT.createFile(gatContext, cvtToGatURI(target)
                             .toString()
                             + "/" + file.getName());
                     if (logger.isDebugEnabled()) {
@@ -365,6 +362,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             }
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e, wrapper);
+        }  catch (URISyntaxException e) {
+            throw new BadParameterException(e, wrapper);
         }
         if (!Flags.OVERWRITE.isSet(flags) && targetChildFile.exists()) {
             throw new AlreadyExistsException("Target already exists: "
@@ -389,6 +388,19 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                         "Target parent file does not exist", wrapper);
             }
         }
+        return targetChildFile;
+    }
+
+    // Copy, without resolving target.
+    // It has already been resolved, either with respect to this NSEntry or
+    // with respect to the NSDirectory object that invoked this method.
+    protected void nonResolvingCopy(URL target, int flags)
+            throws IncorrectStateException, NoSuccessException,
+            BadParameterException, AlreadyExistsException,
+            IncorrectURLException, NotImplementedException,
+            DoesNotExistException {
+        File targetChildFile = copyOrMoveChecks(target, flags, "copy");
+
         // if the target already exists, it will be overwritten if the
         // 'Overwrite' flag is set, otherwise it is an 'AlreadyExists'
         // exception
@@ -503,8 +515,20 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, IncorrectURLException, DoesNotExistException {
-        nonResolvingCopy(target, flags);
-        remove(flags);
+        File targetChildFile = copyOrMoveChecks(target, flags, "move");
+
+        // if the target already exists, it will be overwritten if the
+        // 'Overwrite' flag is set, otherwise it is an 'AlreadyExists'
+        // exception
+        try {
+            if (logger.isDebugEnabled()) {
+                logger.debug("copy: " + fileImpl.toGATURI().toString()
+                        + " --> " + targetChildFile.toGATURI().toString());
+            }
+            file.move(targetChildFile.toGATURI());
+        } catch (GATInvocationException e) {
+            throw new NoSuccessException(e, wrapper);
+        }
     }
 
     public void permissionsAllow(String id, int permissions, int flags)
