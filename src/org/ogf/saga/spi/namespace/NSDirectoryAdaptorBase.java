@@ -190,8 +190,13 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
         URL u = URLFactory.createURL(nameUrl.toString());
         path = u.getPath();
-        if ("".equals(path)) {
-            path = ".";
+        
+        // If there is no path, and the URL has a host part, the path
+        // should start with a '/'.
+        if (path.equals("")) {
+            if (nameUrl.getHost() == null) {
+                path = ".";
+            }
         }
         u.setPath(path + "/DUMMY");
         u = u.resolve(url);
