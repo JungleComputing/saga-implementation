@@ -7,7 +7,7 @@ import org.ogf.saga.isn.EntityData;
 import org.ogf.saga.url.URL;
 
 /**
- * Provides the interface for Information System Navigator adapters.Adapters
+ * Provides the interface for Information System Navigator adapters. Adapters
  * should not implement this interface but instead they should extend
  * {@link InformationSystemNavigatorAdaptorBase}
  * 
