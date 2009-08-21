@@ -10,7 +10,9 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.sd.ServiceDescription;
 
 /**
- * Provides the interface for service discovery for use by adapters.
+ * Provides the interface for service discovery for use by adapters. Adapters
+ * should not implement this interface but instead they should extend
+ * {@link DiscovererAdaptorBase}
  * 
  */
 public interface DiscovererSPI {
