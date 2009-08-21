@@ -2,6 +2,7 @@ package org.ogf.saga.impl.session;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import org.ogf.saga.context.Context;
 import org.ogf.saga.error.DoesNotExistException;
@@ -12,7 +13,7 @@ import org.ogf.saga.impl.SagaRuntimeException;
 public class SessionImpl extends SagaObjectBase implements
         org.ogf.saga.session.Session {
 
-    private HashSet<Context> contexts = new HashSet<Context>();
+    private HashSet<Context> contexts = new LinkedHashSet<Context>();
 
     private HashMap<String, AdaptorSessionInterface> adaptorSessions = new HashMap<String, AdaptorSessionInterface>();
 
