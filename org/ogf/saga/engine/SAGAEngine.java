@@ -8,7 +8,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,15 +69,6 @@ public class SAGAEngine {
         }
     }
 
-    /**
-     * A helper class to compare file names, so that they can be sorted,
-     * and the order becomes predictable and reproducible.
-     */
-    private static class FileComparator implements Comparator<File> {
-        public int compare(File f1, File f2) {
-            return f1.getName().compareTo(f2.getName());
-        }
-    }
 
     /** Constructs a default SAGAEngine instance. */
     private SAGAEngine() {
@@ -312,7 +302,6 @@ public class SAGAEngine {
 
                 // Create a separate classloader for each adaptor directory.
                 if (adaptorDirs != null) {
-                    Arrays.sort(adaptorDirs, new FileComparator());
                     for (File adaptorDir : adaptorDirs) {
 
                         try {
@@ -549,6 +538,8 @@ public class SAGAEngine {
 
         String nameString = getProperty(adaptorType + ".adaptor.name");
 
+        int positives = 0;
+        
         if (logger.isDebugEnabled()) {
             logger.debug("Property " + adaptorType + ".adaptor.name = "
                     + (nameString == null ? "(null)" : nameString));
@@ -573,6 +564,7 @@ public class SAGAEngine {
                     // administration.
                     if (pos < insertPosition)
                         insertPosition--;
+                    System.out.println("Insert position = " + insertPosition);
                 } else {
                     if (logger.isInfoEnabled()) {
                         logger.info("Found non existing adaptor in "
@@ -589,6 +581,7 @@ public class SAGAEngine {
                 // when the current position is before the insert position, it
                 // means that the adaptor is already inserted, so don't insert
                 // it again
+                positives++;
                 String fullAdaptorName = getFullAdaptorName(name, adaptors);
                 if (result.getPos(fullAdaptorName) >= insertPosition) {
                     // try to place the adaptor on the proper position
@@ -603,19 +596,19 @@ public class SAGAEngine {
                                     + name);
                         }
                     }
-
                 }
             }
         }
         // when at least one adaptor has been replaced properly (without being
         // removed) the other adaptors are removed from the list unless, the
         // namestring ends with a ','
-        if (insertPosition > 0 && !nameString.trim().endsWith(",")) {
+        if (positives > 0 && !nameString.trim().endsWith(",")) {
             int endPosition = result.size();
             for (int i = insertPosition; i < endPosition; i++) {
                 result.remove(insertPosition);
             }
-        } else if (insertPosition == 0) {
+        }
+        if (result.size() == 0) {
             throw new Error("no adaptors available for property: \""
                     + adaptorType + ".adaptor.name\", \"" + nameString + "\"");
         }
