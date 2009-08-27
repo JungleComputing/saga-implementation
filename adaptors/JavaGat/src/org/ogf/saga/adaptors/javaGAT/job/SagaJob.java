@@ -43,7 +43,7 @@ import org.ogf.saga.url.URLFactory;
  * This is an implementation of the SAGA Job SPI on top of the JavaGAT. Some
  * JobDescription attributes, Job Attributes and Job Metrics unfortunately
  * cannot be implemented on top of the JavaGAT. These are the JobDescription
- * attributes JobDescription.INTERACTIVE, JobDescription.THREADSPERPROCESS.
+ * attributes JobDescription.THREADSPERPROCESS,
  * JobDescription.JOBCONTACT, JobDescription.JOBSTARTTIME, the Job attribute
  * Job.TERMSIG, the Job Metrics JOB_SIGNAL, JOB_CPUTIME, JOB_MEMORYUSE,
  * JOB_VMEMORYUSE, JOB_PERFORMANCE. In addition, the method {@link #signal(int)}
@@ -159,15 +159,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
     private SoftwareDescription createSoftwareDescription()
             throws BadParameterException, NotImplementedException,
             NoSuccessException {
-//        try {
-//            String s = getV(JobDescriptionImpl.INTERACTIVE);
-//            if ("True".equals(s)) {
-//                throw new NotImplementedException(
-//                        "Interactive jobs cannot be implemented on JavaGAT");
-//            }
-//        } catch (Throwable e) {
-//            // ignored
-//        }
+
         SoftwareDescription sd = new SoftwareDescription();
 
         // Strange default in JavaGat? Keep sandbox?
