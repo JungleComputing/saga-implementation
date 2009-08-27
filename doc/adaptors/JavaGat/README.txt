@@ -33,7 +33,7 @@ Not implemented.
     The following methods are not implemented: getSelf(),  signal(),
     checkpoint(), migrate().
     The following JobDescription attributes are not implemented:
-    SPMDVARIATION, INTERACTIVE, THREADSPERPROCESS, JOBCONTACT, JOBSTARTTIME.
+    SPMDVARIATION, THREADSPERPROCESS, JOBCONTACT, JOBSTARTTIME.
     Also, post-stage append and pre-stage append is not supported.
     The following Job attributes are not supported: TERMSIG.
   Namespace:

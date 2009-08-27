@@ -50,7 +50,7 @@ Package SAGA job
     Reason: don't know how to implement, at the moment.
   * JobDescriptionAttributes that are not implemented:
     SPMDVARIATION,
-    INTERACTIVE, THREADSPERPROCESS, JOBCONTACT, JOBSTARTTIME.
+    THREADSPERPROCESS, JOBCONTACT, JOBSTARTTIME.
     Also, post-stage append and pre-stage append is not supported.
     Reason: there is no corresponding mechanism in JavaGAT job descriptions.
   * JobAttributes that are not implemented:
