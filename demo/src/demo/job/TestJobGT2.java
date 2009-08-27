@@ -64,11 +64,15 @@ public class TestJobGT2 implements Callback {
                    new String[] { "hostname.out < hostname.out", "hostname.err < hostname.err"});
 
            // Create the job, run it, and wait for it.
+           
            Job job = js.createJob(jd);
+           /*
            job.addCallback(Job.JOB_STATE, new TestJobGT2());
            job.addCallback(Job.JOB_STATEDETAIL, new TestJobGT2());
+           */
            job.run();
            job.waitFor();
+           session.close();
        } catch (Throwable e) {
            System.out.println("Got exception " + e);
            e.printStackTrace();
