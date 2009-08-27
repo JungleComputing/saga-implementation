@@ -399,8 +399,14 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
                 // Watch out for special characters. Therefore, create the
                 // URL in two steps: First create an empty one, and then
                 // set the path.
+                // Also, this does not work if the first section of the path
+                // contains a ':' (Bug in java.net.URI?). So more trickery ...
                 URL u = URLFactory.createURL("");
-                u.setPath(resultFile);
+                if (resultFile.contains(":")) {
+                    u.setPath("./" + resultFile);
+                } else {
+                    u.setPath(resultFile);
+                }
                 resultList.add(u);
             }
         }
