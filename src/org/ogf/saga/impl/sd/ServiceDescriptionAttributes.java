@@ -43,6 +43,11 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
 
         addAttribute(ServiceDescription.IMPLEMENTATION_VERSION, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
                 NOT_REMOVABLE);
+        try {
+            setValue(ServiceDescription.IMPLEMENTATION_VERSION, "Not Set");
+        } catch (SagaException e) {
+            throw new Error("Internal error, unable to set " + ServiceDescription.IMPLEMENTATION_VERSION + ": " + e.getMessage());
+        }
 
         addAttribute(ServiceDescription.IMPLEMENTOR, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
                 NOT_REMOVABLE);
@@ -54,6 +59,11 @@ public class ServiceDescriptionAttributes extends AttributesImpl {
 
         addAttribute(ServiceDescription.INTERFACE_VERSION, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
                 NOT_REMOVABLE);
+        try {
+            setValue(ServiceDescription.INTERFACE_VERSION, "Not Set");
+        } catch (SagaException e) {
+            throw new Error("Internal error, unable to set " + ServiceDescription.INTERFACE_VERSION + ": " + e.getMessage());
+        }
 
         addAttribute(ServiceDescription.INFORMATION_SERVICE_URL, AttributeType.STRING, SCALAR, READ_ONLY, IMPLEMENTED,
                 NOT_REMOVABLE);
