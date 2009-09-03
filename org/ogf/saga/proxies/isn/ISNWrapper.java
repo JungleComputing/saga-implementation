@@ -30,21 +30,26 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      */
     private String m_entityName;
 
+    /** The name of the information model to use. */
+    private String m_model;
+
     /**
      * Create a EntityDataSet wrapper.
      * 
      * @param session
      * @param infoSystemUrl
+     * @param model
      * @param entityName
      * @param filter
      * @throws BadParameterException
      * @throws NoSuccessException
      */
-    protected ISNWrapper(Session session, URL infoSystemUrl, String entityName, String filter)
+    protected ISNWrapper(Session session, URL infoSystemUrl, String model, String entityName, String filter)
             throws BadParameterException, NoSuccessException {
         super(session);
         m_entityName = entityName;
-        Object[] parameters = { this, session, infoSystemUrl, entityName, filter };
+        m_model = model;
+        Object[] parameters = { this, session, infoSystemUrl, model, entityName, filter };
         createProxy1(parameters);
     }
 
@@ -53,6 +58,7 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      * 
      * @param session
      * @param infoSystemUrl
+     * @param model
      * @param entityName
      * @param filter
      * @param entityData
@@ -60,11 +66,12 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      * @throws BadParameterException
      * @throws NoSuccessException
      */
-    private ISNWrapper(Session session, URL infoSystemUrl, String entityName, String filter,
+    private ISNWrapper(Session session, URL infoSystemUrl, String model, String entityName, String filter,
             Set<EntityData> entityData, String nextEntity) throws BadParameterException, NoSuccessException {
         super(session);
         m_entityName = entityName;
-        Object[] parameters = { this, session, infoSystemUrl, entityName, filter, entityData, nextEntity };
+        m_model = model;
+        Object[] parameters = { this, session, infoSystemUrl, model, entityName, filter, entityData, nextEntity };
         createProxy2(parameters);
     }
 
@@ -76,6 +83,8 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
         ISNWrapper clone = (ISNWrapper) super.clone();
         clone.m_proxy = (InformationSystemNavigatorSPI) SAGAEngine.createAdaptorCopy(
                 InformationSystemNavigatorSPI.class, m_proxy, clone);
+        clone.m_entityName = m_entityName;
+        clone.m_model = m_model;
         return clone;
     }
 
@@ -98,7 +107,8 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
     @Override
     public EntityDataSet getRelatedEntities(String relatedName, String filter) throws BadParameterException,
             NoSuccessException {
-        return new ISNWrapper(sessionImpl, m_proxy.getInfoSystemUrl(), m_entityName, filter, getData(), relatedName);
+        return new ISNWrapper(sessionImpl, m_proxy.getInfoSystemUrl(), m_model, m_entityName, filter, getData(),
+                relatedName);
     }
 
     /*
@@ -108,7 +118,8 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      */
     @Override
     public EntityDataSet getRelatedEntities(String relatedName) throws BadParameterException, NoSuccessException {
-        return new ISNWrapper(sessionImpl, m_proxy.getInfoSystemUrl(), m_entityName, null, getData(), relatedName);
+        return new ISNWrapper(sessionImpl, m_proxy.getInfoSystemUrl(), m_model, m_entityName, null, getData(),
+                relatedName);
 
     }
 
@@ -136,8 +147,8 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
         try {
             m_proxy = (InformationSystemNavigatorSPI) SAGAEngine.createAdaptorProxy(
                     InformationSystemNavigatorSPI.class, new Class[] { ISNWrapper.class,
-                            org.ogf.saga.impl.session.SessionImpl.class, URL.class, String.class, String.class },
-                    parameters);
+                            org.ogf.saga.impl.session.SessionImpl.class, URL.class, String.class, String.class,
+                            String.class }, parameters);
         } catch (BadParameterException e) {
             throw e;
         } catch (NoSuccessException e) {
@@ -162,7 +173,7 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
             m_proxy = (InformationSystemNavigatorSPI) SAGAEngine.createAdaptorProxy(
                     InformationSystemNavigatorSPI.class, new Class[] { ISNWrapper.class,
                             org.ogf.saga.impl.session.SessionImpl.class, URL.class, String.class, String.class,
-                            Set.class, String.class }, parameters);
+                            String.class, Set.class, String.class }, parameters);
         } catch (BadParameterException e) {
             throw e;
         } catch (NoSuccessException e) {
