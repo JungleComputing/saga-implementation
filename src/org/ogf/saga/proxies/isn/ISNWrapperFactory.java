@@ -20,24 +20,25 @@ public class ISNWrapperFactory extends ISNFactory {
      * (non-Javadoc)
      * 
      * @see org.ogf.saga.isn.ISNFactory#doCreateEntityDataSet(org.ogf.saga.session.Session,
-     *      java.lang.String, java.lang.String)
+     *      java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    protected EntityDataSet doCreateEntityDataSet(Session session, String entityName, String filter)
+    protected EntityDataSet doCreateEntityDataSet(Session session, String model, String entityName, String filter)
             throws BadParameterException, NoSuccessException {
-        return new ISNWrapper(session, null, entityName, filter);
+        return new ISNWrapper(session, null, model, entityName, filter);
     }
 
     /*
      * (non-Javadoc)
      * 
      * @see org.ogf.saga.isn.ISNFactory#doCreateEntityDataSet(org.ogf.saga.session.Session,
-     *      java.lang.String, java.lang.String, org.ogf.saga.url.URL)
+     *      java.lang.String, java.lang.String, java.lang.String,
+     *      org.ogf.saga.url.URL)
      */
     @Override
-    protected EntityDataSet doCreateEntityDataSet(Session session, String entityName, String filter, URL infoSystemUrl)
-            throws BadParameterException, NoSuccessException {
-        return new ISNWrapper(session, infoSystemUrl, entityName, filter);
+    protected EntityDataSet doCreateEntityDataSet(Session session, String model, String entityName, String filter,
+            URL infoSystemUrl) throws BadParameterException, NoSuccessException {
+        return new ISNWrapper(session, infoSystemUrl, model, entityName, filter);
     }
 
 }

@@ -13,6 +13,8 @@ import org.ogf.saga.proxies.isn.ISNWrapper;
  * <dd><code>SessionImpl sessionImpl</code>, needed by the super constructor</dd>
  * <dd><code>URL infoSystemUrl</code>, the URL to guide the implementation,
  * may be <code>null</code></dd>
+ * <dd><code>String model</code>, a string containing the name of the
+ * information model</dd>
  * <dd><code>String entityName</code>, a string containing the name of the
  * entity to navigate</dd>
  * <dd><code>String filter</code>, a string containing the filter for
@@ -25,6 +27,8 @@ import org.ogf.saga.proxies.isn.ISNWrapper;
  * <dd><code>SessionImpl sessionImpl</code>, needed by the super constructor</dd>
  * <dd><code>URL infoSystemUrl</code>, the URL to guide the implementation,
  * may be <code>null</code></dd>
+ * <dd><code>String model</code>, a string containing the name of the
+ * information model</dd>
  * <dd><code>String entityName</code>, a string containing the name of the
  * current entity</dd>
  * <dd><code>String filter</code>, a string containing the filter for
