@@ -61,7 +61,9 @@ public class SagaShell {
         commands.put("run", new RunJob(env));
         commands.put("jobs", new ListJobs(env));
         commands.put("kill", new KillJob(env));
+    }
 
+    protected void init() {
         // initialize the console and tab completion
         CandidateListCompletionHandler h = new CandidateListCompletionHandler();
         h.setAlwaysIncludeNewline(false);
@@ -81,7 +83,10 @@ public class SagaShell {
     }
     
     public void run() {
-        System.out.println("Type 'help' for help");
+        logger.debug("Initializing console...");
+    	init();
+    	
+    	System.out.println("Type 'help' for help");
         
         while(!env.isTerminated()) {
             try {
