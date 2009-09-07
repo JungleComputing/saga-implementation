@@ -65,6 +65,7 @@ public class SagaShell {
 
     protected void init() {
         // initialize the console and tab completion
+        logger.debug("Initializing console...");
         CandidateListCompletionHandler h = new CandidateListCompletionHandler();
         h.setAlwaysIncludeNewline(false);
         console.setCompletionHandler(h);
@@ -73,6 +74,7 @@ public class SagaShell {
         commands.keySet().toArray(commandArr);
         
         // create the file name completor
+        logger.debug("Initializing SAGA file name completor...");
         fileNameCompletor = new SagaFileNameCompletor();
         Completor[] subCompletors = new Completor[2];
         subCompletors[0] = new SimpleCompletor(commandArr);
@@ -83,7 +85,6 @@ public class SagaShell {
     }
     
     public void run() {
-        logger.debug("Initializing console...");
     	init();
     	
     	System.out.println("Type 'help' for help");
