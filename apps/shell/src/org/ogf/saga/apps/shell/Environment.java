@@ -2,6 +2,7 @@ package org.ogf.saga.apps.shell;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.file.Directory;
@@ -31,9 +32,10 @@ public class Environment {
     public Environment() throws SagaException, IOException {
         // initialize the current working directory to the local home directory
         logger.info("Initializing current working directory");
-        File d = new File(System.getProperty("user.dir"));
+        File userDir = new File(System.getProperty("user.dir"));
+        URI userDirUri = userDir.toURI();
         URL cwdUrl = URLFactory.createURL("file://localhost");
-        cwdUrl.setPath(d.getCanonicalPath());
+        cwdUrl.setPath(userDirUri.getPath());
         cwd = FileFactory.createDirectory(cwdUrl);
         
         // initialize the manager for running jobs and discovering resources
