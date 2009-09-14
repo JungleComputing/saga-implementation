@@ -1,6 +1,7 @@
 package org.ogf.saga.proxies.isn;
 
 import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.isn.EntityDataSet;
 import org.ogf.saga.isn.ISNFactory;
@@ -23,9 +24,9 @@ public class ISNWrapperFactory extends ISNFactory {
      *      java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    protected EntityDataSet doCreateEntityDataSet(Session session, String model, String entityName, String filter)
-            throws BadParameterException, NoSuccessException {
-        return new ISNWrapper(session, null, model, entityName, filter);
+    protected EntityDataSet doCreateEntityDataSet(String model, String entityName, String filter, Session session)
+            throws BadParameterException, DoesNotExistException, NoSuccessException {
+        return new ISNWrapper(model, entityName, filter, session, null);
     }
 
     /*
@@ -36,9 +37,9 @@ public class ISNWrapperFactory extends ISNFactory {
      *      org.ogf.saga.url.URL)
      */
     @Override
-    protected EntityDataSet doCreateEntityDataSet(Session session, String model, String entityName, String filter,
-            URL infoSystemUrl) throws BadParameterException, NoSuccessException {
-        return new ISNWrapper(session, infoSystemUrl, model, entityName, filter);
+    protected EntityDataSet doCreateEntityDataSet(String model, String entityName, String filter, Session session,
+            URL infoSystemUrl) throws BadParameterException, DoesNotExistException, NoSuccessException {
+        return new ISNWrapper(model, entityName, filter, session, infoSystemUrl);
     }
 
 }

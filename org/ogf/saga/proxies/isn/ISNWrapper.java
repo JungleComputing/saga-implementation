@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.impl.SagaObjectBase;
@@ -36,17 +37,25 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
     /**
      * Create a EntityDataSet wrapper.
      * 
-     * @param session
-     * @param infoSystemUrl
      * @param model
      * @param entityName
      * @param filter
+     * @param session
+     * @param infoSystemUrl
+     * 
      * @throws BadParameterException
+     * @throws DoesNotExistException
      * @throws NoSuccessException
      */
-    protected ISNWrapper(Session session, URL infoSystemUrl, String model, String entityName, String filter)
-            throws BadParameterException, NoSuccessException {
+    protected ISNWrapper(String model, String entityName, String filter, Session session, URL infoSystemUrl)
+            throws BadParameterException, DoesNotExistException, NoSuccessException {
         super(session);
+        if (model == null || model.equals("")) {
+            throw new BadParameterException("Invalid information model name: " + model);
+        }
+        if (entityName == null || entityName.equals("")) {
+            throw new BadParameterException("Invalid entity name: " + entityName);
+        }
         m_entityName = entityName;
         m_model = model;
         Object[] parameters = { this, session, infoSystemUrl, model, entityName, filter };
@@ -56,17 +65,18 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
     /**
      * Create a EntityDataSet wrapper.
      * 
-     * @param session
-     * @param infoSystemUrl
      * @param model
      * @param entityName
      * @param filter
+     * @param session
+     * @param infoSystemUrl
      * @param entityData
      * @param nextEntity
+     * 
      * @throws BadParameterException
      * @throws NoSuccessException
      */
-    private ISNWrapper(Session session, URL infoSystemUrl, String model, String entityName, String filter,
+    private ISNWrapper(String model, String entityName, String filter, Session session, URL infoSystemUrl,
             Set<EntityData> entityData, String nextEntity) throws BadParameterException, NoSuccessException {
         super(session);
         m_entityName = entityName;
@@ -107,7 +117,10 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
     @Override
     public EntityDataSet getRelatedEntities(String relatedName, String filter) throws BadParameterException,
             NoSuccessException {
-        return new ISNWrapper(sessionImpl, m_proxy.getInfoSystemUrl(), m_model, m_entityName, filter, getData(),
+        if (relatedName == null || relatedName.equals("") || !listRelatedEntityNames().contains(relatedName)) {
+            throw new BadParameterException("Invalid entity name: " + relatedName);
+        }
+        return new ISNWrapper(m_model, m_entityName, filter, sessionImpl, m_proxy.getInfoSystemUrl(), getData(),
                 relatedName);
     }
 
@@ -118,9 +131,11 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      */
     @Override
     public EntityDataSet getRelatedEntities(String relatedName) throws BadParameterException, NoSuccessException {
-        return new ISNWrapper(sessionImpl, m_proxy.getInfoSystemUrl(), m_model, m_entityName, null, getData(),
+        if (relatedName == null || relatedName.equals("") || !listRelatedEntityNames().contains(relatedName)) {
+            throw new BadParameterException("Invalid entity name: " + relatedName);
+        }
+        return new ISNWrapper(m_model, m_entityName, null, sessionImpl, m_proxy.getInfoSystemUrl(), getData(),
                 relatedName);
-
     }
 
     /*
@@ -141,9 +156,11 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      * 
      * @param parameters
      * @throws BadParameterException
+     * @throws DoesNotExistException
      * @throws NoSuccessException
      */
-    private void createProxy1(Object[] parameters) throws BadParameterException, NoSuccessException {
+    private void createProxy1(Object[] parameters) throws BadParameterException, DoesNotExistException,
+            NoSuccessException {
         try {
             m_proxy = (InformationSystemNavigatorSPI) SAGAEngine.createAdaptorProxy(
                     InformationSystemNavigatorSPI.class, new Class[] { ISNWrapper.class,
@@ -153,8 +170,10 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
             throw e;
         } catch (NoSuccessException e) {
             throw e;
+        } catch (DoesNotExistException e) {
+            throw e;
         } catch (SagaException e) {
-            throw new NoSuccessException("Constructor failed", e);
+            throw new NoSuccessException("Constructor failed " + e.getMessage());
         }
     }
 
@@ -179,7 +198,7 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
         } catch (NoSuccessException e) {
             throw e;
         } catch (SagaException e) {
-            throw new NoSuccessException("Constructor failed", e);
+            throw new NoSuccessException("Constructor failed " + e.getMessage());
         }
     }
 
