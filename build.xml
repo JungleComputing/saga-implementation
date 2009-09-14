@@ -68,6 +68,9 @@
 
 	<!-- Build tests. -->
 	<ant inheritAll="false" dir="test" target="build"/>
+
+	<!-- Build apps. -->
+	<ant inheritAll="false" dir="apps" target="build"/>
     </target>
 
 	<target name="install-engine" depends="build-engine">
@@ -96,6 +99,8 @@
 	<ant inheritAll="false" dir="demo" target="clean"/>
 	<!-- Clean tests. -->
 	<ant inheritAll="false" dir="test" target="clean"/>
+	<!-- Clean apps. -->
+	<ant inheritAll="false" dir="apps" target="clean"/>
 	<!-- Clean doc. -->
 	<ant inheritAll="false" dir="doc" target="clean"/>
     </target>
