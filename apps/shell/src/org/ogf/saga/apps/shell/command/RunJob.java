@@ -10,13 +10,19 @@ import java.util.concurrent.ThreadFactory;
 import org.ogf.saga.apps.shell.Environment;
 import org.ogf.saga.apps.shell.StreamPrinter;
 import org.ogf.saga.apps.shell.Util;
+import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.SagaException;
+import org.ogf.saga.file.Directory;
+import org.ogf.saga.file.File;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
 import org.ogf.saga.job.JobService;
+import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.task.TaskContainer;
 import org.ogf.saga.task.TaskMode;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,14 +100,21 @@ public class RunJob extends EnvironmentCommand {
                 desc.setAttribute(JobDescription.INTERACTIVE, "True");
             } else {
                 List<String> fileTransfers = new LinkedList<String>();
+
                 if (output != null) {
-                    desc.setAttribute(JobDescription.OUTPUT, output);
-                    fileTransfers.add(output + " < " + output);
+                	String localOut = createLocalFile(output, "output");
+                	String remoteOut = createRemoteFile(output, "output");
+                	desc.setAttribute(JobDescription.OUTPUT, remoteOut);
+                	fileTransfers.add(localOut + " < " + remoteOut);
                 }
+                
                 if (error != null) {
-                    desc.setAttribute(JobDescription.ERROR, error);
-                    fileTransfers.add(error + " < " + error);
+                	String localErr = createLocalFile(error, "error");
+                	String remoteErr = createRemoteFile(error, "error");
+                    desc.setAttribute(JobDescription.ERROR, remoteErr);
+                	fileTransfers.add(localErr + " < " + remoteErr);
                 }
+                
                 String[] s = fileTransfers.toArray(new String[0]);
                 desc.setVectorAttribute(JobDescription.FILETRANSFER, s);
             }
@@ -142,6 +155,46 @@ public class RunJob extends EnvironmentCommand {
         }
     }
 
+    private String createLocalFile(String fileUrl, String outName) 
+    throws SagaException
+    {
+		// resolve the local file name againt the cwd of the shell
+		URL localUrl = URLFactory.createURL(fileUrl);
+		Directory cwd = env.getCwd();
+		File localFile = cwd.openFile(localUrl, Flags.CREATE.getValue());
+		String localName = localFile.getURL().toString();
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Using local " + outName + " '" + localName + "'");
+		}
+    	
+		return localName;
+    }
+    
+    private String createRemoteFile(String fileUrl, String outName) 
+    throws SagaException
+    {
+    	// only use the base name of the file URL for the remote file
+		// (no adaptor can handle full URLs anyway)
+		URL remoteUrl = URLFactory.createURL(fileUrl);
+		String remotePath = remoteUrl.getPath();
+		
+		if (remotePath == null || remotePath.isEmpty()) {
+			throw new BadParameterException("Illegal file name: '" + 
+					fileUrl + "'");
+		}
+		
+		java.io.File remoteFile = new java.io.File(remotePath);
+		String remoteName = remoteFile.getName();
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Using remote " + outName + " '" + remoteName + "'");
+		}
+
+		return remoteName;
+    }
+    
+    
     private class StreamPrinterThreadFactory implements ThreadFactory {
         
         public Thread newThread(Runnable r) {
