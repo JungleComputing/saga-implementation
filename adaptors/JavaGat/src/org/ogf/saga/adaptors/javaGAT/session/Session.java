@@ -139,7 +139,10 @@ public class Session implements
                     byte[] buf = new byte[(int) length];
                     int len = f.read(buf, 0, buf.length);
                     if (len > 0) {
-                        return new CredentialSecurityContext(buf);
+
+                        SecurityContext c = new CredentialSecurityContext(buf);
+                        c.addNote("adaptors", "globus,wsgt4new");
+                        return c;
                     } else {
                         logger.info("read from proxy file gave " + len);
                     }
@@ -150,10 +153,12 @@ public class Session implements
                 }
             }
             try {
-                return new CertificateSecurityContext(
+                SecurityContext c = new CertificateSecurityContext(
                         new URI(ctxt.getValue(ContextImpl.USERKEY)),
                         new URI(ctxt.getValue(ContextImpl.USERCERT)),
                         ctxt.getValue(ContextImpl.USERPASS));
+                c.addNote("adaptors", "globus,wsgt4new");
+                return c;
             } catch (URISyntaxException e) {
                 // what to do? nothing?
             }
@@ -164,16 +169,20 @@ public class Session implements
             }
             if (!ctxt.getValue(ContextImpl.USERKEY).equals("")) {
                 try {
-                    return new CertificateSecurityContext(
+                    SecurityContext c = new CertificateSecurityContext(
                             new URI(ctxt.getValue(ContextImpl.USERKEY)),
                             new URI(ctxt.getValue(ContextImpl.USERCERT)), userId,
                             ctxt.getValue(ContextImpl.USERPASS));
+                    c.addNote("adaptors", "commandlinessh,sshtrilead,sftptrilead");
+                    return c;
                 } catch (URISyntaxException e) {
                     // what to do? nothing?
                 }
             } else if (!ctxt.getValue(ContextImpl.USERPASS).equals("")) {
-                return new PasswordSecurityContext(userId,
+                SecurityContext c = new PasswordSecurityContext(userId,
                         ctxt.getValue(ContextImpl.USERPASS));
+                c.addNote("adaptors", "commandlinessh,sshtrilead,sftptrilead");
+                return c;
             }
         }
         return null;
