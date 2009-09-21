@@ -17,7 +17,7 @@ public class MakeDirectory extends EnvironmentCommand {
 	}
 	
     public String getHelpArguments() {
-        return "<dir>";
+        return "<url>";
     }
 
     public String getHelpExplanation() {

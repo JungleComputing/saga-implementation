@@ -19,7 +19,7 @@ public class MoveEntry extends EnvironmentCommand {
     }
 
     public String getHelpExplanation() {
-        return "move a file or directory to another file or into a directory";
+        return "move a file or directory, possibly into an existing directory";
     }
 
     public void execute(String[] args) {

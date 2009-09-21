@@ -19,7 +19,7 @@ public class CopyEntry extends EnvironmentCommand {
     }
 
     public String getHelpExplanation() {
-        return "copy a file to another file or into a directory";
+        return "copy a file or directory, possibly into an existing directory";
     }
 
     public void execute(String[] args) {
