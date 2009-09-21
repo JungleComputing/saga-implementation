@@ -118,7 +118,7 @@ public class Session implements
         }
     }
 
-    static SecurityContext cvt2GATSecurityContext(ContextImpl ctxt) {
+    private static SecurityContext cvt2GATSecurityContext(ContextImpl ctxt) {
         String type = ctxt.getValue(ContextImpl.TYPE);
         if ("ftp".equals(type)) {
             SecurityContext c = new PasswordSecurityContext(
