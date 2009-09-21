@@ -50,11 +50,11 @@ public class SagaShell {
         commands.put("pwd", new PrintWorkingDirectory(env));
         commands.put("ls", new ListDirectory(env));
         commands.put("cd", new ChangeWorkingDirectory(env));
+        commands.put("touch", new CreateFile(env));
+        commands.put("mkdir", new MakeDirectory(env));
         commands.put("cp", new CopyEntry(env));
         commands.put("mv", new MoveEntry(env));
-        commands.put("mkdir", new MakeDirectory(env));
         commands.put("rm", new RemoveEntry(env));
-        commands.put("touch", new CreateFile(env));
         commands.put("cat", new PrintFile(env));
         commands.put("prm", new PrintResourceManager(env));
         commands.put("crm", new ChangeResourceManager(env));
