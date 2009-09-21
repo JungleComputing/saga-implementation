@@ -64,7 +64,7 @@ JavaGAT Preferences.
   code in demo/src/demo/job/TestJob2.java for an example.
   The file JavaGat-doc/javagat.properties describes the available preferences.
   It is also possible to use preferences to select specific javagat adaptors.
-  Below is a list preference names and possible values:
+  Below is a list of preference names and possible values:
 
   resourcebroker.adaptor.name: local, globus, wsgt4new, sshtrilead, glite,
     gridsam, sge, localq, commandlinessh, unicore
