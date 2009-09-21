@@ -332,7 +332,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         File targetParentFile;
         File targetChildFile;
         try {
-            if (targetFile.isDirectory() && file.isFile()) {
+            if (targetFile.isDirectory()) {
                 targetParentFile = targetFile;
                 try {
                     targetChildFile = GAT.createFile(gatContext, cvtToGatURI(target)
