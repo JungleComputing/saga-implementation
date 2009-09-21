@@ -32,9 +32,9 @@ Using a GridSAM service.
   you get some warning about this. However, this does not seem to harm
   the functionality of the Gridsam adaptor for SAGA.
   Also, you need to be aware that the clock of the system on which your
-  application runs does not run more than 5 minutes behind the clock on
-  the server on which the Gridsam service runs, otherwise certificate
-  validation will fail.
+  application runs does not run more than 5 minutes behind or ahead of
+  the clock on the server on which the Gridsam service runs, otherwise
+  certificate validation will fail.
   If you don't use the run-saga-app script, you need to be aware that the
   Gridsam adaptor depends on some endorsed libraries, which live in
   $JAVA_SAGA_LOCATION/lib/adaptors/GridsamAdaptor/endorsed. You need to set
