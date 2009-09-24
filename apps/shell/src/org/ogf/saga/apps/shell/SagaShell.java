@@ -91,13 +91,13 @@ public class SagaShell {
         
         while(!env.isTerminated()) {
             try {
+                updateFileNameCompletor();
                 String[] tokens = readCommand();
                 
                 if (tokens != null && tokens.length > 0) {
                     Command c = commands.get(tokens[0]);
                     if (c != null) {
                         c.execute(tokens);
-                        updateFileNameCompletor();
                     } else {
                         System.err.println("Unknown command: " + tokens[0]);
                     }
