@@ -6,9 +6,13 @@ import org.ogf.saga.error.SagaException;
 import org.ogf.saga.file.Directory;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ChangeWorkingDirectory extends EnvironmentCommand {
 
+	private Logger logger = LoggerFactory.getLogger(ChangeWorkingDirectory.class);
+	
 	public ChangeWorkingDirectory(Environment env) {
 		super(env);
 	}
@@ -34,13 +38,24 @@ public class ChangeWorkingDirectory extends EnvironmentCommand {
         }
 
         Directory cwd = env.getCwd();
+        Directory newCwd = null;
         
         try {
             URL newDirUrl = URLFactory.createURL(newDir);
-            Directory newCwd = cwd.openDirectory(newDirUrl);
-            env.setCwd(newCwd);
+            newCwd = cwd.openDirectory(newDirUrl);
         } catch (SagaException e) {
             Util.printSagaException(e);
+            return;
+        }
+        
+        if (newCwd != null) {
+	        try {
+	        	cwd.close();
+	        } catch (SagaException e) {
+	        	logger.debug("Error closing current working directory", e);
+	        } finally {
+	            env.setCwd(newCwd);
+	        }
         }
     }
 

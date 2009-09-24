@@ -140,6 +140,13 @@ public class Environment {
             }
             
             try {
+            	logger.debug("Closing current working directory...");
+            	cwd.close();
+            } catch (SagaException e) {
+            	Util.printSagaException(e);
+            }
+            
+            try {
                 logger.debug("Closing default session...");
                 Session defaultSession = SessionFactory.createSession(true);
                 defaultSession.close();
