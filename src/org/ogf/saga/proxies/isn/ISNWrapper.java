@@ -63,10 +63,10 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
     }
 
     /**
-     * Create a EntityDataSet wrapper.
+     * Create a EntityDataSet wrapper. This is used when moving from one entity to another.
      * 
      * @param model
-     * @param entityName
+     * @param currentEntity
      * @param filter
      * @param session
      * @param infoSystemUrl
@@ -76,12 +76,12 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      * @throws BadParameterException
      * @throws NoSuccessException
      */
-    private ISNWrapper(String model, String entityName, String filter, Session session, URL infoSystemUrl,
+    private ISNWrapper(String model, String currentEntity, String filter, Session session, URL infoSystemUrl,
             Set<EntityData> entityData, String nextEntity) throws BadParameterException, NoSuccessException {
         super(session);
-        m_entityName = entityName;
+        m_entityName = nextEntity;
         m_model = model;
-        Object[] parameters = { this, session, infoSystemUrl, model, entityName, filter, entityData, nextEntity };
+        Object[] parameters = { this, session, infoSystemUrl, model, currentEntity, filter, entityData, nextEntity };
         createProxy2(parameters);
     }
 
