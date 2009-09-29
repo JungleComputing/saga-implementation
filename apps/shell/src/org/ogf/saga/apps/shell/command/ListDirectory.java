@@ -12,14 +12,14 @@ import org.ogf.saga.url.URL;
 
 public class ListDirectory extends EnvironmentCommand {
 
-    private static final URLComparator URL_COMP = new URLComparator(); 
+	private static final URLComparator URL_COMP = new URLComparator(); 
     
     public ListDirectory(Environment env) {
     	super(env);
     }
     
     public String getHelpArguments() {
-        return "";
+        return "[-l]";
     }
 
     public String getHelpExplanation() {
@@ -27,19 +27,31 @@ public class ListDirectory extends EnvironmentCommand {
     }
 
     public void execute(String[] args) {
-        if (args.length > 1) {
+    	if (args.length > 2 ||
+    		(args.length == 2 && !args[1].equals("-l"))) {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;
         }
-        
+    	
+    	boolean longFormat = args.length == 2 && args[1].equals("-l");   
+    	
         Directory cwd = env.getCwd();
         
         try {
             List<URL> entryList = cwd.list();
             Collections.sort(entryList, URL_COMP);
-            
+  
             for (URL entry: entryList) {
-                System.out.println(entry);
+            	if (longFormat) {
+            		if (cwd.isEntry(entry)) {
+            			long size = cwd.getSize(entry);
+            			System.out.printf("- %8d ", size);
+            		} else {
+            			System.out.print("d          ");
+            		}
+            	}
+            	
+        		System.out.println(entry);
             }
         } catch (SagaException e) {
             Util.printSagaException(e);
