@@ -1,7 +1,7 @@
 <project name="SAGA" default="build" basedir=".">
 
     <description>
-	Build file for the Java SAGA Generic adaptor`
+	Build file for the Java SAGA Generic adaptor
     </description>
 
     <!-- Global properties -->
@@ -41,7 +41,7 @@
 
     <target name="build" depends="compile" description="build the JAR file">
 
-	<!-- Create the javagat adaptor jar. -->
+	<!-- Create the adaptor jar. -->
 	<mkdir dir="${lib}" />
 	<jar jarfile="${lib}/${adaptor}.jar" basedir="${tmp}" includes="**/generic/**/*.class,LICENSE.txt">
 	    <manifest>
