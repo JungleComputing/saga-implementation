@@ -21,7 +21,7 @@ import org.gridlab.gat.resources.SoftwareDescription;
 import org.gridlab.gat.resources.SoftwareResourceDescription;
 import org.gridlab.gat.resources.Job.JobState;
 import org.gridlab.gat.security.SecurityContext;
-import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
+import org.ogf.saga.adaptors.javaGAT.util.GatURIConverter;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -298,9 +298,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 URI s1 = null;
                 URI s2 = null;
                 try {
-                    s1 = NSEntryAdaptor.cvtToGatURI(URLFactory
+                    s1 = GatURIConverter.cvtToGatURI(URLFactory
                             .createURL(parts[0]));
-                    s2 = NSEntryAdaptor.cvtToGatURI(URLFactory
+                    s2 = GatURIConverter.cvtToGatURI(URLFactory
                             .createURL(parts[1]));
                 } catch (URISyntaxException e) {
                     throw new BadParameterException(e, this);
@@ -434,7 +434,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             BadParameterException {
         try {
             URL url = URLFactory.createURL(getV(s));
-            return NSEntryAdaptor.cvtToGatURI(url);
+            return GatURIConverter.cvtToGatURI(url);
         } catch (BadParameterException e) {
             throw new BadParameterException(e.getMessage(), e.getCause(), this);
         } catch (URISyntaxException e) {

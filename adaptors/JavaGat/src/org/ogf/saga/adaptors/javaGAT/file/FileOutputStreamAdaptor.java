@@ -7,7 +7,7 @@ import org.gridlab.gat.GAT;
 import org.gridlab.gat.GATContext;
 import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.URI;
-import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
+import org.ogf.saga.adaptors.javaGAT.util.GatURIConverter;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -56,7 +56,7 @@ public class FileOutputStreamAdaptor extends
         GATContext gatContext = gatSession.getGATContext();
         URI gatURI;
         try {
-            gatURI = NSEntryAdaptor.cvtToGatURI(source);
+            gatURI = GatURIConverter.cvtToGatURI(source);
         } catch (URISyntaxException e1) {
             throw new IncorrectURLException(e1);
         }

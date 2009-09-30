@@ -126,7 +126,7 @@ public class Session implements
                     ctxt.getValue(ContextImpl.USERPASS));
             c.addNote("adaptors", "ftp");
             return c;
-        } else if ("globus".equals(type) || "gridftp".equals(type)) {
+        } else if ("globus".equals(type) || "gridftp".equals(type) || "glite".equals(type)) {
             String proxy = ctxt.getValue(ContextImpl.USERPROXY);
             if (proxy != null) {
                 // JavaGAT does not have a security context that refers to
@@ -141,7 +141,7 @@ public class Session implements
                     if (len > 0) {
 
                         SecurityContext c = new CredentialSecurityContext(buf);
-                        c.addNote("adaptors", "globus,wsgt4new");
+                        c.addNote("adaptors", "globus,wsgt4new,gt42,glite");
                         return c;
                     } else {
                         logger.info("read from proxy file gave " + len);
@@ -157,7 +157,7 @@ public class Session implements
                         new URI(ctxt.getValue(ContextImpl.USERKEY)),
                         new URI(ctxt.getValue(ContextImpl.USERCERT)),
                         ctxt.getValue(ContextImpl.USERPASS));
-                c.addNote("adaptors", "globus,wsgt4new");
+                c.addNote("adaptors", "globus,wsgt4new,gt42,glite");
                 return c;
             } catch (URISyntaxException e) {
                 // what to do? nothing?

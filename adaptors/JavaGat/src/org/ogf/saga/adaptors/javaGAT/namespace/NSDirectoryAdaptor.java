@@ -11,6 +11,7 @@ import org.gridlab.gat.GATInvocationException;
 import org.gridlab.gat.GATObjectCreationException;
 import org.gridlab.gat.io.File;
 import org.gridlab.gat.io.FileInterface;
+import org.ogf.saga.adaptors.javaGAT.util.GatURIConverter;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -90,7 +91,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         File toDir;
         FileInterface toDirFileInterface;
         try {
-            toDir = GAT.createFile(entry.gatContext, NSEntryAdaptor
+            toDir = GAT.createFile(entry.gatContext, GatURIConverter
                     .cvtToGatURI(dir));
             toDirFileInterface = toDir.getFileInterface();
         } catch (GATObjectCreationException e) {
@@ -169,7 +170,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             // target must exist and be a directory!
             try {
                 File targetFile = GAT.createFile(entry.gatContext,
-                        NSEntryAdaptor.cvtToGatURI(target));
+                        GatURIConverter.cvtToGatURI(target));
                 if (!targetFile.isDirectory()) {
                     throw new BadParameterException(
                             "source expands to more than one file and "
@@ -205,7 +206,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
         File existsFile;
         try {
-            existsFile = GAT.createFile(entry.gatContext, NSEntryAdaptor
+            existsFile = GAT.createFile(entry.gatContext, GatURIConverter
                     .cvtToGatURI(name));
         } catch (GATObjectCreationException e) {
             throw new NoSuccessException(e, wrapper);
@@ -286,7 +287,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         File isDirFile;
         try {
             logger.debug("name = " + name);
-            isDirFile = GAT.createFile(entry.gatContext, NSEntryAdaptor
+            isDirFile = GAT.createFile(entry.gatContext, GatURIConverter
                     .cvtToGatURI(name));
         } catch (GATObjectCreationException e) {
             throw new NoSuccessException(e, wrapper);
@@ -327,7 +328,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         name = resolveToDir(name);
         File isDirFile;
         try {
-            isDirFile = GAT.createFile(entry.gatContext, NSEntryAdaptor
+            isDirFile = GAT.createFile(entry.gatContext, GatURIConverter
                     .cvtToGatURI(name));
         } catch (GATObjectCreationException e) {
             throw new NoSuccessException(e, wrapper);
@@ -502,7 +503,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             // target must exist and be a directory!
             try {
                 File targetFile = GAT.createFile(entry.gatContext,
-                        NSEntryAdaptor.cvtToGatURI(target));
+                        GatURIConverter.cvtToGatURI(target));
                 try {
                     if (!targetFile.getFileInterface().isDirectory()) {
                         throw new BadParameterException(

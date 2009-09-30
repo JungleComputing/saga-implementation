@@ -14,7 +14,7 @@ import org.gridlab.gat.URI;
 import org.gridlab.gat.advert.AdvertService;
 import org.gridlab.gat.io.Endpoint;
 import org.gridlab.gat.io.Pipe;
-import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
+import org.ogf.saga.adaptors.javaGAT.util.GatURIConverter;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
@@ -146,7 +146,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
 
         String path = url.getString();
         try {
-            URI db = NSEntryAdaptor.cvtToGatURI(URLFactory
+            URI db = GatURIConverter.cvtToGatURI(URLFactory
                     .createURL(getAdvertName(gatContext)));
             AdvertService advService = GAT.createAdvertService(gatContext);
             advService.importDataBase(db);

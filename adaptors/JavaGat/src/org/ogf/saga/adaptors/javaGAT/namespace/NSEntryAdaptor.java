@@ -12,6 +12,7 @@ import org.gridlab.gat.URI;
 import org.gridlab.gat.io.File;
 import org.gridlab.gat.io.FileInterface;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
+import org.ogf.saga.adaptors.javaGAT.util.GatURIConverter;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -89,7 +90,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
         gatContext = gatSession.getGATContext();
         try {
-            gatURI = cvtToGatURI(nameUrl);
+            gatURI = GatURIConverter.cvtToGatURI(nameUrl);
         } catch (URISyntaxException e1) {
             throw new IncorrectURLException(e1);
         }
@@ -192,66 +193,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         return clone;
     }
 
-    public static URI cvtToGatURI(URL url) throws URISyntaxException {
-
-        URI uri;
-        String scheme = url.getScheme();
-        String userInfo = url.getUserInfo();
-        String host = url.getHost();
-        int port = url.getPort();
-        String path = url.getPath();
-        String query = url.getQuery();
-        String fragment = url.getFragment();
-
-        StringBuffer u = new StringBuffer();
-        if (scheme != null) {
-            u.append(scheme);
-            u.append(":");
-        }
-        if (host != null) {
-            u.append("//");
-            if (userInfo != null) {
-                u.append(userInfo);
-                u.append("@");
-            }
-            u.append(host);
-            if (port >= 0) {
-                u.append(":");
-                u.append(port);
-            }
-        }
-
-        if (scheme != null) {
-            // This is the work-around to obtain uri's that
-            // JavaGAT understands.
-            if (host != null) {
-                u.append("/");
-            } else {
-                u.append("///");
-            }
-        }
-        u.append(path);
-        if (query != null) {
-            u.append("?");
-            u.append(query);
-        }
-        if (fragment != null) {
-            u.append("#");
-            u.append(fragment);
-        }
-
-        uri = new URI(u.toString());
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("URL " + url + " converted to " + uri);
-        }
-        return uri;
-    }
-
-    public static URL cvtToSagaURL(URI uri) throws NotImplementedException,
-            BadParameterException, NoSuccessException {
-        return URLFactory.createURL(uri.toString()).normalize();
-    }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
@@ -292,7 +233,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         }
         File targetFile = null;
         try {
-            targetFile = GAT.createFile(gatContext, cvtToGatURI(target));
+            targetFile = GAT.createFile(gatContext, GatURIConverter.cvtToGatURI(target));
 
             if (logger.isDebugEnabled()) {
                 logger.debug("targetFile: " + targetFile.toGATURI().toString());
@@ -335,7 +276,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             if (targetFile.isDirectory()) {
                 targetParentFile = targetFile;
                 try {
-                    targetChildFile = GAT.createFile(gatContext, cvtToGatURI(target)
+                    targetChildFile = GAT.createFile(gatContext, GatURIConverter.cvtToGatURI(target)
                             .toString()
                             + "/" + file.getName());
                     if (logger.isDebugEnabled()) {

@@ -14,7 +14,7 @@ import org.gridlab.gat.advert.AdvertService;
 import org.gridlab.gat.advert.MetaData;
 import org.gridlab.gat.io.Endpoint;
 import org.gridlab.gat.io.Pipe;
-import org.ogf.saga.adaptors.javaGAT.namespace.NSEntryAdaptor;
+import org.ogf.saga.adaptors.javaGAT.util.GatURIConverter;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -102,7 +102,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
         AdvertService advertService = null;
         URI db = null;
         try {
-            db = NSEntryAdaptor.cvtToGatURI(URLFactory.createURL(StreamAdaptor
+            db = GatURIConverter.cvtToGatURI(URLFactory.createURL(StreamAdaptor
                     .getAdvertName(gatContext)));
             advertService = GAT.createAdvertService(gatContext);
             Endpoint serverSide = GAT.createEndpoint(gatContext);
