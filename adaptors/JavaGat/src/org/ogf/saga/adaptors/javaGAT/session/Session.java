@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import org.gridlab.gat.GAT;
@@ -14,9 +13,12 @@ import org.gridlab.gat.security.CertificateSecurityContext;
 import org.gridlab.gat.security.CredentialSecurityContext;
 import org.gridlab.gat.security.PasswordSecurityContext;
 import org.gridlab.gat.security.SecurityContext;
+import org.ogf.saga.adaptors.javaGAT.util.GatURIConverter;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.context.ContextImpl;
+import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,9 +122,13 @@ public class Session implements
 
     private static SecurityContext cvt2GATSecurityContext(ContextImpl ctxt) {
         String type = ctxt.getValue(ContextImpl.TYPE);
+        String userId = ctxt.getValue(ContextImpl.USERID);
+        if (userId == null || userId.equals("")) {
+            userId = System.getProperty("user.name");
+        }
         if ("ftp".equals(type)) {
             SecurityContext c = new PasswordSecurityContext(
-                    ctxt.getValue(ContextImpl.USERID),
+                    userId,
                     ctxt.getValue(ContextImpl.USERPASS));
             c.addNote("adaptors", "ftp");
             return c;
@@ -153,29 +159,27 @@ public class Session implements
                 }
             }
             try {
-                SecurityContext c = new CertificateSecurityContext(
-                        new URI(ctxt.getValue(ContextImpl.USERKEY)),
-                        new URI(ctxt.getValue(ContextImpl.USERCERT)),
-                        ctxt.getValue(ContextImpl.USERPASS));
+                URL key = URLFactory.createURL(ctxt.getValue(ContextImpl.USERKEY));
+                URI keyURI = GatURIConverter.cvtToGatURI(key);
+                URL cert = URLFactory.createURL(ctxt.getValue(ContextImpl.USERCERT));
+                URI certURI = GatURIConverter.cvtToGatURI(cert);
+                SecurityContext c = new CertificateSecurityContext(keyURI,
+                        certURI, userId, ctxt.getValue(ContextImpl.USERPASS));
                 c.addNote("adaptors", "globus,wsgt4new,gt42,glite");
                 return c;
-            } catch (URISyntaxException e) {
+            } catch (Throwable e) {
                 // what to do? nothing?
             }
         } else if ("ssh".equals(type) || "sftp".equals(type)) {
-            String userId = ctxt.getValue(ContextImpl.USERID);
-            if (userId == null || userId.equals("")) {
-                userId = System.getProperty("user.name");
-            }
             if (!ctxt.getValue(ContextImpl.USERKEY).equals("")) {
                 try {
+                    URL key = URLFactory.createURL(ctxt.getValue(ContextImpl.USERKEY));
+                    URI keyURI = GatURIConverter.cvtToGatURI(key);
                     SecurityContext c = new CertificateSecurityContext(
-                            new URI(ctxt.getValue(ContextImpl.USERKEY)),
-                            new URI(ctxt.getValue(ContextImpl.USERCERT)), userId,
-                            ctxt.getValue(ContextImpl.USERPASS));
+                            keyURI, null, userId, ctxt.getValue(ContextImpl.USERPASS));
                     c.addNote("adaptors", "commandlinessh,sshtrilead,sftptrilead");
                     return c;
-                } catch (URISyntaxException e) {
+                } catch (Throwable e) {
                     // what to do? nothing?
                 }
             } else if (!ctxt.getValue(ContextImpl.USERPASS).equals("")) {
