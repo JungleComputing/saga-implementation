@@ -12,7 +12,6 @@ import org.ogf.saga.url.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import jline.ArgumentCompletor;
 import jline.CandidateListCompletionHandler;
 import jline.Completor;
@@ -22,24 +21,24 @@ import jline.SimpleCompletor;
 public class SagaShell {
 
     private static final String COMMENT = "#";
-    
+
     private Logger logger = LoggerFactory.getLogger(SagaShell.class);
-    
+
     protected Environment env;
     protected ConsoleReader console;
     protected SagaFileNameCompletor fileNameCompletor;
     protected Map<String, Command> commands;
-    
+
     public SagaShell() throws Exception {
-    	this(new Environment());
+        this(new Environment());
     }
-    
+
     public SagaShell(Environment env) throws Exception {
-    	this.env = env;
-    	
+        this.env = env;
+
         // create a console 
         console = new ConsoleReader();
-        
+
         // create a list of possible commands
         commands = new LinkedHashMap<String, Command>();
         commands.put("help", new Help(commands));
@@ -69,10 +68,10 @@ public class SagaShell {
         CandidateListCompletionHandler h = new CandidateListCompletionHandler();
         h.setAlwaysIncludeNewline(false);
         console.setCompletionHandler(h);
-        
+
         String[] commandArr = new String[commands.size()];
         commands.keySet().toArray(commandArr);
-        
+
         // create the file name completor
         logger.debug("Initializing SAGA file name completor...");
         fileNameCompletor = new SagaFileNameCompletor();
@@ -83,17 +82,17 @@ public class SagaShell {
         completor.setStrict(false);
         console.addCompletor(completor);
     }
-    
+
     public void run() {
-    	init();
-    	
-    	System.out.println("Type 'help' for help");
-        
-        while(!env.isTerminated()) {
+        init();
+
+        System.out.println("Type 'help' for help");
+
+        while (!env.isTerminated()) {
             try {
                 updateFileNameCompletor();
                 String[] tokens = readCommand();
-                
+
                 if (tokens != null && tokens.length > 0) {
                     Command c = commands.get(tokens[0]);
                     if (c != null) {
@@ -115,7 +114,7 @@ public class SagaShell {
             URL cwd = env.getCwd().getURL();
             return "[" + rm + "+" + cwd + "] ";
         } catch (SagaException e) {
-        	logger.warn("Cannot create the prompt", e);
+            logger.warn("Cannot create the prompt", e);
             return "[?+?] ";
         }
     }
@@ -123,51 +122,52 @@ public class SagaShell {
     private String[] readCommand() throws IOException {
         String prompt = getPrompt();
         String line = console.readLine(prompt);
-        
+
         if (line == null) {
-        	// user pressed CTRL-D
-        	System.out.println();
-        	env.terminate();
-        	return null;
+            // user pressed CTRL-D
+            System.out.println();
+            env.terminate();
+            return null;
         } else if (line.startsWith(COMMENT)) {
             // ignore comment line
             return null;
         } else {
-        	// tokenize input
+            // tokenize input
             StringTokenizer tokenizer = new StringTokenizer(line);
-            
-            ArrayList<String> tokens = new ArrayList<String>(tokenizer.countTokens());
-    
+
+            ArrayList<String> tokens = new ArrayList<String>(tokenizer
+                    .countTokens());
+
             while (tokenizer.hasMoreTokens()) {
                 tokens.add(tokenizer.nextToken());
             }
-    
+
             return tokens.toArray(new String[0]);
         }
     }
 
     private void updateFileNameCompletor() {
-    	try {
+        try {
             URL cwd = env.getCwd().getURL();
             fileNameCompletor.setBase(cwd);
-    	} catch (SagaException e) {
-    		logger.warn("Cannot update file name completor", e);
-    	}
+        } catch (SagaException e) {
+            logger.warn("Cannot update file name completor", e);
+        }
     }
-    
+
     public static void main(String[] argv) {
         System.out.println("Starting the SAGA shell...");
 
-    	SagaShell shell;
-    	try {
+        SagaShell shell;
+        try {
             shell = new SagaShell();
         } catch (Exception e) {
             System.err.println("Error while starting the SAGA shell:");
             e.printStackTrace(System.err);
             return;
         }
-        
+
         shell.run();
     }
-    
+
 }

@@ -4,10 +4,10 @@ import org.ogf.saga.apps.shell.Environment;
 
 public abstract class EnvironmentCommand implements Command {
 
-	protected Environment env;
-	
-	public EnvironmentCommand(Environment env) {
-		this.env = env;
-	}
-	
+    protected Environment env;
+
+    public EnvironmentCommand(Environment env) {
+        this.env = env;
+    }
+
 }

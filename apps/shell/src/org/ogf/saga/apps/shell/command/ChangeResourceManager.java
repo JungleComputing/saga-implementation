@@ -8,10 +8,10 @@ import org.ogf.saga.url.URLFactory;
 
 public class ChangeResourceManager extends EnvironmentCommand {
 
-	public ChangeResourceManager(Environment env) {
-		super(env);
-	}
-	
+    public ChangeResourceManager(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "[url]";
     }
@@ -22,7 +22,7 @@ public class ChangeResourceManager extends EnvironmentCommand {
 
     public void execute(String[] args) {
         String newRm = null;
-        
+
         if (args.length < 2) {
             newRm = "local://localhost";
         } else if (args.length > 2) {
@@ -31,7 +31,7 @@ public class ChangeResourceManager extends EnvironmentCommand {
         } else {
             newRm = args[1];
         }
-        
+
         try {
             URL newRmUrl = URLFactory.createURL(newRm);
             env.setResourceManager(newRmUrl);

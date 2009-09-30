@@ -11,12 +11,13 @@ import org.slf4j.LoggerFactory;
 
 public class ChangeWorkingDirectory extends EnvironmentCommand {
 
-	private Logger logger = LoggerFactory.getLogger(ChangeWorkingDirectory.class);
-	
-	public ChangeWorkingDirectory(Environment env) {
-		super(env);
-	}
-	
+    private Logger logger = LoggerFactory
+            .getLogger(ChangeWorkingDirectory.class);
+
+    public ChangeWorkingDirectory(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "[url]";
     }
@@ -39,7 +40,7 @@ public class ChangeWorkingDirectory extends EnvironmentCommand {
 
         Directory cwd = env.getCwd();
         Directory newCwd = null;
-        
+
         try {
             URL newDirUrl = URLFactory.createURL(newDir);
             newCwd = cwd.openDirectory(newDirUrl);
@@ -47,15 +48,15 @@ public class ChangeWorkingDirectory extends EnvironmentCommand {
             Util.printSagaException(e);
             return;
         }
-        
+
         if (newCwd != null) {
-	        try {
-	        	cwd.close();
-	        } catch (SagaException e) {
-	        	logger.debug("Error closing current working directory", e);
-	        } finally {
-	            env.setCwd(newCwd);
-	        }
+            try {
+                cwd.close();
+            } catch (SagaException e) {
+                logger.debug("Error closing current working directory", e);
+            } finally {
+                env.setCwd(newCwd);
+            }
         }
     }
 

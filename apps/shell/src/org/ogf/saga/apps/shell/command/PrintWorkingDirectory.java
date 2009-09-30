@@ -7,10 +7,10 @@ import org.ogf.saga.file.Directory;
 
 public class PrintWorkingDirectory extends EnvironmentCommand {
 
-	public PrintWorkingDirectory(Environment env) {
-		super(env);
-	}
-	
+    public PrintWorkingDirectory(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "";
     }
@@ -21,7 +21,7 @@ public class PrintWorkingDirectory extends EnvironmentCommand {
 
     public void execute(String[] args) {
         Directory cwd = env.getCwd();
-        
+
         try {
             System.out.println(cwd.getURL());
         } catch (SagaException e) {

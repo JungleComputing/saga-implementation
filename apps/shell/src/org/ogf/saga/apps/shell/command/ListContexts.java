@@ -25,42 +25,43 @@ public class ListContexts implements Command {
             System.err.println("usage: " + args[0]);
             return;
         }
-        
+
         try {
             Session defaultSession = SessionFactory.createSession(true);
-            
+
             Context[] contexts = defaultSession.listContexts();
-            
+
             Context defaultContext = ContextFactory.createContext();
-            
+
             for (int i = 0; i < contexts.length; i++) {
                 System.out.print(" [" + i + "] ");
                 System.out.print(contexts[i].getAttribute(Context.TYPE));
-                
-                for (String attr: contexts[i].listAttributes()) {
+
+                for (String attr : contexts[i].listAttributes()) {
                     if (!attr.equals(Context.TYPE)) {
                         String value = null;
                         String defaultValue = null;
-                        
+
                         if (contexts[i].isVectorAttribute(attr)) {
-                            String[] values = contexts[i].getVectorAttribute(attr);
+                            String[] values = contexts[i]
+                                    .getVectorAttribute(attr);
                             value = Arrays.toString(values);
                             defaultValue = Arrays.toString(new String[0]);
                         } else {
                             value = contexts[i].getAttribute(attr);
                             defaultValue = "";
                         }
-                       
+
                         try {
                             defaultValue = defaultContext.getAttribute(attr);
                         } catch (DoesNotExistException ignored) {
                             // contexts[i] contains non-default attributes
                             // (like the 'xtreemos' context)
                         }
-                        
+
                         if (!value.equals(defaultValue)) {
                             System.out.print(" " + attr + "=");
-                            
+
                             if (attr.equals(Context.USERPASS)) {
                                 System.out.print("<secret>");
                             } else {

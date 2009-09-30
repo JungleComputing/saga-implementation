@@ -22,13 +22,13 @@ import org.slf4j.LoggerFactory;
 public class Environment {
 
     private Logger logger = LoggerFactory.getLogger(Environment.class);
-    
+
     protected Directory cwd;
     protected URL resourceManager;
     protected JobService jobService;
     protected TaskContainer backgroundJobs;
     protected boolean terminated;
-    
+
     public Environment() throws SagaException, IOException {
         // initialize the current working directory to the local home directory
         logger.info("Initializing current working directory");
@@ -37,17 +37,17 @@ public class Environment {
         URL cwdUrl = URLFactory.createURL("file://localhost");
         cwdUrl.setPath(userDirUri.getPath());
         cwd = FileFactory.createDirectory(cwdUrl);
-        
+
         // initialize the manager for running jobs and discovering resources
         resourceManager = URLFactory.createURL("local://localhost");
         setResourceManager(resourceManager);
-        
+
         // create a task container for background jobs
         backgroundJobs = TaskFactory.createTaskContainer();
-        
+
         terminated = false;
     }
-    
+
     /**
      * Returns the current working directory
      * 
@@ -56,7 +56,7 @@ public class Environment {
     public Directory getCwd() {
         return cwd;
     }
-    
+
     /**
      * Sets a new current working directory.
      * 
@@ -74,7 +74,7 @@ public class Environment {
     public JobService getJobService() {
         return jobService;
     }
-    
+
     /**
      * Returns the URL of the current resource manager.
      * 
@@ -95,10 +95,10 @@ public class Environment {
      */
     public void setResourceManager(URL rm) throws SagaException {
         logger.info("Creating job service '" + rm + "'");
-    	jobService = JobFactory.createJobService(rm);
+        jobService = JobFactory.createJobService(rm);
         resourceManager = rm;
     }
-    
+
     /**
      * Returns a task container that is supposed to hold all background jobs
      * started in the SAGA shell.
@@ -108,7 +108,7 @@ public class Environment {
     public TaskContainer getBackgroundJobs() {
         return backgroundJobs;
     }
-    
+
     /**
      * Returns whether this shell is terminated (i.e. terminate() has been 
      * called)
@@ -118,42 +118,43 @@ public class Environment {
     public boolean isTerminated() {
         return terminated;
     }
-    
+
     /**
      * Terminates the shell. First all running background jobs are cancelled and
      * waited for. Second, the default SAGA session is closed (which may
      * trigger cleanup in some of the adaptors).
      */
     public void terminate() {
-    	if (!terminated) {
-    		terminated = true;
-        
+        if (!terminated) {
+            terminated = true;
+
             try {
                 int jobCount = backgroundJobs.size();
                 if (jobCount > 0) {
-                    System.out.println("Killing " + jobCount + " background jobs...");
+                    System.out.println("Killing " + jobCount
+                            + " background jobs...");
                     backgroundJobs.cancel();
                     backgroundJobs.waitFor(WaitMode.ALL);
                 }
             } catch (SagaException e) {
                 Util.printSagaException(e);
             }
-            
+
             try {
-            	logger.debug("Closing current working directory...");
-            	cwd.close();
+                logger.debug("Closing current working directory...");
+                cwd.close();
             } catch (SagaException e) {
-            	Util.printSagaException(e);
+                Util.printSagaException(e);
             }
-            
+
             try {
                 logger.debug("Closing default session...");
                 Session defaultSession = SessionFactory.createSession(true);
                 defaultSession.close();
             } catch (SagaException e) {
-            	Util.printSagaException(e);
+                Util.printSagaException(e);
             }
-    	}
+        }
     }
-    
+
 }

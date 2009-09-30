@@ -8,32 +8,32 @@ import org.slf4j.LoggerFactory;
 
 public class StreamPrinter implements Runnable {
 
-    private static final int BUF_SIZE = 1024;  // bytes;
-    
+    private static final int BUF_SIZE = 1024; // bytes;
+
     private Logger logger = LoggerFactory.getLogger(StreamPrinter.class);
     private InputStream stream;
     private byte[] buf;
-    
+
     public StreamPrinter() {
         buf = new byte[BUF_SIZE];
         stream = null;
     }
-    
+
     @Override
     public void run() {
         while (stream == null) {
             try {
-                synchronized(this) {
+                synchronized (this) {
                     wait();
                 }
             } catch (InterruptedException e) {
                 logger.debug("Interrupted", e);
             }
         }
-        
+
         boolean done = false;
-                
-        while(!done) {
+
+        while (!done) {
             try {
                 int read = stream.read(buf);
                 if (read < 0) {
@@ -46,7 +46,7 @@ public class StreamPrinter implements Runnable {
                 done = true;
             }
         }
-                
+
         try {
             stream.close();
         } catch (IOException e) {
@@ -58,5 +58,5 @@ public class StreamPrinter implements Runnable {
         this.stream = stream;
         notifyAll();
     }
-    
+
 }

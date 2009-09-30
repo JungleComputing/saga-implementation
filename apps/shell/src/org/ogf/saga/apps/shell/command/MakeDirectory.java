@@ -12,10 +12,10 @@ import org.ogf.saga.url.URLFactory;
 
 public class MakeDirectory extends EnvironmentCommand {
 
-	public MakeDirectory(Environment env) {
-		super(env);
-	}
-	
+    public MakeDirectory(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "<url>";
     }
@@ -29,7 +29,7 @@ public class MakeDirectory extends EnvironmentCommand {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;
         }
-        
+
         String newDir = args[1];
 
         try {

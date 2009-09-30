@@ -11,10 +11,10 @@ import org.ogf.saga.url.URLFactory;
 
 public class CreateFile extends EnvironmentCommand {
 
-	public CreateFile(Environment env) {
-		super(env);
-	}
-	
+    public CreateFile(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "<url>";
     }
@@ -28,18 +28,18 @@ public class CreateFile extends EnvironmentCommand {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;
         }
-        
+
         String fileName = args[1];
-    
+
         Directory cwd = env.getCwd();
-        
+
         try {
             URL url = URLFactory.createURL(fileName);
             NSEntry e = cwd.open(url, Flags.CREATE.getValue());
             e.close();
         } catch (SagaException e) {
-            Util.printSagaException(e); 
+            Util.printSagaException(e);
         }
     }
-    
+
 }

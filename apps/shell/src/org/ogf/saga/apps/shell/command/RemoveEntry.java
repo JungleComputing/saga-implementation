@@ -10,10 +10,10 @@ import org.ogf.saga.url.URLFactory;
 
 public class RemoveEntry extends EnvironmentCommand {
 
-	public RemoveEntry(Environment env) {
-		super(env);
-	}
-	
+    public RemoveEntry(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "<entry>";
     }
@@ -27,20 +27,20 @@ public class RemoveEntry extends EnvironmentCommand {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;
         }
-        
+
         String dir = args[1];
 
         try {
             URL u = URLFactory.createURL(dir);
             Directory cwd = env.getCwd();
-            
+
             if (cwd.isDir(u)) {
                 // for safety, do not remove non-empty directories
                 Directory d = cwd.openDirectory(u);
-                
+
                 if (d.getNumEntries() > 0) {
-                    System.err.println("Cannot remove directory '" + args[1] + 
-                            "': it is not empty");
+                    System.err.println("Cannot remove directory '" + args[1]
+                            + "': it is not empty");
                 } else {
                     cwd.remove(u, Flags.RECURSIVE.getValue());
                 }

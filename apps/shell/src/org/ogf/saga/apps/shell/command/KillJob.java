@@ -9,10 +9,10 @@ import org.ogf.saga.task.TaskContainer;
 
 public class KillJob extends EnvironmentCommand {
 
-	public KillJob(Environment env) {
-		super(env);
-	}
-	
+    public KillJob(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "<#job>";
     }
@@ -25,8 +25,8 @@ public class KillJob extends EnvironmentCommand {
         if (args.length != 2) {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;
-        } 
-        
+        }
+
         int cookie = -1;
         try {
             cookie = Integer.parseInt(args[1]);
@@ -34,7 +34,7 @@ public class KillJob extends EnvironmentCommand {
             System.err.println("Illegal job number: " + args[1]);
             return;
         }
-        
+
         TaskContainer bg = env.getBackgroundJobs();
 
         try {

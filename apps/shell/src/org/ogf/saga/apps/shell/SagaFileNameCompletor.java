@@ -21,23 +21,23 @@ import jline.Completor;
 public class SagaFileNameCompletor implements Completor {
 
     private URL base;
-    
+
     public SagaFileNameCompletor() {
         base = null;
     }
-    
+
     public void setBase(URL base) {
         this.base = base;
     }
-    
+
     public int complete(final String buf, final int cursor,
-                        final List candidates) {
+            final List candidates) {
         if (base == null) {
             return -1;
         }
-        
+
         String buffer = (buf == null) ? "" : buf;
-        
+
         String translated = buffer;
 
         if (!(translated.startsWith("/"))) {
@@ -48,10 +48,10 @@ public class SagaFileNameCompletor implements Completor {
                 translated = base + "/" + translated;
             }
         }
-        
+
         try {
             URL translatedUrl = URLFactory.createURL(translated);
-            
+
             URL resolveUrl = URLFactory.createURL(translatedUrl.toString());
             String resolvePath = resolveUrl.getPath();
             if (!resolvePath.endsWith("/")) {
@@ -64,7 +64,7 @@ public class SagaFileNameCompletor implements Completor {
             }
 
             NSDirectory dir = NSFactory.createNSDirectory(resolveUrl);
-                
+
             return matchFiles(buffer, translatedUrl, dir, candidates);
         } catch (SagaException e) {
             e.printStackTrace();
@@ -93,21 +93,21 @@ public class SagaFileNameCompletor implements Completor {
      *  @return  the offset of the match
      */
     public int matchFiles(String buffer, URL translatedUrl, NSDirectory dir,
-                          List candidates) throws SagaException {
-        
+            List candidates) throws SagaException {
+
         List<URL> entries = (dir == null) ? Collections.EMPTY_LIST : dir.list();
-        
+
         if (entries == null) {
             return -1;
         }
 
         String lastName = null;
         URL lastMatch = null;
-        
-        for (URL entry: entries) {
+
+        for (URL entry : entries) {
             try {
                 URL resolved = translatedUrl.resolve(entry);
-                
+
                 if (resolved.toString().startsWith(translatedUrl.toString())) {
                     java.io.File f = new java.io.File(resolved.getPath());
                     lastName = f.getName();

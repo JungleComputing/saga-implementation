@@ -10,10 +10,10 @@ import org.ogf.saga.url.URLFactory;
 
 public class MoveEntry extends EnvironmentCommand {
 
-	public MoveEntry(Environment env) {
-		super(env);
-	}
-	
+    public MoveEntry(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "<src> <tgt>";
     }
@@ -27,9 +27,9 @@ public class MoveEntry extends EnvironmentCommand {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;
         }
-        
+
         Directory cwd = env.getCwd();
-        
+
         try {
             URL src = URLFactory.createURL(args[1]);
             URL target = URLFactory.createURL(args[2]);

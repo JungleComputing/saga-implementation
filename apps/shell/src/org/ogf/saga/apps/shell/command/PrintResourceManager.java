@@ -5,10 +5,10 @@ import org.ogf.saga.url.URL;
 
 public class PrintResourceManager extends EnvironmentCommand {
 
-	public PrintResourceManager(Environment env) {
-		super(env);
-	}
-	
+    public PrintResourceManager(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "";
     }
@@ -22,7 +22,7 @@ public class PrintResourceManager extends EnvironmentCommand {
             System.err.println("usage: " + args[0]);
             return;
         }
-        
+
         URL u = env.getResourceManager();
         System.out.println(u);
     }

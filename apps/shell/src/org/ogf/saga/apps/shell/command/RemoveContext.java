@@ -20,8 +20,8 @@ public class RemoveContext implements Command {
         if (args.length != 2) {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;
-        } 
-        
+        }
+
         int num = -1;
         try {
             num = Integer.parseInt(args[1]);
@@ -29,18 +29,18 @@ public class RemoveContext implements Command {
             System.err.println("Illegal context number: " + args[1]);
             return;
         }
-        
+
         try {
             Session defaultSession = SessionFactory.createSession(true);
             Context[] contexts = defaultSession.listContexts();
-            
+
             if (num < 0 || num >= contexts.length) {
                 System.err.println("Context " + num + " does not exist");
                 return;
             }
-            
+
             defaultSession.removeContext(contexts[num]);
-            
+
         } catch (SagaException e) {
             Util.printSagaException(e);
         }

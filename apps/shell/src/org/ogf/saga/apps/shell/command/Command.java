@@ -9,14 +9,14 @@ public interface Command {
      * @return a description of the possible arguments of this command.
      */
     public String getHelpArguments();
-    
+
     /**
      * Returns a single english sentence that describes what this command does.
      * 
      * @return an english explanation of this command.
      */
     public String getHelpExplanation();
-    
+
     /**
      * Executes this command. Output should be written to System.out or 
      * System.err. The command may change the environment object. 
@@ -26,5 +26,5 @@ public interface Command {
      *     arguments are parameters.
      */
     public void execute(String[] args);
-    
+
 }

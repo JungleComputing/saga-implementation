@@ -12,12 +12,12 @@ import org.ogf.saga.url.URLFactory;
 
 public class PrintFile extends EnvironmentCommand {
 
-	private static final int READ_SIZE = 2048;  // bytes 
-    
-	public PrintFile(Environment env) {
-		super(env);
-	}
-	
+    private static final int READ_SIZE = 2048; // bytes 
+
+    public PrintFile(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "<url>";
     }
@@ -31,17 +31,17 @@ public class PrintFile extends EnvironmentCommand {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;
         }
-        
+
         File f = null;
-        
+
         try {
             URL u = URLFactory.createURL(args[1]);
-            
+
             Directory cwd = env.getCwd();
             f = cwd.openFile(u);
-            
+
             Buffer buf = BufferFactory.createBuffer(READ_SIZE);
-                
+
             boolean done = false;
             while (!done) {
                 int len = f.read(buf);

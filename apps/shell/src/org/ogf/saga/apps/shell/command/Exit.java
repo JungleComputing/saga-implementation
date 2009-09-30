@@ -4,10 +4,10 @@ import org.ogf.saga.apps.shell.Environment;
 
 public class Exit extends EnvironmentCommand {
 
-	public Exit(Environment env) {
-		super(env);
-	}
-	
+    public Exit(Environment env) {
+        super(env);
+    }
+
     public String getHelpArguments() {
         return "";
     }
@@ -17,7 +17,7 @@ public class Exit extends EnvironmentCommand {
     }
 
     public void execute(String[] args) {
-    	env.terminate();
+        env.terminate();
     }
 
 }
