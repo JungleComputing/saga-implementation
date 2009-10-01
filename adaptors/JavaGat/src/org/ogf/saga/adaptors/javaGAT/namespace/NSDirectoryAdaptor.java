@@ -1,7 +1,6 @@
 package org.ogf.saga.adaptors.javaGAT.namespace;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -81,13 +80,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        if (closed) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Directory already closed!");
-            }
-            throw new IncorrectStateException(
-                    "changeDir(): directory already closed", wrapper);
-        }
+        checkNotClosed();
+        
         File toDir;
         FileInterface toDirFileInterface;
         try {
@@ -115,9 +109,9 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e, wrapper);
         }
-        entry.fileImpl = toDir;
-        entry.file = toDirFileInterface;
+        
         nameUrl = dir.normalize();
+        entry.init(toDir, toDirFileInterface, nameUrl);
     }
 
     public void copy(URL source, URL target, int flags)
@@ -127,15 +121,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
-                .or(Flags.OVERWRITE));
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for copy method: " + flags, wrapper);
-        }
+        checkCopyFlags(flags);
 
         URL source1 = resolveToDir(source);
         target = resolveToDir(target);
@@ -155,15 +141,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
-                .or(Flags.OVERWRITE));
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for copy method: " + flags, wrapper);
-        }
+        checkCopyFlags(flags);
+
         List<URL> sources = expandWildCards(source);
         target = resolveToDir(target);
         if (sources.size() > 1) {
@@ -173,7 +152,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
                         GatURIConverter.cvtToGatURI(target));
                 if (!targetFile.isDirectory()) {
                     throw new BadParameterException(
-                            "source expands to more than one file and "
+                            "Source expands to more than one file and "
                                     + "target is not a directory", wrapper);
                 }
             } catch (GATObjectCreationException e) {
@@ -182,7 +161,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
                 throw new BadParameterException(e, wrapper);
             }
         } else if (sources.size() < 1) {
-            throw new DoesNotExistException("source " + source
+            throw new DoesNotExistException("Source " + source
                     + " does not exist", wrapper);
         }
 
@@ -224,13 +203,12 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        if (closed) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Directory already closed!");
-            }
-            throw new IncorrectStateException(
-                    "getEntry(): directory already closed", wrapper);
+        checkNotClosed();
+        
+        if (entryNo < 0) {
+            throw new DoesNotExistException("Invalid index: " + entryNo);
         }
+        
         File[] resultFiles;
         try {
             resultFiles = entry.file.listFiles();
@@ -238,8 +216,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             throw new NoSuccessException(e, wrapper);
         }
         if (entryNo >= resultFiles.length) {
-            throw new DoesNotExistException("Invalid index: " + entryNo,
-                    wrapper);
+            throw new DoesNotExistException("Invalid index: " + entryNo);
         }
         try {
             return URLFactory.createURL(resultFiles[entryNo].toGATURI()
@@ -253,13 +230,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        if (closed) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Directory already closed!");
-            }
-            throw new IncorrectStateException(
-                    "getNumEntries(): directory already closed", wrapper);
-        }
+        checkNotClosed();
+
         File[] resultFiles;
         try {
             resultFiles = entry.file.listFiles();
@@ -274,13 +246,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        if (closed) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Directory already closed!");
-            }
-            throw new IncorrectStateException(
-                    "isDir(): directory already closed", wrapper);
-        }
+        checkNotClosed();
+        
         if (!name.getPath().startsWith("/")) {
             name = resolveToDir(name);
         }
@@ -394,24 +361,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
         } catch (GATInvocationException e) {
             throw new NoSuccessException(e, wrapper);
         }
-        List<URL> resultList = new ArrayList<URL>();
-        if (resultFiles != null) {
-            for (String resultFile : resultFiles) {
-                // Watch out for special characters. Therefore, create the
-                // URL in two steps: First create an empty one, and then
-                // set the path.
-                // Also, this does not work if the first section of the path
-                // contains a ':' (Bug in java.net.URI?). So more trickery ...
-                URL u = URLFactory.createURL("");
-                if (resultFile.contains(":")) {
-                    u.setPath("./" + resultFile);
-                } else {
-                    u.setPath(resultFile);
-                }
-                resultList.add(u);
-            }
-        }
-        return resultList;
+        
+        return convertToRelativeURLs(resultFiles);
     }
 
     public void makeDir(URL target, int flags) throws NotImplementedException,
@@ -578,21 +529,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             PermissionDeniedException, IncorrectURLException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        if (closed) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Directory already closed!");
-            }
-            throw new IncorrectStateException(
-                    "remove(): directory already closed", wrapper);
-        }
-        int allowedFlags = Flags.RECURSIVE.or(Flags.DEREFERENCE);
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for remove method: " + flags, wrapper);
-        }
+        checkNotClosed();
+        checkRemoveFlags(flags);
 
         URL target1 = resolveToDir(target);
 
@@ -616,27 +554,13 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             IncorrectURLException, BadParameterException,
             IncorrectStateException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        if (closed) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Directory already closed!");
-            }
-            throw new IncorrectStateException(
-                    "remove(): directory already closed", wrapper);
-        }
-        int allowedFlags = Flags.RECURSIVE.or(Flags.DEREFERENCE);
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for remove method: " + flags, wrapper);
-        }
+        checkNotClosed();
+        checkRemoveFlags(flags);
 
         List<URL> targets = expandWildCards(target);
 
         if (targets.size() < 1) {
-            throw new DoesNotExistException("remove target " + target
-                    + " does not exist", wrapper);
+            throw new DoesNotExistException("Target does not exist: " + target);
         }
 
         for (URL s : targets) {
