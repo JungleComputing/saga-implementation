@@ -1,0 +1,48 @@
+<project
+    name="SAGA documentation build"
+    default="manuals"
+    basedir=".">
+
+    <description>
+	SAGA documentation build.
+    </description>
+
+    <property name="tmp"         location="tmp"/>
+
+    <target name="manuals" depends="usersguide.pdf"/>
+
+    <target name="usersguide.pdf">
+	<tstamp/>
+	<mkdir dir="${tmp}"/>
+	<copy
+	    file="usersguide.tex"
+	    tofile="${tmp}/usersguide.tex">
+	</copy>
+	<exec   dir="${tmp}"
+	    executable="latex"
+	    vmlauncher="false">
+	    <arg line="usersguide.tex"/>
+	</exec>
+	<exec   dir="${tmp}"
+	    executable="latex"
+	    vmlauncher="false">
+	    <arg line="usersguide.tex"/>
+	</exec>
+	<exec   dir="${tmp}"
+	    executable="dvipdf"
+	    vmlauncher="false">
+	    <arg line="usersguide.dvi usersguide.pdf"/>
+	</exec>
+	<copy
+	    file="${tmp}/usersguide.pdf"
+	    tofile="usersguide.pdf">
+	</copy>
+	<delete dir="${tmp}"/>
+    </target>
+
+    <target name="clean">
+	<delete dir="${tmp}"/>
+	<delete file="usersguide.pdf"/>
+    </target>
+
+</project>

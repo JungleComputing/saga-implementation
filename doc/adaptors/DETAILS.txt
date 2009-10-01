@@ -1,0 +1,136 @@
+This document gives more information about the adaptors,
+what they do and do not implement.
+
+General remark:
+None of the adaptors currently implement the SAGA permissions interface,
+t.i. the method implementations throw the NotImplemented exception.
+Reason: there is no support for permissions in the underlying software.
+
+Package SAGA stream
+-------------------
+
+- JavaGAT
+  The JavaGAT adaptor for the stream package is built on JavaGAT EndPoint
+  and JavaGAT Pipe. The adaptor implementation also depends on the JavaGAT
+  advertService. Unfortunately, at the moment only a local advertService
+  is available for JavaGAT, which means that this streams adaptor only
+  works locally.
+  * adaptor for StreamService:
+    except for the permissions, this adaptor is complete.
+  * adaptor for Stream:
+    STREAM_WRITE metric is not supported. Reason: there is no support for it
+    in javaGAT.
+    waitFor(Activity.WRITE) is not supported. Reason: there is no support
+    for it in javaGAT.
+    Stream attributes are not supported yet. BLOCKING (or actually,
+    non-blocking) may be supported in the future for reads.
+
+- TCP
+  The TCP adaptor for the stream package is built on java.net.socket.
+  * adaptor for StreamService:
+    accepts URLs with scheme "tcp" and scheme "any";
+    complete except for permissions.
+  * adaptor for Stream:
+    STREAM_WRITE metric is not supported. Reason: there is no support for it
+    in java.net.sockets.
+    waitFor(Activity.WRITE) is not supported. Reason: there is no support
+    for it in java.net.sockets.
+    Stream attributes are not supported yet. BLOCKING (or actually,
+    non-blocking) will be supported in the future.
+
+Package SAGA job
+----------------
+
+- JavaGAT
+  The JavaGAT adaptor for the job package is built on JavaGAT Resources,
+  for which various adaptors are available: ssh, globus, gridsam, glite, to name
+  a few.
+  * adaptor for JobService.
+    getSelf() is not implemented.
+    Reason: don't know how to implement, at the moment.
+  * JobDescriptionAttributes that are not implemented:
+    SPMDVARIATION,
+    THREADSPERPROCESS, JOBCONTACT, JOBSTARTTIME.
+    Also, post-stage append and pre-stage append is not supported.
+    Reason: there is no corresponding mechanism in JavaGAT job descriptions.
+  * JobAttributes that are not implemented:
+    TERMSIG.
+    Reason: not supported in JavaGAT.
+  * Job metrics that are not implemented:
+    JOB_SIGNAL, JOB_CPUTIME, JOB_MEMORYUSE, JOB_VMEMORYUSE, JOB_PERFORMANCE.
+    Reason: not supported in JavaGAT.
+  * Methods that are not implemented:
+    signal(), checkpoint(), migrate(). There is no support for it in JavaGAT.
+  * it should be noted that although the mapping from a SAGA job description
+    to a JavaGAT jobdescription is mostly possible, as is the mapping from
+    SAGA job methods to JavaGAT job methods, this does not mean that
+    JavaGAT adaptors actually implement everything.
+- GridSAM
+  * adaptor for JobService.
+    getSelf() is not implemented.
+    Reason: don't know how to implement, at the moment.
+  * JobDescriptionAttributes that are not implemented:
+    WORKINGDIRECTORY, INTERACTIVE, JOBCONTACT, JOBSTARTTIME.
+    Also, post-stage append and pre-stage append is not supported.
+    Reason: there is no corresponding mechanism in Gridsam job descriptions.
+    There is WORKINGDIRECTORY in JSDL, but this is not supported by Gridsam.
+    In addition, the SPMD extensions are not implemented yet in this adaptor.
+  * JobAttributes that are not implemented:
+    TERMSIG.
+    Reason: not supported in gridsam.
+  * Job metrics that are not implemented:
+    JOB_SIGNAL, JOB_CPUTIME, JOB_MEMORYUSE, JOB_VMEMORYUSE, JOB_PERFORMANCE.
+    Reason: not supported in gridsam.
+  * Methods that are not implemented:
+    signal(), suspend(), resume(), checkpoint(), migrate().
+
+Package SAGA namespace
+----------------------
+
+- JavaGAT
+  the SAGA namespace package is built on JavaGAT File, for which various
+  adaptors are available: ssh, globus, sftp, to name a few.
+  * adaptor for NSEntry.
+    There is no concept of links in JavaGAT, so all methods dealing with links
+    are not supported.
+  * adaptor fo NSDirectory
+    There is no concept of links in JavaGAT, so all methods dealing with links
+    are not supported.
+
+Package SAGA file
+-----------------
+
+- JavaGAT
+  * adaptor for File
+    unimplemented: modesE(), readE(), writeE(), sizeE(), for which there
+    is no support. In addition, readP and writeP only have the implementation
+    inherited from the base implementation, which translates the patterns into
+    seeks and contiguous reads/writes, which probably is very slow.
+    This adaptor is built on the JavaGAT RandomAccessFile, if available
+    (which is only local for the current JavaGAT version). If not available,
+    FileInputStream or FileOutputStream is used.
+  * adaptor for Directory
+    implemented, except for permissions.
+  * adaptors for FileInputStream and FileOutputStream
+    these adaptors are built on the corresponding JavaGAT versions, for which
+    several adaptors are available.
+
+Package SAGA logicalfile
+------------------------
+
+- Generic
+  * adaptor for LogicalFile
+    This adaptor uses the SAGA file and namespace packages to store the
+    contents of the logicalfile. A logicalfile is just a file containing
+    a list of URLs.
+  * adaptor for LogicalDirectory
+    Built on top of the SAGA namespace package.
+
+Package SAGA RPC
+----------------
+
+- XMLRPC
+  * adaptor for RPC
+    This adaptor implements the RPC package on XMLRPC. It is built on top
+    of the Apache XMLRPC client library. Limitation: at most one OUT
+    parameter is supported.

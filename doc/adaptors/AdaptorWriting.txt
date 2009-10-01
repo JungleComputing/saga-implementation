@@ -1,0 +1,32 @@
+An adaptor must implement the corresponding Service Provider Interface (SPI).
+These interfaces live in the org.ogf.saga.spi.<package> packages.
+For instance, the classname of the JobService SPI is
+org.ogf.saga.spi.job.JobServiceSPI.
+
+A base class that could be used for a JobService adaptor implementation
+is found in the same package:
+org.ogf.saga.spi.job.JobServiceAdaptorBase.
+Each SPI has a corresponding base class. These base classes contain
+implementations for methods that can be implemented in an adaptor-independent
+way. They contain, for instance, implementations for the Async versions
+of all methods (using Java threads). Of course, an adaptor is allowed to
+override these definitions. In fact, this is encouraged explicitly if
+a more efficient implementation is possible for the adaptor at hand.
+
+It is not required to use this SPI-specific base class. The only thing that
+is required is that the adaptor extends 
+org.ogf.saga.impl.AdaptorBase. The SAGA engine needs this for
+proper clone() implementation.
+
+The adaptor implementation ultimately has to provide implementations for
+all methods in the SPI, possibly throwing NotImplementedException for those
+methods that cannot be implemented properly. (Note: we could have provided
+implementations for ALL methods in the AdaptorBases, possibly throwing
+NotImplementedException, but we chose not to do so, to force the adaptor
+writer to mention the not-implemented methods explicitly in the adaptor).
+
+Contexts are not adaptor-specific, but their initialization can be.
+Therefore, an org.ogf.saga.impl.context.ContextInitializerSPI interface
+was added. An adaptor can choose to provide an implementation for this
+interface. See, for example, the
+org.ogf.saga.adaptors.javagat.ContextIntializerAdaptor class.
