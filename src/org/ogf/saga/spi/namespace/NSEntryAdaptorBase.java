@@ -101,11 +101,11 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     }
 
     protected void checkNotClosed() throws IncorrectStateException {
-        if (closed) {
+        if (isClosed()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("NSEntry already closed!");
+                logger.debug("Entry already closed!");
             }
-            throw new IncorrectStateException("NSEntry already closed");
+            throw new IncorrectStateException("Entry already closed");
         }
     }
 
@@ -115,11 +115,11 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
-        closed = true;
+        setClosed(true);
     }
 
     protected void finalize() {
-        if (!closed) {
+        if (! isClosed()) {
             try {
                 close(0.0F);
             } catch (Throwable e) {
