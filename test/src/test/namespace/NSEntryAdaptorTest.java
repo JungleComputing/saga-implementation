@@ -62,21 +62,19 @@ public class NSEntryAdaptorTest {
 
         adaptorTestResult.put("exists: relative existing file     ", existTest(
                 "/tmp/Saga-test-exists-file", true));
-        adaptorTestResult.put("exists: absolute existing dir      ",
+        adaptorTestResult.put("exists: relative existing dir      ",
                 existDirTest("/tmp/Saga-test-exists-dir", true));
-        adaptorTestResult.put("exists: absolute non-existing file ", existTest(
+        adaptorTestResult.put("exists: relative non-existing file ", existTest(
                 "/tmp/Saga-test-exists-fake", false));
 
         adaptorTestResult.put("copy: absolute existing file       ", copyTest(
                 "any://" + host + "/tmp/Saga-test-exists-file", "any://" + host
                         + "/tmp/Saga-test-exists-file.copy"));
+        adaptorTestResult.put("remove: absolute existing file     ",
+                removeTest("any://" + host + "/tmp/Saga-test-exists-file.copy"));
         adaptorTestResult.put("copy: relative existing file       ",
                 copyTest("/tmp/Saga-test-exists-file",
                         "/tmp/Saga-test-exists-file.copy"));
-
-        adaptorTestResult
-                .put("remove: absolute existing file     ", removeTest("any://"
-                        + host + "/tmp/Saga-test-exists-file.copy"));
         adaptorTestResult.put("remove: relative existing file     ",
                 removeTest("/tmp/Saga-test-exists-file.copy"));
 
@@ -84,8 +82,8 @@ public class NSEntryAdaptorTest {
                 "any://" + host + "/tmp/Saga-test-exists-file", "any://" + host
                         + "/tmp/Saga-test-exists-file.copy"));
         adaptorTestResult.put("move: relative existing file       ",
-                moveTest("/tmp/Saga-test-exists-file",
-                        "/tmp/Saga-test-exists-file.copy"));
+                moveTest("/tmp/Saga-test-exists-file1",
+                        "/tmp/Saga-test-exists-file.copy1"));
 
         run(host, jobSession, "nsentry-adaptor-test-clean.sh");
         run("localhost", jobSession, "nsentry-adaptor-test-clean.sh");
