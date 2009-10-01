@@ -1,0 +1,67 @@
+<project name="SAGA" default="build" basedir=".">
+
+    <description>
+	Build file for the Java SAGA XMLRPC adaptor
+    </description>
+
+    <!-- Global properties -->
+
+    <property name="tmp" location="tmp" />
+    <property name="adaptor" value="XMLRPCAdaptor"/>
+    <property name="lib" location="../../lib/adaptors/${adaptor}"/>
+
+    <target name="init" depends="clean">
+	<!-- Create the time stamp -->
+	<tstamp />
+
+	<!-- Create the build directory structure used by compile -->
+	<mkdir dir="${tmp}" />
+
+    </target>
+
+    <path id="external.jars">
+	<fileset dir="external">
+	    <include name="*.jar" />
+        </fileset>
+	<fileset dir="../../lib">
+	    <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="compile" depends="init" description="compile the source ">
+	<!-- Compile the java code from src into ${tmp} -->
+
+    	<javac source="1.5" target="1.5" srcdir="src" destdir="${tmp}" debug="on" >
+                <classpath refid="external.jars" />
+    	    <compilerarg value="-Xlint:unchecked"/>
+    	</javac>
+
+	<!-- Copy license, so that it will end up in the jar. -->
+	<copy file="../../LICENSE.txt" todir="${tmp}"/>
+
+    </target>
+
+    <target name="build" depends="compile" description="build the JAR file">
+	<!-- Create the lib directory -->
+	<mkdir dir="${lib}" />
+
+	<copy todir="${lib}" >
+	    <fileset dir="external"/>
+	</copy>
+
+	<!-- Create the xmlrpc adaptor jar. -->
+	<jar jarfile="${lib}/${adaptor}.jar" basedir="${tmp}" includes="**/xmlrpc/**/*.class,LICENSE.txt">
+	    <manifest>
+		<attribute name="RPCSpi-class" value="org.ogf.saga.adaptors.xmlrpc.rpc.RPCAdaptor" />
+	    </manifest>
+	</jar>
+
+	<!-- And delete the build dir -->
+	<delete dir="${tmp}" />
+
+    </target>
+
+    <target name="clean" description="clean up">
+	<delete dir="${tmp}" />
+    </target>
+</project>
