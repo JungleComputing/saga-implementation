@@ -1,14 +1,15 @@
 package test.misc;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class AdaptorTestResult {
     private String adaptor;
 
     private String host;
-
-    private Map<String, AdaptorTestResultEntry> testResultEntries = new HashMap<String, AdaptorTestResultEntry>();
+    
+    private ArrayList<String> keys = new ArrayList<String>();
+    
+    private ArrayList<AdaptorTestResultEntry> results = new ArrayList<AdaptorTestResultEntry>();
 
     public AdaptorTestResult(String adaptor, String host) {
         this.adaptor = adaptor;
@@ -17,7 +18,8 @@ public class AdaptorTestResult {
     }
 
     public void put(String key, AdaptorTestResultEntry testResultEntry) {
-        testResultEntries.put(key, testResultEntry);
+        keys.add(key);
+        results.add(testResultEntry);
     }
 
     public void print() {
@@ -27,9 +29,10 @@ public class AdaptorTestResult {
         System.out.println("total time: " + getTotalRunTime() + " msec");
         System.out.println("avg time  : " + getAverageRunTime() + " msec");
         System.out.println("*** method results  ***");
-
-        for (String key : testResultEntries.keySet()) {
-            AdaptorTestResultEntry entry = testResultEntries.get(key);
+        
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            AdaptorTestResultEntry entry = results.get(i);
             Throwable t = entry.getThrowable();
             System.out.print(key);
             if (entry.getResult()) {
@@ -50,8 +53,7 @@ public class AdaptorTestResult {
 
     public long getTotalRunTime() {
         long result = 0L;
-        for (AdaptorTestResultEntry testResultEntry : testResultEntries
-                .values()) {
+        for (AdaptorTestResultEntry testResultEntry : results) {
             if (testResultEntry.getResult()) {
                 result += testResultEntry.getTime();
             }
@@ -62,8 +64,7 @@ public class AdaptorTestResult {
     public long getAverageRunTime() {
         long result = 0L;
         int i = 0;
-        for (AdaptorTestResultEntry testResultEntry : testResultEntries
-                .values()) {
+        for (AdaptorTestResultEntry testResultEntry : results) {
             if (testResultEntry.getResult()) {
                 result += testResultEntry.getTime();
                 i++;
@@ -78,10 +79,6 @@ public class AdaptorTestResult {
 
     public String getAdaptor() {
         return adaptor;
-    }
-
-    public Map<String, AdaptorTestResultEntry> getTestResultEntries() {
-        return testResultEntries;
     }
 
 }
