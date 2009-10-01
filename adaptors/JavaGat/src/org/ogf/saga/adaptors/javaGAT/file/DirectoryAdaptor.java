@@ -2,8 +2,6 @@ package org.ogf.saga.adaptors.javaGAT.file;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.ogf.saga.adaptors.javaGAT.util.Initialize;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -23,9 +21,6 @@ import org.ogf.saga.url.URL;
 
 public class DirectoryAdaptor extends
         org.ogf.saga.spi.file.DirectoryAdaptorBase {
-
-    private static Logger logger = LoggerFactory
-            .getLogger(DirectoryAdaptor.class);
 
     static {
         Initialize.initialize();
@@ -62,14 +57,7 @@ public class DirectoryAdaptor extends
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        int allowedFlags = Flags.DEREFERENCE.getValue();
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException("Flags not allowed for getSize: "
-                    + flags, directoryWrapper);
-        }
+        checkGetSizeFlags(flags);
 
         name = resolveToDir(name);
 
@@ -83,14 +71,6 @@ public class DirectoryAdaptor extends
         long sz = file.size();
         file.close(0.0F);
         return sz;
-    }
-
-    public long getSize(URL name) throws NotImplementedException,
-            IncorrectURLException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, IncorrectStateException,
-            DoesNotExistException, TimeoutException, NoSuccessException {
-        return getSize(name, Flags.NONE.getValue());
     }
 
     public boolean isFile(URL name) throws NotImplementedException,
