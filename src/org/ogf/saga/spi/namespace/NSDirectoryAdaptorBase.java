@@ -120,6 +120,16 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
         }
     }
 
+    @Override
+    protected void checkNotClosed() throws IncorrectStateException {
+        if (closed) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("NSDirectory already closed!");
+            }
+            throw new IncorrectStateException("NSDirectory already closed");
+        }
+    }
+    
     public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
@@ -399,13 +409,8 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, IncorrectURLException {
-        if (closed) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Directory already closed!");
-            }
-            throw new IncorrectStateException(
-                    "list(): directory already closed");
-        }
+        checkNotClosed();
+        
         int allowedFlags = Flags.DEREFERENCE.getValue();
         if ((allowedFlags | flags) != allowedFlags) {
             if (logger.isDebugEnabled()) {
@@ -465,6 +470,38 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
                         Integer.TYPE }, pattern, flags);
     }
 
+    protected List<URL> convertToRelativeURLs(String[] entries)
+            throws BadParameterException, NoSuccessException,
+            NotImplementedException {
+        List<URL> resultList = new ArrayList<URL>();
+     
+        if (entries != null) {
+            for (String entry : entries) {
+                URL u = convertToRelativeURL(entry);
+                resultList.add(u);
+            }
+        }
+        return resultList;
+    }
+    
+    protected URL convertToRelativeURL(String entry) throws NoSuccessException,
+            NotImplementedException, BadParameterException {
+        // Watch out for special characters. Therefore, create the
+        // URL in two steps: First create an empty one, and then
+        // set the path.
+        // Also, this does not work if the first section of the path
+        // contains a ':' (Bug in java.net.URI?). So more trickery ...
+        URL url = URLFactory.createURL("");
+
+        if (entry.contains(":")) {
+            url.setPath("./" + entry);
+        } else {
+            url.setPath(entry);
+        }
+
+        return url;
+    }
+    
     public void makeDir(URL target, int flags) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
