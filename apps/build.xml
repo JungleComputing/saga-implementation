@@ -1,0 +1,17 @@
+<project name="SAGA" default="build" basedir=".">
+
+    <description>
+	Build file for the Java SAGA apps.
+    </description>
+
+    <!-- Global properties -->
+
+    <target name="build" description="build the apps">
+	<ant dir="shell" />
+    </target>
+
+    <target name="clean" description="clean up">
+	<ant dir="shell" target="clean" />
+    </target>
+
+</project>
