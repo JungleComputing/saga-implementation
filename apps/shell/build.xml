@@ -1,0 +1,61 @@
+<project name="SagaShell" default="build" basedir=".">
+
+    <description>Build file for the SAGA shell</description>
+
+    <!-- Global properties -->
+    <property name="tmp" location="tmp" />
+    <property name="external" location="external" />
+    <property name="lib" location="lib" />
+    <property name="jar" location="${lib}/saga-shell.jar" />
+	
+    <target name="init">
+        <property environment="env" />
+    	<condition property="java_saga_location" value="${env.JAVA_SAGA_LOCATION}">
+    	    <isset property="env.JAVA_SAGA_LOCATION"/>
+    	</condition>
+        <property name="java_saga_location" location="../.." />
+        <fail message="Please set JAVA_SAGA_LOCATION">
+            <condition>
+                <not>
+                    <isset property="java_saga_location"/>
+                </not>
+            </condition>
+        </fail>
+        <echo message="Using Java SAGA ${java_saga_location}"/> 
+        <path id="external.jars">
+            <fileset dir="${java_saga_location}/lib">
+                <include name="*.jar" />
+            </fileset>
+            <fileset dir="${external}">
+                <include name="*.jar" />
+            </fileset>
+        </path>
+    </target>
+        
+    <target name="compile" depends="init,clean" description="compile the source">
+        <mkdir dir="${tmp}" />
+        
+        <javac srcdir="src" destdir="${tmp}" debug="on">
+            <classpath refid="external.jars" />
+            <compilerarg value="-Xlint:unchecked" />
+        </javac>
+    </target>
+
+    <target name="build" depends="compile" description="build the JAR file">
+        <mkdir dir="${lib}" />
+        
+        <copy todir="${lib}">
+            <fileset dir="${external}"/>
+        </copy>
+        
+        <jar jarfile="${jar}" basedir="${tmp}" />
+        
+        <delete dir="${tmp}" />
+    </target>
+
+    <target name="clean" description="clean up">
+        <delete dir="${tmp}" />
+        <delete dir="${lib}" />
+    </target>
+
+</project>
