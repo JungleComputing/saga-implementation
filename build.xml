@@ -74,13 +74,13 @@
     </target>
 
 	<target name="install-engine" depends="build-engine">
-		<copy todir="${prefix}/doc/saga" file="LICENSE.txt" />
-		<copy todir="${prefix}/doc/saga" file="README.txt" />
-		<copy todir="${prefix}/doc/saga" file="HISTORY.txt" />
+		<copy todir="${prefix}/doc/saga/engine/java" file="LICENSE.txt" />
+		<copy todir="${prefix}/doc/saga/engine/java" file="README.txt" />
+		<copy todir="${prefix}/doc/saga/engine/java" file="HISTORY.txt" />
 		<copy todir="${prefix}/etc/saga/java" file="log4j.properties" />
 		<copy todir="${prefix}/etc/saga/java" file="saga.properties" />
 		<copy todir="${prefix}/lib" >
-			<fileset dir="${lib}/" includes="*.jar" />
+			<fileset dir="${lib}/" includes="saga-impl*.jar, log4j*.jar, slf4j*.jar" />
 		</copy>
 		<mkdir dir="${prefix}/lib/adaptors" />
 	</target>
