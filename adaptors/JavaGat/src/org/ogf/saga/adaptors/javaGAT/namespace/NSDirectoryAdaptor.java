@@ -285,7 +285,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Directory already closed!");
             }
@@ -371,7 +371,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Directory already closed!");
             }
@@ -398,7 +398,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Directory already closed!");
             }
@@ -431,7 +431,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Directory already closed!");
             }

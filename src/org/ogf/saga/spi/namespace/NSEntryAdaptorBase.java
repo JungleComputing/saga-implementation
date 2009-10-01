@@ -32,7 +32,8 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
             .or(Flags.RECURSIVE.or(Flags.OVERWRITE));
     private static final int REMOVE_FLAGS = Flags.DEREFERENCE
             .or(Flags.RECURSIVE);
-    protected boolean closed = false;
+    
+    private boolean closed = false;
     
     private URL nameURL;
 
@@ -72,8 +73,19 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         return wrapper.getWrapperURL();
     }
     
-    protected void setNameURL(URL url) {
+    protected void setEntryURL(URL url) {
         nameURL = url;
+        if (wrapper != null) {
+            wrapper.setWrapperURL(url);
+        }
+    }
+    
+    protected boolean isClosed() {
+        return closed;
+    }
+    
+    protected void setClosed(boolean closed) {
+        this.closed = closed;
     }
 
     public Object clone() throws CloneNotSupportedException {

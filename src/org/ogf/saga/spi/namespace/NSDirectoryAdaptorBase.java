@@ -122,7 +122,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
     @Override
     protected void checkNotClosed() throws IncorrectStateException {
-        if (closed) {
+        if (isClosed()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("NSDirectory already closed!");
             }

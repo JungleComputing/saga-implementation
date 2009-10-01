@@ -128,7 +128,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("File already closed!");
             }
@@ -150,7 +150,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
 
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException("File already closed", wrapper);
         }
 
@@ -222,7 +222,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
 
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException("File already closed", wrapper);
         }
 
@@ -285,7 +285,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
 
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException("File already closed", wrapper);
         }
 
@@ -337,7 +337,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
 
-        if (closed) {
+        if (isClosed()) {
             return;
         }
 

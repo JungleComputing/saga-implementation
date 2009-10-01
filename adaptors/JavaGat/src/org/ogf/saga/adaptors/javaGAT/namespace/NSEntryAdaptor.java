@@ -187,7 +187,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
     void init(File fileImpl, FileInterface file, URL url) {
         this.file = file;
         this.fileImpl = fileImpl;
-        setNameURL(url);
+        setEntryURL(url);
         try {
             gatURI = GatURIConverter.cvtToGatURI(url);
         } catch(Throwable e) {
@@ -197,7 +197,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
     
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
-        closed = true;
+        setClosed(true);
     }
 
     public void copy(URL target, int flags) throws NotImplementedException,
@@ -330,7 +330,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     public URL getCWD() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         String path = getEntryURL().getPath();
@@ -352,7 +352,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     public URL getName() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         String path = getEntryURL().getPath();
@@ -367,7 +367,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     public URL getURL() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         try {
@@ -381,7 +381,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         return isDirectory;
@@ -391,7 +391,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         return !isDirectory;

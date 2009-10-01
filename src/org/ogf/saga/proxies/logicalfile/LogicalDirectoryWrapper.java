@@ -24,6 +24,7 @@ import org.ogf.saga.spi.logicalfile.LogicalDirectorySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         LogicalDirectory {
@@ -79,6 +80,73 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             throw new NoSuccessException("Constructor failed", e);
         }
     }
+    
+    public void changeDir(URL dir) throws NotImplementedException,
+    IncorrectURLException, AuthenticationFailedException,
+    AuthorizationFailedException, PermissionDeniedException,
+    BadParameterException, IncorrectStateException,
+    DoesNotExistException, TimeoutException, NoSuccessException {
+        if (dir.isAbsolute()) {
+
+            URL url = dir.normalize();
+            String path = url.getPath();
+
+            if (dir == url) {
+                url = URLFactory.createURL(dir.toString());
+            }
+
+            if (! path.equals("/") && path.endsWith("/")) {
+                url.setPath(path.substring(0, path.length() - 1));
+            }
+
+            setWrapperURL(url);
+
+            Object[] parameters = { this, getSession(), url, 0};
+
+            try {
+                proxy = (LogicalDirectorySPI) SAGAEngine.createAdaptorProxy(
+                        LogicalDirectorySPI.class, new Class[] {
+                            LogicalDirectoryWrapper.class,
+                            org.ogf.saga.impl.session.SessionImpl.class,
+                            URL.class, Integer.TYPE }, parameters);
+                super.setProxy(proxy);
+            } catch (org.ogf.saga.error.SagaException e) {
+                if (e instanceof NotImplementedException) {
+                    throw (NotImplementedException) e;
+                }
+                if (e instanceof IncorrectURLException) {
+                    throw (IncorrectURLException) e;
+                }
+                if (e instanceof AuthenticationFailedException) {
+                    throw (AuthenticationFailedException) e;
+                }
+                if (e instanceof AuthorizationFailedException) {
+                    throw (AuthorizationFailedException) e;
+                }
+                if (e instanceof PermissionDeniedException) {
+                    throw (PermissionDeniedException) e;
+                }
+                if (e instanceof BadParameterException) {
+                    throw (BadParameterException) e;
+                }
+                if (e instanceof DoesNotExistException) {
+                    throw (DoesNotExistException) e;
+                }
+                if (e instanceof TimeoutException) {
+                    throw (TimeoutException) e;
+                }
+                if (e instanceof NoSuccessException) {
+                    throw (NoSuccessException) e;
+                }
+                throw new NoSuccessException("changeDir", e);
+            }
+            super.setProxy(proxy);
+            setWrapperURL(url);            
+        } else {
+            proxy.changeDir(dir);
+        }
+    }
+
 
     public Object clone() throws CloneNotSupportedException {
         LogicalDirectoryWrapper clone = (LogicalDirectoryWrapper) super.clone();

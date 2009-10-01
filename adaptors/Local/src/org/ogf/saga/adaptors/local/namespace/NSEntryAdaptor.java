@@ -119,7 +119,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
 
     void init(File file, URL nameUrl) {
         this.file = file;
-        setNameURL(nameUrl);
+        setEntryURL(nameUrl);
     }
     
     @Override
