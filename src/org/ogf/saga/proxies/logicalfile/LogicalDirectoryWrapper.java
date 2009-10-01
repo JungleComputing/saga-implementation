@@ -36,7 +36,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             PermissionDeniedException, BadParameterException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        super(session);
+        super(session, name);
         Object[] parameters = { this, session, name, flags };
         try {
             proxy = (LogicalDirectorySPI) SAGAEngine.createAdaptorProxy(

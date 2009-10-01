@@ -13,6 +13,7 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
+import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
@@ -20,6 +21,7 @@ import org.ogf.saga.spi.namespace.NSEntrySPI;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.url.URL;
+import org.ogf.saga.url.URLFactory;
 
 /**
  * Wrapper class: wraps the NSEntry proxy.
@@ -28,6 +30,34 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     private NSEntrySPI proxy;
     private boolean inheritedProxy = false;
+    private URL url;
+    
+    public URL getWrapperURL() {
+        return url;
+    }
+    
+    public void setWrapperURL(URL url) {
+        this.url = url;
+    }
+    
+    protected NSEntryWrapper(Session session, URL name) throws BadParameterException, NoSuccessException, NotImplementedException {
+        super(session);
+        
+        url = name.normalize();
+        String path = url.getPath();
+
+        if (name == url) {
+            url = URLFactory.createURL(name.toString());
+        }
+        
+        if (! path.equals("/") && path.endsWith("/")) {
+            if (this instanceof NSDirectoryWrapper) {
+                url.setPath(path.substring(0, path.length() - 1));
+            } else {
+                throw new BadParameterException("Bad parameter: " + name + " cannot indicate a non-directory");
+            }
+        }
+    }
 
     protected NSEntryWrapper(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
@@ -35,7 +65,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             PermissionDeniedException, BadParameterException,
             DoesNotExistException, AlreadyExistsException, TimeoutException,
             NoSuccessException {
-        super(session);
+        
+        this(session, name);
+
         Object[] parameters = { this, session, name, flags };
         try {
             proxy = (NSEntrySPI) SAGAEngine.createAdaptorProxy(
@@ -77,10 +109,6 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         }
     }
 
-    protected NSEntryWrapper(Session session) {
-        super(session);
-    }
-
     protected void setProxy(NSEntrySPI proxy) {
         this.proxy = proxy;
         inheritedProxy = true;
@@ -88,6 +116,11 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public Object clone() throws CloneNotSupportedException {
         NSEntryWrapper clone = (NSEntryWrapper) super.clone();
+        try {
+            clone.url = URLFactory.createURL(url.toString());
+        } catch (Throwable e) {
+            throw new SagaRuntimeException("Should not happen", e);
+        }
         if (!inheritedProxy) {
             // subclasses should call setProxy again.
             clone.proxy = (NSEntrySPI) SAGAEngine.createAdaptorCopy(

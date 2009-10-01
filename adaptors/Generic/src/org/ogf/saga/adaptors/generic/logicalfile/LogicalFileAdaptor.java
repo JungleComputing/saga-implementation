@@ -271,7 +271,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             NotImplementedException {
         if (urls == null || urls.size() == 0) {
             throw new IncorrectStateException("No files in logical file '"
-                    + nameUrl + "' to compare with", wrapper);
+                    + wrapper.getWrapperURL() + "' to compare with", wrapper);
         }
         // first check: same hostname
         for (URL file : urls) {
@@ -310,14 +310,14 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                    FileFactory.createFileOutputStream(sessionImpl, nameUrl)));
+                    FileFactory.createFileOutputStream(sessionImpl, wrapper.getWrapperURL())));
             for (URL u : urls) {
                 out.write(u.toString());
                 out.newLine();
             }
             out.close();
         } catch (Throwable e) {
-            throw new NoSuccessException("Exception while writing " + nameUrl,
+            throw new NoSuccessException("Exception while writing " + wrapper.getWrapperURL(),
                     e, wrapper);
         }
     }

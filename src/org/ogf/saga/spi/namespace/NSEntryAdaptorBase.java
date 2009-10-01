@@ -14,7 +14,6 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.AdaptorBase;
-import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
@@ -34,7 +33,8 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     private static final int REMOVE_FLAGS = Flags.DEREFERENCE
             .or(Flags.RECURSIVE);
     protected boolean closed = false;
-    protected URL nameUrl;
+    
+    private URL nameURL;
 
     public NSEntryAdaptorBase(NSEntryWrapper wrapper, SessionImpl sessionImpl,
             URL name, int flags) throws NotImplementedException,
@@ -42,24 +42,17 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
             DoesNotExistException, PermissionDeniedException,
             AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
-        super(sessionImpl, wrapper);
-        nameUrl = name.normalize();
-        String path = nameUrl.getPath();
 
-        if (name == nameUrl) {
-            nameUrl = URLFactory.createURL(name.toString());
+        super(sessionImpl, wrapper);
+        
+        if (wrapper == null) {
+            nameURL = name;
+        } else {
+            nameURL = wrapper.getWrapperURL();
         }
         
-        if (! path.equals("/") && path.endsWith("/")) {
-            if (this instanceof NSDirectoryAdaptorBase) {
-                nameUrl.setPath(path.substring(0, path.length() - 1));
-            } else {
-                throw new BadParameterException("Bad parameter: " + name + " cannot indicate a non-directory");
-            }
-        }
-
         if (logger.isDebugEnabled()) {
-            logger.debug("Creating NSEntrySpi: " + nameUrl);
+            logger.debug("Creating NSEntrySpi: " + nameURL);
         }
 
         int allowedFlags = Flags.CREATEPARENTS.or(Flags.CREATE.or(Flags.EXCL));
@@ -71,14 +64,20 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
                     "Flags not allowed for NSEntry constructor: " + flags);
         }
     }
+    
+    protected URL getEntryURL() {
+        if (wrapper == null) {
+            return nameURL;
+        }
+        return wrapper.getWrapperURL();
+    }
+    
+    protected void setNameURL(URL url) {
+        nameURL = url;
+    }
 
     public Object clone() throws CloneNotSupportedException {
         NSEntryAdaptorBase clone = (NSEntryAdaptorBase) super.clone();
-        try {
-            clone.nameUrl = URLFactory.createURL(nameUrl.toString());
-        } catch (Throwable e) {
-            throw new SagaRuntimeException("Should not happen", e);
-        }
         return clone;
     }
 
@@ -92,7 +91,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     }
 
     protected URL resolve(URL url) throws NoSuccessException {
-        return nameUrl.resolve(url);
+        return getEntryURL().resolve(url);
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
@@ -119,8 +118,9 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public URL getCWD() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        URL url = getEntryURL();
         checkNotClosed();
-        String path = nameUrl.getPath();
+        String path = url.getPath();
         boolean dir = false;
         try {
             dir = isDir();
@@ -135,7 +135,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         }
         URL newURL = null;
         try {
-            newURL = URLFactory.createURL(nameUrl.toString());
+            newURL = URLFactory.createURL(url.toString());
             newURL.setPath(path);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
@@ -152,7 +152,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     public URL getName() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         checkNotClosed();
-        String path = nameUrl.getPath();
+        String path = getEntryURL().getPath();
         String[] s = path.split("/");
 
         try {
@@ -172,7 +172,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
             IncorrectStateException, TimeoutException, NoSuccessException {
         checkNotClosed();
         try {
-            return URLFactory.createURL(nameUrl.normalize().toString());
+            return URLFactory.createURL(getEntryURL().normalize().toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
         }

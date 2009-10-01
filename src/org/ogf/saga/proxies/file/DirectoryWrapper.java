@@ -34,7 +34,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             PermissionDeniedException, BadParameterException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        super(session);
+        super(session, name);
         Object[] parameters = { this, session, name, flags };
         try {
             proxy = (DirectorySPI) SAGAEngine.createAdaptorProxy(

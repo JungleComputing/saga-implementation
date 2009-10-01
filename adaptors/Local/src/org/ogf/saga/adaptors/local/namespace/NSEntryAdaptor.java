@@ -51,6 +51,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
             AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags);
+        
+        URL nameUrl = getEntryURL();
 
         LocalAdaptor.checkURL(nameUrl);
 
@@ -117,7 +119,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
 
     void init(File file, URL nameUrl) {
         this.file = file;
-        this.nameUrl = nameUrl;
+        setNameURL(nameUrl);
     }
     
     @Override
@@ -278,7 +280,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
         logger.debug("Renaming '{}' to '{}'", file, targetFile);
         
         if (!file.renameTo(targetFile)) {
-            throw new NoSuccessException("Could not move '" + nameUrl
+            throw new NoSuccessException("Could not move '" + getEntryURL()
                     + "' to '" + target + "'");
         }
     }

@@ -31,7 +31,7 @@ class FileEntry extends NSEntryAdaptor {
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        super(sessionImpl, name, flags);
+        super(null, sessionImpl, name, flags);
     }
 
     GATContext getGatContext() {

@@ -39,7 +39,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, session, name, flags);
-        entry = new NSEntryAdaptor(wrapper, session, nameUrl, flags, true);
+        entry = new NSEntryAdaptor(wrapper, session, name, flags, true);
     }
 
     @Override
@@ -93,8 +93,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         }
         
         URL normalized = dir.normalize();
-        nameUrl = resolve(normalized);
-        entry.init(newCwd, nameUrl);
+        wrapper.setWrapperURL(resolve(normalized));
+        entry.init(newCwd, wrapper.getWrapperURL());
     }
 
     public void copy(URL source, URL target, int flags)

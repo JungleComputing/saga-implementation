@@ -187,9 +187,10 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             return url;
         }
         String path = url.getPath();
+        URL myURL = getEntryURL();
         if (path.startsWith("/")) {
             // Relative URL, absolute path. Resolve.
-            URL u = nameUrl.resolve(url);
+            URL u = myURL.resolve(url);
 
             if (logger.isDebugEnabled()) {
                 logger.debug("Relative URI with abs path " + url
@@ -198,13 +199,13 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             return u;
         }
 
-        URL u = URLFactory.createURL(nameUrl.toString());
+        URL u = URLFactory.createURL(myURL.toString());
         path = u.getPath();
         
         // If there is no path, and the URL has a host part, the path
         // should start with a '/'.
         if (path.equals("")) {
-            if (nameUrl.getHost() == null) {
+            if (myURL.getHost() == null) {
                 path = ".";
             }
         }
@@ -444,7 +445,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
                 // Pattern indicates a single directory. In this case, list the
                 // contents of the directory (like "ls").
                 NSDirectory dir = NSFactory.createNSDirectory(sessionImpl,
-                        nameUrl.resolve(resultList.get(0)), Flags.NONE
+                        getEntryURL().resolve(resultList.get(0)), Flags.NONE
                                 .getValue());
                 return dir.list(".", flags);
             }

@@ -36,7 +36,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
             PermissionDeniedException, BadParameterException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        super(session);
+        super(session, name);
 
         Object[] parameters = { this, session, name, flags };
         try {

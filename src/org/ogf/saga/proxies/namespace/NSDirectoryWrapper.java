@@ -35,7 +35,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             PermissionDeniedException, BadParameterException,
             DoesNotExistException, AlreadyExistsException, TimeoutException,
             NoSuccessException {
-        super(session);
+        super(session, name);
         Object[] parameters = { this, session, name, flags };
         try {
             proxy = (NSDirectorySPI) SAGAEngine.createAdaptorProxy(
@@ -79,8 +79,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         }
     }
 
-    protected NSDirectoryWrapper(Session session) {
-        super(session);
+    protected NSDirectoryWrapper(Session session, URL name) throws BadParameterException, NoSuccessException, NotImplementedException {
+        super(session, name);
     }
 
     protected void setProxy(NSDirectorySPI proxy) {

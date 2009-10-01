@@ -51,15 +51,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
     AttributesImpl attributesImpl = new AttributesImpl();
 
-    protected NSEntryAdaptor(SessionImpl sessionImpl, URL name, int flags)
-            throws NotImplementedException, IncorrectURLException,
-            BadParameterException, DoesNotExistException,
-            PermissionDeniedException, AuthorizationFailedException,
-            AuthenticationFailedException, TimeoutException,
-            NoSuccessException, AlreadyExistsException {
-        this(null, sessionImpl, name, flags, false);
-    }
-
     public NSEntryAdaptor(NSEntryWrapper wrapper, SessionImpl sessionImpl,
             URL name, int flags) throws NotImplementedException,
             IncorrectURLException, BadParameterException,
@@ -90,7 +81,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
 
         gatContext = gatSession.getGATContext();
         try {
-            gatURI = GatURIConverter.cvtToGatURI(nameUrl);
+            gatURI = GatURIConverter.cvtToGatURI(getEntryURL());
         } catch (URISyntaxException e1) {
             throw new IncorrectURLException(e1);
         }
@@ -193,10 +184,15 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         return clone;
     }
 
-    void init(File fileImpl, FileInterface file, URL nameUrl) {
+    void init(File fileImpl, FileInterface file, URL url) {
         this.file = file;
         this.fileImpl = fileImpl;
-        this.nameUrl = nameUrl;
+        setNameURL(url);
+        try {
+            gatURI = GatURIConverter.cvtToGatURI(url);
+        } catch(Throwable e) {
+            logger.debug("Should not happen", e);
+        }
     }
     
     public void close(float timeoutInSeconds) throws NotImplementedException,
@@ -337,7 +333,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
-        String path = nameUrl.getPath();
+        String path = getEntryURL().getPath();
         if (!isDirectory) {
             int i = path.lastIndexOf('/');
             if (i != -1) {
@@ -346,7 +342,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         }
         URL newURL = null;
         try {
-            newURL = URLFactory.createURL(nameUrl.toString());
+            newURL = URLFactory.createURL(getEntryURL().toString());
             newURL.setPath(path);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e, wrapper);
@@ -359,7 +355,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         if (closed) {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
-        String path = nameUrl.getPath();
+        String path = getEntryURL().getPath();
         String[] s = path.split("/");
 
         try {
@@ -375,7 +371,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         try {
-            return URLFactory.createURL(nameUrl.normalize().toString());
+            return URLFactory.createURL(wrapper.getURL().normalize().toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e, wrapper);
         }

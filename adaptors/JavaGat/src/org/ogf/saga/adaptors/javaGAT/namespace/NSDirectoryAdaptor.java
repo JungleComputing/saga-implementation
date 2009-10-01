@@ -59,7 +59,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags);
-        entry = new NSEntryAdaptor(wrapper, sessionImpl, nameUrl, flags, true);
+        entry = new NSEntryAdaptor(wrapper, sessionImpl, name, flags, true);
     }
 
     public Object clone() throws CloneNotSupportedException {
@@ -110,8 +110,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             throw new NoSuccessException(e, wrapper);
         }
         
-        nameUrl = dir.normalize();
-        entry.init(toDir, toDirFileInterface, nameUrl);
+        wrapper.setWrapperURL(dir.normalize());
+        entry.init(toDir, toDirFileInterface, getEntryURL());
     }
 
     public void copy(URL source, URL target, int flags)
