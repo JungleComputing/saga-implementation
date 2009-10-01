@@ -1,0 +1,83 @@
+  - recursively deleting a directory did not work.
+  - attributes of type Time used milliseconds instead of seconds.
+  - updated JavaGAT with fixed FTP file adaptor.
+  - sort adaptor directory list for deterministic behaviour.
+
+Release 1.0.1 (24 April 2009)
+  This release fixes various problems in release 1.0:
+  - This release now contains JavaGAT release 2.0.5, which fixes many problems
+    of its earlier releases.
+  - Saga now uses slf4j as logging system. This means that you can use
+    your favorite logging system, as long as there is an slf4j implementation
+    for it. To accomplish that, you need to put the appropriate slf4j jar-file
+    in front of your classpath. If, like before, you want to use log4j, you
+    don't have to do anything, since this is the default.
+  - Fixed classloader issue: use either the classloader of the class that
+    prompted the loading of SAGA or the context classloader, for the
+    parent of the URL classloaders for the adaptors.
+  - The Saga engine now supports a "shared" jar-file directory, which allows
+    adaptors to share some of their dependencies, so that these are loaded
+    with the same classloader. This is useful for for instance security
+    objects that need to be shared by several adaptors.
+  - The existsAttribute method was added to Attributes.
+  - URL and Parameter now implements SagaObject.
+  - The Saga engine no longer depends on an environment variable SAGA_LOCATION.
+    It now uses the saga.location system property. The scripts now use
+    JAVA_SAGA_LOCATION.
+  - Made removeContext() to work.
+  - Modified the exception chaining mechanism: now, the most informative
+    exception is thrown, but exceptions from all adaptors can be obtained
+    by iterating over them.
+  - Tasking versions of factory methods did not work, because the methods
+    were not public.
+  - Fixed a race in job.cancel().
+  - Added a mechanism that allows for adaptor-specific attributes in a context.
+  - Fixed the clone mechanism in the Adaptor invocation handler: it did not
+    work at all.
+  - WorkingDirectory attribute of Job was missing.
+  - Some stuff was added for the Service Discovery implementation.
+  - For the gridsam adaptor: protect the command and arguments against
+    expansion of shell meta characters.
+  - Fixed NSDirectory constructor: it should fail if the argument exists and
+    is not a directory.
+  - improved the list() performance of the JavaGAT adaptor.
+
+Release 1.0 (16 September 2008)
+   This release contains a new version of the JavaGAT, which now includes
+   a glite adaptor for the Job (in JavaGAT terms: ResourceBroker) package.
+   This release incorporates the changes that were required to make it run
+   with the new JavaGAT (which has a few API changes). Also, the engine now
+   orders exceptions as obtained from adaptors differently. If one adaptor
+   throws NotImplemented, and another throws DoesNotExist, the user presumably
+   wants to see DoesNotExist, and not NotImplemented (as would be the case if
+   the ordering of the SAGA specs whould be obeyed).
+   
+Release 1.0rc3 (11 July 2008)
+   This release fixes some problems in release 1.0rc2. Notably:
+   - a wrong version was included for some demo applications;
+   - there was a problem with the JavaGAT adaptor for GridSAM: JavaGAT
+     sandboxes did not work properly;
+   - SAGA Gridsam adaptor made to work with Java 6.
+
+Release 1.0rc2 (9 June 2008)
+   This release reflects a change in the Java Language Bindings, which adds
+   an URLFactory, so that SAGA implementations can provide their own URL
+   class.
+
+Release 1.0rc1 (21 May 2008)
+   This release implements the corresponding version of the Java SAGA
+   language bindings. Changes with respect to the 0.9 version are,
+   a.o.:
+   - this version includes an XMLRPC implementation of the RPC package.
+   - this version includes a generic logicalfile package implementation,
+     generic in that it is completely built on top of the SAGA file
+     and namespace packages. The JavaGAT adaptor for the logicalfile
+     package was removed because it did not function.
+   - the Gridsam adaptor is rewritten to use the gridsam-supplied libraries
+     for generating JSDL.
+
+0.9 (3 April 2008)
+   This is the first public release of this Java SAGA implementation.
+   It includes adaptors for the job, namespace, file, logicalfile,
+   and stream packages. Also included are a Gridsam job adaptor and
+   a socket stream adaptor.
