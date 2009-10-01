@@ -31,6 +31,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     private NSEntrySPI proxy;
     private boolean inheritedProxy = false;
     private URL url;
+    private boolean closed = false;
     
     public URL getWrapperURL() {
         return url;
@@ -38,6 +39,14 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     
     public void setWrapperURL(URL url) {
         this.url = url;
+    }
+    
+    public boolean isClosed() {
+        return closed;
+    }
+    
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
     
     protected NSEntryWrapper(Session session, URL name) throws BadParameterException, NoSuccessException, NotImplementedException {
