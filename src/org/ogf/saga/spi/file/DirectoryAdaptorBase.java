@@ -27,6 +27,8 @@ import org.ogf.saga.url.URL;
 public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
         implements DirectorySPI {
 
+    private static final int GET_SIZE_FLAGS = Flags.DEREFERENCE.getValue();
+    
     protected int directoryFlags;
     protected DirectoryWrapper directoryWrapper;
 
@@ -53,6 +55,14 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
         super.setWrapper(wrapper);
     }
 
+    protected void checkGetSizeFlags(int flags) throws BadParameterException {
+        if ((GET_SIZE_FLAGS | flags) != GET_SIZE_FLAGS) {
+            String msg = "Flags not allowed for getSize: " + flags;
+            logger.debug(msg);
+            throw new BadParameterException(msg);
+        }
+    }
+    
     public Task<Directory, Long> getSize(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<Directory, Long>(
