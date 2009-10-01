@@ -193,7 +193,12 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         return clone;
     }
 
-
+    void init(File fileImpl, FileInterface file, URL nameUrl) {
+        this.file = file;
+        this.fileImpl = fileImpl;
+        this.nameUrl = nameUrl;
+    }
+    
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
         closed = true;
@@ -214,23 +219,9 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             BadParameterException, AlreadyExistsException,
             IncorrectURLException, NotImplementedException,
             DoesNotExistException {
-        if (closed) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Entry already closed!");
-            }
-            throw new IncorrectStateException("NSEntry already closed", wrapper);
-        }
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
-                .or(Flags.OVERWRITE));
-        // allowed flags: RECURSIVE, CREATE_PARENTS, OVERWRITE
-        // otherwise: BadParameter();
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for NSEntry " + method + ": " + flags, wrapper);
-        }
+        checkNotClosed();
+        checkCopyFlags(flags);
+
         File targetFile = null;
         try {
             targetFile = GAT.createFile(gatContext, GatURIConverter.cvtToGatURI(target));
@@ -247,22 +238,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             throw new BadParameterException(e, wrapper);
         }
 
-        // a 'BadParameter' exception is thrown if the source is a directory
-        // and the 'Recursive' flag is not set
-
-        if (isDirectory && !Flags.RECURSIVE.isSet(flags)) {
-            throw new BadParameterException(
-                    "Source is a directory and recursive flag not set", wrapper);
-        }
-
-        // a 'BadParameter' exception is thrown if the source is not a directory
-        // and the 'Recursive' flag is set
-
-        if (!isDirectory && Flags.RECURSIVE.isSet(flags)) {
-            throw new BadParameterException(
-                    "Source is not a directory and recursive flag is set",
-                    wrapper);
-        }
+        checkDirectoryFlags("Source", flags, isDirectory);
 
         if (isDirectory && Flags.RECURSIVE.isSet(flags) && targetFile.isFile()) {
             throw new AlreadyExistsException("cannot overwrite non-directory"
@@ -499,24 +475,9 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        if (closed) {
-            throw new IncorrectStateException("NSEntry already closed", wrapper);
-        }
-        int allowedFlags = Flags.DEREFERENCE.or(Flags.RECURSIVE);
-        if ((allowedFlags | flags) != allowedFlags) {
-            throw new BadParameterException(
-                    "Flags not allowed for NSEntry remove: " + flags, wrapper);
-        }
-        if (isDirectory && !Flags.RECURSIVE.isSet(flags)) {
-            throw new BadParameterException(
-                    "Target is directory and recursive flag not set", wrapper);
-        }
-
-        if (!isDirectory && Flags.RECURSIVE.isSet(flags)) {
-            throw new BadParameterException(
-                    "Target is not directory and recursive flag is set",
-                    wrapper);
-        }
+        checkNotClosed();
+        checkRemoveFlags(flags);
+        checkDirectoryFlags("NSEntry", flags, isDirectory);
         
         try {
             if (isDirectory && Flags.RECURSIVE.isSet(flags)) {
