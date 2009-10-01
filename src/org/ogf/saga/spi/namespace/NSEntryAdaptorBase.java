@@ -31,7 +31,8 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
             .getLogger(NSEntryAdaptorBase.class);
     private static final int COPY_FLAGS = Flags.CREATEPARENTS
             .or(Flags.RECURSIVE.or(Flags.OVERWRITE));
-
+    private static final int REMOVE_FLAGS = Flags.DEREFERENCE
+            .or(Flags.RECURSIVE);
     protected boolean closed = false;
     protected URL nameUrl;
 
@@ -84,7 +85,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     protected void checkNotClosed() throws IncorrectStateException {
         if (closed) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Entry already closed!");
+                logger.debug("NSEntry already closed!");
             }
             throw new IncorrectStateException("NSEntry already closed");
         }
@@ -189,7 +190,30 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
                 logger.debug("Wrong flags used!");
             }
             throw new BadParameterException(
-                    "Flags not allowed for NSEntry copy: " + flags);
+                    "Flags not allowed: " + flags);
+        }
+    }
+
+    protected void checkRemoveFlags(int flags)
+            throws BadParameterException {
+        if ((REMOVE_FLAGS | flags) != REMOVE_FLAGS) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Wrong flags used!");
+            }
+            throw new BadParameterException(
+                    "Flags not allowed: " + flags);
+        }
+    }
+    
+    protected void checkDirectoryFlags(String subject, int flags, boolean isDir)
+            throws BadParameterException {
+        if (isDir && !Flags.RECURSIVE.isSet(flags)) {
+            throw new BadParameterException(
+                    subject + " is a directory and 'Recursive' flag is not set");
+        }
+        if (!isDir && Flags.RECURSIVE.isSet(flags)) {
+            throw new BadParameterException(
+                    subject + " is not a directory and 'Recursive' flag is set");
         }
     }
 
