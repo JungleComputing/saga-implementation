@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# This script runs the SAGA stream test for the socket and javagat adaptors.
+
+PORT=3333
+
+HOST=localhost
+
+export JAVA_SAGA_LOCATION=`cd .. && pwd`
+
+echo "Running SAGA streams test for the socket adaptor ..."
+
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
+     test.stream.StreamAdaptorTest socket tcp://$HOST:$PORT
+
+echo "Running SAGA streams test for the javagat adaptor ..."
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
+     test.stream.StreamAdaptorTest javagat tcp://$HOST:$PORT

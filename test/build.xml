@@ -1,0 +1,54 @@
+<project name="SAGA" default="build" basedir=".">
+
+    <description>
+	Build file for the Java SAGA tests.
+    </description>
+
+    <!-- Global properties -->
+
+    <property name="tmp" location="tmp" />
+    <property name="lib" location="../lib" />
+    <property name="jar" location="${lib}/saga-tests.jar" />
+
+    <target name="init" depends="clean">
+	<!-- Create the time stamp -->
+	<tstamp />
+
+	<!-- Create the build directory structure used by compile -->
+	<mkdir dir="${tmp}" />
+
+    </target>
+
+    <path id="external.jars">
+	<fileset dir="../lib">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="compile" depends="init" description="compile the source ">
+	<!-- Compile the java code from src into ${tmp} -->
+
+    	<javac source="1.5" target="1.5" srcdir="src" destdir="${tmp}" debug="on" >
+	    <classpath refid="external.jars" />
+    	    <compilerarg value="-Xlint:unchecked"/>
+    	</javac>
+
+    </target>
+
+    <target name="build" depends="compile" description="build the JAR file">
+	<!-- Create the lib directory -->
+	<mkdir dir="${lib}" />
+
+	<!-- Put everything in ${tmp} into the jar file -->
+	<jar jarfile="${jar}" basedir="${tmp}" />
+
+	<!-- And delete the build dir -->
+	<delete dir="${tmp}" />
+
+    </target>
+
+    <target name="clean" description="clean up">
+	<delete file="${jar}" />
+	<delete dir="${tmp}" />
+    </target>
+</project>
