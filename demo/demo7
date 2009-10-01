@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Creates a logicalfile called "lf", initially containing
+# ftp://ftp.cs.vu.nl/pub/ceriel/LLgen.tar.gz, and then creates a replica
+# in `pwd`/copy.
+# Afterwards, "lf" should contain two entries.
+
+export JAVA_SAGA_LOCATION=`cd .. && pwd`
+
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M demo.logicalfile.LogicalFileCopy lf `pwd`/copy

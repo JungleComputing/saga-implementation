@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# This runs the SAGA gridsam adaptor (not the JavaGAT one).
+# For this demo, you first need to run an ftp server on port 12345.
+# For instance:
+#     $HOME/OMIICLIENT/gridsam/bin/gridsam-ftp-server -d $HOME/data -p 12345
+
+export JAVA_SAGA_LOCATION=`cd .. && pwd`
+
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
+    demo.job.TestJobGridsam
