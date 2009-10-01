@@ -29,7 +29,8 @@ public class ContextInitializerAdaptor extends AdaptorBase<Object> implements
                 // setValue(Context.USERID, "");
                 // setValue(Context.USERPASS, "");
                 // setValue(Context.USERKEY, "");
-            } else if ("globus".equals(type) || "gridftp".equals(type)) {
+            } else if ("globus".equals(type) || "gridftp".equals(type)
+                    || "glite".equals(type)) {
                 String proxy = System.getenv("X509_USER_PROXY");
                 if (proxy == null) {
                     proxy = SAGAEngine.getProperty("x509.user.proxy");

@@ -145,9 +145,12 @@ public class Session implements
                     byte[] buf = new byte[(int) length];
                     int len = f.read(buf, 0, buf.length);
                     if (len > 0) {
-
                         SecurityContext c = new CredentialSecurityContext(buf);
-                        c.addNote("adaptors", "globus,wsgt4new,gt42,glite");
+                        if ("glite".equals(type)) {
+                            c.addNote("adaptors", "glite");
+                        } else {
+                            c.addNote("adaptors", "globus,wsgt4new,gt42");
+                        }
                         return c;
                     } else {
                         logger.info("read from proxy file gave " + len);
@@ -165,7 +168,11 @@ public class Session implements
                 URI certURI = GatURIConverter.cvtToGatURI(cert);
                 SecurityContext c = new CertificateSecurityContext(keyURI,
                         certURI, userId, ctxt.getValue(ContextImpl.USERPASS));
-                c.addNote("adaptors", "globus,wsgt4new,gt42,glite");
+                if ("glite".equals(type)) {
+                    c.addNote("adaptors", "glite");
+                } else {
+                    c.addNote("adaptors", "globus,wsgt4new,gt42");
+                }
                 return c;
             } catch (Throwable e) {
                 // what to do? nothing?
