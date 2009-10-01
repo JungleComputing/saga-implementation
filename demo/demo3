@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Some file manipulations within a remote directory
-
-export JAVA_SAGA_LOCATION=`cd .. && pwd`
-
-$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M demo.namespace.Sequence file1 file2 gsiftp://fs0.das2.cs.vu.nl/home/ceriel/testDirectory "Hello world"

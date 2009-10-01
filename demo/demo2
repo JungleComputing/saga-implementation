@@ -1,5 +1,0 @@
-#!/bin/sh
-
-export JAVA_SAGA_LOCATION=`cd .. && pwd`
-
-$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M demo.namespace.ListTest ftp://ftp.cs.vu.nl/pub/ceriel '*' '*.gz' '{L,M}*' '*tar*'
