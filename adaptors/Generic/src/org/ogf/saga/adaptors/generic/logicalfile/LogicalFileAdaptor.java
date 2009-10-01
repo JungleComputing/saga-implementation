@@ -106,7 +106,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
 
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException(
                     "addLocation() called on closed LogicalFile", wrapper);
         }
@@ -136,7 +136,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException(
                     "listLocations() called on closed LogicalFile", wrapper);
         }
@@ -154,7 +154,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException(
                     "removeLocation() called on closed LogicalFile", wrapper);
         }
@@ -187,7 +187,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException(
                     "replicate() called on closed LogicalFile", wrapper);
         }
@@ -234,7 +234,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
 
-        if (closed) {
+        if (isClosed()) {
             throw new IncorrectStateException(
                     "updateLocation() called on closed LogicalFile", wrapper);
         }
