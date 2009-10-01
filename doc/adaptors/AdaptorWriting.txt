@@ -30,3 +30,10 @@ Therefore, an org.ogf.saga.impl.context.ContextInitializerSPI interface
 was added. An adaptor can choose to provide an implementation for this
 interface. See, for example, the
 org.ogf.saga.adaptors.javagat.ContextIntializerAdaptor class.
+
+A recent change to the NSEntryAdaptorBase class is that it no longer
+has an accessible nameURL field, the reason for this being that it really
+belongs in the wrapper, since it is part of state that holds for all adaptors.
+Instead, there are calls getEntryURL and setEntryURL.
+Another change is that NSEntryAdaptorBase no longer has an accessible "closed"
+field, again the reason being that it belongs in the wrapper.
