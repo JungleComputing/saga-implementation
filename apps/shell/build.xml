@@ -7,21 +7,9 @@
     <property name="external" location="external" />
     <property name="lib" location="lib" />
     <property name="jar" location="${lib}/saga-shell.jar" />
+    <property name="java_saga_location" location="../.." />
 	
     <target name="init">
-        <property environment="env" />
-    	<condition property="java_saga_location" value="${env.JAVA_SAGA_LOCATION}">
-    	    <isset property="env.JAVA_SAGA_LOCATION"/>
-    	</condition>
-        <property name="java_saga_location" location="../.." />
-        <fail message="Please set JAVA_SAGA_LOCATION">
-            <condition>
-                <not>
-                    <isset property="java_saga_location"/>
-                </not>
-            </condition>
-        </fail>
-        <echo message="Using Java SAGA ${java_saga_location}"/> 
         <path id="external.jars">
             <fileset dir="${java_saga_location}/lib">
                 <include name="*.jar" />
