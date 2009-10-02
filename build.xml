@@ -74,9 +74,9 @@
     </target>
 
 	<target name="install-engine" depends="build-engine">
-		<copy todir="${prefix}/doc/saga/engine/java" file="LICENSE.txt" />
-		<copy todir="${prefix}/doc/saga/engine/java" file="README.txt" />
-		<copy todir="${prefix}/doc/saga/engine/java" file="HISTORY.txt" />
+		<copy todir="${prefix}/share/doc/saga/engine-java" file="LICENSE.txt" />
+		<copy todir="${prefix}/share/doc/saga/engine-java" file="README.txt" />
+		<copy todir="${prefix}/share/doc/saga/engine-java" file="HISTORY.txt" />
 		<copy todir="${prefix}/etc/saga/java" file="log4j.properties" />
 		<copy todir="${prefix}/etc/saga/java" file="saga.properties" />
 		<copy todir="${prefix}/lib" >
