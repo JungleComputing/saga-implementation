@@ -294,10 +294,6 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                     wrapper);
         }
 
-        if (rf != null && Flags.APPEND.isSet(flags)) {
-            seek(0L, SeekMode.END);
-        }
-
         byte[] b;
         try {
             b = buffer.getData();
