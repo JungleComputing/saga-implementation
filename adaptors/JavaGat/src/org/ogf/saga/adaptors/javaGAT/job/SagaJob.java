@@ -191,7 +191,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             // ignored
         }
         try {
-            sd.addAttribute("job.type", getV(JobDescriptionImpl.SPMDVARIATION));
+            sd.addAttribute(SoftwareDescription.JOB_TYPE, getV(JobDescriptionImpl.SPMDVARIATION));
         } catch (Throwable e) {
             // ignored
         }
@@ -201,30 +201,31 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         // notImplemented(JobDescription.JOBSTARTTIME);
 
         try {
-            sd.addAttribute("directory",
+            sd.addAttribute(SoftwareDescription.DIRECTORY,
                     getV(JobDescriptionImpl.WORKINGDIRECTORY));
         } catch (Throwable e) {
-            sd.addAttribute("directory", ".");
+            // ignored
         }
         try {
+            // TODO: queue attribute does not exist in JavaGAT???
             sd.addAttribute("queue", getV(JobDescriptionImpl.QUEUE));
         } catch (Throwable e) {
             // ignored
         }
         try {
-            sd.addAttribute("memory.min",
+            sd.addAttribute(SoftwareDescription.MEMORY_MAX,
                     getV(JobDescriptionImpl.TOTALPHYSICALMEMORY));
         } catch (Throwable e) {
             // ignored
         }
         try {
-            sd.addAttribute("cputime.max",
+            sd.addAttribute(SoftwareDescription.CPUTIME_MAX,
                     getV(JobDescriptionImpl.TOTALCPUTIME));
         } catch (Throwable e) {
             // ignored
         }
         try {
-            sd.addAttribute("save.state", ("True"
+            sd.addAttribute(SoftwareDescription.SAVE_STATE, ("True"
                     .equals(getV(JobDescriptionImpl.CLEANUP)) ? "false"
                     : "true"));
         } catch (Throwable e) {
