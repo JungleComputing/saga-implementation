@@ -162,9 +162,6 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
 
         SoftwareDescription sd = new SoftwareDescription();
 
-        // Strange default in JavaGat? Keep sandbox?
-        sd.addAttribute("sandbox.delete", "true");
-
         try {
             String s = getV(JobDescriptionImpl.EXECUTABLE);
             sd.setExecutable(s);
