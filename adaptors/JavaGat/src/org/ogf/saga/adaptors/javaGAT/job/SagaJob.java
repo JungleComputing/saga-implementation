@@ -201,8 +201,10 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         // notImplemented(JobDescription.JOBSTARTTIME);
 
         try {
-            sd.addAttribute(SoftwareDescription.DIRECTORY,
-                    getV(JobDescriptionImpl.WORKINGDIRECTORY));
+            String v = getV(JobDescriptionImpl.WORKINGDIRECTORY);
+            if (! ".".equals(v)) {
+                sd.addAttribute(SoftwareDescription.DIRECTORY, v);
+            }
         } catch (Throwable e) {
             // ignored
         }
@@ -225,9 +227,11 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             // ignored
         }
         try {
-            sd.addAttribute(SoftwareDescription.SAVE_STATE, ("True"
-                    .equals(getV(JobDescriptionImpl.CLEANUP)) ? "false"
-                    : "true"));
+            String v = getV(JobDescriptionImpl.CLEANUP);
+            if ("False".equals(v)) {
+                sd.addAttribute(SoftwareDescription.SAVE_STATE, "false");
+            }
+            // Default behaviour of javagat is to cleanup.
         } catch (Throwable e) {
             // ignored
         }
