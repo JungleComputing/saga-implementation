@@ -68,51 +68,60 @@ public class FileInputStreamAdaptor extends
             throw new NoSuccessException("Could not create input stream", e);
         }
     }
+    
+    private void checkNotClosed() throws IOException {
+        if (in == null) {
+            throw new IOException("Stream was closed");
+        }
+    }
 
     public int read() throws IOException {
+        checkNotClosed();
         return in.read();
     }
 
     public int available() throws IOException {
+        checkNotClosed();
         return in.available();
     }
 
     public void close() throws IOException {
-        in.close();
+        if (in != null) {
+            in.close();
+        }
         in = null;
     }
 
-    protected void finalize() {
-        try {
-            if (in != null) {
-                in.close();
-            }
-        } catch (Throwable e) {
-            // ignored
+    public void mark(int arg0) {
+        if (in != null) {
+            in.mark(arg0);
         }
     }
 
-    public void mark(int arg0) {
-        in.mark(arg0);
-    }
-
     public boolean markSupported() {
-        return in.markSupported();
+        if (in != null) {
+            return in.markSupported();
+        }
+        return false;
     }
 
     public int read(byte[] arg0, int arg1, int arg2) throws IOException {
+        checkNotClosed();
         return in.read(arg0, arg1, arg2);
     }
 
     public int read(byte[] arg0) throws IOException {
+        checkNotClosed();
         return in.read(arg0);
     }
 
     public void reset() throws IOException {
+        checkNotClosed();
         in.reset();
     }
 
     public long skip(long arg0) throws IOException {
+        checkNotClosed();
         return in.skip(arg0);
     }
 
@@ -121,5 +130,4 @@ public class FileInputStreamAdaptor extends
         clone.setWrapper(clone.wrapper);
         return clone;
     }
-
 }

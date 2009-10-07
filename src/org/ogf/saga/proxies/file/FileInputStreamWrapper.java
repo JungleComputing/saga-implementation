@@ -93,6 +93,14 @@ public class FileInputStreamWrapper extends FileInputStream {
                 FileInputStreamSPI.class, proxy, clone);
         return clone;
     }
+    
+    protected void finalize() {
+        try {
+            close();
+        } catch(Throwable e) {
+            // ignored
+        }
+    }
 
     public void close() throws IOException {
         proxy.close();

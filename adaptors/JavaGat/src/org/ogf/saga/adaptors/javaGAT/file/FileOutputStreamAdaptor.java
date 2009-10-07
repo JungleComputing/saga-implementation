@@ -67,6 +67,12 @@ public class FileOutputStreamAdaptor extends
             throw new NoSuccessException("Could not create output stream", e);
         }
     }
+    
+    private void checkNotClosed() throws IOException {
+        if (out == null) {
+            throw new IOException("Stream was closed");
+        }
+    }
 
     public Object clone() throws CloneNotSupportedException {
         FileOutputStreamAdaptor clone = (FileOutputStreamAdaptor) super.clone();
@@ -75,6 +81,7 @@ public class FileOutputStreamAdaptor extends
     }
 
     public void write(int b) throws IOException {
+        checkNotClosed();
         out.write(b);
     }
 
@@ -85,23 +92,18 @@ public class FileOutputStreamAdaptor extends
         out = null;
     }
 
-    protected void finalize() {
-        try {
-            close();
-        } catch (Throwable e) {
-            // ignored
-        }
-    }
-
     public void flush() throws IOException {
+        checkNotClosed();
         out.flush();
     }
 
     public void write(byte[] b, int off, int len) throws IOException {
+        checkNotClosed();
         out.write(b, off, len);
     }
 
     public void write(byte[] b) throws IOException {
+        checkNotClosed();
         out.write(b);
     }
 }

@@ -112,9 +112,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             if (! path.equals("/") && path.endsWith("/")) {
                 url.setPath(path.substring(0, path.length() - 1));
             }
-            
-            setWrapperURL(url);
-            
+ 
             Object[] parameters = { this, getSession(), url, 0};
             
             try {

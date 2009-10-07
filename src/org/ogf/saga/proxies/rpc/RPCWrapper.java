@@ -80,6 +80,14 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
             throws NotImplementedException {
         return proxy.call(mode, parameters);
     }
+    
+    protected void finalize() {
+        try {
+            close(0.0f);
+        } catch (Throwable e) {
+            // ignored
+        }
+    }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {

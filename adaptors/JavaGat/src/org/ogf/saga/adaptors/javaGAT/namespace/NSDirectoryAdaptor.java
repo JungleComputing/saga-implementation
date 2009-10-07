@@ -42,15 +42,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
     protected NSEntryAdaptor entry;
 
-    protected NSDirectoryAdaptor(SessionImpl sessionImpl, URL name, int flags)
-            throws NotImplementedException, IncorrectURLException,
-            BadParameterException, DoesNotExistException,
-            PermissionDeniedException, AuthorizationFailedException,
-            AuthenticationFailedException, TimeoutException,
-            NoSuccessException, AlreadyExistsException {
-        this(null, sessionImpl, name, flags);
-    }
-
     public NSDirectoryAdaptor(NSDirectoryWrapper wrapper,
             SessionImpl sessionImpl, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,

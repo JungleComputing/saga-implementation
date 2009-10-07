@@ -70,6 +70,14 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             throw new NoSuccessException("Constructor failed", e);
         }
     }
+    
+    protected void finalize() {
+        try {
+            close(0.0f);
+        } catch (Throwable e) {
+            // ignored
+        }
+    }
 
     public Object clone() throws CloneNotSupportedException {
         StreamWrapper clone = (StreamWrapper) super.clone();

@@ -49,6 +49,16 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         this.closed = closed;
     }
     
+    protected void finalize() {
+        if (! isClosed()) {
+            try {
+                close(0.0F);
+            } catch (Throwable e) {
+                // ignored
+            }
+        }
+    }
+
     protected NSEntryWrapper(Session session, URL name) throws BadParameterException, NoSuccessException, NotImplementedException {
         super(session);
         

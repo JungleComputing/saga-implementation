@@ -96,8 +96,6 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
                 url.setPath(path.substring(0, path.length() - 1));
             }
 
-            setWrapperURL(url);
-
             Object[] parameters = { this, getSession(), url, 0};
 
             try {
@@ -106,7 +104,6 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
                             DirectoryWrapper.class,
                             org.ogf.saga.impl.session.SessionImpl.class,
                             URL.class, Integer.TYPE }, parameters);
-                super.setProxy(proxy);
             } catch (org.ogf.saga.error.SagaException e) {
                 if (e instanceof NotImplementedException) {
                     throw (NotImplementedException) e;

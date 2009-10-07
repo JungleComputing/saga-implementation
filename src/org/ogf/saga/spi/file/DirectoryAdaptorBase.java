@@ -46,7 +46,7 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
         if ((directoryFlags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
                 .getValue()) {
             throw new BadParameterException(
-                    "Illegal flags for Direectory constructor: " + flags);
+                    "Illegal flags for Directory constructor: " + flags);
         }
     }
 

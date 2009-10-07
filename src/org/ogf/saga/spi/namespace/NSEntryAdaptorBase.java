@@ -118,16 +118,6 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         setClosed(true);
     }
 
-    protected void finalize() {
-        if (! isClosed()) {
-            try {
-                close(0.0F);
-            } catch (Throwable e) {
-                // ignored
-            }
-        }
-    }
-
     public Task<NSEntry, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Void>(wrapper,

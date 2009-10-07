@@ -90,14 +90,6 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         }
     }
 
-    protected void finalize() {
-        try {
-            close(0.0f);
-        } catch (Throwable e) {
-            // ignored
-        }
-    }
-
     public void connect() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
