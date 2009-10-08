@@ -37,32 +37,31 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
 
     private class DirIterator implements Iterator<URL> {
 
-        int numEntries;
         int index = 0;
-
+        URL[] list;
+ 
         public DirIterator() throws NotImplementedException,
                 AuthenticationFailedException, AuthorizationFailedException,
                 PermissionDeniedException, IncorrectStateException,
                 TimeoutException, NoSuccessException {
-            numEntries = getNumEntries();
+            try {
+                list = listCurrentDir(0).toArray(new URL[0]);
+            } catch (BadParameterException e) {
+                // Should not happen
+            } catch (IncorrectURLException e) {
+                // Should not happen
+            }
         }
 
         public boolean hasNext() {
-            return index < numEntries;
+            return index < list.length;
         }
 
         public URL next() {
-            if (index >= numEntries) {
+            if (index >= list.length) {
                 throw new NoSuchElementException("No more elements");
             }
-            try {
-                return getEntry(index++);
-            } catch (SagaException e) {
-                NoSuchElementException ex = new NoSuchElementException(
-                        "got exception");
-                ex.initCause(e);
-                throw ex;
-            }
+            return list[index++];
         }
 
         public void remove() {
