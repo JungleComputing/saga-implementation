@@ -1,8 +1,12 @@
 package org.ogf.saga.apps.shell;
 
 import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -119,6 +123,24 @@ public class SagaShell {
         }
     }
 
+    /**
+     * Builds a configured StreamTokenizer for the given line string.
+     * Tokens are separated by whitespace characters with codes from 0 to 32.
+     * Quotation within  ' or " allows whitespace to be included in tokens.  
+     */
+    private StreamTokenizer createTokenizer(String line) {
+        StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(line));
+        tokenizer.resetSyntax();
+        tokenizer.wordChars(33, 255);
+        tokenizer.quoteChar('"');
+        tokenizer.quoteChar('\'');
+        tokenizer.eolIsSignificant(false);
+        tokenizer.slashSlashComments(false);
+        tokenizer.slashStarComments(false);
+        tokenizer.whitespaceChars(0, 32);
+        return tokenizer;
+    }
+
     private String[] readCommand() throws IOException {
         String prompt = getPrompt();
         String line = console.readLine(prompt);
@@ -133,16 +155,12 @@ public class SagaShell {
             return null;
         } else {
             // tokenize input
-            StringTokenizer tokenizer = new StringTokenizer(line);
-
-            ArrayList<String> tokens = new ArrayList<String>(tokenizer
-                    .countTokens());
-
-            while (tokenizer.hasMoreTokens()) {
-                tokens.add(tokenizer.nextToken());
+            StreamTokenizer tokenizer = createTokenizer(line);
+            List<String> tokens = new LinkedList<String>();
+            while(tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
+            	tokens.add(tokenizer.sval);
             }
-
-            return tokens.toArray(new String[0]);
+            return tokens.toArray(new String[tokens.size()]);
         }
     }
 
