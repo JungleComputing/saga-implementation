@@ -28,6 +28,10 @@ import org.ogf.saga.url.URLFactory;
 public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
     private DirectorySPI proxy;
+    
+    private final int directoryFlags;
+    
+    private static final int GET_SIZE_FLAGS = Flags.DEREFERENCE.getValue();
 
     DirectoryWrapper(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
@@ -36,6 +40,12 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         super(session, name);
+        directoryFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
+        if ((directoryFlags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
+                .getValue()) {
+            throw new BadParameterException(
+                    "Illegal flags for Directory constructor: " + flags);
+        }
         Object[] parameters = { this, session, name, flags };
         try {
             proxy = (DirectorySPI) SAGAEngine.createAdaptorProxy(
@@ -83,6 +93,9 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
     AuthorizationFailedException, PermissionDeniedException,
     BadParameterException, IncorrectStateException,
     DoesNotExistException, TimeoutException, NoSuccessException {
+        
+        checkNotClosed();
+        
         if (dir.isAbsolute()) {
 
             URL url = dir.normalize();
@@ -146,6 +159,11 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        if ((GET_SIZE_FLAGS | flags) != GET_SIZE_FLAGS) {
+            String msg = "Flags not allowed for getSize: " + flags;
+            throw new BadParameterException(msg, this);
+        }
         return proxy.getSize(name, flags);
     }
 
@@ -180,6 +198,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.isFile(name);
     }
 
@@ -204,6 +223,12 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(directoryFlags)) {
+            throw new PermissionDeniedException(
+                    "openDirirectory with CREATE flag "
+                            + "on Directory not opened for writing", this);
+        }
         return proxy.openDirectory(name, flags);
     }
 
@@ -232,6 +257,11 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
+        if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(directoryFlags)) {
+            throw new PermissionDeniedException(
+                    "openFile with CREATE flag "
+                            + "on Directory not opened for writing", this);
+        }
         return proxy.openFile(name, flags);
     }
 
@@ -275,6 +305,11 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        if (!Flags.WRITE.isSet(directoryFlags)) {
+            throw new PermissionDeniedException(
+                    "openFileOutputStream "
+                            + "on directory not opened for writing", this);
+        }
         return proxy.openFileOutputStream(name, append);
     }
 

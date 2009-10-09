@@ -30,15 +30,6 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
     protected int logicalFileFlags;
     protected LogicalFileWrapper wrapper;
 
-    private static int checkFlags(int flags) throws BadParameterException {
-        int allowed = Flags.ALLNAMESPACEFLAGS.getValue()
-                | Flags.ALLLOGICALFILEFLAGS.getValue();
-        if ((flags | allowed) != allowed) {
-            throw new BadParameterException("Illegal flags for logical file: "
-                    + flags);
-        }
-        return flags;
-    }
 
     public LogicalFileAdaptorBase(LogicalFileWrapper wrapper,
             SessionImpl sessionImpl, URL name, int flags)
@@ -47,8 +38,7 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        super(wrapper, sessionImpl, name, checkFlags(flags)
-                & Flags.ALLNAMESPACEFLAGS.getValue());
+        super(wrapper, sessionImpl, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
         this.wrapper = wrapper;
         logicalFileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
         attributes = new LogicalFileAttributes(wrapper, sessionImpl, true);

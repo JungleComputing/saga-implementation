@@ -27,6 +27,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
         LogicalFile {
 
     private LogicalFileSPI proxy;
+    private final int logicalFlags;
 
     LogicalFileWrapper(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
@@ -34,7 +35,9 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             PermissionDeniedException, BadParameterException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        super(session, name);
+        super(session, name, false);
+        checkFlags(flags);
+        logicalFlags = flags;
         Object[] parameters = { this, session, name, flags };
         try {
             proxy = (LogicalFileSPI) SAGAEngine.createAdaptorProxy(
@@ -77,6 +80,15 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             throw new NoSuccessException("Constructor failed", e);
         }
     }
+    
+    private void checkFlags(int flags) throws BadParameterException {
+        int allowed = Flags.ALLNAMESPACEFLAGS.getValue()
+                | Flags.ALLLOGICALFILEFLAGS.getValue();
+        if ((flags | allowed) != allowed) {
+            throw new BadParameterException("Illegal flags for logical file: "
+                    + flags);
+        }
+    }
 
     public Task<LogicalFile, Void> addLocation(TaskMode mode, URL name)
             throws NotImplementedException {
@@ -88,6 +100,11 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
+        if (!Flags.WRITE.isSet(logicalFlags)) {
+            throw new PermissionDeniedException(
+                    "addLocation() called on LogicalFile not opened for writing", this);
+        }
         proxy.addLocation(name);
     }
 
@@ -103,6 +120,8 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             throws NotImplementedException, BadParameterException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
+        // checkNotClosed();
+        // Cannot throw IncorrectState!
         return proxy.findAttributes(patterns);
     }
 
@@ -210,6 +229,12 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
+        if (!Flags.READ.isSet(logicalFlags)) {
+            throw new PermissionDeniedException(
+                    "listLocations() called on LogicalFile not opened for reading",
+                    this);
+        }
         return proxy.listLocations();
     }
 
@@ -240,6 +265,13 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        if (!Flags.WRITE.isSet(logicalFlags)) {
+            throw new PermissionDeniedException(
+                    "removeLocation() called on LogicalFile not opened for writing",
+                    this);
+        }
+
         proxy.removeLocation(name);
     }
 
@@ -259,6 +291,17 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
+        if (!Flags.WRITE.isSet(logicalFlags)
+                || !Flags.READ.isSet(logicalFlags)) {
+            throw new PermissionDeniedException(
+                    "replicate() called on LogicalFile not opened for reading/writing",
+                    this);
+        }
+        if (Flags.RECURSIVE.isSet(flags)) {
+            throw new BadParameterException(
+                    "replicate() call with RECURSIVE flag", this);
+        }
         proxy.replicate(name, flags);
     }
 
@@ -308,6 +351,14 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        if (!Flags.WRITE.isSet(logicalFlags)
+                || !Flags.READ.isSet(logicalFlags)) {
+            throw new PermissionDeniedException(
+                    "updateLocation() called on LogicalFile not opened for reading/writing",
+                    this);
+        }
+
         proxy.updateLocation(nameOld, nameNew);
     }
 }

@@ -28,10 +28,6 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     private static Logger logger = LoggerFactory
             .getLogger(NSEntryAdaptorBase.class);
-    private static final int COPY_FLAGS = Flags.CREATEPARENTS
-            .or(Flags.RECURSIVE.or(Flags.OVERWRITE));
-    private static final int REMOVE_FLAGS = Flags.DEREFERENCE
-            .or(Flags.RECURSIVE);
     
     private boolean closed = false;
     
@@ -56,16 +52,8 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
             logger.debug("Creating NSEntrySpi: " + nameURL);
         }
 
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.CREATE.or(Flags.EXCL));
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for NSEntry constructor: " + flags);
-        }
     }
-    
+      
     protected URL getEntryURL() {
         if (wrapper == null) {
             return nameURL;
@@ -100,15 +88,6 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         return clone;
     }
 
-    protected void checkNotClosed() throws IncorrectStateException {
-        if (isClosed()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Entry already closed!");
-            }
-            throw new IncorrectStateException("Entry already closed");
-        }
-    }
-
     protected URL resolve(URL url) throws NoSuccessException {
         return getEntryURL().resolve(url);
     }
@@ -128,7 +107,6 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     public URL getCWD() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         URL url = getEntryURL();
-        checkNotClosed();
         String path = url.getPath();
         boolean dir = false;
         try {
@@ -160,7 +138,6 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public URL getName() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        checkNotClosed();
         String path = getEntryURL().getPath();
         String[] s = path.split("/");
 
@@ -179,7 +156,6 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
 
     public URL getURL() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        checkNotClosed();
         try {
             return URLFactory.createURL(getEntryURL().normalize().toString());
         } catch (BadParameterException e) {
@@ -191,39 +167,6 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<NSEntry, URL>(wrapper,
                 sessionImpl, mode, "getURL", new Class[] {});
-    }
-
-    protected void checkCopyFlags(int flags) throws BadParameterException {
-        if ((COPY_FLAGS | flags) != COPY_FLAGS) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed: " + flags);
-        }
-    }
-
-    protected void checkRemoveFlags(int flags)
-            throws BadParameterException {
-        if ((REMOVE_FLAGS | flags) != REMOVE_FLAGS) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed: " + flags);
-        }
-    }
-    
-    protected void checkDirectoryFlags(String subject, int flags, boolean isDir)
-            throws BadParameterException {
-        if (isDir && !Flags.RECURSIVE.isSet(flags)) {
-            throw new BadParameterException(
-                    subject + " is a directory and 'Recursive' flag is not set");
-        }
-        if (!isDir && Flags.RECURSIVE.isSet(flags)) {
-            throw new BadParameterException(
-                    subject + " is not a directory and 'Recursive' flag is set");
-        }
     }
 
     public Task<NSEntry, Void> copy(TaskMode mode, URL target, int flags)

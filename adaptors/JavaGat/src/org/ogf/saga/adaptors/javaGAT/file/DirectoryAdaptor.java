@@ -57,7 +57,6 @@ public class DirectoryAdaptor extends
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkGetSizeFlags(flags);
 
         name = resolveToDir(name);
 

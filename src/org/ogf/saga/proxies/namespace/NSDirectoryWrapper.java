@@ -36,7 +36,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             PermissionDeniedException, BadParameterException,
             DoesNotExistException, AlreadyExistsException, TimeoutException,
             NoSuccessException {
-        super(session, name);
+        super(session, name, true);
         Object[] parameters = { this, session, name, flags };
         try {
             proxy = (NSDirectorySPI) SAGAEngine.createAdaptorProxy(
@@ -81,7 +81,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     }
 
     protected NSDirectoryWrapper(Session session, URL name) throws BadParameterException, NoSuccessException, NotImplementedException {
-        super(session, name);
+        super(session, name, true);
     }
 
     protected void setProxy(NSDirectorySPI proxy) {
@@ -89,6 +89,25 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         super.setProxy(proxy);
         inheritedProxy = true;
     }
+    
+    @Override
+    protected void checkNotClosed() throws IncorrectStateException {
+        if (isClosed()) {
+            throw new IncorrectStateException("NSDirectory already closed", this);
+        }
+    }
+    
+    protected void checkDirCopyFlags(int flags) throws IncorrectStateException,
+    BadParameterException {
+        checkNotClosed();
+        int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
+                .or(Flags.OVERWRITE));
+        if ((allowedFlags | flags) != allowedFlags) {
+            throw new BadParameterException(
+                    "Flags not allowed for copy method: " + flags, this);
+        }
+    }
+
 
     public Task<NSDirectory, Void> changeDir(TaskMode mode, URL dir)
             throws NotImplementedException {
@@ -100,6 +119,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         if (dir.isAbsolute()) {
             
             URL url = dir.normalize();
@@ -150,7 +170,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
                 if (e instanceof NoSuccessException) {
                     throw (NoSuccessException) e;
                 }
-                throw new NoSuccessException("chdir", e);
+                throw new NoSuccessException("chdir", e, this);
             }
             super.setProxy(proxy);
             setWrapperURL(url);            
@@ -184,6 +204,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        checkCopyFlags(flags);
+        checkDirectoryFlags(flags, isDir(source));
         proxy.copy(source, target, flags);
     }
 
@@ -206,6 +229,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
         return proxy.exists(name);
     }
 
@@ -214,6 +238,12 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
+        int allowedFlags = Flags.DEREFERENCE.or(Flags.RECURSIVE);
+        if ((allowedFlags | flags) != allowedFlags) {
+            throw new BadParameterException(
+                    "Flags not allowed for find method: " + flags, this);
+        }
         return proxy.find(pattern, flags);
     }
 
@@ -238,6 +268,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.getEntry(entry);
     }
 
@@ -250,6 +281,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.getNumEntries();
     }
 
@@ -268,6 +300,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.isDir(name);
     }
 
@@ -281,6 +314,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.isEntry(name);
     }
 
@@ -294,6 +328,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.isLink(name);
     }
 
@@ -313,6 +348,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        checkCopyFlags(flags);
+        checkDirectoryFlags(flags, isDir(source));
         proxy.link(source, target, flags);
     }
 
@@ -346,6 +384,12 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, IncorrectURLException {
+        checkNotClosed();
+        int allowedFlags = Flags.DEREFERENCE.getValue();
+        if ((allowedFlags | flags) != allowedFlags) {
+            throw new BadParameterException(
+                    "Flags not allowed for list method: " + flags, this);
+        }
         return proxy.list(pattern, flags);
     }
 
@@ -393,6 +437,12 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
+        int allowedFlags = Flags.CREATEPARENTS.or(Flags.EXCL);
+        if ((allowedFlags | flags) != allowedFlags) {
+            throw new BadParameterException(
+                    "Flags not allowed for makeDir method: " + flags, this);
+        }
         proxy.makeDir(target, flags);
     }
 
@@ -421,6 +471,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        checkCopyFlags(flags);
+        checkDirectoryFlags(flags, isDir(source));
         proxy.move(source, target, flags);
     }
 
@@ -449,6 +502,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
         return proxy.open(name, flags);
     }
 
@@ -477,6 +531,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.openDir(name, flags);
     }
 
@@ -507,6 +562,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             PermissionDeniedException, IncorrectStateException,
             BadParameterException, TimeoutException, NoSuccessException,
             IncorrectURLException {
+        checkNotClosed();
         proxy.permissionsAllow(target, id, permissions, flags);
     }
 
@@ -535,6 +591,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
             NoSuccessException, IncorrectURLException, IncorrectStateException {
+        checkNotClosed();
         proxy.permissionsDeny(target, id, permissions, flags);
     }
 
@@ -556,6 +613,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.readLink(name);
     }
 
@@ -574,6 +632,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             PermissionDeniedException, IncorrectURLException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        checkRemoveFlags(flags);
+        checkDirectoryFlags(flags, isDir(target));
         proxy.remove(target, flags);
     }
 
@@ -591,6 +652,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        checkCopyFlags(flags);
         proxy.copy(source, target, flags);
     }
 
@@ -619,6 +682,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        checkCopyFlags(flags);
         proxy.move(source, target, flags);
     }
 
@@ -627,27 +692,13 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         return proxy.move(mode, source, target, flags);
     }
 
-    public void permissionsAllow(String id, int permissions, int flags)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, BadParameterException, TimeoutException,
-            NoSuccessException {
-        proxy.permissionsAllow(id, permissions, flags);
-    }
-
-    public void permissionsAllow(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, TimeoutException, NoSuccessException {
-        proxy.permissionsAllow(id, permissions);
-    }
-
     public void permissionsAllow(String target, String id, int permissions,
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             BadParameterException, TimeoutException, NoSuccessException,
             IncorrectURLException {
+        checkNotClosed();
         proxy.permissionsAllow(target, id, permissions, flags);
     }
 
@@ -657,26 +708,12 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         return proxy.permissionsAllow(mode, target, id, permissions, flags);
     }
 
-    public void permissionsDeny(String id, int permissions, int flags)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, IncorrectStateException,
-            PermissionDeniedException, BadParameterException, TimeoutException,
-            NoSuccessException {
-        proxy.permissionsDeny(id, permissions, flags);
-    }
-
-    public void permissionsDeny(String id, int permissions)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            BadParameterException, TimeoutException, NoSuccessException {
-        proxy.permissionsDeny(id, permissions);
-    }
-
     public void permissionsDeny(String target, String id, int permissions,
             int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
             NoSuccessException, IncorrectURLException, IncorrectStateException {
+        checkNotClosed();
         proxy.permissionsDeny(target, id, permissions, flags);
     }
 
@@ -692,6 +729,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, DoesNotExistException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
+        checkRemoveFlags(flags);
         proxy.remove(target, flags);
     }
 

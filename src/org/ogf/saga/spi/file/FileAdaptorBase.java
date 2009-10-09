@@ -46,37 +46,6 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
                 & Flags.ALLNAMESPACEFLAGS.getValue());
         this.wrapper = wrapper;
         fileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
-        sanityCheck(flags);
-
-    }
-
-    private void sanityCheck(int flags) throws BadParameterException {
-
-        // First, check for unrecognized flags.
-        if ((fileFlags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
-                .getValue()) {
-            throw new BadParameterException(
-                    "Illegal flags for File constructor: " + flags);
-        }
-
-        // Sanity check 1: append and truncate?
-        if (Flags.APPEND.isSet(fileFlags)) {
-            if (Flags.TRUNCATE.isSet(fileFlags)) {
-                throw new BadParameterException("TRUNCATE and APPEND?");
-            }
-        }
-
-        if (!Flags.WRITE.isSet(flags)) {
-            // Sanity check 2: truncate and not write?
-            if (Flags.TRUNCATE.isSet(fileFlags)) {
-                throw new BadParameterException("TRUNCATE and not WRITE?");
-            }
-
-            // Sanity check 3: append and not write?
-            if (Flags.APPEND.isSet(fileFlags)) {
-                throw new BadParameterException("APPEND and not WRITE?");
-            }
-        }
     }
 
     protected void checkBufferType(Buffer buffer) {

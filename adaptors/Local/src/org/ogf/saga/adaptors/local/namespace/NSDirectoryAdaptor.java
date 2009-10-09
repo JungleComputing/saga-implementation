@@ -79,7 +79,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
+
         LocalAdaptor.checkURL(dir);
         
         File newCwd = entry.resolve(dir.getPath());
@@ -121,8 +121,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
-        checkCopyFlags(flags);
 
         URL resolvedSource = resolveToDir(source);
         URL resolvedTarget = resolveToDir(target);
@@ -170,8 +168,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        checkNotClosed();
-        checkCopyFlags(flags);
 
         LocalAdaptor.checkURL(target);
 
@@ -212,7 +208,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        checkNotClosed();
+
         LocalAdaptor.checkURL(name);
         
         URL resolved = resolveToDir(name);
@@ -225,8 +221,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
-        
+
         if (num < 0) {
             throw new DoesNotExistException("Invalid index: " + num);
         }
@@ -252,8 +247,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        checkNotClosed();
-        
+
         String[] list = entry.file.list();
 
         if (list == null) {
@@ -285,7 +279,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             throws IncorrectStateException, IncorrectURLException,
             NotImplementedException, NoSuccessException, BadParameterException,
             DoesNotExistException {
-        checkNotClosed();
+
         LocalAdaptor.checkURL(name);
 
         URL resolved = resolveToDir(name);
@@ -372,8 +366,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             PermissionDeniedException, IncorrectURLException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
-        checkRemoveFlags(flags);
 
         URL resolved = resolveToDir(target);
 
@@ -396,9 +388,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        checkNotClosed();
-        checkRemoveFlags(flags);
-        
+ 
         List<URL> targets = expandWildCards(target);
 
         if (targets.size() < 1) {

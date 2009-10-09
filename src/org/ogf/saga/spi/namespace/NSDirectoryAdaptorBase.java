@@ -104,31 +104,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
         return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
                 sessionImpl, mode, "changeDir", new Class[] { URL.class }, name);
     }
-
-    protected void checkDirCopyFlags(int flags) throws IncorrectStateException,
-            BadParameterException {
-        checkNotClosed();
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.RECURSIVE
-                .or(Flags.OVERWRITE));
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for copy method: " + flags);
-        }
-    }
-
-    @Override
-    protected void checkNotClosed() throws IncorrectStateException {
-        if (isClosed()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("NSDirectory already closed!");
-            }
-            throw new IncorrectStateException("NSDirectory already closed");
-        }
-    }
-    
+  
     public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Void>(wrapper,
@@ -327,17 +303,8 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        checkNotClosed();
-        int allowedFlags = Flags.DEREFERENCE.or(Flags.RECURSIVE);
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for find method: " + flags);
-        }
-        // first add all files in the current directory that match the pattern
 
+        // first add all files in the current directory that match the pattern
         List<URL> resultList;
 
         try {
@@ -409,17 +376,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, IncorrectURLException {
-        checkNotClosed();
         
-        int allowedFlags = Flags.DEREFERENCE.getValue();
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for list method: " + flags);
-        }
-
         if ("".equals(pattern)) {
             pattern = ".";
         }
@@ -508,15 +465,6 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        checkNotClosed();
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.EXCL);
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for makeDir method: " + flags);
-        }
         target = resolveToDir(target);
         NSFactory.createNSDirectory(sessionImpl, target, flags
                 | Flags.CREATE.getValue());
@@ -549,7 +497,6 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        checkNotClosed();
         name = resolveToDir(name);
         return NSFactory.createNSEntry(sessionImpl, name, flags);
     }
@@ -567,7 +514,6 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
         name = resolveToDir(name);
         return NSFactory.createNSDirectory(sessionImpl, name, flags);
     }

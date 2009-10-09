@@ -19,6 +19,7 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.file.File;
 import org.ogf.saga.file.IOVec;
 import org.ogf.saga.file.SeekMode;
+import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.file.FileSPI;
@@ -29,6 +30,7 @@ import org.ogf.saga.url.URL;
 public class FileWrapper extends NSEntryWrapper implements File {
 
     private FileSPI proxy;
+    private int fileFlags;
 
     FileWrapper(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
@@ -36,7 +38,11 @@ public class FileWrapper extends NSEntryWrapper implements File {
             PermissionDeniedException, BadParameterException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        super(session, name);
+        super(session, name, false);
+        
+        fileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
+        
+        sanityCheck(flags);
 
         Object[] parameters = { this, session, name, flags };
         try {
@@ -80,10 +86,41 @@ public class FileWrapper extends NSEntryWrapper implements File {
         }
     }
 
+
+    private void sanityCheck(int flags) throws BadParameterException {
+
+        // First, check for unrecognized flags.
+        if ((fileFlags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
+                .getValue()) {
+            throw new BadParameterException(
+                    "Illegal flags for File constructor: " + flags);
+        }
+
+        // Sanity check 1: append and truncate?
+        if (Flags.APPEND.isSet(fileFlags)) {
+            if (Flags.TRUNCATE.isSet(fileFlags)) {
+                throw new BadParameterException("TRUNCATE and APPEND?");
+            }
+        }
+
+        if (!Flags.WRITE.isSet(flags)) {
+            // Sanity check 2: truncate and not write?
+            if (Flags.TRUNCATE.isSet(fileFlags)) {
+                throw new BadParameterException("TRUNCATE and not WRITE?");
+            }
+
+            // Sanity check 3: append and not write?
+            if (Flags.APPEND.isSet(fileFlags)) {
+                throw new BadParameterException("APPEND and not WRITE?");
+            }
+        }
+    }
+
     public long getSize() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.getSize();
     }
 
@@ -104,6 +141,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.modesE();
     }
 
@@ -133,6 +171,12 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
+        checkNotClosed();
+        if (!Flags.READ.isSet(fileFlags)) {
+            throw new PermissionDeniedException("No permission to read",
+                    this);
+        }
+
         return proxy.read(buffer, offset, len);
     }
 
@@ -156,6 +200,11 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
+        checkNotClosed();
+        if (!Flags.READ.isSet(fileFlags)) {
+            throw new PermissionDeniedException("No permission to read",
+                    this);
+        }
         return proxy.readE(emode, spec, buffer);
     }
 
@@ -169,6 +218,11 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
+        checkNotClosed();
+        if (!Flags.READ.isSet(fileFlags)) {
+            throw new PermissionDeniedException("No permission to read",
+                    this);
+        }
         return proxy.readP(pattern, buffer);
     }
 
@@ -182,6 +236,11 @@ public class FileWrapper extends NSEntryWrapper implements File {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
+        checkNotClosed();
+        if (!Flags.READ.isSet(fileFlags)) {
+            throw new PermissionDeniedException("No permission to read",
+                    this);
+        }
         proxy.readV(iovecs);
     }
 
@@ -195,6 +254,12 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
+        checkNotClosed();
+        if (!Flags.READ.isSet(fileFlags) && !Flags.WRITE.isSet(fileFlags)) {
+            throw new IncorrectStateException(
+                    "seek() called but not opened for READ or WRITE", this);
+        }
+
         return proxy.seek(offset, whence);
     }
 
@@ -207,6 +272,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthenticationFailedException, AuthorizationFailedException,
             IncorrectStateException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.sizeE(emode, spec);
     }
 
@@ -219,6 +285,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthenticationFailedException, AuthorizationFailedException,
             IncorrectStateException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.sizeP(pattern);
     }
 
@@ -248,6 +315,11 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
+        checkNotClosed();
+        if (!Flags.WRITE.isSet(fileFlags)) {
+            throw new PermissionDeniedException("No permission to write",
+                    this);
+        }
         return proxy.write(buffer, offset, len);
     }
 
@@ -271,6 +343,11 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
+        checkNotClosed();
+        if (!Flags.WRITE.isSet(fileFlags)) {
+            throw new PermissionDeniedException("No permission to write",
+                    this);
+        }
         return proxy.writeE(emode, spec, buffer);
     }
 
@@ -284,6 +361,11 @@ public class FileWrapper extends NSEntryWrapper implements File {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
+        checkNotClosed();
+        if (!Flags.WRITE.isSet(fileFlags)) {
+            throw new PermissionDeniedException("No permission to write",
+                    this);
+        }
         return proxy.writeP(pattern, buffer);
     }
 
@@ -297,6 +379,11 @@ public class FileWrapper extends NSEntryWrapper implements File {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
+        checkNotClosed();
+        if (!Flags.WRITE.isSet(fileFlags)) {
+            throw new PermissionDeniedException("No permission to write",
+                    this);
+        }
         proxy.writeV(iovecs);
     }
 

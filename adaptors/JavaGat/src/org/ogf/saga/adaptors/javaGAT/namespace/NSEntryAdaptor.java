@@ -205,8 +205,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException, DoesNotExistException {
-        checkNotClosed();
-        checkCopyFlags(flags);
         nonResolvingCopy(resolve(target), flags);
     }
     
@@ -215,9 +213,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             BadParameterException, AlreadyExistsException,
             IncorrectURLException, NotImplementedException,
             DoesNotExistException {
-        checkNotClosed();
-        checkCopyFlags(flags);
-
         File targetFile = null;
         try {
             targetFile = GAT.createFile(gatContext, GatURIConverter.cvtToGatURI(target));
@@ -233,8 +228,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         } catch (URISyntaxException e) {
             throw new BadParameterException(e, wrapper);
         }
-
-        checkDirectoryFlags("Source", flags, isDirectory);
 
         if (isDirectory && Flags.RECURSIVE.isSet(flags) && targetFile.isFile()) {
             throw new AlreadyExistsException("cannot overwrite non-directory"
@@ -417,8 +410,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException, DoesNotExistException {
-        checkNotClosed();
-        checkCopyFlags(flags);
         nonResolvingMove(resolve(target), flags);
     }
 
@@ -471,10 +462,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        checkNotClosed();
-        checkRemoveFlags(flags);
-        checkDirectoryFlags("NSEntry", flags, isDirectory);
-        
+      
         try {
             if (isDirectory && Flags.RECURSIVE.isSet(flags)) {
                 file.recursivelyDeleteDirectory();

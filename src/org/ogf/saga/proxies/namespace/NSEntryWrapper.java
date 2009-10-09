@@ -13,7 +13,6 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
-import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
@@ -27,11 +26,17 @@ import org.ogf.saga.url.URLFactory;
  * Wrapper class: wraps the NSEntry proxy.
  */
 public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
+    
+    private static final int COPY_FLAGS =
+        Flags.CREATEPARENTS.or(Flags.RECURSIVE.or(Flags.OVERWRITE));
+    private static final int REMOVE_FLAGS =
+        Flags.DEREFERENCE.or(Flags.RECURSIVE);
 
     private NSEntrySPI proxy;
     private boolean inheritedProxy = false;
     private URL url;
     private boolean closed = false;
+    private final boolean isDirectory;
     
     public URL getWrapperURL() {
         return url;
@@ -59,7 +64,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         }
     }
 
-    protected NSEntryWrapper(Session session, URL name) throws BadParameterException, NoSuccessException, NotImplementedException {
+    protected NSEntryWrapper(Session session, URL name, boolean isDir)
+            throws BadParameterException, NoSuccessException, NotImplementedException {
         super(session);
         
         url = name.normalize();
@@ -76,6 +82,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
                 throw new BadParameterException("Bad parameter: " + name + " cannot indicate a non-directory");
             }
         }
+        this.isDirectory = isDir;
     }
 
     protected NSEntryWrapper(Session session, URL name, int flags)
@@ -85,7 +92,13 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             DoesNotExistException, AlreadyExistsException, TimeoutException,
             NoSuccessException {
         
-        this(session, name);
+        this(session, name, false);
+        
+        int allowedFlags = Flags.CREATEPARENTS.or(Flags.CREATE.or(Flags.EXCL));
+        if ((allowedFlags | flags) != allowedFlags) {
+            throw new BadParameterException( 
+                    "Flags not allowed for NSEntry constructor: " + flags);
+        }
 
         Object[] parameters = { this, session, name, flags };
         try {
@@ -127,6 +140,39 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             throw new NoSuccessException("Constructor failed", e);
         }
     }
+    
+    protected void checkNotClosed() throws IncorrectStateException {
+        if (isClosed()) {
+            throw new IncorrectStateException("Entry already closed", this);
+        }
+    }
+    
+    protected void checkCopyFlags(int flags) throws BadParameterException {
+        if ((COPY_FLAGS | flags) != COPY_FLAGS) {
+            throw new BadParameterException(
+                    "Flags not allowed: " + flags, this);
+        }
+    }
+    
+    protected void checkRemoveFlags(int flags)
+    throws BadParameterException {
+        if ((REMOVE_FLAGS | flags) != REMOVE_FLAGS) {
+            throw new BadParameterException(
+                    "Flags not allowed: " + flags, this);
+        }
+    }
+    
+    protected void checkDirectoryFlags(int flags, boolean isDir)
+    throws BadParameterException {
+        if (isDir && !Flags.RECURSIVE.isSet(flags)) {
+            throw new BadParameterException(
+                    "'Recursive' flag is not set for directory", this);
+        }
+        if (!isDir && Flags.RECURSIVE.isSet(flags)) {
+            throw new BadParameterException(
+                    "'Recursive' flag is set for non-directory", this);
+        }
+    }
 
     protected void setProxy(NSEntrySPI proxy) {
         this.proxy = proxy;
@@ -135,11 +181,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public Object clone() throws CloneNotSupportedException {
         NSEntryWrapper clone = (NSEntryWrapper) super.clone();
-        try {
-            clone.url = URLFactory.createURL(url.toString());
-        } catch (Throwable e) {
-            throw new SagaRuntimeException("Should not happen", e);
-        }
+        clone.url = (URL) url.clone();
         if (!inheritedProxy) {
             // subclasses should call setProxy again.
             clone.proxy = (NSEntrySPI) SAGAEngine.createAdaptorCopy(
@@ -155,7 +197,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
-        proxy.close(timeoutInSeconds);
+        if (! isClosed()) {
+            proxy.close(timeoutInSeconds);
+        }
     }
 
     public Task<NSEntry, Void> close(TaskMode mode, float timeoutInSeconds)
@@ -184,6 +228,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException,
             IncorrectURLException {
+        checkNotClosed();
+        checkCopyFlags(flags);
+        checkDirectoryFlags(flags, isDirectory);
         proxy.copy(target, flags);
     }
 
@@ -198,6 +245,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public URL getCWD() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.getCWD();
     }
 
@@ -219,6 +267,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public URL getName() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.getName();
     }
 
@@ -230,6 +279,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     public String getOwner() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
+        // checkNotClosed();
+        // Cannot throw IncorrectState!
         return proxy.getOwner();
     }
 
@@ -240,6 +291,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public URL getURL() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.getURL();
     }
 
@@ -252,6 +304,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
         return proxy.isDir();
     }
 
@@ -264,6 +317,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.isEntry();
     }
 
@@ -276,6 +330,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.isLink();
     }
 
@@ -299,6 +354,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException {
+        checkNotClosed();
+        checkCopyFlags(flags);
+        checkDirectoryFlags(flags, isDirectory);
         proxy.link(target, flags);
     }
 
@@ -326,6 +384,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException,
             IncorrectURLException {
+        checkNotClosed();
+        checkCopyFlags(flags);
+        checkDirectoryFlags(flags, isDirectory);
         proxy.move(target, flags);
     }
 
@@ -343,6 +404,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, BadParameterException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
+        checkRemoveFlags(flags);
+        checkDirectoryFlags(flags, isDirectory);
         proxy.permissionsAllow(id, permissions, flags);
     }
 
@@ -350,6 +414,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
+        // checkNotClosed();
+        // Cannot throw IncorrectState!
         proxy.permissionsAllow(id, permissions);
     }
 
@@ -367,6 +433,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
+        // checkNotClosed();
+        // Cannot throw IncorrectState!
         return proxy.permissionsCheck(id, permissions);
     }
 
@@ -380,6 +448,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             AuthorizationFailedException, IncorrectStateException,
             PermissionDeniedException, BadParameterException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
+        checkRemoveFlags(flags);
+        checkDirectoryFlags(flags, isDirectory);
         proxy.permissionsDeny(id, permissions, flags);
     }
 
@@ -387,6 +458,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
+        // checkNotClosed();
+        // Cannot throw IncorrectState!
         proxy.permissionsDeny(id, permissions);
     }
 
@@ -404,6 +477,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.readLink();
     }
 
@@ -423,6 +497,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        checkRemoveFlags(flags);
+        checkDirectoryFlags(flags, isDirectory);
         proxy.remove(flags);
     }
 

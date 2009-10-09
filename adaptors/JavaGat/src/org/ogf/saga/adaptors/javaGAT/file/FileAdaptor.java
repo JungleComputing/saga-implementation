@@ -47,7 +47,6 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         Initialize.initialize();
     }
 
-    private int flags;
     private long offset = 0L;
     private RandomAccessFile rf = null;
     private FileEntry entry;
@@ -64,7 +63,6 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
         super(wrapper, sessionImpl, name, flags);
         entry = new FileEntry(sessionImpl, name, flags
                 & Flags.ALLNAMESPACEFLAGS.getValue());
-        this.flags = flags;
 
         // Determine read/write
         String rfflags = null;
@@ -128,12 +126,7 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        if (isClosed()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("File already closed!");
-            }
-            throw new IncorrectStateException("Already closed", wrapper);
-        }
+
         return entry.size();
     }
 
@@ -149,15 +142,6 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
-
-        if (isClosed()) {
-            throw new IncorrectStateException("File already closed", wrapper);
-        }
-
-        if (!Flags.READ.isSet(flags)) {
-            throw new PermissionDeniedException("No permission to read",
-                    wrapper);
-        }
 
         byte[] b;
         try {
@@ -222,15 +206,6 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
 
-        if (isClosed()) {
-            throw new IncorrectStateException("File already closed", wrapper);
-        }
-
-        if (!Flags.READ.isSet(flags) && !Flags.WRITE.isSet(flags)) {
-            throw new IncorrectStateException(
-                    "seek() called but not opened for READ or WRITE", wrapper);
-        }
-
         switch (whence) {
         case START:
             break;
@@ -284,15 +259,6 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
-
-        if (isClosed()) {
-            throw new IncorrectStateException("File already closed", wrapper);
-        }
-
-        if (!Flags.WRITE.isSet(flags)) {
-            throw new PermissionDeniedException("No permission to write",
-                    wrapper);
-        }
 
         byte[] b;
         try {

@@ -30,6 +30,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         LogicalDirectory {
 
     private LogicalDirectorySPI proxy;
+    private final int logicalFlags;
 
     LogicalDirectoryWrapper(Session session, URL name, int flags)
             throws NotImplementedException, IncorrectURLException,
@@ -38,6 +39,8 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         super(session, name);
+        checkFlags(flags);
+        this.logicalFlags = flags;
         Object[] parameters = { this, session, name, flags };
         try {
             proxy = (LogicalDirectorySPI) SAGAEngine.createAdaptorProxy(
@@ -81,11 +84,22 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
         }
     }
     
+    private void checkFlags(int flags) throws BadParameterException {
+        int allowed = Flags.ALLNAMESPACEFLAGS.getValue()
+                | Flags.ALLLOGICALFILEFLAGS.getValue();
+        if ((flags | allowed) != allowed) {
+            throw new BadParameterException(
+                    "Illegal flags for logical directory: " + flags);
+        }
+    }
+
+    
     public void changeDir(URL dir) throws NotImplementedException,
     IncorrectURLException, AuthenticationFailedException,
     AuthorizationFailedException, PermissionDeniedException,
     BadParameterException, IncorrectStateException,
     DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         if (dir.isAbsolute()) {
 
             URL url = dir.normalize();
@@ -161,6 +175,12 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
+        checkNotClosed();
+        if (!Flags.READ.isSet(logicalFlags)) {
+            throw new PermissionDeniedException(
+                    "find() on logicalDirectory not opened for reading", this);
+        }
+
         return proxy.find(namePattern, attrPattern, flags);
     }
 
@@ -307,6 +327,12 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(logicalFlags)) {
+            throw new PermissionDeniedException(
+                    "openLogicalDir with CREATE flag "
+                            + "on logicalDirectory not opened for writing", this);
+        }
         return proxy.openLogicalDir(name, flags);
     }
 
@@ -335,6 +361,12 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        checkNotClosed();
+        if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(logicalFlags)) {
+            throw new PermissionDeniedException(
+                    "openLogicalFile with CREATE flag on "
+                            + "logicalDirectory not opened for writing", this);
+        }
         return proxy.openLogicalFile(name, flags);
     }
 
@@ -390,6 +422,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, DoesNotExistException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.isFile(name);
     }
 

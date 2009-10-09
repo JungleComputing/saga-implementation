@@ -106,16 +106,6 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
 
-        if (isClosed()) {
-            throw new IncorrectStateException(
-                    "addLocation() called on closed LogicalFile", wrapper);
-        }
-        if (!Flags.WRITE.isSet(logicalFileFlags)) {
-            throw new PermissionDeniedException(
-                    "addLocation() called on LogicalFile not opened for writing",
-                    wrapper);
-        }
-
         if (doAdd(name)) {
             write();
         }
@@ -136,15 +126,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        if (isClosed()) {
-            throw new IncorrectStateException(
-                    "listLocations() called on closed LogicalFile", wrapper);
-        }
-        if (!Flags.READ.isSet(logicalFileFlags)) {
-            throw new PermissionDeniedException(
-                    "listLocations() called on LogicalFile not opened for reading",
-                    wrapper);
-        }
+
         return new ArrayList<URL>(urls);
     }
 
@@ -154,15 +136,6 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        if (isClosed()) {
-            throw new IncorrectStateException(
-                    "removeLocation() called on closed LogicalFile", wrapper);
-        }
-        if (!Flags.WRITE.isSet(logicalFileFlags)) {
-            throw new PermissionDeniedException(
-                    "removeLocation() called on LogicalFile not opened for writing",
-                    wrapper);
-        }
 
         if (doRemove(name)) {
             write();
@@ -187,20 +160,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        if (isClosed()) {
-            throw new IncorrectStateException(
-                    "replicate() called on closed LogicalFile", wrapper);
-        }
-        if (!Flags.WRITE.isSet(logicalFileFlags)
-                || !Flags.READ.isSet(logicalFileFlags)) {
-            throw new PermissionDeniedException(
-                    "replicate() called on LogicalFile not opened for reading/writing",
-                    wrapper);
-        }
-        if (Flags.RECURSIVE.isSet(flags)) {
-            throw new BadParameterException(
-                    "replicate() call with RECURSIVE flag", wrapper);
-        }
+
         if (!name.isAbsolute()) {
             throw new BadParameterException(
                     "replicate() call with relative URL " + name, wrapper);
@@ -233,18 +193,6 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-
-        if (isClosed()) {
-            throw new IncorrectStateException(
-                    "updateLocation() called on closed LogicalFile", wrapper);
-        }
-
-        if (!Flags.WRITE.isSet(logicalFileFlags)
-                || !Flags.READ.isSet(logicalFileFlags)) {
-            throw new PermissionDeniedException(
-                    "updateLocation() called on LogicalFile not opened for reading/writing",
-                    wrapper);
-        }
 
         if (!nameNew.isAbsolute()) {
             throw new BadParameterException(

@@ -130,9 +130,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
             DoesNotExistException, TimeoutException, NoSuccessException,
             IncorrectURLException {
         LocalAdaptor.checkURL(target);
-        checkNotClosed();
-        checkCopyFlags(flags);
-        checkDirectoryFlags("Target", flags, isDirectory);
         
         File targetFile = resolve(target.getPath());
         
@@ -245,10 +242,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
             DoesNotExistException, TimeoutException, NoSuccessException,
             IncorrectURLException {
         LocalAdaptor.checkURL(target);
-        checkNotClosed();
-        checkCopyFlags(flags);
-        checkDirectoryFlags("Target", flags, isDirectory);
-        
+
         File targetFile = resolve(target.getPath());
         
         nonResolvingMove(target, targetFile, flags);
@@ -333,7 +327,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        checkNotClosed();
         return isDirectory;
     }
 
@@ -342,7 +335,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        checkNotClosed();
         return !isDirectory;
     }
 
@@ -394,9 +386,6 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        checkNotClosed();
-        checkRemoveFlags(flags);
-        checkDirectoryFlags("NSEntry", flags, isDirectory);
                 
         if (isDirectory && Flags.RECURSIVE.isSet(flags)) {
             removeRecursively(file);
@@ -453,8 +442,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        checkNotClosed();
-        
+
         return file.length();
     }
     

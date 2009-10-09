@@ -67,7 +67,7 @@ public class DirectoryAdaptor extends DirectoryAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
+
         LocalAdaptor.checkURL(name);
         
         name = resolveToDir(name);

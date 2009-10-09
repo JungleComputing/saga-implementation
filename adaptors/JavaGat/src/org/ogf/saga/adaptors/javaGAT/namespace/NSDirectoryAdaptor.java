@@ -71,8 +71,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
-        
+     
         File toDir;
         FileInterface toDirFileInterface;
         try {
@@ -111,8 +110,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
-        checkCopyFlags(flags);
 
         URL source1 = resolveToDir(source);
         target = resolveToDir(target);
@@ -131,8 +128,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
-        checkCopyFlags(flags);
 
         List<URL> sources = expandWildCards(source);
         target = resolveToDir(target);
@@ -170,7 +165,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        checkNotClosed();
 
         name = resolveToDir(name);
 
@@ -194,7 +188,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
         
         if (entryNo < 0) {
             throw new DoesNotExistException("Invalid index: " + entryNo);
@@ -221,7 +214,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        checkNotClosed();
 
         File[] resultFiles;
         try {
@@ -237,7 +229,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        checkNotClosed();
         
         if (!name.getPath().startsWith("/")) {
             name = resolveToDir(name);
@@ -276,13 +267,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        if (isClosed()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Directory already closed!");
-            }
-            throw new IncorrectStateException(
-                    "isEntry(): directory already closed", wrapper);
-        }
         name = resolveToDir(name);
         File isDirFile;
         try {
@@ -520,8 +504,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             PermissionDeniedException, IncorrectURLException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
-        checkRemoveFlags(flags);
 
         URL target1 = resolveToDir(target);
 
@@ -545,8 +527,6 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             IncorrectURLException, BadParameterException,
             IncorrectStateException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        checkNotClosed();
-        checkRemoveFlags(flags);
 
         List<URL> targets = expandWildCards(target);
 

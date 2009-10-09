@@ -31,18 +31,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
         NSDirectoryAdaptorBase implements LogicalDirectorySPI {
 
     private LogicalDirectoryAttributes attributes;
-    private int logicalFileFlags;
     protected LogicalDirectoryWrapper logicalDirectoryWrapper;
-
-    private static int checkFlags(int flags) throws BadParameterException {
-        int allowed = Flags.ALLNAMESPACEFLAGS.getValue()
-                | Flags.ALLLOGICALFILEFLAGS.getValue();
-        if ((flags | allowed) != allowed) {
-            throw new BadParameterException(
-                    "Illegal flags for logical directory: " + flags);
-        }
-        return flags;
-    }
 
     public LogicalDirectoryAdaptorBase(LogicalDirectoryWrapper wrapper,
             SessionImpl sessionImpl, URL name, int flags)
@@ -51,11 +40,9 @@ public abstract class LogicalDirectoryAdaptorBase extends
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        super(wrapper, sessionImpl, name, checkFlags(flags)
-                & Flags.ALLNAMESPACEFLAGS.getValue());
+        super(wrapper, sessionImpl, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
         this.logicalDirectoryWrapper = wrapper;
         attributes = new LogicalDirectoryAttributes(wrapper, sessionImpl, true);
-        logicalFileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
     }
 
     public Object clone() throws CloneNotSupportedException {
@@ -70,13 +57,6 @@ public abstract class LogicalDirectoryAdaptorBase extends
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-
-        checkNotClosed();
-
-        if (!Flags.READ.isSet(logicalFileFlags)) {
-            throw new PermissionDeniedException(
-                    "find() on logicalDirectory not opened for reading");
-        }
 
         // First, find the list of URLs that match the name pattern.
         List<URL> candidates = find(namePattern, flags);
@@ -126,13 +106,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        checkNotClosed();
 
-        if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(logicalFileFlags)) {
-            throw new PermissionDeniedException(
-                    "openLogicalDir with CREATE flag "
-                            + "on logicalDirectory not opened for writing");
-        }
         name = resolveToDir(name);
         return LogicalFileFactory.createLogicalDirectory(sessionImpl, name,
                 flags);
@@ -151,14 +125,6 @@ public abstract class LogicalDirectoryAdaptorBase extends
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-
-        checkNotClosed();
-
-        if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(logicalFileFlags)) {
-            throw new PermissionDeniedException(
-                    "openLogicalFile with CREATE flag on "
-                            + "logicalDirectory not opened for writing");
-        }
 
         name = resolveToDir(name);
         return LogicalFileFactory.createLogicalFile(sessionImpl, name, flags);
