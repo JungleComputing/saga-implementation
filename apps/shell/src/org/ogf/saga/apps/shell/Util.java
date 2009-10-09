@@ -1,10 +1,20 @@
 package org.ogf.saga.apps.shell;
 
 import java.io.PrintStream;
+import java.text.ParseException;
 import java.util.Arrays;
 
 import org.ogf.saga.attributes.Attributes;
+import org.ogf.saga.error.AuthenticationFailedException;
+import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaException;
+import org.ogf.saga.error.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,4 +71,51 @@ public class Util {
         }
     }
 
+    /**
+     * Updates an attribute according to an assignment like string.
+     * Receives an update string of the form key=value or key=value1,value2 and tries to set the
+     * attribute 'key' to the given value (or vector of value in case of vector attributes).
+     * 
+     * @param updateStr
+     *          a string with the described format. 
+     * @param a
+     *          the Attribute object to update.
+     * 
+     * @throws ParseException
+     *          in case the updateStr is invalid.
+     *          
+     * @throws BadParameterException 
+     * @throws IncorrectStateException 
+     * @throws NoSuccessException 
+     * @throws TimeoutException 
+     * @throws DoesNotExistException 
+     * @throws PermissionDeniedException 
+     * @throws AuthorizationFailedException 
+     * @throws AuthenticationFailedException 
+     * @throws NotImplementedException
+     *         thrown from the Attributes object. 
+     */
+    public static void updateAttribute(String updateStr, Attributes a)
+    throws ParseException, NotImplementedException, AuthenticationFailedException,
+           AuthorizationFailedException, PermissionDeniedException, DoesNotExistException,
+           TimeoutException, NoSuccessException, IncorrectStateException, BadParameterException {
+        String[] kv = updateStr.split("=");
+        
+        if (kv.length != 2) {
+            throw new ParseException("Expected exactly one equals in '" + updateStr + "'", -1);
+        }
+
+        if (a.isVectorAttribute(kv[0])) {
+            String[] values = kv[1].split(",");
+            
+            if (logger.isDebugEnabled()) {
+                logger.debug("Vector " + kv[0] + "=" + 
+                    Arrays.toString(values));
+            }
+            
+            a.setVectorAttribute(kv[0], values);
+        } else {
+            a.setAttribute(kv[0], kv[1]);
+        }
+    }
 }
