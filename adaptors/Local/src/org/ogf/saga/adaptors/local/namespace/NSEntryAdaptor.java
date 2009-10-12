@@ -2,8 +2,10 @@ package org.ogf.saga.adaptors.local.namespace;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.URI;
 import java.nio.channels.FileChannel;
 
@@ -438,12 +440,9 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
         throw new NotImplementedException("Permissions are not supported");
     }
 
-    public long getSize() throws NotImplementedException,
-            AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, IncorrectStateException,
-            TimeoutException, NoSuccessException {
-
-        return file.length();
+    public RandomAccessFile createRandomAccessFile(String mode)
+            throws FileNotFoundException {
+        return new RandomAccessFile(file, mode);
     }
     
 }
