@@ -39,7 +39,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthorizationFailedException, AuthenticationFailedException,
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, session, name, flags);
-        entry = new NSEntryAdaptor(wrapper, session, name, flags, true);
+        entry = new NSEntryAdaptor(null, session, name, flags, true);
     }
 
     @Override
