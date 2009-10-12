@@ -2,10 +2,10 @@ Local adaptor README
 ---------------------
 
 Introduction.
-  The Local adaptor implements the SAGA packages 'namespace' and (parts of) 
-  'file'. It is built on top of Java's local file API (i.e. java.io.File) and
-  uses java.nio to copy files. For the 'file' package, only the 'getSize()'
-  methods are implemented.
+  The Local adaptor implements the SAGA packages 'namespace' and 'file' for the
+  local filesystem. It is built on top of Java's local file API. Most namespace 
+  operations use the class java.io.File underneath. Copying and accessing files 
+  is done using the class java.nio.FileChannel.
 
 Using the Local adaptor.
   The adaptor recognizes the schemes 'local', 'file', and 'any'. It also accepts
