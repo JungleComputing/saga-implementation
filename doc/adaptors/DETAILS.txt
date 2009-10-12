@@ -96,6 +96,16 @@ Package SAGA namespace
   * adaptor fo NSDirectory
     There is no concept of links in JavaGAT, so all methods dealing with links
     are not supported.
+- Local
+  Uses Java's local file API to access the local filesystem. All namespace 
+  operations use the class java.io.File, except for the copy() method which 
+  uses the class java.nio.FileChannel. 
+  * adaptor for NSEntry
+    There is no concept of links (yet) in Java, so all methods dealing with 
+    links are not supported.
+  * adaptor for NSDirectory
+    There is no concept of links (yet) in Java, so all methods dealing with 
+    links are not supported.
 
 Package SAGA file
 -----------------
@@ -114,7 +124,16 @@ Package SAGA file
   * adaptors for FileInputStream and FileOutputStream
     these adaptors are built on the corresponding JavaGAT versions, for which
     several adaptors are available.
-
+- Local
+  * adaptor for File
+    Uses java.nio.FileChannel for read(), write(), seek() and getSize().
+    unimplemented: modesE(), readE(), writeE(), sizeE(), for which there
+    is no support. In addition, readP and writeP only have the implementation
+    inherited from the base implementation, which translates the patterns into
+    seeks and contiguous reads/writes, which probably is very slow.
+  * adaptor for Directory
+    implements all operations, except for permissions.
+  
 Package SAGA logicalfile
 ------------------------
 
