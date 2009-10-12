@@ -34,7 +34,7 @@ public class DirectoryAdaptor extends DirectoryAdaptorBase {
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags);
         
-        dir = new NSDirectoryAdaptor(wrapper, sessionImpl, name, flags
+        dir = new NSDirectoryAdaptor(null, sessionImpl, name, flags
                 & Flags.ALLNAMESPACEFLAGS.getValue());
     }
     
