@@ -1,5 +1,6 @@
 package org.ogf.saga.apps.shell;
 
+import java.net.URI;
 import java.util.*;
 
 import org.ogf.saga.error.NoSuccessException;
@@ -109,7 +110,9 @@ public class SagaFileNameCompletor implements Completor {
                 URL resolved = translatedUrl.resolve(entry);
 
                 if (resolved.toString().startsWith(translatedUrl.toString())) {
-                    java.io.File f = new java.io.File(resolved.getPath());
+                    URI uri = URI.create(resolved.getString());
+                    String encodedPath = uri.getRawPath();
+                    java.io.File f = new java.io.File(encodedPath);
                     lastName = f.getName();
                     candidates.add(lastName);
                     lastMatch = resolved;
