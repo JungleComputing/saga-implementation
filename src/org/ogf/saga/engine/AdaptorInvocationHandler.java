@@ -244,7 +244,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                             "Got exception from constructor of " + adaptorname,
                             t);
                 }
-                SagaException e = (SagaException) t;
+                
+                SagaException e = stripNestedExceptions((SagaException) t);
+                
                 
                 if (exceptions == null) {
                     exceptions = new ArrayList<SagaException>();
@@ -310,10 +312,57 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             }
         }
     }
+    
+    /**
+     * Strips nested exceptions from a Saga exception. This is needed for adaptors that
+     * call Saga factory methods from within a method, for instance <code>openDir</code>.
+     * 
+     * @param exception the exception to strip.
+     * @return the stripped exception.
+     */
+    private SagaException stripNestedExceptions(SagaException exception) {
+        int count = 0;
+        for (@SuppressWarnings("unused") SagaException e : exception) {
+            count++;
+        }
+        if (count <= 1) {
+            // There are no nested exceptions.
+            System.out.println("No nested exceptions: count = " + count);
+            return exception;
+        }
+        try {
+            SagaException ex;
+            if (exception instanceof SagaIOException) {
+                Constructor<SagaIOException> c = SagaIOException.class.getConstructor(
+                        String.class, Throwable.class, Integer.TYPE,
+                        SagaObject.class);
+
+                ex = c.newInstance(exception.getMessage(),
+                        exception.getCause(), ((SagaIOException) exception)
+                                .getPosixErrorCode(), exception.getObject());
+            } else {
+                Constructor<? extends SagaException> c = exception.getClass().getConstructor(
+                        String.class, Throwable.class, SagaObject.class);
+
+                ex = c.newInstance(exception.getMessage(),
+                        exception.getCause(), exception.getObject());
+            }
+            ex.setStackTrace(exception.getStackTrace());
+            exception = ex;
+        } catch (Throwable e) {
+            logger.debug("Got exception ...");
+            // o well, we tried ...
+        }
+        return exception;
+    }
+    
 
     /**
      * Adds a wrapper object to the exception, in case the adaptor or could'nt
      * for some other reason. This is what makes SAGAException.getObject() work.
+     * A side effect of this method is that nested exceptions are stripped, so
+     * the method to strip them does not have to be called anymore. That now only
+     * exists for the constructor invocations.
      * 
      * @param exception
      *            the exception
@@ -323,31 +372,32 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      */
     private SagaException addWrapper(SagaException exception,
             AdaptorBase<?> base) {
-        Object sagaObject = null;
+        Object sagaObject;
         try {
             sagaObject = exception.getObject();
-        } catch (Throwable e) {
+            if (sagaObject != null) {
+                return stripNestedExceptions(exception);
+            }
+        } catch(Throwable e) {
             // ignored
         }
-        if (sagaObject != null) {
-            return exception;
-        }
+
         sagaObject = base.getWrapper();
         SagaException ex = exception;
         try {
             if (exception instanceof SagaIOException) {
-                Constructor<?> c = exception.getClass().getConstructor(
+                Constructor<SagaIOException> c = SagaIOException.class.getConstructor(
                         String.class, Throwable.class, Integer.TYPE,
                         SagaObject.class);
 
-                ex = (SagaException) c.newInstance(exception.getMessage(),
+                ex = c.newInstance(exception.getMessage(),
                         exception.getCause(), ((SagaIOException) exception)
                                 .getPosixErrorCode(), sagaObject);
             } else {
-                Constructor<?> c = exception.getClass().getConstructor(
+                Constructor<? extends SagaException> c = exception.getClass().getConstructor(
                         String.class, Throwable.class, SagaObject.class);
 
-                ex = (SagaException) c.newInstance(exception.getMessage(),
+                ex = c.newInstance(exception.getMessage(),
                         exception.getCause(), sagaObject);
             }
             ex.setStackTrace(exception.getStackTrace());
@@ -436,7 +486,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                     // keep the most specific exception around. We can throw
                     // that when all adaptors fail.
                     SagaException e = (SagaException) t;
-                    addWrapper(e, adaptorInstantiation);
+                    e = addWrapper(e, adaptorInstantiation);
                     
                     if (exceptions == null) {
                         exceptions = new ArrayList<SagaException>();
