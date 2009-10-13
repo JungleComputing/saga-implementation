@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,28 @@ public class SAGAEngine {
             return super.getClassContext ();
         }
     }
-
+    
+    /**
+     * A helper class to compare file names, so that they can be sorted,
+     * and the order becomes predictable and reproducible.
+     * Also make sure the copying adaptor is placed at the end of the list.
+     */
+    private static class FileComparator implements Comparator<File> {
+        public int compare(File f1, File f2) {
+            String n1 = f1.getName();
+            String n2 = f2.getName();
+            if (n1.startsWith("Copying")) {
+                if (n1.equals(n2)) {
+                    return 0;
+                }
+                return 1;
+            }
+            if (n2.startsWith("Copying")) {
+                return -1;
+            }
+            return n1.compareTo(n2);
+        }
+    }
 
     /** Constructs a default SAGAEngine instance. */
     private SAGAEngine() {
@@ -299,6 +321,9 @@ public class SAGAEngine {
                                 && file.getName().endsWith("Adaptor");
                     }
                 });
+                
+                // Sort the list of directories, to make sure that the order is deterministic.
+                Arrays.sort(adaptorDirs, new FileComparator());
 
                 // Create a separate classloader for each adaptor directory.
                 if (adaptorDirs != null) {
@@ -362,10 +387,9 @@ public class SAGAEngine {
             }
         });
         
-        // Sort, so that results are reproducable.
-        Arrays.sort(externalJars);
-        
         if (externalJars != null) {
+            // Sort, so that results are reproducable.
+            Arrays.sort(externalJars);
             for (String externalJar : externalJars) {
                 adaptorPathURLs.add(new File(adaptorDir, externalJar).toURI().toURL());                           
             }
