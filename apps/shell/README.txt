@@ -75,6 +75,11 @@ current working directory is 'file://localhost/home/john'.
   SAGA shell. The comment character is very convenient in script files that
   are used as input to the SAGA shell.
 
+<tab>
+  Completes the entered text. The first argument is expanded to all possible
+  SAGA shell commands. Subsequent arguments are expanded to all matching entries
+  in the current working directory.
+  
 ------------------------------
 3. Context management commands
 ------------------------------
@@ -86,7 +91,7 @@ current working directory is 'file://localhost/home/john'.
   default SAGA session. Without any parameters, the command lists all the
   recognized attributes. The first argument is always the context type.
   The attribute value 'ask' triggers a masked interactive prompt to enter the
-  real value, which is especially useful for entered passwords.
+  real value, which is especially useful for entering passwords.
   
   Examples:
 
