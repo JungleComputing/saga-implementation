@@ -1,7 +1,5 @@
 package org.ogf.saga.apps.shell.command;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.ogf.saga.apps.shell.Environment;
@@ -11,8 +9,6 @@ import org.ogf.saga.file.Directory;
 import org.ogf.saga.url.URL;
 
 public class ListDirectory extends EnvironmentCommand {
-
-    private static final URLComparator URL_COMP = new URLComparator();
 
     public ListDirectory(Environment env) {
         super(env);
@@ -38,7 +34,7 @@ public class ListDirectory extends EnvironmentCommand {
 
         try {
             List<URL> entryList = cwd.list();
-            Collections.sort(entryList, URL_COMP);
+            Util.sortAlphabetically(entryList);
 
             for (URL entry : entryList) {
                 if (longFormat) {
@@ -55,18 +51,6 @@ public class ListDirectory extends EnvironmentCommand {
         } catch (SagaException e) {
             Util.printSagaException(e);
         }
-    }
-
-    private static class URLComparator implements Comparator<URL> {
-
-        @Override
-        public int compare(URL u1, URL u2) {
-            String s1 = u1.toString();
-            String s2 = u2.toString();
-
-            return s1.compareTo(s2);
-        }
-
     }
 
 }

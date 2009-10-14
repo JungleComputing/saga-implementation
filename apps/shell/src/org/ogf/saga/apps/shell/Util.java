@@ -3,6 +3,9 @@ package org.ogf.saga.apps.shell;
 import java.io.PrintStream;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.ogf.saga.attributes.Attributes;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -15,12 +18,16 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.url.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Util {
 
     private static Logger logger = LoggerFactory.getLogger(Util.class);
+
+    private static final URLComparator URL_COMP = new URLComparator();
+
 
     /**
      * Prints the details of a SAGA exception on System.err. It iterates over
@@ -118,4 +125,24 @@ public class Util {
             a.setAttribute(kv[0], kv[1]);
         }
     }
+    
+    /**
+     * Sorts a lists of URLs alphabetically.
+     */
+    public static void sortAlphabetically(List<URL> list) {
+        Collections.sort(list, URL_COMP);
+    }
+    
+    private static class URLComparator implements Comparator<URL> {
+
+        @Override
+        public int compare(URL u1, URL u2) {
+            String s1 = u1.toString();
+            String s2 = u2.toString();
+
+            return s1.compareTo(s2);
+        }
+
+    }
+    
 }
