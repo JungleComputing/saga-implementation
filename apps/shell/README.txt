@@ -143,6 +143,32 @@ current working directory is 'file://localhost/home/john'.
 'ls'
   Lists all entries in the current working directory. The entries are sorted
   alphabetically.
+
+'find'
+  Usage: find [-r] <pattern>
+  
+  Lists entries with matching names in the current working directory. With the 
+  '-r' ('recursive') parameter, entries in subdirectories are listed as well.
+  Without any parameters, the available wildcard patterns are printed:
+   
+    *      : matches any string
+    ?      : matches a single character
+    [abc]  : matches any of a set of characters
+    [a-z]  : matches any of a range of characters
+    [!abc] : matches none of a set of characters
+    [!a-z] : matches none of a range of characters
+    {a,bc} : matches any of a set of strings
+    
+  Examples:
+  
+    $ find *.txt
+    foo.txt
+    $ find -r *.txt
+    foo.txt
+    dir/bar.txt
+    $ find [a-z]*
+    foo.txt
+    bar.html
   
 'cd'
   Usage: cd [url]

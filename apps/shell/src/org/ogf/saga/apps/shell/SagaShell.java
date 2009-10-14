@@ -50,6 +50,7 @@ public class SagaShell {
         commands.put("rmc", new RemoveContext());
         commands.put("pwd", new PrintWorkingDirectory(env));
         commands.put("ls", new ListDirectory(env));
+        commands.put("find", new FindEntries(env));
         commands.put("cd", new ChangeWorkingDirectory(env));
         commands.put("touch", new CreateFile(env));
         commands.put("mkdir", new MakeDirectory(env));
