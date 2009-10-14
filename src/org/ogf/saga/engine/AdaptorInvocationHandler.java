@@ -327,7 +327,6 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
         if (count <= 1) {
             // There are no nested exceptions.
-            System.out.println("No nested exceptions: count = " + count);
             return exception;
         }
         try {
