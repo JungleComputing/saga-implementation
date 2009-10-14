@@ -326,6 +326,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
                     // and if it is a directory then find the pattern
                     if (isDir(u)) {
                         NSDirectoryAdaptorBase dir = (NSDirectoryAdaptorBase) clone();
+                        dir.setWrapper(null);
                         dir.changeDir(u);
                         List<URL> l = dir.find(pattern, flags);
                         dir.close(0);

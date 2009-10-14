@@ -74,6 +74,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
      
         File toDir;
         FileInterface toDirFileInterface;
+        
+        dir = resolveToDir(dir);
         try {
             toDir = GAT.createFile(entry.gatContext, GatURIConverter
                     .cvtToGatURI(dir));
@@ -100,8 +102,14 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             throw new NoSuccessException(e, wrapper);
         }
         
-        wrapper.setWrapperURL(dir.normalize());
-        entry.init(toDir, toDirFileInterface, getEntryURL());
+        dir = dir.normalize();
+        setEntryURL(dir);
+        entry.init(toDir, toDirFileInterface, dir);
+    }
+    
+    public void setWrapper(NSDirectoryWrapper wrapper) {
+        super.setWrapper(wrapper);
+        entry.setWrapper(wrapper);
     }
 
     public void copy(URL source, URL target, int flags)

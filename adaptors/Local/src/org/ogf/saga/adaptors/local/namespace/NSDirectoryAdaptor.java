@@ -92,9 +92,9 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                     + " is not a directory");
         }
         
-        URL normalized = dir.normalize();
-        wrapper.setWrapperURL(resolve(normalized));
-        entry.init(newCwd, wrapper.getWrapperURL());
+        URL normalized = resolveToDir(dir.normalize());
+        setEntryURL(normalized);
+        entry.init(newCwd, normalized);
     }
 
     public void copy(URL source, URL target, int flags)
@@ -291,6 +291,11 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         }
 
         return f;
+    }
+    
+    public void setWrapper(NSDirectoryWrapper wrapper) {
+        super.setWrapper(wrapper);
+        entry.setWrapper(wrapper);
     }
 
     public boolean isLink(URL name) throws NotImplementedException,
