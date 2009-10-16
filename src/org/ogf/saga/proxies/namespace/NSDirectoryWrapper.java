@@ -20,7 +20,6 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
-import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.namespace.NSDirectorySPI;
 import org.ogf.saga.task.Task;

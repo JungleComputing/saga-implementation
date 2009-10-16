@@ -19,7 +19,6 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.url.URLUtil;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSEntry;
-import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.namespace.NSEntrySPI;
 import org.ogf.saga.task.Task;
