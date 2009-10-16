@@ -41,11 +41,11 @@
     </target>
 
     <target name="generic" description="build Generic adaptors">
-	<ant dir="generic"/>
+	<ant dir="Generic"/>
     </target>
 
     <target name="local" description="build Local adaptors">
-	<ant dir="local"/>
+	<ant dir="Local"/>
     </target>
 
 </project>

@@ -364,7 +364,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         try {
-            return URLFactory.createURL(wrapper.getURL().normalize().toString());
+            return URLFactory.createURL(wrapper.getWrapperURL().normalize().toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e, wrapper);
         }
