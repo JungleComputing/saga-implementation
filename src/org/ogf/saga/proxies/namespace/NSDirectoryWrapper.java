@@ -1,5 +1,6 @@
 package org.ogf.saga.proxies.namespace;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,10 +15,12 @@ import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
+import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.namespace.NSDirectorySPI;
 import org.ogf.saga.task.Task;
@@ -197,6 +200,88 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             throws NotImplementedException {
         return copy(mode, source, target, Flags.NONE.getValue());
     }
+    
+    private boolean viaLocalCopy(URL source, URL target, int flags) {        
+        java.io.File tmp = null;
+        NSDirectoryWrapper temp = null;
+        
+        try {
+            URL resolvedSource = getWrapperURL().resolve(source);
+            target = getWrapperURL().resolve(target);
+
+            if (! checkURL(target) || ! checkURL(resolvedSource)) {
+                return false;
+            }
+            try {
+                // use a local tmp file. Create it, and then delete it, so that
+                // we have a unique name.
+                tmp = java.io.File.createTempFile("SagaTmp", ".tmp");
+            } catch(IOException e) {
+                return false;
+            }
+            tmp.delete();
+            if (! tmp.mkdir()) {
+                return false;
+            }
+            URL url = URLFactory.createURL(tmp.toURI().toString());                              
+            // copy through the proxy to prevent recursion here.
+            proxy.copy(source, url, flags);
+
+            temp = new NSDirectoryWrapper(sessionImpl, url, 0);
+            java.io.File tmp1 = new java.io.File(source.getPath());
+            temp.proxy.copy(URLFactory.createURL(tmp1.getName()), target, flags);
+            return true;
+        } catch(Throwable e) {
+            return false;
+        } finally {
+            try {
+                temp.remove(Flags.RECURSIVE.getValue());
+            } catch(Throwable ex) {
+                // ignored
+            }
+            tmp.delete();
+        }
+    }
+
+    
+    private boolean viaLocalCopy(String source, URL target, int flags) {        
+        java.io.File tmp = null;
+        NSDirectoryWrapper temp = null;
+        
+        try {
+            target = getWrapperURL().resolve(target);
+
+            if (! checkURL(target)) {
+                return false;
+            }
+            try {
+                // use a local tmp file. Create it, and then delete it, so that
+                // we have a unique name.
+                tmp = java.io.File.createTempFile("SagaTmp", ".tmp");
+            } catch(IOException e) {
+                return false;
+            }
+            tmp.delete();
+            if (! tmp.mkdir()) {
+                return false;
+            }
+            URL url = URLFactory.createURL(tmp.toURI().toString());                              
+            // Copy through the proxy, to prevent recursion.
+            proxy.copy(source, url, flags);
+            temp = new NSDirectoryWrapper(sessionImpl, url, 0);
+            temp.proxy.copy("*", target, flags);
+            return true;
+        } catch(Throwable e) {
+            return false;
+        } finally {
+            try {
+                temp.remove(Flags.RECURSIVE.getValue());
+            } catch(Throwable ex) {
+                // ignored
+            }
+            tmp.delete();
+        }
+    }
 
     public void copy(URL source, URL target, int flags)
             throws NotImplementedException, AuthenticationFailedException,
@@ -207,7 +292,51 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         checkNotClosed();
         checkCopyFlags(flags);
         checkDirectoryFlags(flags, isDir(source));
-        proxy.copy(source, target, flags);
+        try {
+            proxy.copy(source, target, flags);
+        } catch(SagaException e) {
+            // None of the adaptors can apparently do this,
+            // Last resort: try to copy via a local file/directory.
+            if (viaLocalCopy(source, target, flags)) {
+                // success!
+                return;
+            }
+            if (e instanceof NotImplementedException) {
+                throw (NotImplementedException) e;
+            }
+            if (e instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) e;
+            }
+            if (e instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) e;
+            }
+            if (e instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) e;
+            }
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
+            }
+            if (e instanceof IncorrectStateException) {
+                throw (IncorrectStateException) e;
+            }
+            if (e instanceof AlreadyExistsException) {
+                throw (AlreadyExistsException) e;
+            }
+            if (e instanceof DoesNotExistException) {
+                throw (DoesNotExistException) e;
+            }
+            if (e instanceof TimeoutException) {
+                throw (TimeoutException) e;
+            }
+            if (e instanceof NoSuccessException) {
+                throw (NoSuccessException) e;
+            }
+            if (e instanceof IncorrectURLException) {
+                throw (IncorrectURLException) e;
+            }
+            // If we get here, something is wrong ...
+            throw new NoSuccessException("INTERNAL ERROR: wrong exception from copy", e);
+        }
     }
 
     public void copy(URL source, URL target) throws NotImplementedException,
@@ -474,7 +603,50 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
         checkNotClosed();
         checkCopyFlags(flags);
         checkDirectoryFlags(flags, isDir(source));
-        proxy.move(source, target, flags);
+        try {
+            proxy.move(source, target, flags);
+        } catch(SagaException e) {
+            // Try to copy via local, and then remove ...
+            if (viaLocalCopy(source, target, flags)) {
+                remove(source, flags);
+                return;
+            }
+            if (e instanceof NotImplementedException) {
+                throw (NotImplementedException) e;
+            }
+            if (e instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) e;
+            }
+            if (e instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) e;
+            }
+            if (e instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) e;
+            }
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
+            }
+            if (e instanceof IncorrectStateException) {
+                throw (IncorrectStateException) e;
+            }
+            if (e instanceof AlreadyExistsException) {
+                throw (AlreadyExistsException) e;
+            }
+            if (e instanceof DoesNotExistException) {
+                throw (DoesNotExistException) e;
+            }
+            if (e instanceof TimeoutException) {
+                throw (TimeoutException) e;
+            }
+            if (e instanceof NoSuccessException) {
+                throw (NoSuccessException) e;
+            }
+            if (e instanceof IncorrectURLException) {
+                throw (IncorrectURLException) e;
+            }
+            // If we get here, something is wrong ...
+            throw new NoSuccessException("INTERNAL ERROR: wrong exception from move", e);
+        }
     }
 
     public void move(URL source, URL target) throws NotImplementedException,
@@ -654,7 +826,51 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
         checkCopyFlags(flags);
-        proxy.copy(source, target, flags);
+        try {
+            proxy.copy(source, target, flags);
+        } catch(SagaException e) {
+            // None of the adaptors can apparently do this,
+            // Last resort: try to copy via a local file/directory.
+            if (viaLocalCopy(source, target, flags)) {
+                // success!
+                return;
+            }
+            if (e instanceof NotImplementedException) {
+                throw (NotImplementedException) e;
+            }
+            if (e instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) e;
+            }
+            if (e instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) e;
+            }
+            if (e instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) e;
+            }
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
+            }
+            if (e instanceof IncorrectStateException) {
+                throw (IncorrectStateException) e;
+            }
+            if (e instanceof AlreadyExistsException) {
+                throw (AlreadyExistsException) e;
+            }
+            if (e instanceof DoesNotExistException) {
+                throw (DoesNotExistException) e;
+            }
+            if (e instanceof TimeoutException) {
+                throw (TimeoutException) e;
+            }
+            if (e instanceof NoSuccessException) {
+                throw (NoSuccessException) e;
+            }
+            if (e instanceof IncorrectURLException) {
+                throw (IncorrectURLException) e;
+            }
+            // If we get here, something is wrong ...
+            throw new NoSuccessException("INTERNAL ERROR: wrong exception from copy", e);
+        }
     }
 
     public Task<NSDirectory, Void> copy(TaskMode mode, String source,
@@ -684,7 +900,50 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
         checkCopyFlags(flags);
-        proxy.move(source, target, flags);
+        try {
+            proxy.move(source, target, flags);
+        } catch(SagaException e) {
+            // Try to copy via local, and then remove ...
+            if (viaLocalCopy(source, target, flags)) {
+                remove(source, flags);
+                return;
+            }
+            if (e instanceof NotImplementedException) {
+                throw (NotImplementedException) e;
+            }
+            if (e instanceof AuthenticationFailedException) {
+                throw (AuthenticationFailedException) e;
+            }
+            if (e instanceof AuthorizationFailedException) {
+                throw (AuthorizationFailedException) e;
+            }
+            if (e instanceof PermissionDeniedException) {
+                throw (PermissionDeniedException) e;
+            }
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
+            }
+            if (e instanceof IncorrectStateException) {
+                throw (IncorrectStateException) e;
+            }
+            if (e instanceof AlreadyExistsException) {
+                throw (AlreadyExistsException) e;
+            }
+            if (e instanceof DoesNotExistException) {
+                throw (DoesNotExistException) e;
+            }
+            if (e instanceof TimeoutException) {
+                throw (TimeoutException) e;
+            }
+            if (e instanceof NoSuccessException) {
+                throw (NoSuccessException) e;
+            }
+            if (e instanceof IncorrectURLException) {
+                throw (IncorrectURLException) e;
+            }
+            // If we get here, something is wrong ...
+            throw new NoSuccessException("INTERNAL ERROR: wrong exception from move", e);
+        }
     }
 
     public Task<NSDirectory, Void> move(TaskMode mode, String source,
