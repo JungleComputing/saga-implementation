@@ -239,7 +239,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             } catch(Throwable ex) {
                 // ignored
             }
-            tmp.delete();
+            if (tmp != null) {
+                tmp.delete();
+            }
         }
     }
 
