@@ -20,6 +20,7 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
+import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.spi.namespace.NSDirectorySPI;
 import org.ogf.saga.task.Task;
@@ -674,7 +675,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         checkNotClosed();
-        return proxy.open(name, flags);
+        name = resolveToDir(name);
+        return NSFactory.createNSEntry(sessionImpl, name, flags);
     }
 
     public NSEntry open(URL name) throws NotImplementedException,
@@ -685,6 +687,39 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             NoSuccessException {
         return open(name, Flags.NONE.getValue());
     }
+    
+    /**
+     * Resolves the specified URL with respect to the current directory.
+     */
+    protected URL resolveToDir(URL url) throws NotImplementedException,
+            NoSuccessException, BadParameterException {
+        if (url.isAbsolute()) {
+            return url;
+        }
+        String path = url.getPath();
+        URL myURL = getWrapperURL();
+        if (path.startsWith("/")) {
+            // Relative URL, absolute path. Resolve.
+            URL u = myURL.resolve(url);
+            return u;
+        }
+
+        URL u = URLFactory.createURL(myURL.toString());
+        path = u.getPath();
+
+        // If there is no path, and the URL has a host part, the path
+        // should start with a '/'.
+        if (path.equals("")) {
+            if (myURL.getHost() == null) {
+                path = ".";
+            }
+        }
+        u.setPath(path + "/DUMMY");
+        u = u.resolve(url);
+
+        return u;
+    }
+
 
     public Task<NSDirectory, NSDirectory> openDir(TaskMode mode, URL name,
             int flags) throws NotImplementedException {
@@ -703,7 +738,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
-        return proxy.openDir(name, flags);
+        name = resolveToDir(name);
+        return NSFactory.createNSDirectory(sessionImpl, name, flags);
     }
 
     public NSDirectory openDir(URL name) throws NotImplementedException,

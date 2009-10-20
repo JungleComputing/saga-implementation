@@ -333,7 +333,8 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
                     "openLogicalDir with CREATE flag "
                             + "on logicalDirectory not opened for writing", this);
         }
-        return proxy.openLogicalDir(name, flags);
+        name = resolveToDir(name);
+        return LogicalFileWrapperFactory.createLogicalDirectory(sessionImpl, name, flags);
     }
 
     public LogicalDirectory openLogicalDir(URL name)
@@ -367,7 +368,8 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
                     "openLogicalFile with CREATE flag on "
                             + "logicalDirectory not opened for writing", this);
         }
-        return proxy.openLogicalFile(name, flags);
+        name = resolveToDir(name);
+        return LogicalFileWrapperFactory.createLogicalFile(sessionImpl, name, flags);
     }
 
     public LogicalFile openLogicalFile(URL name)

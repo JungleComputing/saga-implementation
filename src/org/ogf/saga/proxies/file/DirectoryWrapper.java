@@ -229,7 +229,8 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
                     "openDirirectory with CREATE flag "
                             + "on Directory not opened for writing", this);
         }
-        return proxy.openDirectory(name, flags);
+        name = resolveToDir(name);
+        return FileWrapperFactory.createDirectory(sessionImpl, name, flags);
     }
 
     public Directory openDirectory(URL name) throws NotImplementedException,
@@ -262,7 +263,8 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
                     "openFile with CREATE flag "
                             + "on Directory not opened for writing", this);
         }
-        return proxy.openFile(name, flags);
+        name = resolveToDir(name);
+        return FileWrapperFactory.createFile(sessionImpl, name, flags);
     }
 
     public File openFile(URL name) throws NotImplementedException,
