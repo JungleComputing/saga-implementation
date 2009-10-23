@@ -3,6 +3,7 @@ package org.ogf.saga.apps.shell.command;
 import java.util.List;
 
 import org.ogf.saga.apps.shell.Environment;
+import org.ogf.saga.apps.shell.FlagsParser;
 import org.ogf.saga.apps.shell.Util;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.file.Directory;
@@ -10,12 +11,15 @@ import org.ogf.saga.url.URL;
 
 public class ListDirectory extends EnvironmentCommand {
 
+    private static final char FLAG_LONG = 'l';
+    private static final String ALL_FLAGS = "" + FLAG_LONG;
+    
     public ListDirectory(Environment env) {
         super(env);
     }
 
     public String getHelpArguments() {
-        return "[-l]";
+        return "[" + FlagsParser.FLAG_PREFIX + ALL_FLAGS + "]";
     }
 
     public String getHelpExplanation() {
@@ -23,12 +27,15 @@ public class ListDirectory extends EnvironmentCommand {
     }
 
     public void execute(String[] args) {
-        if (args.length > 2 || (args.length == 2 && !args[1].equals("-l"))) {
+        FlagsParser flagsParser = new FlagsParser(ALL_FLAGS);
+        int index = flagsParser.parse(args, 1);
+        
+        if (index != args.length) {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;
         }
 
-        boolean longFormat = args.length == 2 && args[1].equals("-l");
+        boolean longFormat = flagsParser.getBooleanValue(FLAG_LONG);
 
         Directory cwd = env.getCwd();
 

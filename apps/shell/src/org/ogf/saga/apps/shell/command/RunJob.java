@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import org.ogf.saga.apps.shell.Environment;
+import org.ogf.saga.apps.shell.FlagsParser;
 import org.ogf.saga.apps.shell.StreamPrinter;
 import org.ogf.saga.apps.shell.Util;
 import org.ogf.saga.error.BadParameterException;
@@ -28,6 +29,10 @@ import org.slf4j.LoggerFactory;
 
 public class RunJob extends EnvironmentCommand {
 
+    private static final String FLAG_OUT = "out";
+    private static final String FLAG_ERR = "err";
+    private static final String[] ALL_FLAGS = { FLAG_OUT, FLAG_ERR };
+    
     private Logger logger = LoggerFactory.getLogger(RunJob.class);
     private ExecutorService executor;
 
@@ -39,7 +44,9 @@ public class RunJob extends EnvironmentCommand {
     }
 
     public String getHelpArguments() {
-        return "[-out file] [-err file] <executable> [arg]* [&]";
+        String prefix = FlagsParser.FLAG_PREFIX;
+        return "[" + prefix + FLAG_OUT + "] [" + prefix + FLAG_ERR
+                + " file] <executable> [arg]* [&]";
     }
 
     public String getHelpExplanation() {
@@ -47,43 +54,37 @@ public class RunJob extends EnvironmentCommand {
     }
 
     public void execute(String[] args) {
+        FlagsParser flagsParser = new FlagsParser(ALL_FLAGS);
+        int execIndex = flagsParser.parse(args, 1);
+
         String exec = null;
         String[] arguments = null;
-        String output = null;
-        String error = null;
         TaskMode mode = TaskMode.SYNC;
 
-        try {
-            for (int i = 1; i < args.length; i++) {
-                if ("-out".equals(args[i])) {
-                    output = args[++i];
-                } else if ("-err".equals(args[i])) {
-                    error = args[++i];
-                } else {
-                    exec = args[i++];
-
-                    int end = args.length;
-                    if (i < end) {
-                        if ("&".equals(args[args.length - 1])) {
-                            mode = TaskMode.ASYNC;
-                            end--;
-                        }
-
-                        if (i < end) {
-                            arguments = Arrays.copyOfRange(args, i, end);
-                        }
-                    }
-                    break;
+        if (execIndex < args.length) {
+            exec = args[execIndex];
+            
+            if (execIndex < args.length - 1) {
+                int end = args.length;
+                if ("&".equals(args[args.length - 1])) {
+                    mode = TaskMode.ASYNC;
+                    end--;
+                }
+                if (execIndex + 1 < end) {
+                    arguments = Arrays.copyOfRange(args, execIndex + 1, end);
                 }
             }
-        } catch (ArrayIndexOutOfBoundsException ignored) {
-            // wrong number of arguments
         }
-
-        logger.debug("executable=" + exec + ", args="
-                + Arrays.toString(arguments) + ", output=" + output
-                + ", error=" + error + ", mode=" + mode);
-
+        
+        String output = flagsParser.getStringValue(FLAG_OUT);
+        String error = flagsParser.getStringValue(FLAG_ERR);
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("executable=" + exec + ", args="
+                    + Arrays.toString(arguments) + ", output=" + output
+                    + ", error=" + error + ", mode=" + mode);
+        }
+        
         if (exec == null) {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             return;

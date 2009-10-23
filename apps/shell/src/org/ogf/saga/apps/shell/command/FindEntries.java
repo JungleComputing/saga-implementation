@@ -3,6 +3,7 @@ package org.ogf.saga.apps.shell.command;
 import java.util.List;
 
 import org.ogf.saga.apps.shell.Environment;
+import org.ogf.saga.apps.shell.FlagsParser;
 import org.ogf.saga.apps.shell.Util;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.file.Directory;
@@ -11,14 +12,15 @@ import org.ogf.saga.url.URL;
 
 public class FindEntries extends EnvironmentCommand {
 
-    private static final String PARAM_RECURSIVE = "-r";
+    private static final char FLAG_RECURSIVE = 'r';
+    private static final String ALL_FLAGS = "" + FLAG_RECURSIVE;
     
     public FindEntries(Environment env) {
         super(env);
     }
 
     public String getHelpArguments() {
-        return "[" + PARAM_RECURSIVE + "] <pattern>";
+        return "[" + FlagsParser.FLAG_PREFIX + ALL_FLAGS + "] <pattern>";
     }
 
     public String getHelpExplanation() {
@@ -26,10 +28,10 @@ public class FindEntries extends EnvironmentCommand {
     }
 
     public void execute(String[] args) {
-        int flags = Flags.NONE.getValue();
+        FlagsParser flagsParser = new FlagsParser(ALL_FLAGS);
+        int patternIndex = flagsParser.parse(args, 1);
         
-        if (args.length < 2 || args.length > 3 ||
-            (args.length == 3 && !PARAM_RECURSIVE.equals(args[1]))) {
+        if (args.length - patternIndex != 1) {
             System.err.println("usage: " + args[0] + " " + getHelpArguments());
             System.err.println("available wildcard patterns:");
             System.err.println(" *      : matches any string");
@@ -42,10 +44,12 @@ public class FindEntries extends EnvironmentCommand {
             return;
         }
         
-        if (args.length == 3) {
+        int flags = Flags.NONE.getValue();
+        if (flagsParser.getBooleanValue(FLAG_RECURSIVE)) {
             flags = Flags.RECURSIVE.getValue();
         }
-        String pattern = args[args.length - 1];
+        
+        String pattern = args[patternIndex];
 
         Directory cwd = env.getCwd();
 

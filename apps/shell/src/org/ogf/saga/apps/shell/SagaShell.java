@@ -56,7 +56,7 @@ public class SagaShell {
         commands.put("mkdir", new MakeDirectory(env));
         commands.put("cp", new CopyEntry(env));
         commands.put("mv", new MoveEntry(env));
-        commands.put("rm", new RemoveEntry(env));
+        commands.put("rm", new RemoveEntry(env, console));
         commands.put("cat", new PrintFile(env));
         commands.put("prm", new PrintResourceManager(env));
         commands.put("crm", new ChangeResourceManager(env));
