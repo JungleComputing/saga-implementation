@@ -4,6 +4,7 @@ import org.ogf.saga.apps.shell.Environment;
 import org.ogf.saga.apps.shell.Util;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.file.Directory;
+import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class ChangeWorkingDirectory extends EnvironmentCommand {
 
         try {
             URL newDirUrl = URLFactory.createURL(newDir);
-            newCwd = cwd.openDirectory(newDirUrl);
+            newCwd = cwd.openDirectory(newDirUrl, Flags.READWRITE.getValue());
         } catch (SagaException e) {
             Util.printSagaException(e);
             return;

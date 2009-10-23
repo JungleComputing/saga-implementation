@@ -9,6 +9,7 @@ import org.ogf.saga.file.Directory;
 import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.job.JobFactory;
 import org.ogf.saga.job.JobService;
+import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.task.TaskContainer;
@@ -36,7 +37,7 @@ public class Environment {
         URI userDirUri = userDir.toURI();
         URL cwdUrl = URLFactory.createURL("file://localhost");
         cwdUrl.setPath(userDirUri.getPath());
-        cwd = FileFactory.createDirectory(cwdUrl);
+        cwd = FileFactory.createDirectory(cwdUrl, Flags.READWRITE.getValue());
 
         // initialize the manager for running jobs and discovering resources
         resourceManager = URLFactory.createURL("local://localhost");
