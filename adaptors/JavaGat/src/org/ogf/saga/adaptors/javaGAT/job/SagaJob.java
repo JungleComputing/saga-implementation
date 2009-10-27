@@ -500,14 +500,14 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
     @Override
     public void run() throws NotImplementedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        synchronized (this) {
-            if (state != State.NEW) {
-                throw new IncorrectStateException(
-                        "run() called on job in state " + state, this);
-            }
-
-            setState(State.RUNNING);
+        
+        if (state != State.NEW) {
+            throw new IncorrectStateException(
+                    "run() called on job in state " + state, this);
         }
+
+        setState(State.RUNNING);
+
         try {
             gatJob = service.broker.submitJob(gatJobDescription, this,
                     "job.status");
@@ -540,12 +540,13 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         }
     }
 
-    public synchronized void processMetricEvent(MetricEvent val) {
+    public void processMetricEvent(MetricEvent val) {
         JobState gatState = (JobState) val.getValue();
         if (gatState == savedState) {
             return;
         }
         savedState = gatState;
+
         Map<String, Object> info = null;
         if (logger.isDebugEnabled()) {
             logger.debug("processMetricEvent: " + val);
@@ -559,9 +560,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             if (info != null) {
                 logger.debug("processMetricEvent: info = " + info);
             }
-            logger.debug("state = " + gatState);
+            logger.debug("state = " + savedState);
         }
-        switch (gatState) {
+        switch (savedState) {
         case ON_HOLD:
             setState(State.SUSPENDED);
             setDetail("ON_HOLD");
@@ -615,7 +616,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             setDetail("STOPPED");
             if (state == State.RUNNING) {
                 setState(State.DONE);
-                notifyAll();
+                synchronized(this) {
+                    notifyAll();
+                }
             }
             if (info != null) {
                 Long l = (Long) info.get("stoptime");
@@ -640,7 +643,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             setDetail("SUBMISSION_ERROR");
             setException(new NoSuccessException("Submission error", this));
             setState(State.FAILED);
-            notifyAll();
+            synchronized(this) {
+                notifyAll();
+            }
             break;
         }
     }

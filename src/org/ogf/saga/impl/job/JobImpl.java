@@ -98,9 +98,11 @@ public abstract class JobImpl extends
         jobPerformance = metricImpls.get(JOB_PERFORMANCE);
     }
 
-    protected synchronized void setState(State value) {
-        setStateValue(value);
-        notifyAll();
+    protected void setState(State value) {
+        synchronized(this) {
+            setStateValue(value);
+            notifyAll();
+        }
         try {
             if (value == State.DONE || value == State.FAILED
                     || value == State.CANCELED) {
