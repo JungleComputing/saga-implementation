@@ -13,6 +13,7 @@
 	<ant dir="XMLRPC" />
 	<ant dir="Generic" />
    	<ant dir="Local" />
+    <ant dir="Archive" />
     </target>
 
     <target name="clean" description="clean up">
@@ -22,6 +23,7 @@
 	<ant dir="XMLRPC" target="clean" />
 	<ant dir="Generic" target="clean" />
    	<ant dir="Local" target="clean" />
+    <ant dir="Archive" target="clean" />
     </target>
 
     <target name="gridsam" description="build Gridsam adaptors">
@@ -46,6 +48,10 @@
 
     <target name="local" description="build Local adaptors">
 	<ant dir="Local"/>
+    </target>
+
+    <target name="archive" description="build Archive adaptors">
+    <ant dir="Archive"/>
     </target>
 
 </project>
