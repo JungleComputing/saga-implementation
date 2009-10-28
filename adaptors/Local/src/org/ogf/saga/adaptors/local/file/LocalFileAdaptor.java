@@ -9,7 +9,9 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.util.List;
 
-import org.ogf.saga.adaptors.local.namespace.NSEntryAdaptor;
+import org.ogf.saga.adaptors.local.AdaptorTool;
+import org.ogf.saga.adaptors.local.LocalAdaptorTool;
+import org.ogf.saga.adaptors.local.namespace.LocalNSEntryAdaptor;
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -32,28 +34,36 @@ import org.ogf.saga.url.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileAdaptor extends FileAdaptorBase {
+public class LocalFileAdaptor extends FileAdaptorBase {
 
     private static final String FILE_ACCESS_NOT_IMPLEMENTED = 
         "Access of file contents is not implemented";
     private static final Logger logger = LoggerFactory
-            .getLogger(FileAdaptor.class);
+            .getLogger(LocalFileAdaptor.class);
     
-    private NSEntryAdaptor entry;
+    private LocalNSEntryAdaptor entry;
     private FileChannel channel;
     private WeakReference<ByteBuffer> cachedByteBuffer;
     
-    public FileAdaptor(FileWrapper wrapper, SessionImpl sessionImpl, URL name,
+    public LocalFileAdaptor(FileWrapper wrapper, SessionImpl session, URL name,
             int flags) throws NotImplementedException, IncorrectURLException,
             BadParameterException, DoesNotExistException,
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
+        this(wrapper, session, name, flags, LocalAdaptorTool.getInstance());
+    }
+    
+    public LocalFileAdaptor(FileWrapper wrapper, SessionImpl session, URL name,
+            int flags, AdaptorTool tool) throws NotImplementedException,
+            IncorrectURLException, BadParameterException,
+            DoesNotExistException, PermissionDeniedException,
+            AuthorizationFailedException, AuthenticationFailedException,
+            TimeoutException, NoSuccessException, AlreadyExistsException {
+        
+        super(wrapper, session, name, flags);
 
-        super(wrapper, sessionImpl, name, flags);
-
-        entry = new NSEntryAdaptor(null, sessionImpl, name, flags
-                & Flags.ALLNAMESPACEFLAGS.getValue());
+        entry = createNSEntryAdaptor(session, name, flags, false, tool); 
         
         // determine read/write mode
         String mode = null;
@@ -94,10 +104,21 @@ public class FileAdaptor extends FileAdaptorBase {
         }
     }
 
+    protected LocalNSEntryAdaptor createNSEntryAdaptor(SessionImpl session,
+            URL name, int flags, boolean isDir, AdaptorTool tool)
+            throws NotImplementedException, IncorrectURLException,
+            BadParameterException, DoesNotExistException,
+            PermissionDeniedException, AuthorizationFailedException,
+            AuthenticationFailedException, TimeoutException,
+            NoSuccessException, AlreadyExistsException {
+        return new LocalNSEntryAdaptor(null, session, name, flags
+                & Flags.ALLNAMESPACEFLAGS.getValue(), isDir, tool);
+    }
+    
     @Override
     public Object clone() throws CloneNotSupportedException {
-        FileAdaptor clone = (FileAdaptor) super.clone();
-        clone.entry = (NSEntryAdaptor) entry.clone();
+        LocalFileAdaptor clone = (LocalFileAdaptor) super.clone();
+        clone.entry = (LocalNSEntryAdaptor) entry.clone();
         clone.entry.setWrapper(clone.wrapper);
         return clone;
     }

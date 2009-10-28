@@ -3,21 +3,28 @@ package org.ogf.saga.adaptors.local;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Collection;
-import java.util.HashSet;
 
 import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.url.URL;
 
-public class LocalAdaptor {
+public class URLChecker {
 
-    private static final Collection<String> ACCEPTED_SCHEMES = new HashSet<String>(
-            3);
-    static {
-        ACCEPTED_SCHEMES.add("file");
-        ACCEPTED_SCHEMES.add("local");
-        ACCEPTED_SCHEMES.add("any");
-    }
+    private Collection<String> validSchemes;
+    private String adaptorName;
     
+    /**
+     * Creates a new URL checker.
+     * 
+     * @param validSchemes
+     *            the URL schemes that are considered valid
+     * @param adaptorName
+     *            the name of the adaptor that uses this URL checker (used in
+     *            the exception messages)
+     */
+    public URLChecker(Collection<String> validSchemes, String adaptorName) {
+        this.validSchemes = validSchemes;
+        this.adaptorName = adaptorName;
+    }
     
     private static String getLocalHostName() {
         try {
@@ -78,7 +85,7 @@ public class LocalAdaptor {
      * Extensive check whether the URL refers to the local machine. This method
      * checks for the hostname "localhost", the short hostname, the full
      * hostname and the ip address. When the URL specifies a port number, it may
-     * in fact be a tunnel and this call will return FALSE.
+     * in fact be a tunnel and this call will return <tt>false</tt>.
      * 
      * @return true if the URI refers to the localhost, false otherwise.
      */
@@ -125,30 +132,30 @@ public class LocalAdaptor {
         return false;
     }
 
-    
     /**
-     * Check if the given URL is accepted by the local adaptor. We only
-     * accept absolute URLs with a scheme 'local', 'file', or 'any', or relative
-     * URLs (who's path is then considered to be local).
+     * Check if the given URL is acceptable. We only accept absolute URLs with
+     * one of the valid schemes, or relative URLs (who's path is then considered
+     * to be local).
      * 
      * @param u
      *            the URL to check
      * @throws IncorrectURLException
-     *             if the URL is not accepted as a base URL.
+     *             if the URL is not acceptable
      */
-    public static void checkURL(URL u) throws IncorrectURLException {
+    public void check(URL u) throws IncorrectURLException {
         if (u.isAbsolute()) {
             String scheme = u.getScheme();
-            if (!ACCEPTED_SCHEMES.contains(scheme)) {
+            if (!validSchemes.contains(scheme)) {
                 throw new IncorrectURLException("Unknown scheme: '" + scheme
-                        + "', local adaptor only accepts "
-                        + ACCEPTED_SCHEMES);
+                        + "', the " + adaptorName + " adaptor only accepts "
+                        + validSchemes);
             }
-            
-            if (! refersToLocalHost(u)) {
-                throw new IncorrectURLException("URL does not refer to local host");
+
+            if (!refersToLocalHost(u)) {
+                throw new IncorrectURLException(
+                        "URL does not refer to local host");
             }
-    
+
             String path = u.getPath();
             if (path == null || path.isEmpty()) {
                 throw new IncorrectURLException("Path is empty");
