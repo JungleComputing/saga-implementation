@@ -103,7 +103,6 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      * 
      * @see org.ogf.saga.isn.EntityDataSet#getData()
      */
-    @Override
     public Set<EntityData> getData() {
         return m_proxy.getData();
     }
@@ -114,7 +113,6 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      * @see org.ogf.saga.isn.EntityDataSet#getRelatedEntities(java.lang.String,
      *      java.lang.String)
      */
-    @Override
     public EntityDataSet getRelatedEntities(String relatedName, String filter) throws BadParameterException,
             NoSuccessException {
         if (relatedName == null || relatedName.equals("") || !listRelatedEntityNames().contains(relatedName)) {
@@ -129,7 +127,6 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      * 
      * @see org.ogf.saga.isn.EntityDataSet#getRelatedEntities(java.lang.String)
      */
-    @Override
     public EntityDataSet getRelatedEntities(String relatedName) throws BadParameterException, NoSuccessException {
         if (relatedName == null || relatedName.equals("") || !listRelatedEntityNames().contains(relatedName)) {
             throw new BadParameterException("Invalid entity name: " + relatedName);
@@ -143,7 +140,6 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
      * 
      * @see org.ogf.saga.isn.EntityDataSet#listRelatedEntityNames()
      */
-    @Override
     public List<String> listRelatedEntityNames() {
         return m_proxy.listRelatedEntityNames();
     }

@@ -58,7 +58,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#existsAttribute(java.lang.String)
      */
-    @Override
     public boolean existsAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
         return m_attributes.existsAttribute(key);
@@ -69,7 +68,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#findAttributes(java.lang.String[])
      */
-    @Override
     public String[] findAttributes(String... patterns) throws NotImplementedException, BadParameterException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException, TimeoutException,
             NoSuccessException {
@@ -81,7 +79,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#getAttribute(java.lang.String)
      */
-    @Override
     public String getAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, DoesNotExistException,
             TimeoutException, NoSuccessException {
@@ -93,7 +90,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#getVectorAttribute(java.lang.String)
      */
-    @Override
     public String[] getVectorAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, DoesNotExistException,
             TimeoutException, NoSuccessException {
@@ -105,7 +101,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#isReadOnlyAttribute(java.lang.String)
      */
-    @Override
     public boolean isReadOnlyAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException,
             NoSuccessException {
@@ -117,7 +112,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#isRemovableAttribute(java.lang.String)
      */
-    @Override
     public boolean isRemovableAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException,
             NoSuccessException {
@@ -129,7 +123,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#isVectorAttribute(java.lang.String)
      */
-    @Override
     public boolean isVectorAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException,
             NoSuccessException {
@@ -141,7 +134,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#isWritableAttribute(java.lang.String)
      */
-    @Override
     public boolean isWritableAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException,
             NoSuccessException {
@@ -153,7 +145,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#listAttributes()
      */
-    @Override
     public String[] listAttributes() throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, TimeoutException, NoSuccessException {
         return m_attributes.listAttributes();
@@ -164,7 +155,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * 
      * @see org.ogf.saga.attributes.Attributes#removeAttribute(java.lang.String)
      */
-    @Override
     public void removeAttribute(String key) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, DoesNotExistException, TimeoutException,
             NoSuccessException {
@@ -177,7 +167,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * @see org.ogf.saga.attributes.Attributes#setAttribute(java.lang.String,
      *      java.lang.String)
      */
-    @Override
     public void setAttribute(String key, String value) throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException, IncorrectStateException, BadParameterException,
             DoesNotExistException, TimeoutException, NoSuccessException {
@@ -190,7 +179,6 @@ public final class EntityDataImpl extends SagaObjectBase implements EntityData {
      * @see org.ogf.saga.attributes.Attributes#setVectorAttribute(java.lang.String,
      *      java.lang.String[])
      */
-    @Override
     public void setVectorAttribute(String key, String[] values) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, BadParameterException, DoesNotExistException, TimeoutException, NoSuccessException {
