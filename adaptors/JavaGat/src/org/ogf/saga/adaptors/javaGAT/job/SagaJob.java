@@ -454,6 +454,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             throw new IncorrectStateException(
                     "cancel() called on job in state New", this);
         }
+        if (isDone()) {
+            return;
+        }
         try {
             gatJob.stop();
         } catch (GATInvocationException e) {
@@ -462,6 +465,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             throw new NotImplementedException("cancel() not implemented", e, this);
         }
         setState(State.CANCELED);
+
     }
 
     @Override
