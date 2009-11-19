@@ -352,7 +352,7 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
                 keys.add(key);
             } catch (Throwable e) {
                 // ignored
-                e.printStackTrace();
+                // e.printStackTrace();
             }
         }
 
