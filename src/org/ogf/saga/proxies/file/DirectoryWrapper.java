@@ -258,10 +258,9 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(directoryFlags)) {
-            throw new PermissionDeniedException(
-                    "openFile with CREATE flag "
-                            + "on Directory not opened for writing", this);
+        if (Flags.CREATE.isSet(flags)) {
+            // GFD.90 erratum: CREATE implies WRITE
+            flags |= Flags.WRITE.getValue();
         }
         name = resolveToDir(name);
         return FileWrapperFactory.createFile(sessionImpl, name, flags);
