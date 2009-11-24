@@ -30,9 +30,13 @@ public abstract class JobServiceAdaptorBase extends
     protected URL rm;
 
     public JobServiceAdaptorBase(JobServiceWrapper wrapper,
-            SessionImpl sessionImpl, URL rm) {
+            SessionImpl sessionImpl, URL rm) throws NoSuccessException {
         super(sessionImpl, wrapper);
-        this.rm = rm;
+        try {
+            this.rm = (URL) rm.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new NoSuccessException("Should not happen", e, wrapper);
+        }
     }
 
     List<String> getCommandLineElements(String commandLine) {
