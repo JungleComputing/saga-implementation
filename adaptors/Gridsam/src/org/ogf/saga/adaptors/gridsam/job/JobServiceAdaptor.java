@@ -51,7 +51,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
             throw new IncorrectURLException("Wrong scheme for gridsam adaptor",
                     wrapper);
         }
-        url = rm.toString();
+        url = this.rm.toString();
         try {
             jobManager = new ClientSideJobManager(new String[] { "-s", url },
                     ClientSideJobManager.getStandardOptions());
