@@ -11,6 +11,7 @@ Contents
    - help
    - exit
    - #
+   - <tab>
 3. Context management commands
    - addc
    - lsc
@@ -18,6 +19,7 @@ Contents
 4. File browsing commands
    - pwd
    - ls
+   - find
    - cd
    - touch
    - mkdir
@@ -141,8 +143,23 @@ current working directory is 'file://localhost/home/john'.
   Prints the current working directory.
   
 'ls'
+  Usage: ls [-l]
+  
   Lists all entries in the current working directory. The entries are sorted
-  alphabetically.
+  alphabetically. The optional '-l' parameter will also print the type and
+  size of each file. The type can be 'd' (directory) or '-' (non-directory).
+  The size of each file is in bytes.
+  
+  Examples:
+  
+  $ ls
+  bar.txt
+  dir
+  foo.txt
+  $ ls -l
+  -        4 bar.txt
+  d          dir
+  -        4 foo.txt
 
 'find'
   Usage: find [-r] <pattern>
