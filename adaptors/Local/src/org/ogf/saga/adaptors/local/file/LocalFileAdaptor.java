@@ -316,7 +316,7 @@ public class LocalFileAdaptor extends FileAdaptorBase {
                 
         int bytesWritten = 0;
         try {
-            bytesWritten = channel.write(byteBuf, len);
+            bytesWritten = channel.write(byteBuf);
         } catch (IOException e) {
             throw new SagaIOException(e, wrapper);
         }
