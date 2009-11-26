@@ -360,10 +360,16 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         String[] entries = dir.list();
 
         for (int i = 0; i < entries.length; i++) {
-            File entry = tool.createFile(entries[i]);
+            File entry = tool.createFile(dir, entries[i]);
 
             if (entry.isDirectory()) {
                 if (!removeRecursively(entry)) {
+                    logger.debug("Could not remove dir {}", entry);
+                    return false;
+                }
+            } else {
+                if (!entry.delete()) {
+                    logger.debug("Could not remove file {}", entry);
                     return false;
                 }
             }
