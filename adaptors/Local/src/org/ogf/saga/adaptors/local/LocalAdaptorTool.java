@@ -108,7 +108,7 @@ public class LocalAdaptorTool implements AdaptorTool {
             }
         } catch (IOException e) {
             throw new NoSuccessException("Error during local copy from '" + from
-                    + "' to '" + to + "'");
+                    + "' to '" + to + "'", e);
         }
     }
     
