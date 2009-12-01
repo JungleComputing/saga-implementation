@@ -438,7 +438,6 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             }
 
             targetEntry.remove(flags);
-            targetEntry.close(0);
         }
     }
 
