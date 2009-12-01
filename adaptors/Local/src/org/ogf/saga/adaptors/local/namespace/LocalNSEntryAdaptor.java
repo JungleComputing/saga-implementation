@@ -368,6 +368,8 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
                     return false;
                 }
             } else {
+                logger.debug("Removing '{}'", entry);
+                
                 if (!entry.delete()) {
                     logger.debug("Could not remove file {}", entry);
                     return false;
@@ -375,6 +377,7 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
             }
         }
 
+        logger.debug("Removing '{}'", dir);
         return dir.delete();
     }
 
