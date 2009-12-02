@@ -71,6 +71,12 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
     }
 
     @Override
+    public void setWrapper(NSDirectoryWrapper wrapper) {
+        super.setWrapper(wrapper);
+        entry.setWrapper(wrapper);
+    }
+
+    @Override
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
         super.close(timeoutInSeconds);
@@ -318,12 +324,6 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         return f;
     }
     
-    @Override
-    public void setWrapper(NSDirectoryWrapper wrapper) {
-        super.setWrapper(wrapper);
-        entry.setWrapper(wrapper);
-    }
-
     public boolean isLink(URL name) throws NotImplementedException,
             IncorrectURLException, DoesNotExistException,
             AuthenticationFailedException, AuthorizationFailedException,
