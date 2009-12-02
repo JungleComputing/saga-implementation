@@ -64,6 +64,10 @@ public class LocalDirectoryAdaptor extends DirectoryAdaptorBase {
     @Override
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
+        if (isClosed()) {
+            return;
+        }
+        
         super.close(timeoutInSeconds);
         dir.close(timeoutInSeconds);
     }
