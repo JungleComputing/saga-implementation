@@ -42,7 +42,6 @@ public class SagaObjectBase implements SagaObject {
 
     public Object clone() throws CloneNotSupportedException {
         SagaObjectBase clone = (SagaObjectBase) super.clone();
-        // Should we generate a new uuid here ??? I think yes.
         // Note: session should not get cloned! According to the SAGA
         // specs, it gets "shallow copied", which means that the
         // object reference is copied.
