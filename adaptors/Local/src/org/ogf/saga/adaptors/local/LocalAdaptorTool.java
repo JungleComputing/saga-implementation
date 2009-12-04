@@ -1,5 +1,6 @@
 package org.ogf.saga.adaptors.local;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -93,22 +94,58 @@ public class LocalAdaptorTool implements AdaptorTool {
     public void copyBytes(File from, File to) throws NoSuccessException {
         logger.debug("Local copy from '{}' to '{}'", from, to);
         
+        FileInputStream fin = null;
+        FileOutputStream fout = null;
+        FileChannel fromChannel = null;
+        FileChannel toChannel = null;
+
         try {
-            FileChannel fromChannel = null;
-            FileChannel toChannel = null;
+            fin = new FileInputStream(from);
+            fout = new FileOutputStream(to);
+            
+            fromChannel = fin.getChannel();
+            toChannel = fout.getChannel();
+            boolean useNioCopy = true;
+            
+            // NIO copy does not always work, so first try to transfer 1 byte
             try {
-                fromChannel = new FileInputStream(from).getChannel();
-                toChannel = new FileOutputStream(to).getChannel();
-                fromChannel.transferTo(0, fromChannel.size(), toChannel);
-            } finally {
-                if (fromChannel != null)
-                    fromChannel.close();
-                if (toChannel != null)
-                    toChannel.close();
+                fromChannel.transferTo(0, 1, toChannel);
+            } catch (IOException e) {
+                useNioCopy = false;
+            }
+            
+            if (useNioCopy) {
+                if (from.length() > 1) {
+                    // transfer the remaining bytes
+                    logger.debug("Using NIO file copy");
+                    fromChannel.transferTo(1, fromChannel.size(), toChannel);
+                }
+            } else {
+                logger.debug("Using normal file copy");
+                byte[] buf = new byte[1024 * 32];
+                int readBytes = 0;
+                while ((readBytes = fin.read(buf)) != -1) {
+                    fout.write(buf, 0, readBytes);
+                }
             }
         } catch (IOException e) {
             throw new NoSuccessException("Error during local copy from '" + from
                     + "' to '" + to + "'", e);
+        } finally {
+            forceClose(fromChannel);
+            forceClose(toChannel);
+            forceClose(fin);
+            forceClose(fout);
+        }
+    }
+    
+    private void forceClose(Closeable c) {
+        try {
+            if (c != null) {
+                c.close();
+            }
+        } catch (IOException e) {
+            logger.debug("Error during close", e); 
         }
     }
     
