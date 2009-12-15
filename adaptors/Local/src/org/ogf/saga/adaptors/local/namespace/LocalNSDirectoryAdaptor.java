@@ -150,25 +150,31 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
 
         URL resolvedSource = resolveToDir(source);
         URL resolvedTarget = resolveToDir(target);
-
-        LocalNSEntryAdaptor sourceEntry = createNSEntryAdaptor(sessionImpl,
-                resolvedSource, Flags.NONE.getValue(), isDir(source),
-                entry.tool);
-
-        entry.tool.checkURL(resolvedTarget);
-        File targetFile = sourceEntry.resolve(resolvedTarget.getPath());
-        NSEntryData targetData = new NSEntryData(resolvedTarget, targetFile);
         
-        switch(operation) {
-        case COPY:
-            sourceEntry.nonResolvingCopy(targetData, flags);
-            break;
-        case MOVE:
-            sourceEntry.nonResolvingMove(targetData, flags);
-            break;
-        }
+        LocalNSEntryAdaptor sourceEntry = null;
+        File targetFile = null;
         
-        sourceEntry.close(0);
+        try {
+            sourceEntry = createNSEntryAdaptor(sessionImpl, resolvedSource, 
+                    Flags.NONE.getValue(), isDir(source), entry.tool);
+    
+            entry.tool.checkURL(resolvedTarget);
+            
+            targetFile = sourceEntry.resolve(resolvedTarget.getPath());
+            NSEntryData targetData = new NSEntryData(resolvedTarget, targetFile);
+            
+            switch(operation) {
+            case COPY:
+                sourceEntry.nonResolvingCopy(targetData, flags);
+                break;
+            case MOVE:
+                sourceEntry.nonResolvingMove(targetData, flags);
+                break;
+            }
+        } finally {
+            sourceEntry.close(0);
+            entry.tool.close(targetFile);
+        }        
     }
     
     public void copy(String source, URL target, int flags)
@@ -219,18 +225,21 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                     resolvedUrl, Flags.NONE.getValue(), isDir(sourceUrl),
                     entry.tool);
 
-            NSEntryData targetData = new NSEntryData(target, targetFile);
-            
-            switch(operation) {
-            case COPY:
-                sourceEntry.nonResolvingCopy(targetData, flags);
-                break;
-            case MOVE:
-                sourceEntry.nonResolvingMove(targetData, flags);
-                break;
+            try {
+                NSEntryData targetData = new NSEntryData(target, targetFile);
+                
+                switch(operation) {
+                case COPY:
+                    sourceEntry.nonResolvingCopy(targetData, flags);
+                    break;
+                case MOVE:
+                    sourceEntry.nonResolvingMove(targetData, flags);
+                    break;
+                }
+            } finally {            
+                sourceEntry.close(0);
+                entry.tool.close(targetFile);
             }
-            
-            sourceEntry.close(0);
         }
     }
     
