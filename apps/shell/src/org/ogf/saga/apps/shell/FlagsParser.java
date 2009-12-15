@@ -76,6 +76,7 @@ public class FlagsParser {
                 String arg = args[i].substring(1);
 
                 if (arg.isEmpty()) {
+                    // single '-' (an unknown flag): stop parsing
                     return i;
                 } else if (i < args.length - 1 && stringFlags.contains(arg)) {
                     // parse a string argument
@@ -92,6 +93,9 @@ public class FlagsParser {
                             if (!parsedBooleans.add(flag)) {
                                 return i;
                             }
+                        } else {
+                            // unknown boolean flag, stop parsing
+                            return i;
                         }
                     }
                 }
