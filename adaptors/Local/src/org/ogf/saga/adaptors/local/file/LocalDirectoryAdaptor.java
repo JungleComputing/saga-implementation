@@ -92,8 +92,11 @@ public class LocalDirectoryAdaptor extends DirectoryAdaptorBase {
         name = resolveToDir(name);
 
         File f = new File(name.getPath());
-        
-        return f.length();
+        try {
+            return f.length();
+        } finally {
+            dir.getAdaptorTool().close(f);
+        }
     }
 
     public boolean isFile(URL name) throws NotImplementedException,
