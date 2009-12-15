@@ -123,6 +123,16 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         setEntryURL(nameUrl);
     }
     
+    public long getLength() {
+        return file.length();
+    }
+    
+    public RandomAccessFile createRandomAccessFile(String mode) 
+    throws FileNotFoundException 
+    {
+        return new RandomAccessFile(file, mode);
+    }
+    
     @Override
     public void close(float timeoutInSeconds) throws NotImplementedException,
             IncorrectStateException, NoSuccessException {
@@ -140,9 +150,13 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         tool.checkURL(target);
 
         File targetFile = resolve(target.getPath());
-        NSEntryData targetData = new NSEntryData(target, targetFile);
-
-        nonResolvingCopy(targetData, flags);
+        
+        try {
+            NSEntryData targetData = new NSEntryData(target, targetFile);
+            nonResolvingCopy(targetData, flags);
+        } finally {
+            tool.close(targetFile);
+        }
     }
 
     protected void nonResolvingCopy(NSEntryData target, int flags)
@@ -401,11 +415,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("Permissions are not supported");
-    }
-
-    public RandomAccessFile createRandomAccessFile(String mode)
-            throws FileNotFoundException {
-        return new RandomAccessFile(file, mode);
     }
 
 }
