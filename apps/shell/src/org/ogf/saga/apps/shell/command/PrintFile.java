@@ -1,14 +1,12 @@
 package org.ogf.saga.apps.shell.command;
 
-import java.io.IOException;
-
 import org.ogf.saga.apps.shell.Environment;
 import org.ogf.saga.apps.shell.Util;
+import org.ogf.saga.buffer.Buffer;
+import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.file.Directory;
-import org.ogf.saga.file.FileFactory;
-import org.ogf.saga.file.FileInputStream;
-import org.ogf.saga.namespace.NSEntry;
+import org.ogf.saga.file.File;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
@@ -34,40 +32,35 @@ public class PrintFile extends EnvironmentCommand {
             return;
         }
 
-        FileInputStream in = null;
+        File f = null;
 
         try {
             URL u = URLFactory.createURL(args[1]);
 
             Directory cwd = env.getCwd();
-            NSEntry entry = cwd.open(u);
-            in = FileFactory.createFileInputStream(entry.getURL());
-            
-            byte[] buf = new byte[READ_SIZE];
-            
-            int bytesRead = 0; 
+            f = cwd.openFile(u);
+
+            Buffer buf = BufferFactory.createBuffer(READ_SIZE);
+
+            int bytesRead = 0;
             do {
-                bytesRead = in.read(buf);
-                
+                bytesRead = f.read(buf);
                 if (bytesRead > 0) {
-                    String s = new String(buf, 0, bytesRead);
+                    String s = new String(buf.getData(), 0, bytesRead);
                     System.out.print(s);
                 }
-            } while (bytesRead >= 0);
+            } while (bytesRead > 0);
         } catch (SagaException e) {
             Util.printSagaException(e);
-        } catch (IOException e) {
-            System.err.println(e);
         } finally {
-            if (in != null) {
+            if (f != null) {
                 try {
-                    in.close();
-                } catch (IOException e) {
-                    System.err.println(e);
+                    f.close();
+                } catch (SagaException e) {
+                    Util.printSagaException(e);
                 }
             }
         }
-
     }
 
 }
