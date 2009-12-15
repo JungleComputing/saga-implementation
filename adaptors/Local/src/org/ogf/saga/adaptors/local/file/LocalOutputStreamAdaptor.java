@@ -24,6 +24,7 @@ import org.ogf.saga.url.URL;
 public class LocalOutputStreamAdaptor extends FileOutputStreamAdaptorBase {
 
     private OutputStream out;
+    private AdaptorTool tool;
     
     public LocalOutputStreamAdaptor(FileOutputStreamWrapper wrapper,
             SessionImpl session, URL source) throws NotImplementedException,
@@ -52,10 +53,12 @@ public class LocalOutputStreamAdaptor extends FileOutputStreamAdaptorBase {
         } catch (FileNotFoundException e) {
             throw new DoesNotExistException(source.toString());
         }
+        
+        this.tool = tool;
     }
     
     public void close() throws IOException {
-        out.close();
+        tool.close(out);
     }
 
     public void flush() throws IOException {
