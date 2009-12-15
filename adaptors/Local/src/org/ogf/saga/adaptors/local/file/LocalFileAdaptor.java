@@ -51,70 +51,52 @@ public class LocalFileAdaptor extends FileAdaptorBase {
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
-        this(wrapper, session, name, flags, LocalAdaptorTool.getInstance());
-    }
-    
-    public LocalFileAdaptor(FileWrapper wrapper, SessionImpl session, URL name,
-            int flags, AdaptorTool tool) throws NotImplementedException,
-            IncorrectURLException, BadParameterException,
-            DoesNotExistException, PermissionDeniedException,
-            AuthorizationFailedException, AuthenticationFailedException,
-            TimeoutException, NoSuccessException, AlreadyExistsException {
-        
+
         super(wrapper, session, name, flags);
 
-        entry = createNSEntryAdaptor(session, name, flags, false, tool); 
-        
-        // determine read/write mode
+        AdaptorTool tool = LocalAdaptorTool.getInstance();
+
+        entry = new LocalNSEntryAdaptor(null, session, name, flags
+                & Flags.ALLNAMESPACEFLAGS.getValue(), false, tool);
+
+        // determine open mode
         String mode = null;
-        if (Flags.READ.isSet(flags)) {
-            mode = "r";
-        }
+
         if (Flags.WRITE.isSet(flags)) {
             mode = "rw";
+        } else if (Flags.READ.isSet(flags)) {
+            mode = "r";
         }
 
         if (mode != null) {
-            // open the file, if needed.
             try {
-                logger.debug("Creating RandomAccessFile with mode '{}'", mode);
-                RandomAccessFile rf = entry.createRandomAccessFile(mode);
-                channel = rf.getChannel();
+                // open the file, if needed.
+                RandomAccessFile raf = entry.createRandomAccessFile(mode);
+                channel = raf.getChannel();
             } catch (FileNotFoundException e) {
                 throw new NoSuccessException("Cannot open file", e);
             }
-        }
 
-        if (channel != null) {
-            // truncate if needed.
-            if (Flags.TRUNCATE.isSet(flags)) {
-                try {
-                    channel.truncate(0);
-                } catch (IOException e) {
-                    throw new NoSuccessException("Truncate failed", e);
-                }
-            } else if (Flags.APPEND.isSet(flags)) {
-                try {
-                    long size = channel.size();
-                    channel.position(size);
-                } catch (IOException e) {
-                    throw new NoSuccessException("Append failed", e);
+            if (channel != null) {
+                // truncate if needed.
+                if (Flags.TRUNCATE.isSet(flags)) {
+                    try {
+                        channel.truncate(0);
+                    } catch (IOException e) {
+                        throw new NoSuccessException("Truncate failed", e);
+                    }
+                } else if (Flags.APPEND.isSet(flags)) {
+                    try {
+                        long size = channel.size();
+                        channel.position(size);
+                    } catch (IOException e) {
+                        throw new NoSuccessException("Append failed", e);
+                    }
                 }
             }
         }
     }
 
-    protected LocalNSEntryAdaptor createNSEntryAdaptor(SessionImpl session,
-            URL name, int flags, boolean isDir, AdaptorTool tool)
-            throws NotImplementedException, IncorrectURLException,
-            BadParameterException, DoesNotExistException,
-            PermissionDeniedException, AuthorizationFailedException,
-            AuthenticationFailedException, TimeoutException,
-            NoSuccessException, AlreadyExistsException {
-        return new LocalNSEntryAdaptor(null, session, name, flags
-                & Flags.ALLNAMESPACEFLAGS.getValue(), isDir, tool);
-    }
-    
     @Override
     public Object clone() throws CloneNotSupportedException {
         LocalFileAdaptor clone = (LocalFileAdaptor) super.clone();
@@ -136,7 +118,7 @@ public class LocalFileAdaptor extends FileAdaptorBase {
         if (cachedByteBuffer != null) {
             cachedByteBuffer.clear();
         }
-        
+    
         try {
             if (channel != null) {
                 channel.close();
