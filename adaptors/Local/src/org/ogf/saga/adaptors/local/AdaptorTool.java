@@ -2,6 +2,7 @@ package org.ogf.saga.adaptors.local;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -42,4 +43,8 @@ public interface AdaptorTool {
     
     public void close(File file) throws NoSuccessException;
     
+    public void close(InputStream in) throws IOException;
+
+    public void close(OutputStream out) throws IOException;
+
 }
