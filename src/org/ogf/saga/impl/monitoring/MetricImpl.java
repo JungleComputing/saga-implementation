@@ -90,6 +90,10 @@ public class MetricImpl extends SagaObjectBase implements
                 logger.warn("Callback throws exception", e);
                 // if callback throws an exception, keep the callback.
                 retval = true;
+            } catch(Throwable e) {
+                logger.warn("Callback throws non-saga-throwable", e);
+                // in this case, remove the callback.
+                retval = false;
             } finally {
                 synchronized (metricImpl) {
                     metricImpl.fireCount--;
