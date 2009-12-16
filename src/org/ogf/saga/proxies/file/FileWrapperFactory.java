@@ -94,26 +94,12 @@ public class FileWrapperFactory extends FileFactory {
     }
 
     protected org.ogf.saga.file.IOVec doCreateIOVec(byte[] data, int lenIn)
-            throws BadParameterException, NoSuccessException,
-            NotImplementedException {
+            throws BadParameterException, NoSuccessException {
         return new IOVecImpl(data, lenIn);
     }
 
     protected org.ogf.saga.file.IOVec doCreateIOVec(int size, int lenIn)
-            throws BadParameterException, NoSuccessException,
-            NotImplementedException {
+            throws BadParameterException, NoSuccessException {
         return new IOVecImpl(size, lenIn);
-    }
-
-    protected org.ogf.saga.file.IOVec doCreateIOVec(byte[] data)
-            throws BadParameterException, NoSuccessException,
-            NotImplementedException {
-        return new IOVecImpl(data);
-    }
-
-    protected org.ogf.saga.file.IOVec doCreateIOVec(int size)
-            throws BadParameterException, NoSuccessException,
-            NotImplementedException {
-        return new IOVecImpl(size);
     }
 }

@@ -113,7 +113,7 @@ public class SDAdaptorTest {
 	}
 	try {
 	    session.addContext(context);
-	} catch (NotImplementedException e) {
+	} catch (Throwable e) {
 	    throw new Error("Got exception while adding context to session:", e);
 	}
 	return session;

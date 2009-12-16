@@ -1,7 +1,6 @@
 package org.ogf.saga.proxies.file;
 
 import org.ogf.saga.error.BadParameterException;
-import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.buffer.BufferImpl;
 
 public class IOVecImpl extends BufferImpl implements org.ogf.saga.file.IOVec {
@@ -10,8 +9,7 @@ public class IOVecImpl extends BufferImpl implements org.ogf.saga.file.IOVec {
     private int lenOut = 0;
     private int offset = 0;
 
-    public IOVecImpl(byte[] data, int lenIn) throws NotImplementedException,
-            BadParameterException {
+    public IOVecImpl(byte[] data, int lenIn) throws BadParameterException {
         super(data);
         if (lenIn > size) {
             throw new BadParameterException(
@@ -20,24 +18,13 @@ public class IOVecImpl extends BufferImpl implements org.ogf.saga.file.IOVec {
         this.lenIn = lenIn;
     }
 
-    public IOVecImpl(int size, int lenIn) throws NotImplementedException,
-            BadParameterException {
+    public IOVecImpl(int size, int lenIn) throws BadParameterException {
         super(size);
         if (size >= 0 && lenIn > size) {
             throw new BadParameterException(
                     "lenIn is larger than the specified size");
         }
         this.lenIn = lenIn;
-    }
-
-    public IOVecImpl(byte[] data) throws BadParameterException,
-            NotImplementedException {
-        this(data, data.length);
-    }
-
-    public IOVecImpl(int size) throws BadParameterException,
-            NotImplementedException {
-        this(size, size);
     }
 
     public IOVecImpl(IOVecImpl orig) {

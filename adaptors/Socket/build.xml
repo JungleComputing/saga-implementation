@@ -46,7 +46,7 @@
 	<jar jarfile="${lib}/${adaptor}.jar" basedir="${tmp}" includes="**/socket/**/*.class,LICENSE.txt">
 	    <manifest>
 		<attribute name="StreamSpi-class" value="org.ogf.saga.adaptors.socket.stream.StreamAdaptor" />
-		<attribute name="StreamServiceSpi-class" value="org.ogf.saga.adaptors.socket.stream.StreamServiceAdaptor" />
+		<attribute name="StreamServerSpi-class" value="org.ogf.saga.adaptors.socket.stream.StreamServerAdaptor" />
 	    </manifest>
 	</jar>
 

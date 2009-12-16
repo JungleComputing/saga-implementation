@@ -37,8 +37,8 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             NoSuccessException {
         super(session, name, false);
         checkFlags(flags);
-        logicalFlags = flags;
-        Object[] parameters = { this, session, name, flags };
+        logicalFlags = includeImpliedFlags(flags);
+        Object[] parameters = { this, session, name, logicalFlags };
         try {
             proxy = (LogicalFileSPI) SAGAEngine.createAdaptorProxy(
                     LogicalFileSPI.class, new Class[] {
@@ -82,8 +82,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
     }
     
     private void checkFlags(int flags) throws BadParameterException {
-        int allowed = Flags.ALLNAMESPACEFLAGS.getValue()
-                | Flags.ALLLOGICALFILEFLAGS.getValue();
+        int allowed = Flags.ALLLOGICALFILEFLAGS.getValue();
         if ((flags | allowed) != allowed) {
             throw new BadParameterException("Illegal flags for logical file: "
                     + flags);

@@ -49,6 +49,8 @@ public class JobDescriptionAttributes extends AttributesImpl {
         }
         addAttribute(JobDescription.JOBSTARTTIME, AttributeType.INT, false,
                 false, false, false);
+        addAttribute(JobDescription.WALLTIMELIMIT, AttributeType.INT, false,
+                false, false, false);
         addAttribute(JobDescription.TOTALCPUTIME, AttributeType.INT, false,
                 false, false, false);
         addAttribute(JobDescription.TOTALPHYSICALMEMORY, AttributeType.FLOAT,
@@ -61,6 +63,8 @@ public class JobDescriptionAttributes extends AttributesImpl {
                 false, false, false);
         addAttribute(JobDescription.QUEUE, AttributeType.STRING, false, false,
                 false, false);
+        addAttribute(JobDescription.JOBPROJECT, AttributeType.STRING, false,
+                false, false, false);
         addAttribute(JobDescription.JOBCONTACT, AttributeType.STRING, true,
                 false, false, false);
     }

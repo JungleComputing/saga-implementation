@@ -40,13 +40,14 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         super(session, name);
-        directoryFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
-        if ((directoryFlags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
+
+        if ((flags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
                 .getValue()) {
             throw new BadParameterException(
                     "Illegal flags for Directory constructor: " + flags);
         }
-        Object[] parameters = { this, session, name, flags };
+        directoryFlags = includeImpliedFlags(flags);
+        Object[] parameters = { this, session, name, directoryFlags };
         try {
             proxy = (DirectorySPI) SAGAEngine.createAdaptorProxy(
                     DirectorySPI.class, new Class[] { DirectoryWrapper.class,
@@ -226,7 +227,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
         checkNotClosed();
         if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(directoryFlags)) {
             throw new PermissionDeniedException(
-                    "openDirirectory with CREATE flag "
+                    "openDirectory with CREATE flag "
                             + "on Directory not opened for writing", this);
         }
         name = resolveToDir(name);

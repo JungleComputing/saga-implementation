@@ -196,7 +196,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
     }
     
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         setClosed(true);
     }
 

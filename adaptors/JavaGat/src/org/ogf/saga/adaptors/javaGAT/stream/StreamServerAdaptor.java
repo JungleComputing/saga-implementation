@@ -25,13 +25,13 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.SessionImpl;
-import org.ogf.saga.proxies.stream.StreamServiceWrapper;
-import org.ogf.saga.spi.stream.StreamServiceAdaptorBase;
+import org.ogf.saga.proxies.stream.StreamServerWrapper;
+import org.ogf.saga.spi.stream.StreamServerAdaptorBase;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
-public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
+public class StreamServerAdaptor extends StreamServerAdaptorBase {
 
     static {
         Initialize.initialize();
@@ -40,12 +40,12 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
     private static float MINIMAL_TIMEOUT = 0.001f;
 
     private static Logger logger = LoggerFactory
-            .getLogger(StreamServiceAdaptor.class);
+            .getLogger(StreamServerAdaptor.class);
 
     private boolean active = false;
     private GATContext gatContext;
 
-    public StreamServiceAdaptor(StreamServiceWrapper wrapper,
+    public StreamServerAdaptor(StreamServerWrapper wrapper,
             SessionImpl sessionImpl, URL url) throws NotImplementedException,
             BadParameterException {
         super(wrapper, sessionImpl, url);
@@ -54,7 +54,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        StreamServiceAdaptor clone = (StreamServiceAdaptor) super.clone();
+        StreamServerAdaptor clone = (StreamServerAdaptor) super.clone();
         clone.gatContext = (GATContext) this.gatContext.clone();
         return clone;
     }
@@ -71,7 +71,7 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
     // side effects.
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         active = false;
     }
 

@@ -3,7 +3,6 @@ package org.ogf.saga.impl.buffer;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
-import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 
@@ -15,13 +14,7 @@ public class BufferImpl extends SagaObjectBase implements
     protected int size;
     protected boolean closed = false;
 
-    protected BufferImpl() throws NotImplementedException,
-            BadParameterException {
-        this(-1);
-    }
-
-    protected BufferImpl(int size) throws NotImplementedException,
-            BadParameterException {
+    protected BufferImpl(int size) throws BadParameterException {
         super((Session) null);
         try {
             setSize(size);
@@ -30,8 +23,7 @@ public class BufferImpl extends SagaObjectBase implements
         }
     }
 
-    protected BufferImpl(byte[] buf) throws BadParameterException,
-            NotImplementedException {
+    protected BufferImpl(byte[] buf) throws BadParameterException {
         super((Session) null);
         try {
             setData(buf);
@@ -52,17 +44,16 @@ public class BufferImpl extends SagaObjectBase implements
         }
     }
 
-    public void close() throws NotImplementedException {
+    public void close() {
+
+    }
+
+    public void close(float timeoutInSeconds) {
         buf = null;
         closed = true;
     }
 
-    public void close(float timeoutInSeconds) throws NotImplementedException {
-        close();
-    }
-
-    public byte[] getData() throws NotImplementedException,
-            DoesNotExistException, IncorrectStateException {
+    public byte[] getData() throws DoesNotExistException, IncorrectStateException {
         if (closed) {
             throw new IncorrectStateException("Buffer is closed");
         }
@@ -81,16 +72,14 @@ public class BufferImpl extends SagaObjectBase implements
         return implementationManaged;
     }
 
-    public int getSize() throws NotImplementedException,
-            IncorrectStateException {
+    public int getSize() throws IncorrectStateException {
         if (closed) {
             throw new IncorrectStateException("Buffer is closed");
         }
         return size;
     }
 
-    public void setData(byte[] data) throws NotImplementedException,
-            BadParameterException, IncorrectStateException {
+    public void setData(byte[] data) throws BadParameterException, IncorrectStateException {
         if (closed) {
             throw new IncorrectStateException("Buffer is closed");
         }
@@ -102,8 +91,7 @@ public class BufferImpl extends SagaObjectBase implements
         implementationManaged = false;
     }
 
-    public void setSize(int size) throws NotImplementedException,
-            BadParameterException, IncorrectStateException {
+    public void setSize(int size) throws BadParameterException, IncorrectStateException {
         if (closed) {
             throw new IncorrectStateException("Buffer is closed");
         }
@@ -117,8 +105,7 @@ public class BufferImpl extends SagaObjectBase implements
         }
     }
 
-    public void setSize() throws NotImplementedException,
-            BadParameterException, IncorrectStateException {
+    public void setSize() throws BadParameterException, IncorrectStateException {
         setSize(-1);
     }
 

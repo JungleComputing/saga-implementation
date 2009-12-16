@@ -39,10 +39,4 @@ public class RPCWrapperFactory extends RPCFactory {
             NotImplementedException {
         return new ParameterImpl(data, mode);
     }
-
-    protected org.ogf.saga.rpc.Parameter doCreateParameter(IOMode mode)
-            throws BadParameterException, NoSuccessException,
-            NotImplementedException {
-        return new ParameterImpl(mode);
-    }
 }

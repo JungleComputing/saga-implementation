@@ -159,7 +159,7 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
      *            seconds to wait.
      */
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException;
+            NoSuccessException;
 
     /**
      * Allows the specified permissions for the specified id. An id of "*"

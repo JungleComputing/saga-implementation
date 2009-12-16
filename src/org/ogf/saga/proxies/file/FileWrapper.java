@@ -40,11 +40,11 @@ public class FileWrapper extends NSEntryWrapper implements File {
             NoSuccessException {
         super(session, name, false);
         
-        fileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
+        fileFlags = includeImpliedFlags(flags);
         
         sanityCheck(flags);
 
-        Object[] parameters = { this, session, name, flags };
+        Object[] parameters = { this, session, name, fileFlags };
         try {
             proxy = (FileSPI) SAGAEngine.createAdaptorProxy(FileSPI.class,
                     new Class[] { FileWrapper.class,
@@ -97,23 +97,10 @@ public class FileWrapper extends NSEntryWrapper implements File {
         }
 
         // Sanity check 1: append and truncate?
-        if (Flags.APPEND.isSet(fileFlags)) {
-            if (Flags.TRUNCATE.isSet(fileFlags)) {
-                throw new BadParameterException("TRUNCATE and APPEND?");
-            }
+        if (Flags.APPEND.isSet(fileFlags) && Flags.TRUNCATE.isSet(fileFlags)) {
+            throw new BadParameterException("TRUNCATE and APPEND?");
         }
-
-        if (!Flags.WRITE.isSet(flags)) {
-            // Sanity check 2: truncate and not write?
-            if (Flags.TRUNCATE.isSet(fileFlags)) {
-                throw new BadParameterException("TRUNCATE and not WRITE?");
-            }
-
-            // Sanity check 3: append and not write?
-            if (Flags.APPEND.isSet(fileFlags)) {
-                throw new BadParameterException("APPEND and not WRITE?");
-            }
-        }
+        // Other sanity checks deleted: no longer applicable with new Saga specs.
     }
 
     public long getSize() throws NotImplementedException,

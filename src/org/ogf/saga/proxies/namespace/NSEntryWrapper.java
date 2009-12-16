@@ -42,6 +42,22 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     private boolean closed = false;
     private final boolean isDirectory;
     
+    protected int includeImpliedFlags(int flags) {
+        if (Flags.CREATEPARENTS.isSet(flags)) {
+            flags = Flags.CREATE.or(flags);
+        }
+        if (Flags.APPEND.isSet(flags)) {
+            flags = Flags.WRITE.or(flags);
+        }
+        if (Flags.TRUNCATE.isSet(flags)) {
+            flags = Flags.WRITE.or(flags);
+        }
+        if (Flags.CREATE.isSet(flags)) {
+            flags = Flags.WRITE.or(flags);
+        }
+        return flags;
+    }
+    
     public URL getWrapperURL() {
         return url;
     }
@@ -194,13 +210,12 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return clone;
     }
 
-    public void close() throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+    public void close() throws NotImplementedException, NoSuccessException {
         close(NO_WAIT);
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         if (! isClosed()) {
             proxy.close(timeoutInSeconds);
         }

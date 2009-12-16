@@ -32,8 +32,8 @@ public class ContextImpl extends SagaObjectBase implements
         }
     }
 
-    protected ContextImpl(String type) throws NotImplementedException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+    protected ContextImpl(String type) throws IncorrectStateException,
+            TimeoutException, NoSuccessException {
         super((Session) null);
 
         // Allow for a "preferences" extensible context. This allows for
@@ -50,7 +50,6 @@ public class ContextImpl extends SagaObjectBase implements
                 throw new NoSuccessException(
                         "Oops, could not set TYPE attribute", e);
             }
-            setDefaults();
         }
     }
 
@@ -77,14 +76,12 @@ public class ContextImpl extends SagaObjectBase implements
         return o;
     }
 
-    public void setDefaults() throws NotImplementedException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+    public void setDefaults() throws NoSuccessException {
         String type;
         try {
             type = attributes.getAttribute(TYPE);
         } catch (DoesNotExistException e1) {
-            throw new IncorrectStateException(
-                    "setDefaults called but TYPE attribute not set");
+            return;
         } catch (Throwable e) {
             // Should not happen.
             throw new SagaRuntimeException("could not get TYPE attribute", e);

@@ -5,14 +5,15 @@ import java.net.URISyntaxException;
 
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.session.Session;
+import org.ogf.saga.url.URL;
 import org.ogf.saga.impl.SagaObjectBase;
 
 /**
  * URL class as specified by SAGA. The java.net.URL class is not usable because
  * of all kinds of side-effects.
  */
-public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
-        Cloneable {
+public class URLImpl extends SagaObjectBase implements URL, Cloneable {
     private URI u;
 
     /**
@@ -39,7 +40,6 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
         URLImpl o = (URLImpl) super.clone();
         o.u = URI.create(u.toString());
         return o;
-
     }
 
     /*
@@ -54,7 +54,26 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
             throw new BadParameterException("syntax error in url", e);
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#setString()
+     */
+    public void setString() throws BadParameterException {
+        setString("");
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#getEscaped()
+     */
+    public String getEscaped() {
+        return toString();
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -70,7 +89,11 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
      * @see org.ogf.saga.url.URL#getFragment()
      */
     public String getFragment() {
-        return u.getFragment();
+        String fragment = u.getFragment();
+        if (fragment == null) {
+            return "";
+        }
+        return fragment;
     }
 
     /*
@@ -86,6 +109,15 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
             throw new BadParameterException("syntax error in fragment", e);
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#setFragment()
+     */
+    public void setFragment() throws BadParameterException {
+        setFragment("");
+    }
 
     /*
      * (non-Javadoc)
@@ -93,7 +125,11 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
      * @see org.ogf.saga.url.URL#getHost()
      */
     public String getHost() {
-        return u.getHost();
+        String host = u.getHost();
+        if (host == null) {
+            return "";
+        }
+        return host;
     }
 
     /*
@@ -109,6 +145,15 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
             throw new BadParameterException("syntax error in host", e);
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#setHost()
+     */
+    public void setHost() throws BadParameterException {
+        setHost("");
+    } 
 
     /*
      * (non-Javadoc)
@@ -116,7 +161,11 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
      * @see org.ogf.saga.url.URL#getPath()
      */
     public String getPath() {
-        return u.getPath();
+        String path = u.getPath();
+        if (path == null) {
+            return "";
+        }
+        return path;
     }
 
     /*
@@ -132,6 +181,15 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
             throw new BadParameterException("syntax error in path", e);
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#setPath()
+     */
+    public void setPath() throws BadParameterException {
+        setPath("");
+    }
 
     /*
      * (non-Javadoc)
@@ -139,7 +197,7 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
      * @see org.ogf.saga.url.URL#getPort()
      */
     public int getPort() {
-        return u.getPort();
+        return u.getPort();     // Yes: u.getPort() returns -1 if undefined.
     }
 
     /*
@@ -155,6 +213,15 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
             throw new BadParameterException("syntax error in port", e); // ???
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#setPort()
+     */
+    public void setPort() throws BadParameterException {
+        setPort(-1);
+    }
 
     /*
      * (non-Javadoc)
@@ -162,7 +229,11 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
      * @see org.ogf.saga.url.URL#getQuery()
      */
     public String getQuery() {
-        return u.getQuery();
+        String query = u.getQuery();
+        if (query == null) {
+            return "";
+        }
+        return query;
     }
 
     /*
@@ -178,6 +249,16 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
             throw new BadParameterException("syntax error in query", e);
         }
     }
+    
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#setQuery()
+     */
+    public void setQuery() throws BadParameterException {
+        setQuery("");
+    }
 
     /*
      * (non-Javadoc)
@@ -185,7 +266,11 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
      * @see org.ogf.saga.url.URL#getScheme()
      */
     public String getScheme() {
-        return u.getScheme();
+        String scheme = u.getScheme();
+        if (scheme == null) {
+            return "";
+        }
+        return scheme;
     }
 
     /*
@@ -201,6 +286,16 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
             throw new BadParameterException("syntax error in scheme", e);
         }
     }
+    
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#setScheme()
+     */
+    public void setScheme() throws BadParameterException {
+        setScheme("");
+    }
 
     /*
      * (non-Javadoc)
@@ -208,7 +303,11 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
      * @see org.ogf.saga.url.URL#getUserInfo()
      */
     public String getUserInfo() {
-        return u.getUserInfo();
+        String userInfo = u.getUserInfo();
+        if (userInfo ==  null) {
+            return "";
+        }
+        return userInfo;
     }
 
     /*
@@ -224,13 +323,22 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
             throw new BadParameterException("syntax error in query", e);
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#setUserInfo()
+     */
+    public void setUserInfo() throws BadParameterException {
+        setUserInfo("");
+    }
 
     /*
      * (non-Javadoc)
      * 
      * @see org.ogf.saga.url.URL#translate(java.lang.String)
      */
-    public org.ogf.saga.url.URL translate(String scheme)
+    public URL translate(String scheme)
             throws BadParameterException, NoSuccessException {
         try {
             URI url = new URI(scheme, u.getUserInfo(), u.getHost(),
@@ -242,6 +350,16 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
         } catch (URISyntaxException e) {
             throw new BadParameterException("syntax error in scheme", e);
         }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ogf.saga.url.URL#translate(Session, java.lang.String)
+     */
+    public URL translate(Session session, String scheme)
+            throws BadParameterException, NoSuccessException {
+        return translate(scheme);
     }
 
     public int hashCode() {
@@ -266,9 +384,9 @@ public class URLImpl extends SagaObjectBase implements org.ogf.saga.url.URL,
     /*
      * (non-Javadoc)
      * 
-     * @see org.ogf.saga.url.URL#resolve(org.ogf.saga.URL)
+     * @see org.ogf.saga.url.URL#resolve(org.ogf.saga.url.URL)
      */
-    public org.ogf.saga.url.URL resolve(org.ogf.saga.url.URL url)
+    public org.ogf.saga.url.URL resolve(URL url)
             throws NoSuccessException {
         String s = url.toString();
         URI uri;

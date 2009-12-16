@@ -40,8 +40,8 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             NoSuccessException {
         super(session, name);
         checkFlags(flags);
-        this.logicalFlags = flags;
-        Object[] parameters = { this, session, name, flags };
+        this.logicalFlags = includeImpliedFlags(flags);
+        Object[] parameters = { this, session, name, logicalFlags };
         try {
             proxy = (LogicalDirectorySPI) SAGAEngine.createAdaptorProxy(
                     LogicalDirectorySPI.class, new Class[] {
@@ -85,8 +85,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
     }
     
     private void checkFlags(int flags) throws BadParameterException {
-        int allowed = Flags.ALLNAMESPACEFLAGS.getValue()
-                | Flags.ALLLOGICALFILEFLAGS.getValue();
+        int allowed = Flags.ALLLOGICALFILEFLAGS.getValue();
         if ((flags | allowed) != allowed) {
             throw new BadParameterException(
                     "Illegal flags for logical directory: " + flags);

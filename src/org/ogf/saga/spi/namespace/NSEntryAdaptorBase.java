@@ -93,7 +93,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         setClosed(true);
     }
 

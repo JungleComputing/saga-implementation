@@ -135,7 +135,7 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
     
     @Override
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         super.close(timeoutInSeconds);
         tool.close(file);
     }

@@ -18,7 +18,7 @@ import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamFactory;
-import org.ogf.saga.stream.StreamService;
+import org.ogf.saga.stream.StreamServer;
 import org.ogf.saga.url.URL;
 
 public class ServerThread implements Runnable {
@@ -94,10 +94,10 @@ public class ServerThread implements Runnable {
     };
 
     public void run() {
-        StreamService service = null;
+        StreamServer service = null;
         try {
-            service = StreamFactory.createStreamService(url);
-            service.getMetric(StreamService.STREAMSERVER_CLIENTCONNECT)
+            service = StreamFactory.createStreamServer(url);
+            service.getMetric(StreamServer.STREAMSERVER_CLIENTCONNECT)
                     .addCallback(clientConnect);
             while (!stop) {
                 logger.debug("Server Thread: listening...");

@@ -46,7 +46,7 @@ public interface RPCSPI extends Async, Permissions<RPC> {
      *            seconds to wait.
      */
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException;
+             NoSuccessException;
 
     //
     // Task versions ...

@@ -56,8 +56,8 @@
 		    value="org.ogf.saga.adaptors.javaGAT.file.FileOutputStreamAdaptor" />
 		<attribute name="StreamSpi-class"
 		    value="org.ogf.saga.adaptors.javaGAT.stream.StreamAdaptor" />
-		<attribute name="StreamServiceSpi-class"
-		    value="org.ogf.saga.adaptors.javaGAT.stream.StreamServiceAdaptor" />
+		<attribute name="StreamServerSpi-class"
+		    value="org.ogf.saga.adaptors.javaGAT.stream.StreamServerAdaptor" />
 		<attribute name="JobServiceSpi-class"
 		    value="org.ogf.saga.adaptors.javaGAT.job.JobServiceAdaptor" />
 		<attribute name="ContextInitializerSpi-class"

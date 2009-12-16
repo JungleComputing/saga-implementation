@@ -78,7 +78,7 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
 
     @Override
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+             NoSuccessException {
         super.close(timeoutInSeconds);
         entry.close(timeoutInSeconds);
     }

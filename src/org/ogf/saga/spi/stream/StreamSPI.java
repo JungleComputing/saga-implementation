@@ -17,7 +17,7 @@ import org.ogf.saga.permissions.Permissions;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
-import org.ogf.saga.stream.StreamService;
+import org.ogf.saga.stream.StreamServer;
 import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
@@ -35,7 +35,7 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
 
     /**
      * Obtains the URL that was used to create the stream. When this stream is
-     * the result of a {@link StreamService#serve()} call, <code>null</code>
+     * the result of a {@link StreamServer#serve()} call, <code>null</code>
      * is returned.
      * 
      * @return the URL.
@@ -164,7 +164,7 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
 
     /**
      * Creates a task that obtains the URL that was used to create the stream.
-     * When this stream is the result of a {@link StreamService#serve()} call,
+     * When this stream is the result of a {@link StreamServer#serve()} call,
      * the URL will be <code>null</code>.
      * 
      * @param mode

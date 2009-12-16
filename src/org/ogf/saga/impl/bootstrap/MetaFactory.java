@@ -19,7 +19,7 @@ import org.ogf.saga.url.URLFactory;
 
 public class MetaFactory implements SagaFactory {
 
-    public BufferFactory createBufferFactory() throws NotImplementedException {
+    public BufferFactory createBufferFactory() {
         return new org.ogf.saga.impl.buffer.BufferFactoryImpl();
     }
 
@@ -73,7 +73,7 @@ public class MetaFactory implements SagaFactory {
         return new org.ogf.saga.impl.task.TaskFactoryImpl();
     }
 
-    public URLFactory createURLFactory() throws NotImplementedException {
+    public URLFactory createURLFactory() {
         return new org.ogf.saga.impl.url.URLFactoryImpl();
     }
 }

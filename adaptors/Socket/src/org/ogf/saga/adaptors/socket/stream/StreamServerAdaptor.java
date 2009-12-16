@@ -17,19 +17,19 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.SessionImpl;
-import org.ogf.saga.proxies.stream.StreamServiceWrapper;
-import org.ogf.saga.spi.stream.StreamServiceAdaptorBase;
+import org.ogf.saga.proxies.stream.StreamServerWrapper;
+import org.ogf.saga.spi.stream.StreamServerAdaptorBase;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.url.URL;
 
-public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
+public class StreamServerAdaptor extends StreamServerAdaptorBase {
 
     private boolean active = false;
     private static float MINIMAL_TIMEOUT = 0.001f;
 
     private ServerSocket server;
 
-    public StreamServiceAdaptor(StreamServiceWrapper wrapper,
+    public StreamServerAdaptor(StreamServerWrapper wrapper,
             SessionImpl sessionImpl, URL url) throws NotImplementedException,
             BadParameterException, NoSuccessException, IncorrectURLException {
 
@@ -54,12 +54,12 @@ public class StreamServiceAdaptor extends StreamServiceAdaptorBase {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        StreamServiceAdaptor clone = (StreamServiceAdaptor) super.clone();
+        StreamServerAdaptor clone = (StreamServerAdaptor) super.clone();
         return clone;
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         active = false;
         try {
             server.close();

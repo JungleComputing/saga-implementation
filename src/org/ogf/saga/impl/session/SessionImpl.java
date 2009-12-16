@@ -6,16 +6,19 @@ import java.util.LinkedHashSet;
 
 import org.ogf.saga.context.Context;
 import org.ogf.saga.error.DoesNotExistException;
-import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.SagaRuntimeException;
+import org.ogf.saga.impl.context.ContextImpl;
 
 public class SessionImpl extends SagaObjectBase implements
         org.ogf.saga.session.Session {
 
-    private HashSet<Context> contexts = new LinkedHashSet<Context>();
+    private HashSet<ContextImpl> contexts = new LinkedHashSet<ContextImpl>();
 
-    private HashMap<String, AdaptorSessionInterface> adaptorSessions = new HashMap<String, AdaptorSessionInterface>();
+    private HashMap<String, AdaptorSessionInterface> adaptorSessions
+            = new HashMap<String, AdaptorSessionInterface>();
 
     SessionImpl(boolean defaults) {
         super((org.ogf.saga.session.Session) null);
@@ -28,35 +31,37 @@ public class SessionImpl extends SagaObjectBase implements
     public synchronized void putAdaptorSession(String name,
             AdaptorSessionInterface session) {
         adaptorSessions.put(name, session);
-        for (Context ctxt : contexts) {
+        for (ContextImpl ctxt : contexts) {
             try {
-                session
-                        .addContext((org.ogf.saga.impl.context.ContextImpl) ctxt);
+                session.addContext(ctxt);
             } catch (Throwable e) {
                 // ignored
             }
         }
     }
 
-    public synchronized void addContext(Context context)
-            throws NotImplementedException {
+    public synchronized void addContext(Context ctxt) throws NoSuccessException,
+            TimeoutException {
+        org.ogf.saga.impl.context.ContextImpl context
+                = (org.ogf.saga.impl.context.ContextImpl) ctxt;
         try {
-            context = (Context) context.clone();
+            context = (org.ogf.saga.impl.context.ContextImpl) context.clone();
         } catch (CloneNotSupportedException e) {
             throw new SagaRuntimeException("Context.clone() not supported?", e);
         }
+        context.setDefaults();
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
-                session
-                        .addContext((org.ogf.saga.impl.context.ContextImpl) context);
+                session.addContext(context);
             } catch (Throwable e) {
                 // ignored
             }
         }
+        
         contexts.add(context);
     }
 
-    public synchronized void close() throws NotImplementedException {
+    public synchronized void close() {
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
                 session.close();
@@ -79,7 +84,7 @@ public class SessionImpl extends SagaObjectBase implements
     public synchronized Object clone() throws CloneNotSupportedException {
         SessionImpl clone = (SessionImpl) super.clone();
         synchronized (clone) {
-            clone.contexts = new HashSet<Context>(contexts);
+            clone.contexts = new HashSet<org.ogf.saga.impl.context.ContextImpl>(contexts);
             clone.adaptorSessions = new HashMap<String, AdaptorSessionInterface>();
 
             for (String key : adaptorSessions.keySet()) {
@@ -91,11 +96,11 @@ public class SessionImpl extends SagaObjectBase implements
         return clone;
     }
 
-    public void close(float timeoutInSeconds) throws NotImplementedException {
+    public void close(float timeoutInSeconds) {
         close();
     }
 
-    public synchronized Context[] listContexts() throws NotImplementedException {
+    public synchronized Context[] listContexts() {
         Context[] c = contexts.toArray(new Context[contexts.size()]);
         for (int i = 0; i < c.length; i++) {
             try {
@@ -107,8 +112,11 @@ public class SessionImpl extends SagaObjectBase implements
         return c;
     }
 
-    public synchronized void removeContext(Context context)
-            throws NotImplementedException, DoesNotExistException {
+    public synchronized void removeContext(Context ctxt)
+            throws DoesNotExistException {
+        
+        org.ogf.saga.impl.context.ContextImpl context
+                = (org.ogf.saga.impl.context.ContextImpl) ctxt;
 
         if (!contexts.remove(context)) {
             throw new DoesNotExistException("Element " + context
@@ -117,7 +125,7 @@ public class SessionImpl extends SagaObjectBase implements
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
                 session
-                        .removeContext((org.ogf.saga.impl.context.ContextImpl) context);
+                        .removeContext(context);
             } catch (Throwable e) {
                 // ignored
             }

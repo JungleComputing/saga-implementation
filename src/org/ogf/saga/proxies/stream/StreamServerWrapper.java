@@ -15,19 +15,19 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.session.Session;
-import org.ogf.saga.spi.stream.StreamServiceSPI;
+import org.ogf.saga.spi.stream.StreamServerSPI;
 import org.ogf.saga.stream.Stream;
-import org.ogf.saga.stream.StreamService;
+import org.ogf.saga.stream.StreamServer;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.url.URL;
 
-public class StreamServiceWrapper extends SagaObjectBase implements
-        StreamService {
+public class StreamServerWrapper extends SagaObjectBase implements
+        StreamServer {
 
-    private StreamServiceSPI proxy;
+    private StreamServerSPI proxy;
 
-    public StreamServiceWrapper(Session session, URL name)
+    public StreamServerWrapper(Session session, URL name)
             throws NotImplementedException, IncorrectURLException,
             BadParameterException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
@@ -35,9 +35,9 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         super(session);
         Object[] parameters = { this, session, name };
         try {
-            proxy = (StreamServiceSPI) SAGAEngine.createAdaptorProxy(
-                    StreamServiceSPI.class, new Class[] {
-                            StreamServiceWrapper.class,
+            proxy = (StreamServerSPI) SAGAEngine.createAdaptorProxy(
+                    StreamServerSPI.class, new Class[] {
+                            StreamServerWrapper.class,
                             org.ogf.saga.impl.session.SessionImpl.class,
                             URL.class }, parameters);
         } catch (org.ogf.saga.error.SagaException e) {
@@ -70,9 +70,9 @@ public class StreamServiceWrapper extends SagaObjectBase implements
     }
 
     public Object clone() throws CloneNotSupportedException {
-        StreamServiceWrapper clone = (StreamServiceWrapper) super.clone();
-        clone.proxy = (StreamServiceSPI) SAGAEngine.createAdaptorCopy(
-                StreamServiceSPI.class, proxy, clone);
+        StreamServerWrapper clone = (StreamServerWrapper) super.clone();
+        clone.proxy = (StreamServerSPI) SAGAEngine.createAdaptorCopy(
+                StreamServerSPI.class, proxy, clone);
         return clone;
     }
 
@@ -84,17 +84,17 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.addCallback(name, cb);
     }
 
-    public Task<StreamService, Integer> addCallback(TaskMode mode, String name,
+    public Task<StreamServer, Integer> addCallback(TaskMode mode, String name,
             Callback cb) throws NotImplementedException {
         return proxy.addCallback(mode, name, cb);
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         proxy.close(timeoutInSeconds);
     }
 
-    public Task<StreamService, Void> close(TaskMode mode, float timeoutInSeconds)
+    public Task<StreamServer, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
         return proxy.close(mode, timeoutInSeconds);
     }
@@ -105,7 +105,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.getGroup();
     }
 
-    public Task<StreamService, String> getGroup(TaskMode mode)
+    public Task<StreamServer, String> getGroup(TaskMode mode)
             throws NotImplementedException {
         return proxy.getGroup(mode);
     }
@@ -117,7 +117,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.getMetric(name);
     }
 
-    public Task<StreamService, Metric> getMetric(TaskMode mode, String name)
+    public Task<StreamServer, Metric> getMetric(TaskMode mode, String name)
             throws NotImplementedException {
         return proxy.getMetric(mode, name);
     }
@@ -128,7 +128,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.getOwner();
     }
 
-    public Task<StreamService, String> getOwner(TaskMode mode)
+    public Task<StreamServer, String> getOwner(TaskMode mode)
             throws NotImplementedException {
         return proxy.getOwner(mode);
     }
@@ -140,7 +140,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.getUrl();
     }
 
-    public Task<StreamService, URL> getUrl(TaskMode mode)
+    public Task<StreamServer, URL> getUrl(TaskMode mode)
             throws NotImplementedException {
         return proxy.getUrl(mode);
     }
@@ -151,7 +151,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.listMetrics();
     }
 
-    public Task<StreamService, String[]> listMetrics(TaskMode mode)
+    public Task<StreamServer, String[]> listMetrics(TaskMode mode)
             throws NotImplementedException {
         return proxy.listMetrics(mode);
     }
@@ -163,7 +163,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         proxy.permissionsAllow(id, permissions);
     }
 
-    public Task<StreamService, Void> permissionsAllow(TaskMode mode, String id,
+    public Task<StreamServer, Void> permissionsAllow(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
         return proxy.permissionsAllow(mode, id, permissions);
     }
@@ -175,7 +175,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.permissionsCheck(id, permissions);
     }
 
-    public Task<StreamService, Boolean> permissionsCheck(TaskMode mode,
+    public Task<StreamServer, Boolean> permissionsCheck(TaskMode mode,
             String id, int permissions) throws NotImplementedException {
         return proxy.permissionsCheck(mode, id, permissions);
     }
@@ -187,7 +187,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         proxy.permissionsDeny(id, permissions);
     }
 
-    public Task<StreamService, Void> permissionsDeny(TaskMode mode, String id,
+    public Task<StreamServer, Void> permissionsDeny(TaskMode mode, String id,
             int permissions) throws NotImplementedException {
         return proxy.permissionsDeny(mode, id, permissions);
     }
@@ -200,7 +200,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         proxy.removeCallback(name, cookie);
     }
 
-    public Task<StreamService, Void> removeCallback(TaskMode mode, String name,
+    public Task<StreamServer, Void> removeCallback(TaskMode mode, String name,
             int cookie) throws NotImplementedException {
         return proxy.removeCallback(mode, name, cookie);
     }
@@ -212,17 +212,16 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return proxy.serve(timeoutInSeconds);
     }
 
-    public Task<StreamService, Stream> serve(TaskMode mode,
+    public Task<StreamServer, Stream> serve(TaskMode mode,
             float timeoutInSeconds) throws NotImplementedException {
         return proxy.serve(mode, timeoutInSeconds);
     }
 
-    public void close() throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+    public void close() throws NotImplementedException, NoSuccessException {
         close(0.0F);
     }
 
-    public Task<StreamService, Void> close(TaskMode mode)
+    public Task<StreamServer, Void> close(TaskMode mode)
             throws NotImplementedException {
         return close(mode, 0.0F);
     }
@@ -234,7 +233,7 @@ public class StreamServiceWrapper extends SagaObjectBase implements
         return serve(-1.0F);
     }
 
-    public Task<StreamService, Stream> serve(TaskMode mode)
+    public Task<StreamServer, Stream> serve(TaskMode mode)
             throws NotImplementedException {
         return serve(mode, -1.0F);
     }

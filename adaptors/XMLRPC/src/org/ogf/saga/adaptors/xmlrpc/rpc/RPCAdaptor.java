@@ -180,8 +180,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
     }
 
     public synchronized void close(float timeoutInSeconds)
-            throws NotImplementedException, IncorrectStateException,
-            NoSuccessException {
+            throws NotImplementedException, NoSuccessException {
         closed = true;
     }
 

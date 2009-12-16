@@ -95,7 +95,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         entry.close(timeoutInSeconds);
         super.close(timeoutInSeconds);
     }

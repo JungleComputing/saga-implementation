@@ -90,7 +90,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         proxy.close(timeoutInSeconds);
     }
 
@@ -158,7 +158,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
     }
 
     public void close() throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         close(0.0F);
     }
 

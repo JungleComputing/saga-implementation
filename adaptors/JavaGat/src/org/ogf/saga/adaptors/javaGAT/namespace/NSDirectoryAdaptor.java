@@ -61,7 +61,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         entry.close(timeoutInSeconds);
         super.close(timeoutInSeconds);
     }

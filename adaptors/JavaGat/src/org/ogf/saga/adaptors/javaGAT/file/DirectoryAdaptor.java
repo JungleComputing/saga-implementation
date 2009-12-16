@@ -47,7 +47,7 @@ public class DirectoryAdaptor extends
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+            NoSuccessException {
         dir.close(timeoutInSeconds);
         super.close(timeoutInSeconds);
     }

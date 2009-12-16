@@ -17,7 +17,7 @@ import org.ogf.saga.monitoring.Monitorable;
 import org.ogf.saga.stream.Activity;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamFactory;
-import org.ogf.saga.stream.StreamService;
+import org.ogf.saga.stream.StreamServer;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
@@ -452,8 +452,8 @@ public class StreamAdaptorTest {
     public AdaptorTestResultEntry testClose2() {
         long start = System.currentTimeMillis();
         try {
-            StreamService service = StreamFactory
-                    .createStreamService(serverUrl);
+            StreamServer service = StreamFactory
+                    .createStreamServer(serverUrl);
             service.close();
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
@@ -466,9 +466,9 @@ public class StreamAdaptorTest {
     // + test for throwing Timeout exception in serve method
 
     public AdaptorTestResultEntry testClose3() {
-        StreamService service = null;
+        StreamServer service = null;
         try {
-            service = StreamFactory.createStreamService(serverUrl);
+            service = StreamFactory.createStreamServer(serverUrl);
         } catch (Throwable e) {
             return new AdaptorTestResultEntry(false, 0, e);
         }
