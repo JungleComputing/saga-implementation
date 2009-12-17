@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ogf.saga.context.Context;
+import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -28,10 +29,9 @@ import org.ogf.saga.task.WaitMode;
 public class TaskContainerImpl extends SagaObjectBase implements
         org.ogf.saga.task.TaskContainer {
     static Logger logger = LoggerFactory.getLogger(TaskContainerImpl.class);
-    private HashMap<Integer, Task<?, ?>> tasks = new HashMap<Integer, Task<?, ?>>();
-    private HashMap<Task<?, ?>, Integer> reverseMap = new HashMap<Task<?, ?>, Integer>();
-    private HashMap<Task<?, ?>, Integer> callbackCookies = new HashMap<Task<?, ?>, Integer>();
-    private int taskCount = 0;
+    private HashMap<String, Task<?, ?>> tasks = new HashMap<String, Task<?, ?>>();
+    private HashMap<String, Integer> callbackCookies = new HashMap<String, Integer>();
+
     private MetricImpl taskContainerMetric;
 
     private class ContainerCallback implements Callback {
@@ -48,14 +48,14 @@ public class TaskContainerImpl extends SagaObjectBase implements
                 org.ogf.saga.monitoring.Metric metric, Context ctx)
                 throws NotImplementedException, AuthorizationFailedException {
             Task<?, ?> t = (Task<?, ?>) mt;
-            Integer cookie = reverseMap.get(t);
+            String id = t.getId();
             if (logger.isDebugEnabled()) {
-                logger.debug("TaskContainer callback called, cookie = "
-                        + cookie);
+                logger.debug("TaskContainer callback called, id = "
+                        + id);
             }
-            if (cookie != null) {
+            if (id != null) {
                 try {
-                    taskContainerMetric.setValue(cookie.toString());
+                    taskContainerMetric.setValue(id);
                 } catch (Throwable e) {
                     // ignored
                 }
@@ -89,32 +89,29 @@ public class TaskContainerImpl extends SagaObjectBase implements
     public Object clone() throws CloneNotSupportedException {
         TaskContainerImpl clone = (TaskContainerImpl) super.clone();
         synchronized (clone) {
-            clone.tasks = new HashMap<Integer, Task<?, ?>>(tasks);
-            clone.reverseMap = new HashMap<Task<?, ?>, Integer>(reverseMap);
-            clone.callbackCookies = new HashMap<Task<?, ?>, Integer>(
-                    callbackCookies);
+            clone.tasks = new HashMap<String, Task<?, ?>>(tasks);
         }
         return clone;
     }
 
-    public synchronized int add(Task<?, ?> task)
+    public synchronized void add(Task<?, ?> task)
             throws NotImplementedException, TimeoutException,
-            NoSuccessException {
-        Integer v = reverseMap.get(task);
-        if (v != null) {
-            return v.intValue();
+            AlreadyExistsException, NoSuccessException {
+        String id = task.getId();
+        if (tasks.containsKey(id)) {
+            throw new AlreadyExistsException("Task " + id + " is already present");
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Add task " + taskCount);
+            logger.debug("Add task " + id);
         }
-        Integer cookie = taskCount++;
-        tasks.put(cookie, task);
-        reverseMap.put(task, cookie);
+
+        tasks.put(id, task);
+
         try {
             if (task instanceof Job) {
-                callbackCookies.put(task, task.addCallback(Job.JOB_STATE, cb));
+                callbackCookies.put(id, task.addCallback(Job.JOB_STATE, cb));
             } else {
-                callbackCookies.put(task, task.addCallback(Task.TASK_STATE, cb));
+                callbackCookies.put(id, task.addCallback(Task.TASK_STATE, cb));
             }
         } catch (IncorrectStateException e) {
             // Ignore, the task is already in a final state.
@@ -122,8 +119,6 @@ public class TaskContainerImpl extends SagaObjectBase implements
             // Should not happen.
             throw new SagaRuntimeException("Unexpected error", e);
         }
-
-        return cookie;
     }
 
     public void cancel() throws NotImplementedException,
@@ -155,13 +150,13 @@ public class TaskContainerImpl extends SagaObjectBase implements
         return retval;
     }
 
-    public synchronized Task<?, ?> getTask(int cookie)
+    public synchronized Task<?, ?> getTask(String id)
             throws NotImplementedException, DoesNotExistException,
             TimeoutException, NoSuccessException {
-        Task<?, ?> task = tasks.get(cookie);
+        Task<?, ?> task = tasks.get(id);
         if (task == null) {
-            throw new DoesNotExistException("There is no task for cookie "
-                    + cookie);
+            throw new DoesNotExistException("There is no task for id "
+                    + id);
         }
         return task;
     }
@@ -171,29 +166,23 @@ public class TaskContainerImpl extends SagaObjectBase implements
         return tasks.values().toArray(new Task[tasks.size()]);
     }
 
-    public synchronized int[] listTasks() throws NotImplementedException,
+    public synchronized Task<?,?>[] listTasks() throws NotImplementedException,
             TimeoutException, NoSuccessException {
-        int[] retval = new int[reverseMap.size()];
-        int k = 0;
-        for (int i : reverseMap.values()) {
-            retval[k++] = i;
-        }
-        return retval;
+        return tasks.values().toArray(new Task[tasks.size()]);
     }
 
-    public synchronized Task<?, ?> remove(int cookie)
+    public synchronized Task<?, ?> remove(Task<?,?> task)
             throws NotImplementedException, DoesNotExistException,
             TimeoutException, NoSuccessException {
+        String id = task.getId();
         if (logger.isDebugEnabled()) {
-            logger.debug("TaskContainer.remove " + cookie);
+            logger.debug("TaskContainer.remove " + id);
         }
-        Task<?, ?> task = tasks.remove(cookie);
+        task = tasks.remove(id);
         if (task == null) {
-            throw new DoesNotExistException("There is no task for cookie "
-                    + cookie);
+            throw new DoesNotExistException("Task " + id  + " is not in this TaskContainer");
         }
-        reverseMap.remove(task);
-        Integer c = callbackCookies.remove(task);
+        Integer c = callbackCookies.remove(id);
         if (c != null) {
             try {
                 task.removeCallback(Task.TASK_STATE, c);
@@ -226,6 +215,18 @@ public class TaskContainerImpl extends SagaObjectBase implements
             NoSuccessException {
         return waitFor(-1.0F, mode);
     }
+    
+    public Task<?, ?> waitFor(float timeout) throws NotImplementedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
+        return waitFor(timeout, WaitMode.ALL);
+    }
+    
+    public Task<?, ?> waitFor() throws NotImplementedException,
+            IncorrectStateException, DoesNotExistException, TimeoutException,
+            NoSuccessException {
+        return waitFor(WaitMode.ALL);
+    }
 
     private Task<?, ?> getFinishedTask(WaitMode mode)
             throws DoesNotExistException, TimeoutException,
@@ -250,7 +251,7 @@ public class TaskContainerImpl extends SagaObjectBase implements
             case FAILED:
             case DONE:
                 if (mode == WaitMode.ANY) {
-                    return remove(reverseMap.get(t));
+                    return remove(t);
                 }
                 break;
             case NEW:
@@ -260,7 +261,7 @@ public class TaskContainerImpl extends SagaObjectBase implements
         }
 
         if (running == 0) {
-            return remove(reverseMap.get(list[0]));
+            return remove(list[0]);
         }
 
         return null;

@@ -1,7 +1,5 @@
 package org.ogf.saga.apps.shell.command;
 
-import java.util.Arrays;
-
 import org.ogf.saga.apps.shell.Environment;
 import org.ogf.saga.apps.shell.Util;
 import org.ogf.saga.error.SagaException;
@@ -34,17 +32,16 @@ public class ListJobs extends EnvironmentCommand {
         TaskContainer bg = env.getBackgroundJobs();
 
         try {
-            int[] cookies = bg.listTasks();
-            Arrays.sort(cookies);
+            Task<?,?>[] tasks = bg.listTasks();
+            // Arrays.sort(tasks);
 
-            for (int cookie : cookies) {
-                Task<?, ?> t = bg.getTask(cookie);
+            for (Task<?,?> t : tasks) {
 
                 if (t instanceof Job) {
                     Job job = (Job) t;
 
                     State jobState = job.getState();
-                    System.out.print("[" + cookie + "] " + jobState);
+                    System.out.print("[" + t.getId() + "] " + jobState);
 
                     String jobId = job.getAttribute(Job.JOBID);
                     System.out.print("\t" + jobId);
@@ -65,7 +62,7 @@ public class ListJobs extends EnvironmentCommand {
                     if (jobState.equals(State.DONE)
                             || jobState.equals(State.FAILED)
                             || jobState.equals(State.CANCELED)) {
-                        bg.remove(cookie);
+                        bg.remove(t);
                     }
                 }
             }

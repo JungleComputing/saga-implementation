@@ -14,7 +14,7 @@ public class KillJob extends EnvironmentCommand {
     }
 
     public String getHelpArguments() {
-        return "<#job>";
+        return "<job id>";
     }
 
     public String getHelpExplanation() {
@@ -27,21 +27,15 @@ public class KillJob extends EnvironmentCommand {
             return;
         }
 
-        int cookie = -1;
-        try {
-            cookie = Integer.parseInt(args[1]);
-        } catch (NumberFormatException e) {
-            System.err.println("Illegal job number: " + args[1]);
-            return;
-        }
+        String id = args[1];
 
         TaskContainer bg = env.getBackgroundJobs();
 
         try {
-            Task<?, ?> t = bg.getTask(cookie);
+            Task<?, ?> t = bg.getTask(id);
             t.cancel();
         } catch (DoesNotExistException e) {
-            System.err.println("Unknown job number: " + cookie);
+            System.err.println("Unknown job id: " + id);
         } catch (SagaException e) {
             Util.printSagaException(e);
         }
