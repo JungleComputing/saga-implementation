@@ -53,8 +53,8 @@ public class ContextImpl extends SagaObjectBase implements
         }
     }
 
-    protected ContextImpl(ContextImpl orig) {
-        super(orig);
+    public ContextImpl(ContextImpl orig) {
+        super(orig, false);
         attributes = new ContextAttributes(orig.attributes);
     }
 

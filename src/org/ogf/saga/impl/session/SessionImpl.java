@@ -9,7 +9,6 @@ import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
-import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.context.ContextImpl;
 
 public class SessionImpl extends SagaObjectBase implements
@@ -42,13 +41,8 @@ public class SessionImpl extends SagaObjectBase implements
 
     public synchronized void addContext(Context ctxt) throws NoSuccessException,
             TimeoutException {
-        org.ogf.saga.impl.context.ContextImpl context
-                = (org.ogf.saga.impl.context.ContextImpl) ctxt;
-        try {
-            context = (org.ogf.saga.impl.context.ContextImpl) context.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new SagaRuntimeException("Context.clone() not supported?", e);
-        }
+        ContextImpl context = (ContextImpl) ctxt;
+        context = new ContextImpl(context);
         context.setDefaults();
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
@@ -56,8 +50,7 @@ public class SessionImpl extends SagaObjectBase implements
             } catch (Throwable e) {
                 // ignored
             }
-        }
-        
+        }       
         contexts.add(context);
     }
 
@@ -115,8 +108,7 @@ public class SessionImpl extends SagaObjectBase implements
     public synchronized void removeContext(Context ctxt)
             throws DoesNotExistException {
         
-        org.ogf.saga.impl.context.ContextImpl context
-                = (org.ogf.saga.impl.context.ContextImpl) ctxt;
+        ContextImpl context= (ContextImpl) ctxt;
 
         if (!contexts.remove(context)) {
             throw new DoesNotExistException("Element " + context
@@ -124,8 +116,7 @@ public class SessionImpl extends SagaObjectBase implements
         }
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
-                session
-                        .removeContext(context);
+                session.removeContext(context);
             } catch (Throwable e) {
                 // ignored
             }

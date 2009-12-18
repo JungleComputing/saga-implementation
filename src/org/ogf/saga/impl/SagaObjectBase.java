@@ -25,8 +25,15 @@ public class SagaObjectBase implements SagaObject {
     }
 
     protected SagaObjectBase(SagaObjectBase cp) {
+        this(cp, true);
+    }
+
+    
+    protected SagaObjectBase(SagaObjectBase cp, boolean newUuid) {
         sessionImpl = cp.sessionImpl;
-        uuid = UUID.randomUUID();
+        if (! newUuid) {
+            uuid = cp.uuid;
+        }
     }
 
     public String getId() {
