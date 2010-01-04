@@ -7,6 +7,7 @@ import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
+import java.util.Collections;
 import java.util.List;
 
 import org.ogf.saga.adaptors.local.AdaptorTool;
@@ -36,8 +37,6 @@ import org.slf4j.LoggerFactory;
 
 public class LocalFileAdaptor extends FileAdaptorBase {
 
-    private static final String FILE_ACCESS_NOT_IMPLEMENTED = 
-        "Access of file contents is not implemented";
     private static final Logger logger = LoggerFactory
             .getLogger(LocalFileAdaptor.class);
     
@@ -74,7 +73,7 @@ public class LocalFileAdaptor extends FileAdaptorBase {
                 RandomAccessFile raf = entry.createRandomAccessFile(mode);
                 channel = raf.getChannel();
             } catch (FileNotFoundException e) {
-                throw new NoSuccessException("Cannot open file", e);
+                throw new DoesNotExistException("Cannot open file", e);
             }
 
             if (channel != null) {
@@ -147,7 +146,7 @@ public class LocalFileAdaptor extends FileAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        throw new NotImplementedException(FILE_ACCESS_NOT_IMPLEMENTED);
+        return Collections.emptyList();
     }
 
     private ByteBuffer createByteBuffer(byte[] bytes) {
