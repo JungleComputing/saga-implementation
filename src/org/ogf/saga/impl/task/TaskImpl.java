@@ -174,7 +174,6 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase implements
      * 
      * @see org.ogf.saga.task.Task#getObject()
      */
-    @SuppressWarnings("unchecked")
     public T getObject() throws NotImplementedException, TimeoutException,
             NoSuccessException {
         return object;

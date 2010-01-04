@@ -95,7 +95,6 @@ public class Session implements
         }
     }
 
-    @SuppressWarnings("unchecked")
     public synchronized Object clone() throws CloneNotSupportedException {
         Session clone = (Session) super.clone();
         synchronized (clone) {

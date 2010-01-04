@@ -73,7 +73,6 @@ public class SessionImpl extends SagaObjectBase implements
         }
     }
 
-    @SuppressWarnings("unchecked")
     public synchronized Object clone() throws CloneNotSupportedException {
         SessionImpl clone = (SessionImpl) super.clone();
         synchronized (clone) {

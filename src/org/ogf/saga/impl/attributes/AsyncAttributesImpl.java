@@ -28,7 +28,7 @@ public class AsyncAttributesImpl<T> extends AttributesImpl implements
     }
 
     public boolean equals(Object o) {
-        if (!(o instanceof AsyncAttributesImpl)) {
+        if (!(o instanceof AsyncAttributesImpl<?>)) {
             return false;
         }
         AsyncAttributesImpl<?> a = (AsyncAttributesImpl<?>) o;
