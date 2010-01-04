@@ -114,7 +114,8 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         
         this(session, name, false);
         
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.CREATE.or(Flags.EXCL));
+        int allowedFlags = Flags.ALLNAMESPACEFLAGS.getValue();
+
         if ((allowedFlags | flags) != allowedFlags) {
             throw new BadParameterException( 
                     "Flags not allowed for NSEntry constructor: " + flags);
