@@ -121,7 +121,7 @@ public class Environment {
     }
 
     /**
-     * Terminates the shell. First all running background jobs are cancelled and
+     * Terminates the shell. First all running background jobs are canceled and
      * waited for. Second, the default SAGA session is closed (which may
      * trigger cleanup in some of the adaptors).
      */
