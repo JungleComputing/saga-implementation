@@ -18,6 +18,8 @@ public class SessionImpl extends SagaObjectBase implements
 
     private HashMap<String, AdaptorSessionInterface> adaptorSessions
             = new HashMap<String, AdaptorSessionInterface>();
+    
+    private boolean closed = false;
 
     SessionImpl(boolean defaults) {
         super((org.ogf.saga.session.Session) null);
@@ -41,6 +43,11 @@ public class SessionImpl extends SagaObjectBase implements
 
     public synchronized void addContext(Context ctxt) throws NoSuccessException,
             TimeoutException {
+        
+        if (closed) {
+            throw new NoSuccessException("This session is closed");
+        }
+        
         ContextImpl context = (ContextImpl) ctxt;
         context = new ContextImpl(context);
         context.setDefaults();
@@ -55,6 +62,10 @@ public class SessionImpl extends SagaObjectBase implements
     }
 
     public synchronized void close() {
+        if (closed) {
+            return;
+        }
+        closed = true;
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
                 session.close();
@@ -63,6 +74,7 @@ public class SessionImpl extends SagaObjectBase implements
             }
         }
         adaptorSessions.clear();
+        contexts.clear();
     }
 
     protected void finalize() {
@@ -106,6 +118,10 @@ public class SessionImpl extends SagaObjectBase implements
 
     public synchronized void removeContext(Context ctxt)
             throws DoesNotExistException {
+        
+        if (closed) {
+            return;
+        }
         
         ContextImpl context= (ContextImpl) ctxt;
 
