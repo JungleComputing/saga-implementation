@@ -61,7 +61,7 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
             this(info.name, info.type, info.vector, info.readOnly,
                     info.notImplemented, info.removable);
             value = info.value;
-            if (vectorValue != null) {
+            if (info.vectorValue != null) {
                 vectorValue = info.vectorValue.clone();
             }
         }
