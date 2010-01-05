@@ -27,13 +27,13 @@ public class GatURIConverter {
         String fragment = url.getFragment();
 
         StringBuffer u = new StringBuffer();
-        if (scheme != null) {
+        if (scheme != null && ! scheme.equals("")) {
             u.append(scheme);
             u.append(":");
         }
-        if (host != null) {
+        if (host != null && ! host.equals("")) {
             u.append("//");
-            if (userInfo != null) {
+            if (userInfo != null && ! userInfo.equals("")) {
                 u.append(userInfo);
                 u.append("@");
             }
@@ -44,21 +44,21 @@ public class GatURIConverter {
             }
         }
 
-        if (scheme != null) {
+        if (scheme != null && ! scheme.equals("")) {
             // This is the work-around to obtain uri's that
             // JavaGAT understands.
-            if (host != null) {
+            if (host != null && ! host.equals("")) {
                 u.append("/");
             } else {
                 u.append("///");
             }
         }
         u.append(path);
-        if (query != null) {
+        if (query != null && ! query.equals("")) {
             u.append("?");
             u.append(query);
         }
-        if (fragment != null) {
+        if (fragment != null && ! fragment.equals("")) {
             u.append("#");
             u.append(fragment);
         }
