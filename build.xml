@@ -69,7 +69,10 @@
 	<!-- Build tests. -->
 	<ant inheritAll="false" dir="test" target="build"/>
 
-	<!-- Build apps. -->
+    <!-- Build benchmarks. -->
+    <ant inheritAll="false" dir="benchmarks" target="build"/>
+
+    <!-- Build apps. -->
 	<ant inheritAll="false" dir="apps" target="build"/>
     </target>
 
