@@ -18,7 +18,7 @@ public class TestJobGT2 implements Callback {
 
    public static void main(String[] args) {
        // Make sure that the SAGA engine picks the javagat adaptor for JobService.
-       // System.setProperty("JobService.adaptor.name", "javaGAT");
+       System.setProperty("JobService.adaptor.name", "javaGAT");
      
        String server = "any://ngs.rl.ac.uk";
 
@@ -34,13 +34,12 @@ public class TestJobGT2 implements Callback {
        try {
            URL serverURL = URLFactory.createURL(server);
           
-          
            // Create a preferences context for JavaGAT.
            // The "preferences" context is special: it is extensible.
-           // Context context = ContextFactory.createContext("preferences");
+           Context context = ContextFactory.createContext("preferences");
          
            // Make sure that javaGAT picks the globus adaptor
-           // context.setAttribute("ResourceBroker.adaptor.name", "globus"); //wsgt4new
+           context.setAttribute("ResourceBroker.adaptor.name", "globus"); //wsgt4new
            // context.setAttribute("machine.node", serverURL.getHost());
            // context.setAttribute("resourcebroker.jobmanager", "lsf");          
            // context.setAttribute(Context.USERPROXY, "/tmp/x509up_u13449");
