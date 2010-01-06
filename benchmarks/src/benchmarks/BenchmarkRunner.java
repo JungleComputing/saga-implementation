@@ -53,7 +53,7 @@ public class BenchmarkRunner implements Runnable {
         }
         System.out.printf("- median: %2.2f sec\n", medianTime);
         
-        double averageTime = totalTime / (double)runs;
+        double averageTime = totalTime / runs;
         System.out.printf("- avg:    %2.2f sec\n", averageTime);
         System.out.println();
         
