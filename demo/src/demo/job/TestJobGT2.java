@@ -18,7 +18,7 @@ public class TestJobGT2 implements Callback {
 
    public static void main(String[] args) {
        // Make sure that the SAGA engine picks the javagat adaptor for JobService.
-       System.setProperty("JobService.adaptor.name", "javaGAT");
+       // System.setProperty("JobService.adaptor.name", "javaGAT");
      
        String server = "any://ngs.rl.ac.uk";
 
@@ -33,20 +33,20 @@ public class TestJobGT2 implements Callback {
        
        try {
            URL serverURL = URLFactory.createURL(server);
-           Session session = SessionFactory.createSession(true);
+          
           
            // Create a preferences context for JavaGAT.
            // The "preferences" context is special: it is extensible.
-           Context context = ContextFactory.createContext("preferences");
+           // Context context = ContextFactory.createContext("preferences");
          
            // Make sure that javaGAT picks the globus adaptor
-           context.setAttribute("ResourceBroker.adaptor.name", "globus"); //wsgt4new
-           context.setAttribute("machine.node", serverURL.getHost());
+           // context.setAttribute("ResourceBroker.adaptor.name", "globus"); //wsgt4new
+           // context.setAttribute("machine.node", serverURL.getHost());
            // context.setAttribute("resourcebroker.jobmanager", "lsf");          
            // context.setAttribute(Context.USERPROXY, "/tmp/x509up_u13449");
-           context.setAttribute("File.adaptor.name", "Local,GridFTP");
+           // context.setAttribute("File.adaptor.name", "Local,GridFTP");
          
-           session.addContext(context);
+           // session.addContext(context);
                       
            // Create the JobService.
            JobService js = JobFactory.createJobService(serverURL);
@@ -56,6 +56,7 @@ public class TestJobGT2 implements Callback {
            // Create a job: /bin/hostname executed on 1 nodes.
            JobDescription jd = JobFactory.createJobDescription();
            jd.setAttribute(JobDescription.EXECUTABLE, "/bin/hostname");
+           jd.setVectorAttribute(JobDescription.ARGUMENTS, new String[0]);
            jd.setAttribute(JobDescription.NUMBEROFPROCESSES, "1"); //10
            jd.setAttribute(JobDescription.OUTPUT, "hostname.out");
            jd.setAttribute(JobDescription.ERROR, "hostname.err");
@@ -72,6 +73,7 @@ public class TestJobGT2 implements Callback {
            */
            job.run();
            job.waitFor();
+           Session session = SessionFactory.createSession(true);
            session.close();
        } catch (Throwable e) {
            System.out.println("Got exception " + e);
