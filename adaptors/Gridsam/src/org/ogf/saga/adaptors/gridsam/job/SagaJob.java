@@ -41,6 +41,8 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         JobInstanceChangeListener, Cloneable {
 
     private static final Logger logger = LoggerFactory.getLogger(SagaJob.class);
+    
+    private static final String AXIS_CONFIG = "axis.ClientConfigFile";
 
     private final JobServiceAdaptor service;
 
@@ -87,9 +89,10 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         // be set by some Globus adaptor, but GridSAM cannot stand that.
         // So, save and restore it.
         synchronized(SagaJob.class) {
-            String saved = System.getProperty("axis.ClientConfigFile");
+            
+            String saved = System.getProperty(AXIS_CONFIG);
             if (saved != null) {
-                System.clearProperty("axis.ClientConfigFile");
+                System.clearProperty(AXIS_CONFIG);
             }
 
             try {
@@ -104,7 +107,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                         service.getWrapper());
             } finally {
                 if (saved != null) {
-                    System.setProperty("axis.ClientConfigFile", saved);
+                    System.setProperty(AXIS_CONFIG, saved);
+                } else {
+                    System.clearProperty(AXIS_CONFIG);
                 }
             }
         }
@@ -209,9 +214,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             // Take care of axis.ClientConfigFile system property: it may
             // be set by some Globus adaptor, but GridSAM cannot stand that.
             // So, save and restore it.
-            String saved = System.getProperty("axis.ClientConfigFile");
+            String saved = System.getProperty(AXIS_CONFIG);
             if (saved != null) {
-                System.clearProperty("axis.ClientConfigFile");
+                System.clearProperty(AXIS_CONFIG);
             }
 
             pollingThread.start();
@@ -224,7 +229,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 throw new NoSuccessException("Job start failed", e1, this);
             } finally {
                 if (saved != null) {
-                    System.setProperty("axis.ClientConfigFile", saved);
+                    System.setProperty(AXIS_CONFIG, saved);
+                } else {
+                    System.clearProperty(AXIS_CONFIG);
                 }
                 Thread.currentThread().setContextClassLoader(savedLoader);
             }
@@ -478,9 +485,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 // be set by some Globus adaptor, but GridSAM cannot stand that.
                 // So, save and restore it.
                 synchronized (SagaJob.class) {
-                    String saved = System.getProperty("axis.ClientConfigFile");
+                    String saved = System.getProperty(AXIS_CONFIG);
                     if (saved != null) {
-                        System.clearProperty("axis.ClientConfigFile");
+                        System.clearProperty(AXIS_CONFIG);
                     }
                     try {
                         jobInstance = parent.service.jobManager
@@ -490,7 +497,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                         throw new RuntimeException(e);
                     } finally {
                         if (saved != null) {
-                            System.setProperty("axis.ClientConfigFile", saved);
+                            System.setProperty(AXIS_CONFIG, saved);
+                        } else {
+                            System.clearProperty(AXIS_CONFIG);
                         }
                     }
                 }

@@ -7,6 +7,7 @@
     <!-- Global properties -->
 
     <target name="build" description="build the adaptors">
+	<ant dir="shared" />
 	<ant dir="Gridsam" />
 	<ant dir="JavaGat" />
 	<ant dir="Socket" />
