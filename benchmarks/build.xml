@@ -21,7 +21,7 @@
 
     <path id="external.jars">
         <fileset dir="../lib">
-            <include name="**/*.jar" />
+            <include name="*.jar" />
         </fileset>
         <fileset dir="${external}">
             <include name="*.jar" />
@@ -35,6 +35,8 @@
             <classpath refid="external.jars" />
             <compilerarg value="-Xlint:unchecked" />
         </javac>
+
+	<ant dir="Gridsam" inheritAll="false" target="compile" />
 
     </target>
 
