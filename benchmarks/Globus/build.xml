@@ -1,0 +1,41 @@
+<project name="SAGA" default="compile" basedir=".">
+
+    <description>
+        Build file for the Java Globus benchmarks.
+    </description>
+
+    <!-- Global properties -->
+
+    <property name="tmp" location="../tmp" />
+    <property name="lib" location="../../lib" />
+    <property name="external" location="../../adaptors/JavaGat/external/adaptors/GlobusAdaptor" />
+
+    <target name="init">
+        <!-- Create the time stamp -->
+        <tstamp />
+
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${tmp}" />
+    </target>
+
+    <path id="external.jars">
+	<fileset dir="${lib}">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="${external}">
+            <include name="*.jar" />
+        </fileset>
+	<pathelement path="${tmp}" />
+    </path>
+
+    <target name="compile" depends="init" description="compile the source ">
+        <!-- Compile the java code from src into ${tmp} -->
+
+        <javac srcdir="src" destdir="${tmp}" debug="on">
+            <classpath refid="external.jars" />
+            <compilerarg value="-Xlint:unchecked" />
+        </javac>
+
+    </target>
+
+</project>

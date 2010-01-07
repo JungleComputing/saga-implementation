@@ -37,6 +37,7 @@
         </javac>
 
 	<ant dir="Gridsam" inheritAll="false" target="compile" />
+	<ant dir="Globus" inheritAll="false" target="compile" />
 
     </target>
 
