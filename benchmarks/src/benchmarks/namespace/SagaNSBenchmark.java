@@ -1,15 +1,11 @@
 package benchmarks.namespace;
 
-import java.util.List;
-
-import org.ogf.saga.buffer.Buffer;
-import org.ogf.saga.buffer.BufferFactory;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.file.Directory;
-import org.ogf.saga.file.File;
 import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
+import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.url.URL;
@@ -34,17 +30,19 @@ public class SagaNSBenchmark implements Benchmark {
     public void run() {
         try {
             Directory baseDir = FileFactory.createDirectory(baseDirUrl);
-            
+           
             // sanity check: is the base directory empty? If not, bail out
             if (baseDir.getNumEntries() != 0) {
-                System.err.println("ERROR: base dir '" + baseDirUrl 
+                logger.error("ERROR: base dir '" + baseDirUrl 
                         + "' is not empty!");
                 return;
             }
             
             // create DIR_COUNT directories ('/dir000' to '/dirXXX') 
-            logger.info("Creating " + NSBenchmark.DIR_COUNT 
-                    + " directories in " + baseDirUrl);
+            if (logger.isInfoEnabled()) {
+                logger.info("Creating " + NSBenchmark.DIR_COUNT 
+                        + " directories in " + baseDirUrl);
+            }
             for (int i = 0; i < NSBenchmark.DIR_COUNT; i++) {
                 String dir = String.format("dir%03d", i);
                 URL dirUrl = URLFactory.createURL(dir);
@@ -53,8 +51,10 @@ public class SagaNSBenchmark implements Benchmark {
 
             // Create SUBDIR_COUNT sub-directories in each directory 
             // ('/dir000/subdir000' to '/dirXXX/subdirYYY')
-            logger.info("Creating " + NSBenchmark.SUBDIR_COUNT 
-                    + " subdirectories in each directory");
+            if (logger.isInfoEnabled()) {
+                logger.info("Creating " + NSBenchmark.SUBDIR_COUNT 
+                        + " subdirectories in each directory");
+            }
             for (URL dirUrl: baseDir.list()) {
                 if (baseDir.isDir(dirUrl)) {
                     NSDirectory dir = baseDir.openDir(dirUrl);
@@ -67,28 +67,24 @@ public class SagaNSBenchmark implements Benchmark {
                 }
             }
                         
-            // in each sub-directory, create FILE_COUNT text files ('file000' to 
-            // 'fileZZZ'). The contents of each file is its own URL. 
-            logger.info("Creating " + NSBenchmark.FILE_COUNT 
-                    + " files in each subdirectory");
+            // in each sub-directory, create FILE_COUNT empty text files ('file000' to 
+            // 'fileZZZ').
+            if (logger.isInfoEnabled()) {
+                logger.info("Creating " + NSBenchmark.FILE_COUNT 
+                        + " files in each subdirectory");
+            }
             for (URL dirUrl: baseDir.list()) {
                 if (baseDir.isDir(dirUrl)) {
-                    Directory dir = baseDir.openDirectory(dirUrl);
+                    NSDirectory dir = baseDir.openDir(dirUrl);
                     
                     for (URL subdirUrl: dir.list()) {
-                        Directory subdir = dir.openDirectory(subdirUrl);
+                        NSDirectory subdir = dir.openDir(subdirUrl);
 
                         for (int i = 0; i < NSBenchmark.FILE_COUNT; i++) {
                             String file = String.format("file%03d", i);
                             URL fileUrl = URLFactory.createURL(file);
                             
-                            File f = subdir.openFile(fileUrl, 
-                                    Flags.CREATE.getValue());
-
-                            String url = f.getURL().toString() + "\n";
-                            Buffer b = BufferFactory.createBuffer(url.getBytes());
-                            f.write(b);
-                            
+                            NSEntry f = subdir.open(fileUrl, Flags.CREATE.getValue());                          
                             f.close();
                         }
          
@@ -101,23 +97,78 @@ public class SagaNSBenchmark implements Benchmark {
                             
             // print the type (file or directory) and size (in bytes) of all 
             // entries in the volume
-            logger.info("Logging type and size of all entries (at DEBUG level)");
+            if (logger.isInfoEnabled()) {
+                logger.info("Logging type and size of all entries (at DEBUG level)");
+            }
             listDirectory(baseDir);
             
+            /* Commented out, because C++ implementation does not implement
+             * patterns yet.
+
             // find all entries with '01' in their name
-            logger.info("Finding all entries with '01' in their name");
+            if (logger.isInfoEnabled()) {
+                logger.info("Finding all entries with '01' in their name");
+            }
             List<URL> matches = baseDir.find("*01*", Flags.RECURSIVE.getValue());
-            logger.info("Found " + matches.size() + " entries");
+            if (logger.isInfoEnabled()) {
+                logger.info("Found " + matches.size() + " entries");
+            }
 
             if (logger.isDebugEnabled()) {
                 for (URL match: matches) {
                     logger.debug(match.toString());
                 }
             }
+            */
+            
+            // Move all subdirs
+            if (logger.isInfoEnabled()) {
+                logger.info("Moving all directories");
+            }
+            for (URL dirUrl: baseDir.list()) {
+                if (baseDir.isDir(dirUrl)) {
+                    NSDirectory dir = baseDir.openDir(dirUrl);
+                    for (URL subdirUrl: dir.list()) {
+                        URL targetUrl = URLFactory.createURL(
+                                subdirUrl.toString().replace("dir", "d"));
+                        dir.move(subdirUrl, targetUrl, Flags.RECURSIVE.getValue());
+                    }
+                    dir.close();
+                }
+                URL targetUrl = URLFactory.createURL(
+                        dirUrl.toString().replace("dir", "d"));
+                baseDir.move(dirUrl, targetUrl, Flags.RECURSIVE.getValue());
+            }
+            
+            // Move all files
+            for (URL dirUrl: baseDir.list()) {
+                if (baseDir.isDir(dirUrl)) {
+                    NSDirectory dir = baseDir.openDir(dirUrl);
+                    
+                    for (URL subdirUrl: dir.list()) {
+                        NSDirectory subdir = dir.openDir(subdirUrl);
+                        
+                        for (URL filenameUrl : subdir.list()) {
+                            URL targetUrl = URLFactory.createURL(
+                                    filenameUrl.toString().replace("file", "f"));
+                            subdir.copy(filenameUrl, targetUrl);
+                        }
+         
+                        subdir.close();
+                    }
+                    
+                    dir.close();
+                }
+            }
             
             // delete all files and directories
-            logger.info("Deleting all files and directories");
-            baseDir.remove("*", Flags.RECURSIVE.getValue());
+            if (logger.isInfoEnabled()) {
+                logger.info("Deleting all files and directories");
+            }
+            
+            for (URL dirUrl: baseDir.list()) {
+                baseDir.remove(dirUrl, Flags.RECURSIVE.getValue());
+            }
             
             baseDir.close();
             
@@ -144,7 +195,9 @@ public class SagaNSBenchmark implements Benchmark {
     
     public void close() {
         try {
-            logger.info("Cleaning up");
+            if (logger.isDebugEnabled()) {
+                logger.info("Cleaning up");
+            }
             Session defaultSession = SessionFactory.createSession(true);
             defaultSession.close();
         } catch (SagaException e) {

@@ -3,8 +3,6 @@ package benchmarks.namespace;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +37,10 @@ public class LocalNSBenchmark implements Benchmark {
             }
             
             // create DIR_COUNT directories ('/dir000' to '/dirXXX') 
-            logger.info("Creating {} directories in {}", 
-                    NSBenchmark.DIR_COUNT, baseDir);
+            if (logger.isInfoEnabled()) {
+                logger.info("Creating {} directories in {}", 
+                        NSBenchmark.DIR_COUNT, baseDir);
+            }
             for (int i = 0; i < NSBenchmark.DIR_COUNT; i++) {
                 String name = String.format("dir%03d", i);
                 File dir = new File(baseDir, name);
@@ -49,8 +49,10 @@ public class LocalNSBenchmark implements Benchmark {
 
             // Create SUBDIR_COUNT sub-directories in each directory 
             // ('/dir00/subdir000' to '/dirXXX/subdirYYY')
-            logger.info("Creating " + NSBenchmark.SUBDIR_COUNT 
-                    + " subdirectories in each directory");
+            if (logger.isInfoEnabled()) {
+                logger.info("Creating " + NSBenchmark.SUBDIR_COUNT 
+                        + " subdirectories in each directory");
+            }
             for (File dir: baseDir.listFiles()) {
                 if (dir.isDirectory()) {
                     for (int j = 0; j < NSBenchmark.SUBDIR_COUNT; j++) {
@@ -61,10 +63,12 @@ public class LocalNSBenchmark implements Benchmark {
                 }
             }
                         
-            // in each sub-directory, create FILE_COUNT text files ('file00' to 
-            // 'fileZZZ'). The contents of each file is its own filename 
-            logger.info("Creating {} files in each subdirectory", 
-                    NSBenchmark.FILE_COUNT);
+            // in each sub-directory, create FILE_COUNT empty text files ('file00' to 
+            // 'fileZZZ').
+            if (logger.isInfoEnabled()) {
+                logger.info("Creating {} files in each subdirectory", 
+                        NSBenchmark.FILE_COUNT);
+            }
                      
             for (File dir: baseDir.listFiles()) {
                 if (dir.isDirectory()) {
@@ -74,7 +78,6 @@ public class LocalNSBenchmark implements Benchmark {
                             File file = new File(subdir, name);
                             
                             FileWriter w = new FileWriter(file);
-                            w.write(file.getAbsolutePath() + "\n");
                             w.close();
                         }
                     }
@@ -83,24 +86,71 @@ public class LocalNSBenchmark implements Benchmark {
                             
             // print the type (file or directory) and size (in bytes) of all 
             // entries in the volume
-            logger.info("Listing type and size of all entries (on loglevel DEBUG)");
+            if (logger.isInfoEnabled()) {
+                logger.info("Listing type and size of all entries (on loglevel DEBUG)");
+            }
             listDirectory(baseDir);
             
+            /* Commented out, because C++ implementation does not implement
+             * patterns yet.
+
             // find all entries with '01' in their name
-            logger.info("Finding all entries with '01' in their name");
+            if (logger.isInfoEnabled()) {
+                logger.info("Finding all entries with '01' in their name");
+            }
             List<String> matches = new LinkedList<String>();
             findMatches(baseDir, ".*01.*", matches);
-                        
-            logger.info("Found " + matches.size() + " entries");
+            
+            if (logger.isInfoEnabled()) {            
+                logger.info("Found " + matches.size() + " entries");
+            }
             if (logger.isDebugEnabled()) {
                 for (String match: matches) {
                     logger.debug(match);
                 }
             }
+            */
+            
+            // Move all subdirs
+            if (logger.isInfoEnabled()) {
+                logger.info("Moving all directories");
+            }
+            for (File dir: baseDir.listFiles()) {
+                if (dir.isDirectory()) {
+                    for (File subdir: dir.listFiles()) {
+                        if (subdir.isDirectory()) {
+                            subdir.renameTo(new File(subdir.getParent(),
+                                    subdir.getName().replace("dir", "d")));
+                        }
+                    }
+                    dir.renameTo(new File(dir.getParent(),
+                            dir.getName().replace("dir", "d")));
+                }
+            }
+            
+            // Move all files
+            for (File dir: baseDir.listFiles()) {
+                if (dir.isDirectory()) {
+                    for (File subdir: dir.listFiles()) {
+                        if (subdir.isDirectory()) {
+                            for (File file: dir.listFiles()) {
+                                if (file.isFile()) {
+                                    file.renameTo(new File(file.getParent(),
+                                            file.getName().replace("file", "f")));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             
             // delete all files and directories
-            logger.info("Deleting all files and directories");
-            removeRecursively(baseDir, false);
+            if (logger.isInfoEnabled()) {
+                logger.info("Deleting all files and directories");
+            }
+            for (File entry: baseDir.listFiles()) {
+                removeRecursively(entry, true);
+            }
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,6 +173,7 @@ public class LocalNSBenchmark implements Benchmark {
         }
     }
     
+    /*
     private void findMatches(File d, String regex, List<String> matches) 
     throws Exception 
     {
@@ -136,6 +187,7 @@ public class LocalNSBenchmark implements Benchmark {
             }
         }
     }
+    */
 
     private void removeRecursively(File dir, boolean removeDir)
     throws Exception 
