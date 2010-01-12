@@ -15,7 +15,7 @@ import benchmarks.BenchmarkRunner;
 
 public class LocalFileBenchmark implements Benchmark {
 
-    private Logger logger = LoggerFactory.getLogger(LocalFileBenchmark.class);
+    private static Logger logger = LoggerFactory.getLogger(LocalFileBenchmark.class);
 
     private File baseDir;
     
@@ -35,14 +35,16 @@ public class LocalFileBenchmark implements Benchmark {
         try {
             // sanity check: is the mounted directory empty? If not, bail out
             if (baseDir.list().length != 0) {
-                logger.error("base directory '" + baseDir + " is not empty!");
+                throw new Error("base directory '" + baseDir + " is not empty!");
             }
             
             // create a big file 'foo'
             File foo = new File(baseDir, "foo");
-            logger.info("Creating file {} of {} bytes", foo,
-                    FileBenchmark.BIG_FILE_SIZE);
-            
+            if (logger.isInfoEnabled()) {
+                logger.info("Creating file {} of {} bytes", foo,
+                        FileBenchmark.BIG_FILE_SIZE);
+            }
+
             FileOutputStream fos = new FileOutputStream(foo);
             FileChannel fc = fos.getChannel();
             ByteBuffer buf = 
@@ -54,14 +56,18 @@ public class LocalFileBenchmark implements Benchmark {
                         FileBenchmark.BIG_FILE_SIZE - written);
                 buf.limit(max);
                 written += fc.write(buf);
-                logger.debug("Wrote {} bytes", written);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Wrote {} bytes", written);
+                }
                 buf.flip();
             }
             fc.close();
             
             // copy 'foo' to 'bar'
             File bar = new File(baseDir, "bar");
-            logger.info("Copying {} to {}", foo, bar);
+            if (logger.isInfoEnabled()) {
+                logger.info("Copying {} to {}", foo, bar);
+            }
                         
             FileInputStream fin = null;
             FileOutputStream fout = null;
@@ -80,7 +86,9 @@ public class LocalFileBenchmark implements Benchmark {
             }
             
             // read 'bar'
-            logger.info("Reading {}", bar);
+            if (logger.isInfoEnabled()) {
+                logger.info("Reading {}", bar);
+            }
             FileInputStream in = null;
             try {
                 in = new FileInputStream(foo);
@@ -91,14 +99,18 @@ public class LocalFileBenchmark implements Benchmark {
                 while (readBytes != -1) {
                     readBytes = in.read(readBuf);
                     if (readBytes > 0) totalRead += readBytes;
-                    logger.debug("Read {} bytes", totalRead);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Read {} bytes", totalRead);
+                    }
                 }
             } finally {
                 if (in != null) in.close();
             }
             
             // delete all files and directories
-            logger.info("Deleting all files and directories");
+            if (logger.isInfoEnabled()) {
+                logger.info("Deleting all files and directories");
+            }
             removeRecursively(baseDir, false);
             
         } catch (Exception e) {
@@ -128,7 +140,7 @@ public class LocalFileBenchmark implements Benchmark {
 
     public static void main(String args[]) {
         if (args.length != 2) {
-            System.out.println("usage: java " + LocalFileBenchmark.class.getName()
+            System.err.println("usage: java " + LocalFileBenchmark.class.getName()
                     + " <basedir> <#runs>");
             return;
         }
@@ -140,7 +152,8 @@ public class LocalFileBenchmark implements Benchmark {
         try {
             test = new LocalFileBenchmark(baseDir);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println("Got exception " + e);
+            e.printStackTrace(System.err);
             return;
         }
         

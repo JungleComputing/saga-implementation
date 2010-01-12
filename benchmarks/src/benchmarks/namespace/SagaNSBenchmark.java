@@ -33,9 +33,7 @@ public class SagaNSBenchmark implements Benchmark {
            
             // sanity check: is the base directory empty? If not, bail out
             if (baseDir.getNumEntries() != 0) {
-                logger.error("ERROR: base dir '" + baseDirUrl 
-                        + "' is not empty!");
-                return;
+                throw new Error("base dir '" + baseDirUrl  + "' is not empty!");
             }
             
             // create DIR_COUNT directories ('/dir000' to '/dirXXX') 
@@ -207,7 +205,7 @@ public class SagaNSBenchmark implements Benchmark {
 
     public static void main(String args[]) {
         if (args.length != 2) {
-            System.out.println("usage: java " + SagaNSBenchmark.class.getName()
+            System.err.println("usage: java " + SagaNSBenchmark.class.getName()
                     + " <basedir-url> <#runs>");
             return;
         }

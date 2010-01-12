@@ -20,7 +20,7 @@ import benchmarks.Util;
 
 public class SagaFileBenchmark implements Benchmark {
 
-    private Logger logger = LoggerFactory.getLogger(SagaFileBenchmark.class);
+    private static Logger logger = LoggerFactory.getLogger(SagaFileBenchmark.class);
 
     private URL baseDirUrl;
     private Buffer buf;
@@ -37,14 +37,14 @@ public class SagaFileBenchmark implements Benchmark {
             
             // sanity check: is the base directory empty? If not, bail out
             if (baseDir.getNumEntries() != 0) {
-                System.err.println("ERROR: base dir '" + baseDirUrl 
-                        + "' is not empty!");
-                return;
+                throw new Error("base dir '" + baseDirUrl  + "' is not empty!");
             }
             
             // create a big file 'foo'
-            logger.info("Creating file " + baseDirUrl + "/foo of " 
-                    + FileBenchmark.BIG_FILE_SIZE + " bytes");
+            if (logger.isInfoEnabled()) {
+                logger.info("Creating file " + baseDirUrl + "/foo of " 
+                        + FileBenchmark.BIG_FILE_SIZE + " bytes");
+            }
             URL fooUrl = URLFactory.createURL("foo");
             File foo = baseDir.openFile(fooUrl, Flags.CREATE.getValue());
             long written = 0;
@@ -52,29 +52,39 @@ public class SagaFileBenchmark implements Benchmark {
                 int max = (int)Math.min(buf.getSize(), 
                         FileBenchmark.BIG_FILE_SIZE - written);
                 written += foo.write(buf, 0, max);
-                logger.debug("Wrote {} bytes", written);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Wrote {} bytes", written);
+                }
             }
             foo.close();
             
             // copy 'foo' to 'bar'
-            logger.info("Copying " + baseDirUrl + "/foo to " + baseDirUrl + "/bar");
+            if (logger.isInfoEnabled()) {
+                logger.info("Copying " + baseDirUrl + "/foo to " + baseDirUrl + "/bar");
+            }
             URL barUrl = URLFactory.createURL("bar");
             baseDir.copy(fooUrl, barUrl);
 
             // read 'bar'
-            logger.info("Reading " + baseDirUrl + "/bar");
+            if (logger.isInfoEnabled()) {
+                logger.info("Reading " + baseDirUrl + "/bar");
+            }
             File bar = baseDir.openFile(barUrl, Flags.READ.getValue());
             long totalRead = 0;
             int read = 0;
             do {
                 read = bar.read(buf);
                 totalRead += read;
-                logger.debug("Read {} bytes", totalRead);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Read {} bytes", totalRead);
+                }
             } while (read > 0);
             bar.close();
             
             // delete all files
-            logger.info("Deleting 'foo' and 'bar'");
+            if (logger.isInfoEnabled()) {
+                logger.info("Deleting 'foo' and 'bar'");
+            }
             baseDir.remove("foo");
             baseDir.remove("bar");
             
@@ -87,7 +97,9 @@ public class SagaFileBenchmark implements Benchmark {
 
     public void close() {
         try {
-            logger.info("Cleaning up");
+            if (logger.isInfoEnabled()) {
+                logger.info("Cleaning up");
+            }
             Session defaultSession = SessionFactory.createSession();
             defaultSession.close();
         } catch (SagaException e) {
@@ -115,6 +127,5 @@ public class SagaFileBenchmark implements Benchmark {
         
         BenchmarkRunner runner = new BenchmarkRunner(test, runs);
         runner.run();
-    }
-    
+    }    
 }

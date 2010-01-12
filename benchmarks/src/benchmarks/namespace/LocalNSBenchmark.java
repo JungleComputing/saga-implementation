@@ -32,8 +32,7 @@ public class LocalNSBenchmark implements Benchmark {
         try {
             // sanity check: is the base directory empty? If not, bail out
             if (baseDir.list().length != 0) {
-                logger.error("base directory '" + baseDir + " is not empty!");
-                return;
+                throw new Error("base directory '" + baseDir + " is not empty!");
             }
             
             // create DIR_COUNT directories ('/dir000' to '/dirXXX') 
@@ -213,7 +212,7 @@ public class LocalNSBenchmark implements Benchmark {
 
     public static void main(String args[]) {
         if (args.length != 2) {
-            System.out.println("usage: java " + LocalNSBenchmark.class.getName()
+            System.err.println("usage: java " + LocalNSBenchmark.class.getName()
                     + " <basedir> <#runs>");
             return;
         }
@@ -225,7 +224,8 @@ public class LocalNSBenchmark implements Benchmark {
         try {
             test = new LocalNSBenchmark(baseDir);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println("Got exception " + e);
+            e.printStackTrace(System.err);
             return;
         }
         
