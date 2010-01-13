@@ -82,6 +82,10 @@ public class SagaNSBenchmark implements Benchmark {
                             String file = String.format("file%03d", i);
                             URL fileUrl = URLFactory.createURL(file);
                             
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Creating file " + fileUrl);
+                            }
+                            
                             NSEntry f = subdir.open(fileUrl, Flags.CREATE.getValue());                          
                             f.close();
                         }
