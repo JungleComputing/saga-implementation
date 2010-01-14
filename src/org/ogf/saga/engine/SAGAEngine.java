@@ -165,7 +165,7 @@ public class SAGAEngine {
      */
     private ClassLoader getParentClassLoader() {
         // Find the Class instance of the class that prompted the loading
-        // of JavaGAT.
+        // of SAGA.
         Class<?>[] callers = (new CallerResolver()).getClassContext();
         Class<?> callerClass = null;
         for (Class<?> c : callers) {
