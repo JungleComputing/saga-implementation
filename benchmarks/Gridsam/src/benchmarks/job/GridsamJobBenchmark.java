@@ -37,7 +37,7 @@ public class GridsamJobBenchmark implements Benchmark {
     
     private JobDefinitionDocument generateJSDL(String exec, String[] args) {
         JobDefinitionDocument jd = JobDefinitionDocument.Factory.newInstance();
-        JobDefinitionType jobDef = jobDefinitionDocument.addNewJobDefinition();
+        JobDefinitionType jobDef = jd.addNewJobDefinition();
         JobDescriptionType jobDescr = jobDef.addNewJobDescription();
         JobIdentificationType jobid = jobDescr.addNewJobIdentification();
         jobid.addJobProject("gridsam");
@@ -70,7 +70,6 @@ public class GridsamJobBenchmark implements Benchmark {
                     + " <jobservice-url> <#runs> <command> <arg>*");
             return;
         }
-        
         
         String jsUrl = args[0];
         int runs = Integer.parseInt(args[1]);
