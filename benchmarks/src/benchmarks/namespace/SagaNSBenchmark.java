@@ -128,6 +128,7 @@ public class SagaNSBenchmark implements Benchmark {
                 logger.info("Moving all directories");
             }
             for (URL dirUrl: baseDir.list()) {
+                /*
                 if (baseDir.isDir(dirUrl)) {
                     NSDirectory dir = baseDir.openDir(dirUrl);
                     for (URL subdirUrl: dir.list()) {
@@ -137,6 +138,7 @@ public class SagaNSBenchmark implements Benchmark {
                     }
                     dir.close();
                 }
+                */
                 URL targetUrl = URLFactory.createURL(
                         dirUrl.toString().replace("dir", "d"));
                 baseDir.move(dirUrl, targetUrl, Flags.RECURSIVE.getValue());
@@ -153,7 +155,7 @@ public class SagaNSBenchmark implements Benchmark {
                         for (URL filenameUrl : subdir.list()) {
                             URL targetUrl = URLFactory.createURL(
                                     filenameUrl.toString().replace("file", "f"));
-                            subdir.copy(filenameUrl, targetUrl);
+                            subdir.move(filenameUrl, targetUrl);
                         }
          
                         subdir.close();

@@ -116,12 +116,14 @@ public class LocalNSBenchmark implements Benchmark {
             }
             for (File dir: baseDir.listFiles()) {
                 if (dir.isDirectory()) {
+                    /*
                     for (File subdir: dir.listFiles()) {
                         if (subdir.isDirectory()) {
                             subdir.renameTo(new File(subdir.getParent(),
                                     subdir.getName().replace("dir", "d")));
                         }
                     }
+                    */
                     dir.renameTo(new File(dir.getParent(),
                             dir.getName().replace("dir", "d")));
                 }
