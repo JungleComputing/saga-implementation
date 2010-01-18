@@ -25,13 +25,13 @@ import benchmarks.BenchmarkRunner;
 
 public class GridsamJobBenchmark implements Benchmark {
     
-    private Logger logger = LoggerFactory.getLogger(SagaJobBenchmark.class);
+    private static Logger logger = LoggerFactory.getLogger(SagaJobBenchmark.class);
     
     private final JobDefinitionDocument jobDefinitionDocument;
     private final ClientSideJobManager jobManager;
-    private JobInstance jobInstance;
     private int firedEventCount;
     private Object savedState;
+    private String jobID;
  
     public GridsamJobBenchmark(String jsUrl, String exec, String[] args) throws Exception {
         jobDefinitionDocument = generateJSDL(exec, args);
@@ -114,12 +114,15 @@ public class GridsamJobBenchmark implements Benchmark {
         savedState = null;
 
         try {
-            jobInstance = jobManager.submitJob(
+            JobInstance jobInstance = jobManager.submitJob(
                 jobDefinitionDocument, true);
-            logger.debug("Submitted job");
+            logger.debug("Submitted job, jobInstance = " + jobInstance);
+            jobID = jobInstance.getID();
             PollingThread pollingThread;
             pollingThread = new PollingThread(this);
             pollingThread.setDaemon(true);
+            jobManager.startJob(jobID);
+            jobInstance = jobManager.findJobInstance(jobID);
             logger.debug("starting poller thread");
             pollingThread.start();
             logger.debug("waiting for poller thread");
@@ -131,6 +134,7 @@ public class GridsamJobBenchmark implements Benchmark {
     
     private boolean stateChange(JobStage stage) {
         JobState state = stage.getState();
+        logger.debug("Got state " + state);
         if (state.equals(savedState)) {
             return false;
         }
@@ -142,8 +146,10 @@ public class GridsamJobBenchmark implements Benchmark {
         return false;
     }
     
-    public boolean poll() {
+    public boolean poll() throws Exception {
+        JobInstance jobInstance = jobManager.findJobInstance(jobID);
         List<?> stages = jobInstance.getJobStages();
+        logger.debug("poll gave " + stages.size() + " events");
         if (stages.size() > firedEventCount) {
             for (int i = firedEventCount; i < stages.size(); i++) {
                 if (stateChange((JobStage) stages.get(i))) {
@@ -167,13 +173,17 @@ public class GridsamJobBenchmark implements Benchmark {
 
         @SuppressWarnings("unchecked")
         public void run() {
-            while (! parent.poll()) {
-                // update the manager state of the job
-                 try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e1) {
-                    // ignored
+            try {
+                while (! parent.poll()) {
+                    // update the manager state of the job
+                     try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e1) {
+                        // ignored
+                    }
                 }
+            } catch(Throwable e) {
+                GridsamJobBenchmark.logger.error("Got exception", e);
             }
         }
     }
