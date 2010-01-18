@@ -17,11 +17,15 @@ import org.icenigrid.schema.jsdl.y2005.m11.JobDefinitionDocument;
 import org.icenigrid.schema.jsdl.y2005.m11.JobDefinitionType;
 import org.icenigrid.schema.jsdl.y2005.m11.JobDescriptionType;
 import org.icenigrid.schema.jsdl.y2005.m11.JobIdentificationType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import benchmarks.Benchmark;
 import benchmarks.BenchmarkRunner;
 
 public class GridsamJobBenchmark implements Benchmark {
+    
+    private Logger logger = LoggerFactory.getLogger(SagaJobBenchmark.class);
     
     private final JobDefinitionDocument jobDefinitionDocument;
     private final ClientSideJobManager jobManager;
@@ -112,9 +116,13 @@ public class GridsamJobBenchmark implements Benchmark {
         try {
             jobInstance = jobManager.submitJob(
                 jobDefinitionDocument, true);
+            logger.debug("Submitted job");
             PollingThread pollingThread;
             pollingThread = new PollingThread(this);
             pollingThread.setDaemon(true);
+            logger.debug("starting poller thread");
+            pollingThread.start();
+            logger.debug("waiting for poller thread");
             pollingThread.join();
         } catch(Throwable e) {
             throw new Error(e);
