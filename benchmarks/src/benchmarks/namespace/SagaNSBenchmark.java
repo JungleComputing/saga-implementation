@@ -44,6 +44,7 @@ public class SagaNSBenchmark implements Benchmark {
             for (int i = 0; i < NSBenchmark.DIR_COUNT; i++) {
                 String dir = String.format("dir%03d", i);
                 URL dirUrl = URLFactory.createURL(dir);
+                logger.debug("  mkdir {}", dirUrl);
                 baseDir.makeDir(dirUrl);
             }
 
@@ -59,6 +60,7 @@ public class SagaNSBenchmark implements Benchmark {
                     for (int j = 0; j < NSBenchmark.SUBDIR_COUNT; j++) {
                         String subdir = String.format("subdir%03d", j);
                         URL subdirUrl = URLFactory.createURL(subdir);
+                        logger.debug("  mkdir {}/{}", dirUrl, subdirUrl);
                         dir.makeDir(subdirUrl);
                     }
                     dir.close();
@@ -83,7 +85,8 @@ public class SagaNSBenchmark implements Benchmark {
                             URL fileUrl = URLFactory.createURL(file);
                             
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Creating file " + fileUrl);
+                                logger.debug("  touch " + dirUrl + "/" 
+                                        + subdirUrl + "/" + fileUrl);
                             }
                             
                             NSEntry f = subdir.open(fileUrl, Flags.CREATE.getValue());                          
@@ -141,10 +144,11 @@ public class SagaNSBenchmark implements Benchmark {
                 */
                 URL targetUrl = URLFactory.createURL(
                         dirUrl.toString().replace("dir", "d"));
+                logger.debug("  mv {} --> {}", dirUrl, targetUrl);
                 baseDir.move(dirUrl, targetUrl, Flags.RECURSIVE.getValue());
             }
             
-            // Move all files
+            // Copy all files
             for (URL dirUrl: baseDir.list()) {
                 if (baseDir.isDir(dirUrl)) {
                     NSDirectory dir = baseDir.openDir(dirUrl);
@@ -155,7 +159,12 @@ public class SagaNSBenchmark implements Benchmark {
                         for (URL filenameUrl : subdir.list()) {
                             URL targetUrl = URLFactory.createURL(
                                     filenameUrl.toString().replace("file", "f"));
-                            subdir.move(filenameUrl, targetUrl);
+                            if (logger.isDebugEnabled()) {
+                                String d = dirUrl + "/" + subdirUrl + "/";
+                                logger.debug("  cp " + d + filenameUrl + " --> " 
+                                        + d + targetUrl); 
+                            }
+                            subdir.copy(filenameUrl, targetUrl);
                         }
          
                         subdir.close();
@@ -171,6 +180,7 @@ public class SagaNSBenchmark implements Benchmark {
             }
             
             for (URL dirUrl: baseDir.list()) {
+                logger.debug("  rm -r {}", dirUrl);
                 baseDir.remove(dirUrl, Flags.RECURSIVE.getValue());
             }
             
