@@ -57,7 +57,7 @@ public class GlobusJobBenchmark implements Benchmark, GramJobListener {
     
     public static void main(String[] args) {
         if (args.length < 3) {
-            System.out.println("usage: java " + GridsamJobBenchmark.class.getName()
+            System.out.println("usage: java " + GlobusJobBenchmark.class.getName()
                     + " <jobservice-url> <#runs> <command> <arg>*");
             return;
         }
