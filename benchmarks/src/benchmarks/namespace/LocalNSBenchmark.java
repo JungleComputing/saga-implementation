@@ -1,7 +1,9 @@
 package benchmarks.namespace;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 
 import org.slf4j.Logger;
@@ -115,31 +117,42 @@ public class LocalNSBenchmark implements Benchmark {
                 logger.info("Moving all directories");
             }
             for (File dir: baseDir.listFiles()) {
-                if (dir.isDirectory()) {
-                    /*
-                    for (File subdir: dir.listFiles()) {
-                        if (subdir.isDirectory()) {
-                            subdir.renameTo(new File(subdir.getParent(),
-                                    subdir.getName().replace("dir", "d")));
-                        }
+                /*
+                for (File subdir: dir.listFiles()) {
+                    if (subdir.isDirectory()) {
+                        subdir.renameTo(new File(subdir.getParent(),
+                                subdir.getName().replace("dir", "d")));
                     }
-                    */
-                    dir.renameTo(new File(dir.getParent(),
-                            dir.getName().replace("dir", "d")));
                 }
+                */
+                dir.renameTo(new File(dir.getParent(),
+                        dir.getName().replace("dir", "d")));
             }
             
-            // Move all files
+            // Copy all files
+            if (logger.isInfoEnabled()) {
+                logger.info("Copying all files");
+            }
+            byte[] copyBuf = new byte[1024 * 32];
             for (File dir: baseDir.listFiles()) {
-                if (dir.isDirectory()) {
-                    for (File subdir: dir.listFiles()) {
-                        if (subdir.isDirectory()) {
-                            for (File file: dir.listFiles()) {
-                                if (file.isFile()) {
-                                    file.renameTo(new File(file.getParent(),
-                                            file.getName().replace("file", "f")));
-                                }
+                for (File subdir: dir.listFiles()) {
+                    for (File file: subdir.listFiles()) {
+                        FileInputStream fin = null;
+                        FileOutputStream fout = null;
+                        
+                        try {
+                            fin = new FileInputStream(file);
+                            File newFile = new File(file.getParent(),
+                                    file.getName().replace("file", "f"));
+                            fout = new FileOutputStream(newFile);
+                        
+                            int readBytes = 0;
+                            while ((readBytes = fin.read(copyBuf)) != -1) {
+                                fout.write(copyBuf, 0, readBytes);
                             }
+                        } finally {
+                            if (fin != null) fin.close();
+                            if (fout != null) fout.close();
                         }
                     }
                 }
