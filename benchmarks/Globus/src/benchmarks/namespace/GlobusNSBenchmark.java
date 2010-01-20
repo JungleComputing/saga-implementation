@@ -1,6 +1,5 @@
 package benchmarks.namespace;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Vector;
 
@@ -8,11 +7,8 @@ import org.globus.ftp.FileInfo;
 import org.globus.ftp.GridFTPClient;
 import org.globus.ftp.GridFTPSession;
 import org.globus.ftp.HostPort;
-import org.globus.ftp.exception.FTPException;
 import org.globus.gsi.GlobusCredential;
 import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
-import org.globus.io.streams.FTPInputStream;
-import org.globus.io.streams.FTPOutputStream;
 import org.gridforum.jgss.ExtendedGSSManager;
 import org.ietf.jgss.GSSCredential;
 import org.slf4j.Logger;
