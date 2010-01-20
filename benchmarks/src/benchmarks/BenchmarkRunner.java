@@ -36,6 +36,13 @@ public class BenchmarkRunner implements Runnable {
                 if (sec > maxTime) maxTime = sec;
                 totalTime += sec;
                 times[run - 1] = sec;
+                
+                // wait one second between runs to let the system 'recover'
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {
+                    // ignore
+                }
             }
 
             System.out.println();
