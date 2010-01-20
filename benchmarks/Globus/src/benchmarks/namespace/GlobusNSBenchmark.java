@@ -232,6 +232,9 @@ public class GlobusNSBenchmark implements Benchmark {
             }
             
             // Copy all files
+            if (logger.isInfoEnabled()) {
+                logger.info("Copying all files");
+            }
             list = listDir();
             GridFTPClient c1 = createClient();
             GridFTPClient c2 = createClient();
