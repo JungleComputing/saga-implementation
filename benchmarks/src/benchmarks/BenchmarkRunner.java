@@ -38,10 +38,12 @@ public class BenchmarkRunner implements Runnable {
                 times[run - 1] = sec;
                 
                 // wait one second between runs to let the system 'recover'
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ignored) {
-                    // ignore
+                if (run < runs) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {
+                        // ignore
+                    }
                 }
             }
 
