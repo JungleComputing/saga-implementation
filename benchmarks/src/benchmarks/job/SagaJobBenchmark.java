@@ -9,6 +9,7 @@ import org.ogf.saga.job.JobFactory;
 import org.ogf.saga.job.JobService;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
+import org.ogf.saga.task.State;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 import org.slf4j.Logger;
@@ -43,8 +44,12 @@ public class SagaJobBenchmark implements Benchmark {
             Job job = js.createJob(jd);
             job.run();
             job.waitFor();
+            if (job.getState().equals(State.FAILED)) {
+                throw new Error("Job failed");
+            }
         } catch (SagaException e) {
             Util.printSagaException(e);
+            throw new Error("");
         }
     }
 
