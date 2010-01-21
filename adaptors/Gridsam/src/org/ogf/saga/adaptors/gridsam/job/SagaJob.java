@@ -436,7 +436,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         } else if (state.equals(JobState.TERMINATED)
                 || state.equals(JobState.DONE) || state.equals(JobState.FAILED)) {
             if (!stopped) {
-                stopped = true;
+                synchronized(this) {
+                    stopped = true;
+                }
                 try {
                     setValue(FINISHED, "" + stage.getDate().getTime());
                 } catch (Throwable e) {
@@ -518,8 +520,10 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
 
                 parent.onChange(jobInstance);
 
-                if (parent.stopped) {
-                    break;
+                synchronized(parent) {
+                    if (parent.stopped) {
+                        break;
+                    }
                 }
 
                 try {
