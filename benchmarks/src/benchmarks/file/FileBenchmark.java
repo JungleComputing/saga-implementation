@@ -10,16 +10,16 @@ public interface FileBenchmark {
     /**
      * Size of the data buffer used for writing the big file
      */
-    public static final int WRITE_BUF_SIZE = 1024 * 8;          // bytes
+    public static final int WRITE_BUF_SIZE = 1024 * 32;          // bytes
     
     /**
      * Size of the data buffer used for copying the big file (if applicable)
      */
-    public static final int COPY_BUF_SIZE = 1024 * 8;           // bytes
+    public static final int COPY_BUF_SIZE = 1024 * 32;           // bytes
 
     /**
      * Size of the data buffer used for reading the big file
      */
-    public static final int READ_BUF_SIZE = 1024 * 8;           // bytes
+    public static final int READ_BUF_SIZE = 1024 * 32;           // bytes
 
 }
