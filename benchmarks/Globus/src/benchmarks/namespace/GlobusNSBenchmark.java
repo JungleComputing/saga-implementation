@@ -56,6 +56,8 @@ public class GlobusNSBenchmark implements Benchmark {
 
     // Apparently, you can do "list" only once with a client?
     // The next time it gives an "unexpected reply".
+    // Somehow, this is fixed by doing the
+    // client.setPassive(); client.setLocalActive(); sequence ???
     @SuppressWarnings("unchecked")
     private Vector<FileInfo> listDir() throws Exception {
         Vector<FileInfo> list = client.list(null, null);
@@ -70,6 +72,10 @@ public class GlobusNSBenchmark implements Benchmark {
         return list;
     }
 
+    // Apparently, you can do "put" only once with a client?
+    // The next time it gives an "unexpected reply".
+    // Somehow, this is fixed by doing the
+    // client.setPassive(); client.setLocalActive(); sequence ???
     private void put(java.io.File src, String dst) throws Exception {
         client.put(src, dst, false);
         /*
