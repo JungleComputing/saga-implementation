@@ -303,7 +303,6 @@ public class GlobusNSBenchmark implements Benchmark {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void listDirectory(String d) throws Exception {
         Vector<FileInfo> list = listDir();
         for (FileInfo f : list) {
@@ -341,7 +340,6 @@ public class GlobusNSBenchmark implements Benchmark {
     }
     */
 
-    @SuppressWarnings("unchecked")
     private void removeRecursively() throws Exception {
         Vector<FileInfo> list = listDir();
         for (FileInfo entry: list) {

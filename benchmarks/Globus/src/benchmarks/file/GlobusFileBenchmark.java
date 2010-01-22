@@ -77,7 +77,6 @@ public class GlobusFileBenchmark implements Benchmark {
         return c;
     }
     
-    @SuppressWarnings("unchecked")
     public GlobusFileBenchmark(String uriString, GSSCredential credential) throws Exception {
         uri = new URI(uriString);
         host = uri.getHost();

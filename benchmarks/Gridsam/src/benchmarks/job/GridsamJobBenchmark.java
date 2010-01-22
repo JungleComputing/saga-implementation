@@ -171,7 +171,6 @@ public class GridsamJobBenchmark implements Benchmark {
             this.parent = parent;
         }
 
-        @SuppressWarnings("unchecked")
         public void run() {
             try {
                 while (! parent.poll()) {
