@@ -25,7 +25,6 @@ public class JavaGATNSBenchmark implements Benchmark {
         GAT.end();        
     }
 
-    @Override
     public void run() {
         try {
             File baseDir = GAT.createFile(baseDirUrl);
