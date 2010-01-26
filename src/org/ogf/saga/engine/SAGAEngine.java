@@ -588,7 +588,7 @@ public class SAGAEngine {
                     // administration.
                     if (pos < insertPosition)
                         insertPosition--;
-                    System.out.println("Insert position = " + insertPosition);
+                    //System.out.println("Insert position = " + insertPosition);
                 } else {
                     if (logger.isInfoEnabled()) {
                         logger.info("Found non existing adaptor in "
