@@ -106,6 +106,8 @@ public class GlobusFileBenchmark implements Benchmark {
             client.changeDir(baseDir);
 
             Vector<FileInfo> list = client.list();
+            client.setPassive();
+            client.setLocalActive();
 
             for (FileInfo f : list) {
                 String name = f.getName();
@@ -182,7 +184,9 @@ public class GlobusFileBenchmark implements Benchmark {
             if (logger.isInfoEnabled()) {
                 logger.info("Deleting all files and directories");
             }
-            client = createClient();
+            
+            client.setPassive();
+            client.setLocalActive();
             client.changeDir(baseDir);
             removeRecursively();
         } catch (Exception e) {
@@ -195,6 +199,8 @@ public class GlobusFileBenchmark implements Benchmark {
     @SuppressWarnings("unchecked")
     private void removeRecursively() throws Exception {
         Vector<FileInfo> list = client.list();
+        client.setPassive();
+        client.setLocalActive();
         for (FileInfo entry: list) {
             String name = entry.getName();
             if (name.equals(".") || name.equals("..")) {
