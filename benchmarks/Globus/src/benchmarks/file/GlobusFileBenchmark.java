@@ -88,10 +88,6 @@ public class GlobusFileBenchmark implements Benchmark {
         
         baseDir = uri.getPath();
         
-        client = createClient();
-        // client.setPassive();
-        // client.setLocalActive();
-
         if (baseDir.equals("")) {
             baseDir = "/";
         }
@@ -99,15 +95,15 @@ public class GlobusFileBenchmark implements Benchmark {
 
     @SuppressWarnings("unchecked")
     public void run() {
-
+        client = createClient();
+        // client.setPassive();
+        // client.setLocalActive();
         try {
             // sanity check: is the mounted directory empty? If not, bail out
              
             client.changeDir(baseDir);
 
             Vector<FileInfo> list = client.list();
-            client.setPassive();
-            client.setLocalActive();
 
             for (FileInfo f : list) {
                 String name = f.getName();
@@ -185,10 +181,10 @@ public class GlobusFileBenchmark implements Benchmark {
                 logger.info("Deleting all files and directories");
             }
             
-            client.setPassive();
-            client.setLocalActive();
+            client = createClient();
             client.changeDir(baseDir);
             removeRecursively();
+            client.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
