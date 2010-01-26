@@ -415,9 +415,33 @@ public class AdaptorInvocationHandler implements InvocationHandler {
      */
     public Object invoke(Object proxy, Method m, Object[] params)
             throws Throwable {
+        return invoke(m, params, false);
+    }
+    
+    public Object invokeOnAllAdaptors(Class<?> spi, String method, Class<?>[] parameterTypes,
+            Object[] params) throws Exception {
+        Method m;
+        try {
+            m = spi.getMethod(method, parameterTypes);
+        } catch(Throwable e) {
+            throw new Error("Internal error: could not find method " + method, e);
+        }
+        return invoke(m, params, true);
+    }
+    
+    /*
+     * Invokes the specified method with the specified parameters on the adaptors
+     * associated with this AdaptorInvocationHandler. The first adaptor that succeeds
+     * determines the result, and adaptors further in the list are not tried, unless
+     * the <code>onAllAdaptors</code> parameter is true.
+     */
+    private Object invoke(Method m, Object[] params, boolean onAllAdaptors)
+            throws Exception {
 
         SagaException exception = null;
         ArrayList<SagaException> exceptions = null;
+        boolean success = false;
+        Object result = null;
 
         if (logger.isDebugEnabled()) {
             logger.debug("Started invocation of method " + m);
@@ -461,44 +485,55 @@ public class AdaptorInvocationHandler implements InvocationHandler {
                         adaptorSorter.success(adaptorName, m);
                     }
 
-                    return res; // return on first successful adaptor
+                    if (! success) {
+                        result = res;
+                        success = true;
+                    }
+                    if (! onAllAdaptors) {
+                        return result; // return on first successful adaptor
+                    }
                 } catch (Throwable t) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Method " + m.getName() + " on "
                                 + adaptor.getShortAdaptorClassName()
                                 + " failed: " + t, t);
                     }
-                    first = false;
+
                     if (logger.isDebugEnabled()) {
                         logger.debug("Got throwable", t);
                     }
-                    while (t instanceof InvocationTargetException) {
-                        t = ((InvocationTargetException) t)
-                        .getTargetException();
-                    }
+                    
+                    if (! success) {
+                        first = false;
 
-                    if (! (t instanceof SagaException)) {
-                        t = new NoSuccessException(
-                                "Got exception from method " + m.getName(), t,
-                                (SagaObject) adaptorInstantiation.getWrapper());
-                    }
-                    // keep the most specific exception around. We can throw
-                    // that when all adaptors fail.
-                    SagaException e = (SagaException) t;
-                    e = addWrapper(e, adaptorInstantiation);
-                    
-                    if (exceptions == null) {
-                        exceptions = new ArrayList<SagaException>();
-                    }
-                    
-                    exceptions.add(e);
-                    
-                    if (exception == null) {
-                        exception = e;
-                    } else {
-                        SagaException e1 = compare(exception, e);
-                        if (e1 == e) {
-                             exception = e1;
+                        while (t instanceof InvocationTargetException) {
+                            t = ((InvocationTargetException) t)
+                            .getTargetException();
+                        }
+
+                        if (! (t instanceof SagaException)) {
+                            t = new NoSuccessException(
+                                    "Got exception from method " + m.getName(), t,
+                                    (SagaObject) adaptorInstantiation.getWrapper());
+                        }
+                        // keep the most specific exception around. We can throw
+                        // that when all adaptors fail.
+                        SagaException e = (SagaException) t;
+                        e = addWrapper(e, adaptorInstantiation);
+
+                        if (exceptions == null) {
+                            exceptions = new ArrayList<SagaException>();
+                        }
+
+                        exceptions.add(e);
+
+                        if (exception == null) {
+                            exception = e;
+                        } else {
+                            SagaException e1 = compare(exception, e);
+                            if (e1 == e) {
+                                exception = e1;
+                            }
                         }
                     }
                 } finally {
@@ -507,6 +542,9 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             }
         }
 
+        if (success) {
+            return result;
+        }
         if (logger.isInfoEnabled()) {
             logger.info("invoke: All adaptors failed");
         }

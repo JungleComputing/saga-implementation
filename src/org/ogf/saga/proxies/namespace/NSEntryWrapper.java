@@ -1,7 +1,10 @@
 package org.ogf.saga.proxies.namespace;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
+import org.ogf.saga.engine.AdaptorInvocationHandler;
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
@@ -84,6 +87,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         }
     }
 
+    /**
+     * Constructor for subclasses of NSEntryWrapper. They make their own proxy.
+     */
     protected NSEntryWrapper(Session session, URL name, boolean isDir)
             throws BadParameterException, NoSuccessException, NotImplementedException {
         super(session);
@@ -218,7 +224,27 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     public void close(float timeoutInSeconds) throws NotImplementedException,
             NoSuccessException {
         if (! isClosed()) {
-            proxy.close(timeoutInSeconds);
+            // Close is special, in that it must be invoked on all adaptors
+            // of which the constructor is completed succesfully. This is needed
+            // to allow adaptors to clean up, close files, et cetera.
+            InvocationHandler h = Proxy.getInvocationHandler(proxy);
+            AdaptorInvocationHandler handler = (AdaptorInvocationHandler) h;
+            try {
+                handler.invokeOnAllAdaptors(NSEntrySPI.class, "close",
+                        new Class[] { Float.TYPE }, new Float[] {timeoutInSeconds} );
+            } catch(NotImplementedException e) {
+                throw e;
+            } catch(NoSuccessException e) {
+                throw e;
+            } catch(Error e) {
+                throw e;
+            } catch(RuntimeException e) {
+                throw e;
+            } catch(Exception e) {
+                throw new NoSuccessException(e);
+            } finally {
+                setClosed(true);
+            }
         }
     }
 

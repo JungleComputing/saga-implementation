@@ -69,17 +69,11 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     }
     
     protected boolean isClosed() {
-        if (wrapper != null) {
-            return wrapper.isClosed();
-        }
         return closed;
     }
     
     
     protected void setClosed(boolean closed) {
-        if (wrapper != null) {
-            wrapper.setClosed(closed);
-        }
         this.closed = closed;
     }
 
