@@ -393,16 +393,31 @@ Below are some examples:
 
 \begin{description}
 
-\item[\texttt{StreamService.adaptor.name=socket,javagat}]
+\item[\texttt{StreamServer.adaptor.name=socket,javagat}]
 this loads both the socket and the javagat adaptor for
-the StreamService SPI, but no others. Also, the adaptors will
+the StreamServer SPI, but no others. Also, the adaptors will
 be tried in the specified order.
 
-\item[\texttt{StreamService.adaptor.name=!socket}]
-this will load all StreamService adaptors, except for the socket
+\item[\texttt{StreamServer.adaptor.name=!socket}]
+this will load all StreamServer adaptors, except for the socket
 adaptor.
 
 \end{description}
+
+The following adaptors can be selected:
+\texttt{Stream},
+\texttt{StreamServer},
+\texttt{RPC},
+\texttt{JobService},
+\texttt{File},
+\texttt{Directory},
+\texttt{NSEntry},
+\texttt{NSDirectory},
+\texttt{LogicalFile},
+\texttt{LogicalDirectory}.
+Note that property names are case-sensitive, so
+\texttt{File.adaptor.name} is recognized, while \texttt{file.adaptor.name} is
+not.
 
 \section{Further reading}
 
