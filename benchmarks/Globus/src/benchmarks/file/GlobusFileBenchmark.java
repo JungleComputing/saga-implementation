@@ -147,7 +147,7 @@ public class GlobusFileBenchmark implements Benchmark {
             c1.setActive(hp);
             c1.changeDir(baseDir);
             c2.changeDir(baseDir);
-            c1.transfer("foo", c2, "bar", true, null);
+            c1.transfer("foo", c2, "bar", false, null);
             c2.close();
             c1.close();
  
