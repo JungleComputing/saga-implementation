@@ -53,7 +53,20 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         }
 
     }
-      
+ 
+    
+    protected void checkDirectoryFlags(int flags, boolean isDir)
+    throws BadParameterException {
+        if (isDir && !Flags.RECURSIVE.isSet(flags)) {
+            throw new BadParameterException(
+                    "'Recursive' flag is not set for directory", wrapper);
+        }
+        if (!isDir && Flags.RECURSIVE.isSet(flags)) {
+            throw new BadParameterException(
+                    "'Recursive' flag is set for non-directory", wrapper);
+        }
+    }
+
     protected URL getEntryURL() {
         if (wrapper == null) {
             return nameURL;

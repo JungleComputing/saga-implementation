@@ -86,6 +86,18 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             }
         }
     }
+        
+    protected void checkDirectoryFlags(int flags, boolean isDir)
+    throws BadParameterException {
+        if (isDir && !Flags.RECURSIVE.isSet(flags)) {
+            throw new BadParameterException(
+                    "'Recursive' flag is not set for directory", this);
+        }
+        if (!isDir && Flags.RECURSIVE.isSet(flags)) {
+            throw new BadParameterException(
+                    "'Recursive' flag is set for non-directory", this);
+        }
+    }
 
     /**
      * Constructor for subclasses of NSEntryWrapper. They make their own proxy.
@@ -186,18 +198,6 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         if ((REMOVE_FLAGS | flags) != REMOVE_FLAGS) {
             throw new BadParameterException(
                     "Flags not allowed: " + flags, this);
-        }
-    }
-    
-    protected void checkDirectoryFlags(int flags, boolean isDir)
-    throws BadParameterException {
-        if (isDir && !Flags.RECURSIVE.isSet(flags)) {
-            throw new BadParameterException(
-                    "'Recursive' flag is not set for directory", this);
-        }
-        if (!isDir && Flags.RECURSIVE.isSet(flags)) {
-            throw new BadParameterException(
-                    "'Recursive' flag is set for non-directory", this);
         }
     }
 

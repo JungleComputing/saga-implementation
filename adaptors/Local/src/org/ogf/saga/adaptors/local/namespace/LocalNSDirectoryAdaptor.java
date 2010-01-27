@@ -153,10 +153,11 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         
         LocalNSEntryAdaptor sourceEntry = null;
         File targetFile = null;
-        
+        boolean isDir = isDir(source);
+        checkDirectoryFlags(flags, isDir);
         try {
             sourceEntry = createNSEntryAdaptor(sessionImpl, resolvedSource, 
-                    Flags.NONE.getValue(), isDir(source), entry.tool);
+                    Flags.NONE.getValue(), isDir, entry.tool);
     
             entry.tool.checkURL(resolvedTarget);
             
@@ -347,6 +348,8 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        boolean isDir = isDir(source);
+        checkDirectoryFlags(flags, isDir);
         throw new NotImplementedException("Links are not supported");
     }
 
@@ -408,11 +411,14 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             DoesNotExistException, TimeoutException, NoSuccessException {
 
         URL resolved = resolveToDir(target);
-
+        
+        boolean isDir = isDir(target);
+        checkDirectoryFlags(flags, isDir);
+        
         LocalNSEntryAdaptor targetEntry = null;
         try {
             targetEntry = createNSEntryAdaptor(sessionImpl, resolved,
-                    Flags.NONE.getValue(), isDir(target), entry.tool);
+                    Flags.NONE.getValue(), isDir, entry.tool);
         } catch (AlreadyExistsException e) {
             // cannot happen because the 'Create' flag is not set
             throw new NoSuccessException("Internal error", e);

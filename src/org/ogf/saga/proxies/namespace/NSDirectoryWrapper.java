@@ -295,7 +295,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
         checkCopyFlags(flags);
-        checkDirectoryFlags(flags, isDir(source));
+        // checkDirectoryFlags(flags, isDir(source));
         try {
             proxy.copy(source, target, flags);
         } catch(SagaException e) {
@@ -483,7 +483,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
         checkCopyFlags(flags);
-        checkDirectoryFlags(flags, isDir(source));
+        // checkDirectoryFlags(flags, isDir(source));
         proxy.link(source, target, flags);
     }
 
@@ -606,7 +606,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
         checkCopyFlags(flags);
-        checkDirectoryFlags(flags, isDir(source));
+        // checkDirectoryFlags(flags, isDir(source));
         try {
             proxy.move(source, target, flags);
         } catch(SagaException e) {
@@ -845,7 +845,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             DoesNotExistException, TimeoutException, NoSuccessException {
         checkNotClosed();
         checkRemoveFlags(flags);
-        checkDirectoryFlags(flags, isDir(target));
+        // checkDirectoryFlags(flags, isDir(target));
         proxy.remove(target, flags);
     }
 

@@ -557,7 +557,7 @@ public class SAGAEngine {
         // Create a copy of the adaptor list.
         AdaptorList result = new AdaptorList(adaptors);
 
-        // retrieve the adaptor type from the cpiClass
+        // retrieve the adaptor type from the spiClass
         String adaptorType = adaptors.getSpiName();
 
         String nameString = getProperty(adaptorType + ".adaptor.name");

@@ -135,41 +135,58 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         }
     
         // Check existence of parent dir, and create it if required.
-        if (Flags.CREATE.isSet(flags)) {
-            File parentFile;
+        if (! exists && Flags.CREATE.isSet(flags)) {
+            if (Flags.CREATEPARENTS.isSet(flags)) {
+                if (isDir) {
+                    try {
+                        if (! file.mkdirs()) {
+                            throw new NoSuccessException(
+                                    "Failed to create directory: "
+                                    + name.toString());
+                        }
+                        return;
+                    } catch(GATInvocationException e) {
+                        throw new NoSuccessException(e);
+                    }
+                }
+                File parentFile;
+                try {
+                    parentFile = file.getParentFile();
+                    boolean parentExists = parentFile == null || parentFile.exists();
+                    if (! parentExists) {
+                        parentExists = parentFile.mkdirs();
+                    }
+                } catch (GATInvocationException e) {
+                    throw new NoSuccessException(e);
+                }
+            }
+            String message = null;
             try {
-                parentFile = file.getParentFile();
-            } catch (GATInvocationException e) {
-                throw new NoSuccessException(e);
-            }
-            boolean parentExists = parentFile == null || parentFile.exists();
-            if (Flags.CREATEPARENTS.isSet(flags) && ! parentExists) {
-                parentExists = parentFile.mkdirs();
-            }
-
-            if (! parentExists) {
-                throw new DoesNotExistException("Parent file does not exist: "
-                        + name.toString());
-            }
-        }
-        // below not specified...
-        try {
-            if (Flags.CREATE.isSet(flags) && ! exists) {
                 if (!isDir) {
                     if (!file.createNewFile()) {
-                        throw new NoSuccessException(
-                                "Failed to create new file: " + name.toString());
+                        message = "Failed to create new file: " + name.toString();
+                    } else {
+                        return;
                     }
                 } else {
                     if (!file.mkdir()) {
-                        throw new NoSuccessException(
-                                "Failed to create directory: "
-                                        + name.toString());
+                        message = "Failed to create directory: " + name.toString();
+                    } else {
+                        return;
                     }
                 }
+                if (! Flags.CREATEPARENTS.isSet(flags)) {
+                    File parentFile = file.getParentFile();
+                    boolean parentExists = parentFile == null || parentFile.exists();
+                    if (! parentExists) {
+                        throw new DoesNotExistException("Parent file does not exist: "
+                                + name.toString());
+                    }
+                }
+                throw new NoSuccessException(message);
+            } catch (GATInvocationException e) {
+                throw new NoSuccessException(e);
             }
-        } catch (GATInvocationException e) {
-            throw new NoSuccessException(e);
         }
     }
 
@@ -208,55 +225,78 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         nonResolvingCopy(resolve(target), flags);
     }
     
-    private File copyOrMoveChecks(URL target, int flags, String method) 
+    private URI copyOrMoveChecks(URL target, int flags, String method) 
             throws IncorrectStateException, NoSuccessException,
             BadParameterException, AlreadyExistsException,
             IncorrectURLException, NotImplementedException,
             DoesNotExistException {
         File targetFile = null;
+        URI targetURI = null;
+        
         try {
-            targetFile = GAT.createFile(gatContext, GatURIConverter.cvtToGatURI(target));
+            targetURI = GatURIConverter.cvtToGatURI(target);
+        } catch (URISyntaxException e) {
+            throw new BadParameterException(e, wrapper);
+        }
+        
+        try {
+            targetFile = GAT.createFile(gatContext, targetURI);
 
             if (logger.isDebugEnabled()) {
-                logger.debug("targetFile: " + targetFile.toGATURI().toString());
+                logger.debug("targetFile: " + targetURI.toString());
             }
         } catch (GATObjectCreationException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Target file could not be created!");
             }
             throw new NoSuccessException(e, wrapper);
-        } catch (URISyntaxException e) {
-            throw new BadParameterException(e, wrapper);
         }
-
-        if (isDirectory && Flags.RECURSIVE.isSet(flags) && targetFile.isFile()) {
+        
+        boolean targetFileExists = targetFile.exists();
+        
+        if (isDirectory && Flags.RECURSIVE.isSet(flags) && targetFileExists
+                && targetFile.isFile()) {
             throw new AlreadyExistsException("cannot overwrite non-directory"
                     + targetFile.toGATURI().toString() + " with directory "
                     + fileImpl.toGATURI().toString(), wrapper);
         }
         // test whether target is in existing part of the name space
-        File targetParentFile;
-        File targetChildFile;
+        File targetParentFile = null;
+        boolean targetParentExists = false;
         try {
-            if (targetFile.isDirectory()) {
+            if (targetFileExists && targetFile.isDirectory()) {
                 targetParentFile = targetFile;
+                targetParentExists = true;
                 try {
-                    targetChildFile = GAT.createFile(gatContext, GatURIConverter.cvtToGatURI(target)
-                            .toString()
-                            + "/" + file.getName());
+                    targetURI = targetURI.setPath(targetURI.getPath() + "/" + file.getName());
+                    targetFile = GAT.createFile(gatContext, targetURI);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Creating target "
-                                + targetChildFile.getName());
+                                + targetFile.getName());
                     }
+                    targetFileExists = targetFile.exists();
                 } catch (GATObjectCreationException e) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("targetChildFile not created!");
+                        logger.debug("targetFile not created!");
                     }
                     throw new NoSuccessException(e, wrapper);
                 }
             } else {
-                targetParentFile = (org.gridlab.gat.io.File) targetFile
-                        .getParentFile();
+
+            }
+        } catch (GATInvocationException e) {
+            throw new NoSuccessException(e, wrapper);
+        }  catch (URISyntaxException e) {
+            throw new BadParameterException(e, wrapper);
+        }
+        if (!Flags.OVERWRITE.isSet(flags) && targetFileExists) {
+            throw new AlreadyExistsException("Target already exists: "
+                    + targetFile.toGATURI().toString(), wrapper);
+        }
+        if (Flags.CREATEPARENTS.isSet(flags)) {
+            if (targetParentFile == null) {
+                targetParentFile = (org.gridlab.gat.io.File) targetFile.getParentFile();
+            
                 if (targetParentFile == null) {
                     try {
                         targetParentFile = GAT.createFile(gatContext, ".");
@@ -264,19 +304,9 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                         throw new NoSuccessException(e, wrapper);
                     }
                 }
-                targetChildFile = targetFile;
+                targetParentExists = targetParentFile.exists();
             }
-        } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
-        }  catch (URISyntaxException e) {
-            throw new BadParameterException(e, wrapper);
-        }
-        if (!Flags.OVERWRITE.isSet(flags) && targetChildFile.exists()) {
-            throw new AlreadyExistsException("Target already exists: "
-                    + targetChildFile.toGATURI().toString(), wrapper);
-        }
-        if (Flags.CREATEPARENTS.isSet(flags)) {
-            if (!targetParentFile.exists()) {
+            if (! targetParentExists) {
                 if (!targetParentFile.mkdirs()) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("targetParentFile mkdirs failed!");
@@ -285,16 +315,25 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                             "Failed to make non-existing directories", wrapper);
                 }
             }
-        } else {
-            if (!targetParentFile.exists()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("targetParentFile does not exist!");
-                }
-                throw new DoesNotExistException(
-                        "Target parent file does not exist", wrapper);
-            }
         }
-        return targetChildFile;
+        return targetURI;
+    }
+    
+    private boolean parentExists(URI target) {
+        String path = target.getPath();
+        java.io.File f = new java.io.File(path);
+        String parent = f.getParent();
+        if (parent == null) {
+            return true;
+        }
+        try {
+            target = target.setPath(parent);
+            f = GAT.createFile(gatContext, target);
+            return f.exists();
+        } catch (Throwable e) {
+            // ignored
+        }
+        return false;
     }
 
     // Copy, without resolving target.
@@ -305,7 +344,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             BadParameterException, AlreadyExistsException,
             IncorrectURLException, NotImplementedException,
             DoesNotExistException {
-        File targetChildFile = copyOrMoveChecks(target, flags, "copy");
+        URI targetFile = copyOrMoveChecks(target, flags, "copy");
 
         // if the target already exists, it will be overwritten if the
         // 'Overwrite' flag is set, otherwise it is an 'AlreadyExists'
@@ -313,10 +352,14 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("copy: " + fileImpl.toGATURI().toString()
-                        + " --> " + targetChildFile.toGATURI().toString());
+                        + " --> " + targetFile.toString());
             }
-            file.copy(targetChildFile.toGATURI());
+            file.copy(targetFile);
         } catch (GATInvocationException e) {
+            if (! parentExists(targetFile)) {
+                throw new DoesNotExistException(
+                        "Target parent file does not exist", wrapper);
+            }
             throw new NoSuccessException(e, wrapper);
         }
     }
@@ -419,7 +462,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, IncorrectURLException, DoesNotExistException {
-        File targetChildFile = copyOrMoveChecks(target, flags, "move");
+        URI targetFile = copyOrMoveChecks(target, flags, "move");
 
         // if the target already exists, it will be overwritten if the
         // 'Overwrite' flag is set, otherwise it is an 'AlreadyExists'
@@ -427,10 +470,14 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("copy: " + fileImpl.toGATURI().toString()
-                        + " --> " + targetChildFile.toGATURI().toString());
+                        + " --> " + targetFile.toString());
             }
-            file.move(targetChildFile.toGATURI());
+            file.move(targetFile);
         } catch (GATInvocationException e) {
+            if (! parentExists(targetFile)) {
+                throw new DoesNotExistException(
+                        "Target parent file does not exist", wrapper);
+            }
             throw new NoSuccessException(e, wrapper);
         }
     }

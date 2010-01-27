@@ -121,9 +121,12 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
         URL source1 = resolveToDir(source);
         target = resolveToDir(target);
+        
+        boolean isDir = isDir(source);
+        checkDirectoryFlags(flags, isDir);
 
         NSEntryAdaptor sourceEntry = new NSEntryAdaptor(null, sessionImpl,
-                source1, Flags.NONE.getValue(), isDir(source));
+                source1, Flags.NONE.getValue(), isDir);
 
         // Don't resolve target with respect to source!!!
         sourceEntry.nonResolvingCopy(target, flags);
@@ -314,6 +317,8 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+        boolean isDir = isDir(source);
+        checkDirectoryFlags(flags, isDir);
         throw new NotImplementedException("link", wrapper);
     }
 
@@ -400,9 +405,10 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
 
         target = resolveToDir(target);
         URL source1 = resolveToDir(source);
-
+        boolean isDir = isDir(source);
+        checkDirectoryFlags(flags, isDir);
         NSEntryAdaptor sourceEntry = new NSEntryAdaptor(null, sessionImpl,
-                source1, Flags.NONE.getValue(), isDir(source));
+                source1, Flags.NONE.getValue(), isDir);
         // Don't resolve target with respect to source!!!
         sourceEntry.nonResolvingMove(target, flags);
         sourceEntry.close(0.0F);
@@ -514,11 +520,13 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             DoesNotExistException, TimeoutException, NoSuccessException {
 
         URL target1 = resolveToDir(target);
-
+        boolean isDir = isDir(target);
+        checkDirectoryFlags(flags, isDir);
+        
         NSEntryAdaptor targetEntry = null;
         try {
             targetEntry = new NSEntryAdaptor(null, sessionImpl, target1,
-                    Flags.NONE.getValue(), isDir(target));
+                    Flags.NONE.getValue(), isDir);
         } catch (AlreadyExistsException e) {
             // cannot happen because create flag is not allowed for this method
             throw new NoSuccessException("Should not happen!: " + e, wrapper);
