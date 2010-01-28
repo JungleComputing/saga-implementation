@@ -68,6 +68,11 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags);
 
+        // Make sure that the "local" scheme enforces the local file adaptor.
+        String scheme = name.getScheme();
+        if ("local".equals(scheme)) {
+            throw new IncorrectURLException("the javagat file/namespace adaptor does not recognize the local scheme");
+        }
         org.ogf.saga.adaptors.javaGAT.session.Session gatSession;
 
         synchronized (sessionImpl) {

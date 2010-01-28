@@ -14,6 +14,7 @@ import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
@@ -39,8 +40,14 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
     static final String JAVAGAT = "JavaGAT";
 
     public JobServiceAdaptor(JobServiceWrapper wrapper,
-            SessionImpl sessionImpl, URL rm) throws NoSuccessException {
+            SessionImpl sessionImpl, URL rm) throws NoSuccessException, IncorrectURLException {
         super(wrapper, sessionImpl, rm);
+        
+        // To make sure that the gridsam scheme enforces the gridsam adaptor:
+        String scheme = rm.getScheme();
+        if ("gridsam".equals(scheme)) {
+            throw new IncorrectURLException("The javagat adaptor does not do the gridsam scheme");
+        }
 
         org.ogf.saga.adaptors.javaGAT.session.Session s;
 
