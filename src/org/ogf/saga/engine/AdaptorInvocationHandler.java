@@ -444,7 +444,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         Object result = null;
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Started invocation of method " + m);
+            logger.debug("Started invocation of method " + m.getName());
         }
 
         ArrayList<String> adaptornames = adaptorSorter.getOrdering(m);
