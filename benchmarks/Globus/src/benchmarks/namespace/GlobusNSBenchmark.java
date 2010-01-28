@@ -131,6 +131,7 @@ public class GlobusNSBenchmark implements Benchmark {
             }
             for (int i = 0; i < NSBenchmark.DIR_COUNT; i++) {
                 String name = String.format("dir%03d", i);
+                logger.debug("  mkdir {}", name);
                 client.makeDir(name);
             }
 
@@ -151,6 +152,7 @@ public class GlobusNSBenchmark implements Benchmark {
                     client.changeDir(name);
                     for (int j = 0; j < NSBenchmark.SUBDIR_COUNT; j++) {
                         String subdir = String.format("subdir%03d", j);
+                        logger.debug("  mkdir {}/{}", name, subdir);
                         client.makeDir(subdir);
                     }
                     client.changeDir("..");
@@ -185,6 +187,11 @@ public class GlobusNSBenchmark implements Benchmark {
                             client.changeDir(name2);
                             for (int i = 0; i < NSBenchmark.FILE_COUNT; i++) {
                                 String n = String.format("file%03d", i);
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("  touch " + name + "/" 
+                                            + name2 + "/" + n);
+                                }
+                                
                                 put(emptyFile, n);
                             }
                             client.changeDir("..");
@@ -233,7 +240,9 @@ public class GlobusNSBenchmark implements Benchmark {
                     continue;
                 }
                 if (f.isDirectory()) {
-                    client.rename(name, name.replace("dir", "d"));
+                    String n = name.replace("dir", "d");
+                    logger.debug("  mv {} --> {}", name, n);
+                    client.rename(name, n);
                 }
             }
             
@@ -274,7 +283,13 @@ public class GlobusNSBenchmark implements Benchmark {
                                     continue;
                                 }
                                 if (f3.isFile()) {
-                                    c1.transfer(name3, c2, name3.replace("file", "f"), true, null);
+                                    String n = name3.replace("file", "f");
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug("  cp " + name + "/" + name2 + "/"
+                                                + name3 + " --> " + name + "/" + name2
+                                                + "/" + n);
+                                    }
+                                    c1.transfer(name3, c2, n, false, null);
                                     hp = c2.setPassive();
                                     c1.setActive(hp);
                                 }
