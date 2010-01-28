@@ -15,7 +15,7 @@ import benchmarks.BenchmarkRunner;
 
 public class JavaGATFileBenchmark implements Benchmark {
 
-    private Logger logger = LoggerFactory.getLogger(SagaFileBenchmark.class);
+    private Logger logger = LoggerFactory.getLogger(JavaGATFileBenchmark.class);
 
     private URI baseDirUrl;
     private byte[] buf = new byte[FileBenchmark.WRITE_BUF_SIZE];

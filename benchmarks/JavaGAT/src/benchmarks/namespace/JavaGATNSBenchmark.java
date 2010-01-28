@@ -13,7 +13,7 @@ import benchmarks.BenchmarkRunner;
 
 public class JavaGATNSBenchmark implements Benchmark {
 
-    private Logger logger = LoggerFactory.getLogger(SagaNSBenchmark.class);
+    private Logger logger = LoggerFactory.getLogger(JavaGATNSBenchmark.class);
 
     private URI baseDirUrl;
     
@@ -42,7 +42,7 @@ public class JavaGATNSBenchmark implements Benchmark {
             for (int i = 0; i < NSBenchmark.DIR_COUNT; i++) {
                 String dir = String.format("dir%03d", i);
                 URI dirUrl = new URI(baseDirUrl.toString() + "/" + dir);
-                logger.debug("  mkdir {}", dirUrl);
+                logger.debug("  mkdir " + dirUrl);
                 File f = GAT.createFile(dirUrl);
                 if (! f.mkdir()) {
                     throw new Error("Could not create dir " + dirUrl);
@@ -60,7 +60,7 @@ public class JavaGATNSBenchmark implements Benchmark {
                     for (int j = 0; j < NSBenchmark.SUBDIR_COUNT; j++) {
                         String subdir = String.format("subdir%03d", j);
                         URI subdirUrl = new URI(((File)dir).toGATURI().toString() + "/" + subdir);
-                        logger.debug("  mkdir ", subdirUrl);
+                        logger.debug("  mkdir " + subdirUrl);
                         File f = GAT.createFile(subdirUrl);
                         if (! f.mkdir()) {
                             throw new Error("Could not create dir " + subdirUrl);
@@ -155,7 +155,7 @@ public class JavaGATNSBenchmark implements Benchmark {
                             URI targetUrl = new URI(
                                     ((File)file).toGATURI().toString().replace("file", "f"));
                             if (logger.isDebugEnabled()) {
-                                logger.debug("  cp " + file.toURI() + " --> " 
+                                logger.debug("  cp " + ((File)file).toGATURI() + " --> " 
                                         + targetUrl); 
                             }
                             ((File) file).copy(targetUrl);
