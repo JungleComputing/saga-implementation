@@ -20,17 +20,17 @@ public class BenchmarkRunner implements Runnable {
         double[] times = new double[runs];
         
         try {
-
+            System.out.println("Starting benchmark " + test.getClass().getName() + ", "
+                    + runs + " runs.");
             for (int run = 1; run <= runs; run++) {
-                System.out.printf("Run %2d: ", run);
-
+ 
                 long time = System.currentTimeMillis();
                 test.run();
                 time = System.currentTimeMillis() - time;
 
                 double sec = time / 1000.0;
 
-                System.out.printf("%2.2f sec\n", sec);
+                System.out.printf("Run %2d: %2.2f sec\n", run, sec);
 
                 if (sec < minTime) minTime = sec;
                 if (sec > maxTime) maxTime = sec;
