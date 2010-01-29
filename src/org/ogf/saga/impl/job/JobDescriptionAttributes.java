@@ -56,9 +56,9 @@ public class JobDescriptionAttributes extends AttributesImpl {
         addAttribute(JobDescription.TOTALPHYSICALMEMORY, AttributeType.FLOAT,
                 false, false, false, false);
         addAttribute(JobDescription.CPUARCHITECTURE, AttributeType.STRING,
-                true, false, false, false);
+                false, false, false, false);
         addAttribute(JobDescription.OPERATINGSYSTEMTYPE, AttributeType.STRING,
-                true, false, false, false);
+                false, false, false, false);
         addAttribute(JobDescription.CANDIDATEHOSTS, AttributeType.STRING, true,
                 false, false, false);
         addAttribute(JobDescription.QUEUE, AttributeType.STRING, false, false,
