@@ -32,11 +32,13 @@ public class GridsamJobBenchmark implements Benchmark {
     private int firedEventCount;
     private Object savedState;
     private String jobID;
+    private int commandRuns;
  
-    public GridsamJobBenchmark(String jsUrl, String exec, String[] args) throws Exception {
+    public GridsamJobBenchmark(String jsUrl, int commandRuns, String exec, String[] args) throws Exception {
         jobDefinitionDocument = generateJSDL(exec, args);
         jobManager = new ClientSideJobManager(new String[] { "-s", jsUrl },
                 ClientSideJobManager.getStandardOptions());
+        this.commandRuns = commandRuns;
     }
     
     private JobDefinitionDocument generateJSDL(String exec, String[] args) {
@@ -69,24 +71,25 @@ public class GridsamJobBenchmark implements Benchmark {
     }
     
     public static void main(String[] args) {
-        if (args.length < 3) {
+        if (args.length < 4) {
             System.out.println("usage: java " + GridsamJobBenchmark.class.getName()
-                    + " <jobservice-url> <#runs> <command> <arg>*");
+                    + " <jobservice-url> <#runs> <#command runs> <command> <arg>*");
             return;
         }
         
         String jsUrl = args[0];
         int runs = Integer.parseInt(args[1]);
-        String exec = args[2];
+        int commandRuns = Integer.parseInt(args[2]);
+        String exec = args[3];
         
         String[] arguments = null;
-        if (args.length > 3) {
-            arguments = Arrays.copyOfRange(args, 3, args.length);
+        if (args.length > 4) {
+            arguments = Arrays.copyOfRange(args, 4, args.length);
         }
         
         Benchmark test;
         try {
-            test = new GridsamJobBenchmark(jsUrl, exec, arguments);
+            test = new GridsamJobBenchmark(jsUrl, commandRuns, exec, arguments);
         } catch (Throwable e) {
             e.printStackTrace();
             return;
@@ -113,22 +116,24 @@ public class GridsamJobBenchmark implements Benchmark {
         firedEventCount = 0;
         savedState = null;
 
-        try {
-            JobInstance jobInstance = jobManager.submitJob(
-                jobDefinitionDocument, true);
-            logger.debug("Submitted job, jobInstance = " + jobInstance);
-            jobID = jobInstance.getID();
-            PollingThread pollingThread;
-            pollingThread = new PollingThread(this);
-            pollingThread.setDaemon(true);
-            jobManager.startJob(jobID);
-            jobInstance = jobManager.findJobInstance(jobID);
-            logger.debug("starting poller thread");
-            pollingThread.start();
-            logger.debug("waiting for poller thread");
-            pollingThread.join();
-        } catch(Throwable e) {
-            throw new Error(e);
+        for (int i = 0; i < commandRuns; i++) {
+            try {
+                JobInstance jobInstance = jobManager.submitJob(
+                        jobDefinitionDocument, true);
+                logger.debug("Submitted job, jobInstance = " + jobInstance);
+                jobID = jobInstance.getID();
+                PollingThread pollingThread;
+                pollingThread = new PollingThread(this);
+                pollingThread.setDaemon(true);
+                jobManager.startJob(jobID);
+                jobInstance = jobManager.findJobInstance(jobID);
+                logger.debug("starting poller thread");
+                pollingThread.start();
+                logger.debug("waiting for poller thread");
+                pollingThread.join();
+            } catch(Throwable e) {
+                throw new Error(e);
+            }
         }
     }
     

@@ -16,8 +16,9 @@ public class GlobusJobBenchmark implements Benchmark, GramJobListener {
     private final String jsUrl;
     private final GSSCredential credential;
     private boolean jobDone = false;
+    private int commandRuns;
  
-    public GlobusJobBenchmark(String jsUrl, String exec, String[] args) throws Exception {
+    public GlobusJobBenchmark(String jsUrl, int commandRuns, String exec, String[] args) throws Exception {
         this.jsUrl = stripScheme(jsUrl);
 
         jobDefinition = generateJSDL(exec, args);
@@ -28,6 +29,7 @@ public class GlobusJobBenchmark implements Benchmark, GramJobListener {
         // try to get default user proxy certificate from file in /tmp
         credential = manager
                     .createCredential(GSSCredential.INITIATE_AND_ACCEPT);
+        this.commandRuns = commandRuns;
     }
     
     private String stripScheme(String s) {
@@ -56,24 +58,25 @@ public class GlobusJobBenchmark implements Benchmark, GramJobListener {
     }
     
     public static void main(String[] args) {
-        if (args.length < 3) {
+        if (args.length < 4) {
             System.out.println("usage: java " + GlobusJobBenchmark.class.getName()
-                    + " <jobservice-url> <#runs> <command> <arg>*");
+                    + " <jobservice-url> <#runs> <#commandruns> <command> <arg>*");
             return;
         }
                
         String jsUrl = args[0];
         int runs = Integer.parseInt(args[1]);
-        String exec = args[2];
+        int commandRuns = Integer.parseInt(args[2]);
+        String exec = args[3];
         
         String[] arguments = null;
-        if (args.length > 3) {
-            arguments = Arrays.copyOfRange(args, 3, args.length);
+        if (args.length > 4) {
+            arguments = Arrays.copyOfRange(args, 4, args.length);
         }
         
         Benchmark test;
         try {
-            test = new GlobusJobBenchmark(jsUrl, exec, arguments);
+            test = new GlobusJobBenchmark(jsUrl, commandRuns, exec, arguments);
         } catch (Throwable e) {
             e.printStackTrace();
             return;
@@ -101,24 +104,26 @@ public class GlobusJobBenchmark implements Benchmark, GramJobListener {
     }
 
     public void run() {
-        GramJob j = new GramJob(credential, jobDefinition);
-        j.addListener(this);
-        
-        synchronized (this) {
-            jobDone = false;
-        }
+        for (int i = 0; i < commandRuns; i++) {
+            GramJob j = new GramJob(credential, jobDefinition);
+            j.addListener(this);
 
-        try {
-            j.request(jsUrl);
-        } catch (Throwable e) {
-            throw new Error(e);
-        }
-        synchronized (this) {
-            while (!jobDone) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    // ignored
+            synchronized (this) {
+                jobDone = false;
+            }
+
+            try {
+                j.request(jsUrl);
+            } catch (Throwable e) {
+                throw new Error(e);
+            }
+            synchronized (this) {
+                while (!jobDone) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        // ignored
+                    }
                 }
             }
         }

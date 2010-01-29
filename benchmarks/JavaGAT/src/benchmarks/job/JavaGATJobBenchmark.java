@@ -26,8 +26,9 @@ public class JavaGATJobBenchmark implements Benchmark, MetricListener {
     private JobDescription job;
 
     private boolean jobFinished;
+    private int commandRuns;
     
-    public JavaGATJobBenchmark(String jsUrl, String exec, String[] arguments)
+    public JavaGATJobBenchmark(String jsUrl, int commandRuns, String exec, String[] arguments)
             throws URISyntaxException, GATObjectCreationException {
         
         logger.info("Creating job service '" + jsUrl + "'");
@@ -37,6 +38,7 @@ public class JavaGATJobBenchmark implements Benchmark, MetricListener {
         sw.setExecutable(exec);
         sw.setArguments(arguments);
         job = new JobDescription(sw);
+        this.commandRuns = commandRuns;
 
         logger.info("Job to run: " + exec + " " + Arrays.toString(arguments) + "'");
     }
@@ -48,48 +50,51 @@ public class JavaGATJobBenchmark implements Benchmark, MetricListener {
 
     @Override
     public void run() {
-        jobFinished = false;
-        try {
-            Job j = broker.submitJob(job, this, "job.status");
-            synchronized(this) {
-                while (! jobFinished) {
-                    try {
-                        wait();
-                    } catch(Throwable e) {
-                        // ignored
+        for (int i = 0; i < commandRuns; i++) {
+            jobFinished = false;
+            try {
+                Job j = broker.submitJob(job, this, "job.status");
+                synchronized(this) {
+                    while (! jobFinished) {
+                        try {
+                            wait();
+                        } catch(Throwable e) {
+                            // ignored
+                        }
                     }
                 }
+                if (j.getState() != Job.JobState.STOPPED) {
+                    throw new Error("Failed job");
+                }
+            } catch(Error e) {
+                throw e;
+            } catch(Throwable e) {
+                throw new Error(e);
             }
-            if (j.getState() != Job.JobState.STOPPED) {
-                throw new Error("Failed job");
-            }
-        } catch(Error e) {
-             throw e;
-        } catch(Throwable e) {
-            throw new Error(e);
         }
     }
 
     
     public static void main(String args[]) {
-        if (args.length < 3) {
+        if (args.length < 4) {
             System.out.println("usage: java " + JavaGATJobBenchmark.class.getName()
-                    + " <resourcebroker-url> <#runs> <executable> [arg]*");
+                    + " <resourcebroker-url> <#runs> <#commandruns> <executable> [arg]*");
             return;
         }
         
         String jsUrl = args[0];
         int runs = Integer.parseInt(args[1]);
-        String exec = args[2];
+        int commandRuns = Integer.parseInt(args[2]);
+        String exec = args[3];
         
         String[] arguments = null;
-        if (args.length > 3) {
-            arguments = Arrays.copyOfRange(args, 3, args.length);
+        if (args.length > 4) {
+            arguments = Arrays.copyOfRange(args, 4, args.length);
         }
     
         Benchmark test;
         try {
-            test = new JavaGATJobBenchmark(jsUrl, exec, arguments);
+            test = new JavaGATJobBenchmark(jsUrl, commandRuns, exec, arguments);
             BenchmarkRunner runner = new BenchmarkRunner(test, runs);
             runner.run();
         } catch(Throwable e) {

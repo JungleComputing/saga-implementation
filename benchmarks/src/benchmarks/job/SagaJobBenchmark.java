@@ -25,8 +25,9 @@ public class SagaJobBenchmark implements Benchmark {
     
     private JobService js;
     private JobDescription jd;
+    private int commandRuns;
         
-    public SagaJobBenchmark(String jsUrl, String exec, String[] args) 
+    public SagaJobBenchmark(String jsUrl, int commandRuns, String exec, String[] args) 
     throws SagaException 
     {
         logger.info("Creating job service '" + jsUrl + "'");
@@ -37,19 +38,22 @@ public class SagaJobBenchmark implements Benchmark {
         jd.setAttribute(JobDescription.EXECUTABLE, exec);
         jd.setVectorAttribute(JobDescription.ARGUMENTS, args);
         logger.info("Job to run: " + exec + " " + Arrays.toString(args) + "'");
+        this.commandRuns = commandRuns;
     }
     
     public void run() {
-        try {
-            Job job = js.createJob(jd);
-            job.run();
-            job.waitFor();
-            if (job.getState().equals(State.FAILED)) {
-                throw new Error("Job failed");
+        for (int i = 0; i < commandRuns; i++) {
+            try {
+                Job job = js.createJob(jd);
+                job.run();
+                job.waitFor();
+                if (job.getState().equals(State.FAILED)) {
+                    throw new Error("Job failed");
+                }
+            } catch (SagaException e) {
+                Util.printSagaException(e);
+                throw new Error("");
             }
-        } catch (SagaException e) {
-            Util.printSagaException(e);
-            throw new Error("");
         }
     }
 
@@ -64,24 +68,25 @@ public class SagaJobBenchmark implements Benchmark {
     }
     
     public static void main(String args[]) {
-        if (args.length < 3) {
+        if (args.length < 4) {
             System.out.println("usage: java " + SagaJobBenchmark.class.getName()
-                    + " <jobservice-url> <#runs> <executable> [arg]*");
+                    + " <jobservice-url> <#runs> <#commandruns> <executable> [arg]*");
             return;
         }
         
         String jsUrl = args[0];
         int runs = Integer.parseInt(args[1]);
-        String exec = args[2];
+        int commandRuns = Integer.parseInt(args[2]);
+        String exec = args[3];
         
         String[] arguments = null;
-        if (args.length > 3) {
-            arguments = Arrays.copyOfRange(args, 3, args.length);
+        if (args.length > 4) {
+            arguments = Arrays.copyOfRange(args, 4, args.length);
         }
     
         Benchmark test;
         try {
-            test = new SagaJobBenchmark(jsUrl, exec, arguments);
+            test = new SagaJobBenchmark(jsUrl, commandRuns, exec, arguments);
         } catch (SagaException e) {
             Util.printSagaException(e);
             return;

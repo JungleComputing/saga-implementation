@@ -8,9 +8,11 @@ import benchmarks.BenchmarkRunner;
 public class LocalJobBenchmark implements Benchmark {
     
     private final String[] command;
+    private int commandRuns;
 
-    public LocalJobBenchmark(String[] command) {
+    public LocalJobBenchmark(int commandRuns, String[] command) {
         this.command = command;
+        this.commandRuns = commandRuns;
     }
 
     public void close() {
@@ -18,27 +20,30 @@ public class LocalJobBenchmark implements Benchmark {
     }
 
     public void run() {
-        try {
-            Process p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-        } catch (Exception e) {
-            throw new Error(e);
+        for (int i = 0; i < commandRuns; i++) {
+            try {
+                Process p = Runtime.getRuntime().exec(command);
+                p.waitFor();
+            } catch (Exception e) {
+                throw new Error(e);
+            }
         }
     }
        
     public static void main(String args[]) {
-        if (args.length < 2) {
+        if (args.length < 3) {
             System.out.println("usage: java " + LocalJobBenchmark.class.getName()
-                    + " <#runs> <executable> [arg]*");
+                    + " <#runs> <#commandRuns> <executable> [arg]*");
             return;
         }
         
         int runs = Integer.parseInt(args[0]);
+        int commandRuns = Integer.parseInt(args[1]);
         
-        String[] command = Arrays.copyOfRange(args, 1, args.length);
+        String[] command = Arrays.copyOfRange(args, 2, args.length);
     
         Benchmark test;
-        test = new LocalJobBenchmark(command);
+        test = new LocalJobBenchmark(commandRuns, command);
         
         BenchmarkRunner runner = new BenchmarkRunner(test, runs);
         try {
