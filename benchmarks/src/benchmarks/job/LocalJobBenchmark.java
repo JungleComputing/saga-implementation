@@ -1,7 +1,5 @@
 package benchmarks.job;
 
-import java.util.Arrays;
-
 import benchmarks.Benchmark;
 import benchmarks.BenchmarkRunner;
 
@@ -40,7 +38,10 @@ public class LocalJobBenchmark implements Benchmark {
         int runs = Integer.parseInt(args[0]);
         int commandRuns = Integer.parseInt(args[1]);
         
-        String[] command = Arrays.copyOfRange(args, 2, args.length);
+        String[] command = new String[args.length - 2];
+        for (int i = 2; i < args.length; i++) {
+            command[i - 2] = args[i];
+        }
     
         Benchmark test;
         test = new LocalJobBenchmark(commandRuns, command);
