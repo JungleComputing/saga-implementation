@@ -81,7 +81,10 @@ public class SagaJobBenchmark implements Benchmark {
         
         String[] arguments = null;
         if (args.length > 4) {
-            arguments = Arrays.copyOfRange(args, 4, args.length);
+            arguments = new String[args.length - 4];
+            for (int i = 4; i < args.length; i++) {
+                arguments[i - 4] = args[i];
+            }
         }
     
         Benchmark test;
