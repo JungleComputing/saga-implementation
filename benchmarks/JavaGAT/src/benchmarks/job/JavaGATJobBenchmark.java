@@ -43,12 +43,10 @@ public class JavaGATJobBenchmark implements Benchmark, MetricListener {
         logger.info("Job to run: " + exec + " " + Arrays.toString(arguments) + "'");
     }
 
-    @Override
     public void close() {
         GAT.end();
     }
 
-    @Override
     public void run() {
         for (int i = 0; i < commandRuns; i++) {
             jobFinished = false;
@@ -89,7 +87,10 @@ public class JavaGATJobBenchmark implements Benchmark, MetricListener {
         
         String[] arguments = null;
         if (args.length > 4) {
-            arguments = Arrays.copyOfRange(args, 4, args.length);
+            arguments = new String[args.length - 4];
+            for (int i = 4; i < args.length; i++) {
+                arguments[i - 4] = args[i];
+            }
         }
     
         Benchmark test;
