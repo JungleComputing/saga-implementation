@@ -12,7 +12,6 @@ public class BenchmarkRunner implements Runnable {
         this.runs = runs;
     }
 
-    @Override
     public void run() {
         double totalTime = 0;
         double minTime = Double.MAX_VALUE;
