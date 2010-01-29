@@ -38,6 +38,8 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
     private HashMap<String, SagaJob> jobs = new HashMap<String, SagaJob>();
 
     static final String JAVAGAT = "JavaGAT";
+    
+    final String url;
 
     public JobServiceAdaptor(JobServiceWrapper wrapper,
             SessionImpl sessionImpl, URL rm) throws NoSuccessException, IncorrectURLException {
@@ -62,10 +64,10 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
         gatContext = s.getGATContext();
         Preferences prefs = gatContext.getPreferences();
 
-        String r = rm.toString();
+        url = rm.toString();
         try {
-            URI gatURI = new URI(r);
-            if (!"".equals(r)) {
+            URI gatURI = new URI(url);
+            if (!"".equals(url)) {
                 prefs
                         .put("ResourceBroker.jobmanagerContact", gatURI
                                 .toString());

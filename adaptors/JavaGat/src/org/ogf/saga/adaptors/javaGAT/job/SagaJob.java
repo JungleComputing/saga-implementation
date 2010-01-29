@@ -85,6 +85,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             int count = Integer
                     .parseInt(getV(JobDescriptionImpl.NUMBEROFPROCESSES));
             gatJobDescription.setProcessCount(count);
+            setValue(SERVICEURL, service.url);
         } catch (Throwable e) {
             // ignored
         }

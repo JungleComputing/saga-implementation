@@ -125,9 +125,11 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         try {
             String w = jobDescriptionImpl.getAttribute(JobDescription.WORKINGDIRECTORY);
             setValue(WORKINGDIRECTORY, w);
+            setValue(SERVICEURL, service.url);
         } catch(Throwable e) {
             // ignored, should not happen.
         }
+        
         service.addJob(this, id);
 
         // Polling thread needed as long as gridSAM does not support
