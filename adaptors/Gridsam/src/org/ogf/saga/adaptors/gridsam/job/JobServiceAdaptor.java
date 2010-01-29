@@ -33,8 +33,13 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
 
     public JobServiceAdaptor(JobServiceWrapper wrapper,
             SessionImpl sessionImpl, URL rm) throws NoSuccessException,
-            NotImplementedException, IncorrectURLException {
+            NotImplementedException, IncorrectURLException, BadParameterException {
         super(wrapper, sessionImpl, rm);
+
+        if (rm.toString().equals("")) {
+            throw new BadParameterException("Default URL \"\" is not supported");
+        }
+        
         String scheme = rm.getScheme();
 
         if (scheme.equals("any") || scheme.equals("gridsam")) {

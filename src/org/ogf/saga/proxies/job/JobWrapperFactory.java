@@ -2,6 +2,7 @@ package org.ogf.saga.proxies.job;
 
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
+import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
@@ -28,7 +29,8 @@ public class JobWrapperFactory extends JobFactory {
     public JobService doCreateJobService(Session session, URL rm)
             throws NotImplementedException, IncorrectURLException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, TimeoutException, NoSuccessException {
+            PermissionDeniedException, TimeoutException, NoSuccessException,
+            BadParameterException {
         return new JobServiceWrapper(session, rm);
     }
 

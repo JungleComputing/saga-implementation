@@ -30,9 +30,13 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
     public JobServiceWrapper(Session session, URL rm)
             throws NoSuccessException, TimeoutException,
             PermissionDeniedException, AuthorizationFailedException,
-            AuthenticationFailedException, IncorrectURLException,
+            AuthenticationFailedException, BadParameterException, IncorrectURLException,
             NotImplementedException {
         super(session);
+        
+        if (rm == null) {
+            throw new BadParameterException("Specified URL is null");
+        }
         Object[] parameters = { this, session, rm };
         try {
             proxy = (JobServiceSPI) SAGAEngine.createAdaptorProxy(
@@ -57,6 +61,9 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
             }
             if (e instanceof TimeoutException) {
                 throw (TimeoutException) e;
+            }
+            if (e instanceof BadParameterException) {
+                throw (BadParameterException) e;
             }
             if (e instanceof NoSuccessException) {
                 throw (NoSuccessException) e;
