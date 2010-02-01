@@ -17,7 +17,6 @@ import benchmarks.Connecter;
 import benchmarks.HostKeyVerifier;
 
 import com.trilead.ssh2.Connection;
-import com.trilead.ssh2.SFTPv3Client;
 import com.trilead.ssh2.Session;
 import com.trilead.ssh2.StreamGobbler;
 
@@ -116,7 +115,6 @@ public class SshFileBenchmark implements Benchmark {
     }
 
     public void run() {
-        SFTPv3Client sftp = null;
         
         try {
             String[] resultTest;
@@ -195,7 +193,7 @@ public class SshFileBenchmark implements Benchmark {
                 throw new Error(e);
             }
             InputStream sessionOutputStream = session.getStdout();
-            command = "cat < " + path + "/bla";
+            command = "cat < " + path + "/bar";
             InputStreamRunner job1 = new InputStreamRunner(session, command);
             job1.setDaemon(true);
             job1.start();   
@@ -217,14 +215,11 @@ public class SshFileBenchmark implements Benchmark {
             if (logger.isInfoEnabled()) {
                 logger.info("Deleting 'foo' and 'bar'");
             }
-            sftp.rm(path + "/foo");
-            sftp.rm(path + "/bar");
-        } catch (IOException e) {
+            execCommand(null, "rm " + path + "/foo");
+            execCommand(null, "rm " + path + "/bar");
+        } catch (Exception e) {
             throw new Error(e);
         } finally {
-            if (sftp != null) {
-                sftp.close();
-            }
         }
     }
 
