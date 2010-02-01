@@ -21,9 +21,9 @@ import benchmarks.BenchmarkRunner;
 import benchmarks.Connecter;
 import benchmarks.HostKeyVerifier;
 
-public class SshFileBenchmark implements Benchmark {
+public class SshSftpFileBenchmark implements Benchmark {
     
-    private static Logger logger = LoggerFactory.getLogger(SshFileBenchmark.class);
+    private static Logger logger = LoggerFactory.getLogger(SshSftpFileBenchmark.class);
     
     private static byte[] writebuf = new byte[FileBenchmark.WRITE_BUF_SIZE];
     
@@ -35,7 +35,7 @@ public class SshFileBenchmark implements Benchmark {
     private final Connection connection;
     private final String path;
     
-    public SshFileBenchmark(String baseDirUrl) throws URISyntaxException {
+    public SshSftpFileBenchmark(String baseDirUrl) throws URISyntaxException {
         uri = new URI(baseDirUrl);
         path = uri.getPath();
 
@@ -172,7 +172,7 @@ public class SshFileBenchmark implements Benchmark {
      */
     public static void main(String[] args) throws Exception {
         if (args.length != 2) {
-            System.err.println("usage: java " + SshFileBenchmark.class.getName() 
+            System.err.println("usage: java " + SshSftpFileBenchmark.class.getName() 
                     + " <basedir-url> <#runs>");
             return;
         }
@@ -181,7 +181,7 @@ public class SshFileBenchmark implements Benchmark {
         int runs = Integer.parseInt(args[1]);
 
         Benchmark test;
-        test = new SshFileBenchmark(baseDirUrl);
+        test = new SshSftpFileBenchmark(baseDirUrl);
    
         BenchmarkRunner runner = new BenchmarkRunner(test, runs);
         runner.run();
