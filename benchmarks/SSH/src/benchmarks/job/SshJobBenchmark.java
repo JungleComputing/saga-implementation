@@ -37,7 +37,7 @@ public class SshJobBenchmark implements Benchmark {
         HostKeyVerifier verifier = new HostKeyVerifier(false, true, true);
 
         try {
-            connection = Connecter.getConnection(host, 22, verifier);
+            connection = Connecter.getConnection(host, 22, verifier, true);
         } catch (Exception e) {
             throw new Error("Unable to connect!", e);
         }

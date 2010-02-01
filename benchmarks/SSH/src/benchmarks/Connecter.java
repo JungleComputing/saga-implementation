@@ -34,14 +34,14 @@ public class Connecter {
     };
     
     public static Connection getConnection(String host, int port,
-            HostKeyVerifier verifier) throws Exception {
+            HostKeyVerifier verifier, boolean nodelay) throws Exception {
 
         logger.info("getting connection for host: " + host);
 
         Connection newConnection = new Connection(host, port);
         newConnection.setClient2ServerCiphers(client2server);
         newConnection.setServer2ClientCiphers(server2client);
-        newConnection.setTCPNoDelay(true);
+        newConnection.setTCPNoDelay(nodelay);
 
         newConnection.connect(verifier, 0, 0);
 

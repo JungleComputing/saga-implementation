@@ -53,7 +53,7 @@ public class SshFileBenchmark implements Benchmark {
         }
         
         try {
-            connection = Connecter.getConnection(host, port, verifier);
+            connection = Connecter.getConnection(host, port, verifier, true);
         } catch (Exception e) {
             throw new Error("Unable to connect!", e);
         }
