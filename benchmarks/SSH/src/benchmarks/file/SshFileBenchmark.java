@@ -152,6 +152,12 @@ public class SshFileBenchmark implements Benchmark {
             }
             sftp.closeFile(handleR);
             
+            // delete all files
+            if (logger.isInfoEnabled()) {
+                logger.info("Deleting 'foo' and 'bar'");
+            }
+            sftp.rm(path + "/foo");
+            sftp.rm(path + "/bar");
         } catch (IOException e) {
             throw new Error(e);
         } finally {
