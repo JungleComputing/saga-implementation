@@ -166,7 +166,7 @@ public class SshFileBenchmark implements Benchmark {
                 }
             }
             sessionInputStream.close();
-
+            job.join();
             // copy 'foo' to 'bar'
             if (logger.isInfoEnabled()) {
                 logger.info("Copying " + uri + "/foo to " + uri + "/bar");
@@ -210,7 +210,7 @@ public class SshFileBenchmark implements Benchmark {
                 }
             }
             sessionOutputStream.close();
-            
+            job1.join();
             // delete all files
             if (logger.isInfoEnabled()) {
                 logger.info("Deleting 'foo' and 'bar'");
