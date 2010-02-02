@@ -115,11 +115,11 @@ public class GridsamJobBenchmark implements Benchmark {
     }
 
     public void run() {
-        firedEventCount = 0;
-        savedState = null;
 
         for (int i = 0; i < commandRuns; i++) {
             try {
+                firedEventCount = 0;
+                savedState = null;
                 JobInstance jobInstance = jobManager.submitJob(
                         jobDefinitionDocument, true);
                 logger.debug("Submitted job, jobInstance = " + jobInstance);
@@ -128,7 +128,6 @@ public class GridsamJobBenchmark implements Benchmark {
                 pollingThread = new PollingThread(this);
                 pollingThread.setDaemon(true);
                 jobManager.startJob(jobID);
-                jobInstance = jobManager.findJobInstance(jobID);
                 logger.debug("starting poller thread");
                 pollingThread.start();
                 logger.debug("waiting for poller thread");
