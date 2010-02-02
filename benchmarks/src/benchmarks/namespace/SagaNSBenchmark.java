@@ -55,16 +55,14 @@ public class SagaNSBenchmark implements Benchmark {
                         + " subdirectories in each directory");
             }
             for (URL dirUrl: baseDir.list()) {
-                if (baseDir.isDir(dirUrl)) {
-                    NSDirectory dir = baseDir.openDir(dirUrl);
-                    for (int j = 0; j < NSBenchmark.SUBDIR_COUNT; j++) {
-                        String subdir = String.format("subdir%03d", j);
-                        URL subdirUrl = URLFactory.createURL(subdir);
-                        logger.debug("  mkdir {}/{}", dirUrl, subdirUrl);
-                        dir.makeDir(subdirUrl);
-                    }
-                    dir.close();
+                NSDirectory dir = baseDir.openDir(dirUrl);
+                for (int j = 0; j < NSBenchmark.SUBDIR_COUNT; j++) {
+                    String subdir = String.format("subdir%03d", j);
+                    URL subdirUrl = URLFactory.createURL(subdir);
+                    logger.debug("  mkdir {}/{}", dirUrl, subdirUrl);
+                    dir.makeDir(subdirUrl);
                 }
+                dir.close();
             }
                         
             // in each sub-directory, create FILE_COUNT empty text files ('file000' to 
@@ -74,30 +72,28 @@ public class SagaNSBenchmark implements Benchmark {
                         + " files in each subdirectory");
             }
             for (URL dirUrl: baseDir.list()) {
-                if (baseDir.isDir(dirUrl)) {
-                    NSDirectory dir = baseDir.openDir(dirUrl);
-                    
-                    for (URL subdirUrl: dir.list()) {
-                        NSDirectory subdir = dir.openDir(subdirUrl);
+                NSDirectory dir = baseDir.openDir(dirUrl);
+                
+                for (URL subdirUrl: dir.list()) {
+                    NSDirectory subdir = dir.openDir(subdirUrl);
 
-                        for (int i = 0; i < NSBenchmark.FILE_COUNT; i++) {
-                            String file = String.format("file%03d", i);
-                            URL fileUrl = URLFactory.createURL(file);
-                            
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("  touch " + dirUrl + "/" 
-                                        + subdirUrl + "/" + fileUrl);
-                            }
-                            
-                            NSEntry f = subdir.open(fileUrl, Flags.CREATE.getValue());                          
-                            f.close();
+                    for (int i = 0; i < NSBenchmark.FILE_COUNT; i++) {
+                        String file = String.format("file%03d", i);
+                        URL fileUrl = URLFactory.createURL(file);
+                        
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("  touch " + dirUrl + "/" 
+                                    + subdirUrl + "/" + fileUrl);
                         }
-         
-                        subdir.close();
+                        
+                        NSEntry f = subdir.open(fileUrl, Flags.CREATE.getValue());                          
+                        f.close();
                     }
-                    
-                    dir.close();
+     
+                    subdir.close();
                 }
+                
+                dir.close();
             }
                             
             // print the type (file or directory) and size (in bytes) of all 
@@ -150,34 +146,30 @@ public class SagaNSBenchmark implements Benchmark {
             
             // Copy all files
             for (URL dirUrl: baseDir.list()) {
-                if (baseDir.isDir(dirUrl)) {
-                    NSDirectory dir = baseDir.openDir(dirUrl);
+                NSDirectory dir = baseDir.openDir(dirUrl);
+                
+                for (URL subdirUrl: dir.list()) {
+                    NSDirectory subdir = dir.openDir(subdirUrl);
                     
-                    for (URL subdirUrl: dir.list()) {
-                        NSDirectory subdir = dir.openDir(subdirUrl);
-                        
-                        for (URL filenameUrl : subdir.list()) {
-                            URL targetUrl = URLFactory.createURL(
-                                    filenameUrl.toString().replace("file", "f"));
-                            if (logger.isDebugEnabled()) {
-                                String d = dirUrl + "/" + subdirUrl + "/";
-                                logger.debug("  cp " + d + filenameUrl + " --> " 
-                                        + d + targetUrl); 
-                            }
-                            subdir.copy(filenameUrl, targetUrl);
+                    for (URL filenameUrl : subdir.list()) {
+                        URL targetUrl = URLFactory.createURL(
+                                filenameUrl.toString().replace("file", "f"));
+                        if (logger.isDebugEnabled()) {
+                            String d = dirUrl + "/" + subdirUrl + "/";
+                            logger.debug("  cp " + d + filenameUrl + " --> " 
+                                    + d + targetUrl); 
                         }
-         
-                        subdir.close();
+                        subdir.copy(filenameUrl, targetUrl);
                     }
-                    
-                    dir.close();
+     
+                    subdir.close();
                 }
+                
+                dir.close();
             }
             
             // delete all files and directories
-            if (logger.isInfoEnabled()) {
-                logger.info("Deleting all files and directories");
-            }
+            logger.info("Deleting all files and directories");
             
             for (URL dirUrl: baseDir.list()) {
                 logger.debug("  rm -r {}", dirUrl);
