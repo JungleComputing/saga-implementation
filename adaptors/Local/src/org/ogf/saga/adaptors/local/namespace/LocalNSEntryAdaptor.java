@@ -82,39 +82,69 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
                     + " does not indicate a directory");
         }
 
-        // create parent dir(s) if required
+        // create the file and its parent directories if required
         if (Flags.CREATE.isSet(flags)) {
-            File parentFile = file.getParentFile();
 
-            boolean parentExists = parentFile == null || parentFile.exists();
-            if (Flags.CREATEPARENTS.isSet(flags) && !parentExists) {
-                parentExists = parentFile.mkdirs();
+            // create parent directories
+            if (Flags.CREATEPARENTS.isSet(flags)) {
+                if (isDir) {
+                    // optimisation: create dir plus its parents in one call
+                    logger.debug("Creating directory plus its parents");
+                    if (!file.mkdirs()) {
+                        throw new NoSuccessException(
+                                "Failed to create directory: "
+                                + name.toString());
+                    }
+                    return;
+                } else { 
+                    // create the parent directory of this file and continue  
+                    File parentFile = file.getParentFile();
+                    boolean parentExists = parentFile == null || parentFile.exists();
+                    if (!parentExists) {
+                        logger.debug("Creating parent directories");
+                        if (!parentFile.mkdirs()) {
+                            throw new NoSuccessException(
+                                    "Failed to create parent directories of "
+                                    + name.toString());
+                        }
+                    }
+                }
             }
-
-            if (!parentExists) {
-                throw new DoesNotExistException("Parent file does not exist: "
-                        + name.toString());
-            }
-        }
-
-        // create file or directory if required
-        if (Flags.CREATE.isSet(flags) && !exists) {
+            
+            // create entry
+            String message = null;
             if (!isDir) {
+                logger.debug("Creating new file");
                 try {
                     if (!file.createNewFile()) {
-                        throw new NoSuccessException(
-                                "Failed to create new file: " + name.toString());
+                        message = "Failed to create new file: " + name.toString();
+                    } else {
+                        return;
                     }
                 } catch (IOException e) {
-                    throw new NoSuccessException("Failed to create new file: "
-                            + name.toString(), e);
+                    message = e.getMessage();
                 }
             } else {
+                logger.debug("Creating new directory");
                 if (!file.mkdir()) {
-                    throw new NoSuccessException("Failed to create directory: "
+                    message = "Failed to create directory: " + name.toString();
+                } else {
+                    return;
+                }
+            }
+            
+            // by now something went wrong; does the parent directory exist? 
+            if (!Flags.CREATEPARENTS.isSet(flags)) {
+                File parentFile = file.getParentFile();
+                boolean parentExists = parentFile == null || parentFile.exists();
+                if (! parentExists) {
+                    throw new DoesNotExistException("Parent does not exist: "
                             + name.toString());
                 }
             }
+            
+            // else, throw the previous error message
+            throw new NoSuccessException(message);
         }
     }
 
