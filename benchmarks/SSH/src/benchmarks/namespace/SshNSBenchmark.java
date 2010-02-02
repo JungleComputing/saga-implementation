@@ -143,7 +143,7 @@ public class SshNSBenchmark implements Benchmark {
                                 logger.debug("  touch " + file);
                             }
                             
-                            sftp.createFile(file);
+                            sftp.closeFile(sftp.createFile(file));
                         }
                     }
                 }
@@ -189,7 +189,9 @@ public class SshNSBenchmark implements Benchmark {
             }
             
             for (SFTPv3DirectoryEntry entry : listDir(sftp, path)) {
-                remove(sftp, path + "/" + entry.filename);
+                String name = path + "/" + entry.filename; 
+                logger.debug("rm -r {}", name);
+                remove(sftp, name);
             }
             
         } catch (Exception e) {
@@ -205,11 +207,11 @@ public class SshNSBenchmark implements Benchmark {
             SFTPv3FileAttributes attrs = sftp.stat(name);
             if (attrs.isDirectory()) {
                 remove(sftp, name);
-                sftp.rmdir(name);
             } else {
                 sftp.rm(name);
             }
         }
+        sftp.rmdir(dir);
     }
 
     private void listDirectory(SFTPv3Client sftp, String dir) throws IOException {
@@ -221,7 +223,7 @@ public class SshNSBenchmark implements Benchmark {
                 logger.debug(s);
                 listDirectory(sftp, name);
             } else {
-                String s = String.format("- %8d %s/%s", attrs.size.intValue(), name);
+                String s = String.format("- %8d %s", attrs.size.intValue(), name);
                 logger.debug(s);
             }
         }
