@@ -359,21 +359,13 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        if (isClosed()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Directory already closed!");
-            }
-            throw new IncorrectStateException(
-                    "makeDir(): directory already closed", wrapper);
+        
+        // If absolute URL, leave this to the parent.
+        if (target.isAbsolute()) {
+            super.makeDir(target, flags);
+            return;
         }
-        int allowedFlags = Flags.CREATEPARENTS.or(Flags.EXCL);
-        if ((allowedFlags | flags) != allowedFlags) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Wrong flags used!");
-            }
-            throw new BadParameterException(
-                    "Flags not allowed for makeDir method: " + flags, wrapper);
-        }
+        
         target = resolveToDir(target);
         NSDirectoryAdaptor dir = new NSDirectoryAdaptor(null, sessionImpl,
                 target, Flags.CREATE.or(flags));
