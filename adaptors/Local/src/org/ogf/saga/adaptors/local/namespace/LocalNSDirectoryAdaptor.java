@@ -122,6 +122,25 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         entry.init(newCwd, normalized);
     }
 
+    // override the base class implementation to avoid recursing into SAGA again
+    @Override
+    public void makeDir(URL target, int flags) throws NotImplementedException,
+        IncorrectURLException, AuthenticationFailedException,
+        AuthorizationFailedException, PermissionDeniedException,
+        BadParameterException, IncorrectStateException,
+        AlreadyExistsException, DoesNotExistException, TimeoutException,
+        NoSuccessException {
+        
+        target = resolveToDir(target);
+        entry.tool.checkURL(target);
+        
+        new LocalNSEntryAdaptor(null, null, target, 
+                flags | Flags.CREATE.getValue(), true, entry.tool);
+        
+        // N.B. we do not have to close the created entry since the close
+        // call does not do anything special
+    }
+    
     public void copy(URL source, URL target, int flags)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
