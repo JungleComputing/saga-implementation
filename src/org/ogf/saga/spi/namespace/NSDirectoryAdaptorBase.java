@@ -467,8 +467,9 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         target = resolveToDir(target);
-        NSFactory.createNSDirectory(sessionImpl, target, flags
+        NSDirectory dir = NSFactory.createNSDirectory(sessionImpl, target, flags
                 | Flags.CREATE.getValue());
+        dir.close();
     }
 
     public Task<NSDirectory, Void> makeDir(TaskMode mode, URL name, int flags)
