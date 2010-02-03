@@ -24,7 +24,7 @@ import benchmarks.BenchmarkRunner;
 
 public class GridsamJobBenchmark implements Benchmark {
     
-    private static Logger logger = LoggerFactory.getLogger(SagaJobBenchmark.class);
+    private static Logger logger = LoggerFactory.getLogger(GridsamJobBenchmark.class);
     
     private final JobDefinitionDocument jobDefinitionDocument;
     private final ClientSideJobManager jobManager;
