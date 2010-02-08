@@ -6,6 +6,7 @@ import org.ogf.saga.file.FileFactory;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.namespace.NSEntry;
+import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.url.URL;
@@ -29,7 +30,7 @@ public class SagaNSBenchmark implements Benchmark {
 
     public void run() {
         try {
-            Directory baseDir = FileFactory.createDirectory(baseDirUrl);
+            NSDirectory baseDir = NSFactory.createNSDirectory(baseDirUrl);
            
             // sanity check: is the base directory empty? If not, bail out
             if (baseDir.getNumEntries() != 0) {
@@ -101,7 +102,7 @@ public class SagaNSBenchmark implements Benchmark {
             if (logger.isInfoEnabled()) {
                 logger.info("Logging type and size of all entries (at DEBUG level)");
             }
-            listDirectory(baseDir);
+            listDirectory(null, baseDirUrl);
             
             /* Commented out, because C++ implementation does not implement
              * patterns yet.
@@ -183,7 +184,13 @@ public class SagaNSBenchmark implements Benchmark {
         }
     }
 
-    private void listDirectory(Directory d) throws SagaException {
+    private void listDirectory(Directory dir, URL u) throws SagaException {
+        Directory d;
+        if (dir == null) {
+            d = FileFactory.createDirectory(u);   // Need a directory to allow for getSize().
+        } else {
+            d = dir.openDirectory(u);
+        }
         for (URL entry : d.list()) {
             if (d.isEntry(entry)) {
                 long size = d.getSize(entry);
@@ -192,11 +199,10 @@ public class SagaNSBenchmark implements Benchmark {
             } else {
                 String s = String.format("d          %s/%s", d.getURL(), entry);
                 logger.debug(s);
-                Directory subDir = d.openDirectory(entry);
-                listDirectory(subDir);
-                subDir.close();
+                listDirectory(d, entry);
             }
         }
+        d.close();
     }
     
     public void close() {
