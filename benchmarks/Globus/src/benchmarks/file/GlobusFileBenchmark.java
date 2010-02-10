@@ -64,6 +64,7 @@ public class GlobusFileBenchmark implements Benchmark {
             c = new GridFTPClient(host, port);
             c.authenticate(credential);
             c.setType(GridFTPSession.TYPE_IMAGE);
+            c.setClientWaitParams(30000, 10);
         } catch(Throwable e) {
             if (c != null) {
                 try {
