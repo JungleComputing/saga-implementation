@@ -21,9 +21,9 @@ import org.slf4j.LoggerFactory;
 import benchmarks.Benchmark;
 import benchmarks.BenchmarkRunner;
 
-public class GlobusFileBenchmark implements Benchmark {
+public class GlobusFileStreamBenchmark implements Benchmark {
 
-    private static Logger logger = LoggerFactory.getLogger(GlobusFileBenchmark.class);
+    private static Logger logger = LoggerFactory.getLogger(GlobusFileStreamBenchmark.class);
     
     static final int DEFAULT_GRIDFTP_PORT = 2811;
     
@@ -78,7 +78,7 @@ public class GlobusFileBenchmark implements Benchmark {
         return c;
     }
     
-    public GlobusFileBenchmark(String uriString, GSSCredential credential) throws Exception {
+    public GlobusFileStreamBenchmark(String uriString, GSSCredential credential) throws Exception {
         uri = new URI(uriString);
         host = uri.getHost();
         port = uri.getPort();
@@ -290,7 +290,7 @@ public class GlobusFileBenchmark implements Benchmark {
 
     public static void main(String args[]) {
         if (args.length != 2) {
-            System.err.println("usage: java " + GlobusFileBenchmark.class.getName()
+            System.err.println("usage: java " + GlobusFileStreamBenchmark.class.getName()
                     + " <basedir> <#runs>");
             return;
         }
@@ -301,7 +301,7 @@ public class GlobusFileBenchmark implements Benchmark {
         Benchmark test;
         try {
             GSSCredential credential = getDefaultCredential();
-            test = new GlobusFileBenchmark(baseDir, credential);
+            test = new GlobusFileStreamBenchmark(baseDir, credential);
         } catch (Exception e) {
             System.err.println("Got exception " + e);
             e.printStackTrace(System.err);
