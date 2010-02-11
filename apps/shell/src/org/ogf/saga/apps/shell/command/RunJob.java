@@ -159,7 +159,7 @@ public class RunJob extends EnvironmentCommand {
 
     private String createLocalFile(String fileUrl, String outName)
             throws SagaException {
-        // resolve the local file name againt the cwd of the shell
+        // resolve the local file name against the cwd of the shell
         URL localUrl = URLFactory.createURL(fileUrl);
         Directory cwd = env.getCwd();
         File localFile = cwd.openFile(localUrl, Flags.CREATE.getValue());
