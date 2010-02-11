@@ -45,7 +45,7 @@ public class RunJob extends EnvironmentCommand {
 
     public String getHelpArguments() {
         String prefix = FlagsParser.FLAG_PREFIX;
-        return "[" + prefix + FLAG_OUT + "] [" + prefix + FLAG_ERR
+        return "[" + prefix + FLAG_OUT + " file] [" + prefix + FLAG_ERR
                 + " file] <executable> [arg]* [&]";
     }
 
