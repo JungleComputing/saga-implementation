@@ -132,7 +132,7 @@ public class RunJob extends EnvironmentCommand {
                 stdoutPrinter = new StreamPrinter();
                 stderrPrinter = new StreamPrinter();
                 executor.submit(stdoutPrinter);
-                executor.submit(stdoutPrinter);
+                executor.submit(stderrPrinter);
             }
 
             logger.debug("Running job");
