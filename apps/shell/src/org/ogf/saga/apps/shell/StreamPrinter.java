@@ -13,6 +13,7 @@ public class StreamPrinter implements Runnable {
     private Logger logger = LoggerFactory.getLogger(StreamPrinter.class);
     private InputStream stream;
     private byte[] buf;
+    boolean done = false;
 
     public StreamPrinter() {
         buf = new byte[BUF_SIZE];
@@ -31,19 +32,17 @@ public class StreamPrinter implements Runnable {
             }
         }
 
-        boolean done = false;
-
-        while (!done) {
+        for (;;) {
             try {
                 int read = stream.read(buf);
                 if (read < 0) {
-                    done = true;
+                    break;
                 } else {
                     String s = new String(buf, 0, read);
                     System.out.print(s);
                 }
             } catch (IOException e) {
-                done = true;
+                break;
             }
         }
 
@@ -51,6 +50,20 @@ public class StreamPrinter implements Runnable {
             stream.close();
         } catch (IOException e) {
             logger.debug("Error while closing stream", e);
+        }
+        synchronized(this) {
+            done = true;
+            notifyAll();
+        }
+    }
+    
+    public synchronized void waitUntilDone() {
+        while (! done) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                // ignored
+            }
         }
     }
 

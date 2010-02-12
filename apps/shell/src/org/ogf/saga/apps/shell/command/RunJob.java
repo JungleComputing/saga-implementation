@@ -146,6 +146,10 @@ public class RunJob extends EnvironmentCommand {
             if (mode.equals(TaskMode.SYNC)) {
                 logger.debug("Waiting for job");
                 job.waitFor();
+                if (interactive) {
+                    stdoutPrinter.waitUntilDone();
+                    stderrPrinter.waitUntilDone();
+                }
                 logger.debug("Finished job");
             } else {
                 logger.debug("Adding job to background tasks");
