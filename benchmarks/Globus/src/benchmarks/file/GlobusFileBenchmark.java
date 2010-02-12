@@ -182,8 +182,8 @@ public class GlobusFileBenchmark implements Benchmark {
             int readBytes;
             int totalRead = 0;
             do {
-                MyDataSink sink = new MyDataSink(buf, 0, buf.length);                
-                client.extendedGet("bar", totalRead, buf.length, sink, null);
+                MyDataSink sink = new MyDataSink(readBuf, 0, readBuf.length);                
+                client.extendedGet("bar", totalRead, readBuf.length, sink, null);
                 readBytes = sink.getSize();
                 totalRead += readBytes;
                 if (logger.isDebugEnabled()) {
