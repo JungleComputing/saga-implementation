@@ -20,9 +20,12 @@ public class SessionImpl extends SagaObjectBase implements
             = new HashMap<String, AdaptorSessionInterface>();
     
     private boolean closed = false;
+    
+    private final boolean isDefaultSession;
 
     SessionImpl(boolean defaults) {
         super((org.ogf.saga.session.Session) null);
+        isDefaultSession = defaults;
     }
 
     public synchronized AdaptorSessionInterface getAdaptorSession(String name) {
