@@ -1,4 +1,4 @@
-package demo.namespace;
+package demo.task;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -34,7 +34,7 @@ import org.ogf.saga.url.URLFactory;
  * The task container is run and waited for. Any exceptions thrown by the tasks
  * are printed.
  */
-public class TaskCopyTest implements Callback {
+public class TaskContainerDemo implements Callback {
 
     private static String getPassphrase() {
         JPasswordField pwd = new JPasswordField();
@@ -95,10 +95,10 @@ public class TaskCopyTest implements Callback {
             urls[i] = URLFactory.createURL(args[i]);
         }
         
-        new TaskCopyTest(urls).run();
+        new TaskContainerDemo(urls).run();
     }
     
-    public TaskCopyTest(URL[] urls) throws Exception {
+    public TaskContainerDemo(URL[] urls) throws Exception {
         
         this.urls = urls;
         
