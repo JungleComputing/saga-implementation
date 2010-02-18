@@ -8,5 +8,5 @@ if [ -z "$JAVA_SAGA_LOCATION" ]; then
 fi
 
 $JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx512M \
-  -Dlog4j.configuration=${base}/log4j.properties \
+-Dlog4j.configuration=file:${base}/log4j.properties \
   org.ogf.saga.apps.shell.SagaShell $@
