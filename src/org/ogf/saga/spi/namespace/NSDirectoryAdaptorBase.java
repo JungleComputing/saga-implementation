@@ -402,7 +402,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
                 // Pattern indicates a single directory. In this case, list the
                 // contents of the directory (like "ls").
                 NSDirectory dir = NSFactory.createNSDirectory(sessionImpl,
-                        getEntryURL().resolve(resultList.get(0)), Flags.NONE
+                        resolveToDir(resultList.get(0)), Flags.NONE
                                 .getValue());
                 return dir.list(".", flags);
             }
