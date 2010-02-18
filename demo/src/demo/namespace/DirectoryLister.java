@@ -51,10 +51,9 @@ public class DirectoryLister {
             // Print a listing of the directory indicated in the first argument.
             NSDirectory nsdir = NSFactory.createNSDirectory(session, directory);
             
-         // List, optionally with wildcard
-            if (args.length == 1) {
-                printList(nsdir.list(), "Contents of " + directory + ":");
-            } else for (int i = 1; i < args.length; i++) {
+            // List, optionally with wildcard
+            printList(nsdir.list(), "Contents of " + directory + ":");
+            for (int i = 1; i < args.length; i++) {
                 printList(nsdir.list(args[i]),
                     "List " + directory + ", matching with " + args[i] + ":");
                 // printList(nsdir.find(args[i]),
