@@ -7,6 +7,6 @@ if [ -z "$JAVA_SAGA_LOCATION" ]; then
     export JAVA_SAGA_LOCATION=${base}/../..
 fi
 
-$JAVA_SAGA_LOCATION/bin/run-saga-app \
+$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx512M \
   -Dlog4j.configuration=${base}/log4j.properties \
   org.ogf.saga.apps.shell.SagaShell $@
