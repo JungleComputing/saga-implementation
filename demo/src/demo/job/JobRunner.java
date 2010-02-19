@@ -8,6 +8,7 @@ import org.ogf.saga.job.JobService;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
+import org.ogf.saga.task.State;
 import org.ogf.saga.url.URLFactory;
 
 /**
@@ -58,6 +59,9 @@ public class JobRunner implements Callback {
            job.addCallback(Job.JOB_STATEDETAIL, me);
            job.run();
            job.waitFor();
+           if (job.getState() == State.FAILED) {
+               throw new Error("Job failed");
+           }
        } catch (Throwable e) {
            System.out.println("Got exception " + e);
            e.printStackTrace();
