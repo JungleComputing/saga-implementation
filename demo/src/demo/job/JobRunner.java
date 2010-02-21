@@ -18,10 +18,8 @@ import org.ogf.saga.url.URLFactory;
  */
 public class JobRunner implements Callback {
 
-   public static void main(String[] args) {
+   public static void main(String[] args) throws Exception {
        
-       JobRunner me = new JobRunner();
-
        String serverUrlString = null;
        String jobToRun = null;
        String[] jobArgs = null;
@@ -36,39 +34,39 @@ public class JobRunner implements Callback {
            jobArgs = new String[args.length-2];
            System.arraycopy(args, 2, jobArgs, 0, args.length-2);
        }
-       
-       System.out.println("try to submit job " + jobToRun + " to: " + serverUrlString);
-       
-       try {
-           // Create the JobService.
-           JobService js = JobFactory.createJobService(URLFactory.createURL(serverUrlString));
+       new JobRunner(serverUrlString, jobToRun, jobArgs).runJob();
+   }
+   
+   private final JobService js;
 
-           // Create the job description
-           JobDescription jd = JobFactory.createJobDescription();
-           jd.setAttribute(JobDescription.EXECUTABLE, jobToRun);
-           jd.setVectorAttribute(JobDescription.ARGUMENTS, jobArgs);
-           jd.setAttribute(JobDescription.NUMBEROFPROCESSES, "1"); //10
-           jd.setAttribute(JobDescription.OUTPUT, "job.out");
-           jd.setAttribute(JobDescription.ERROR, "job.err");           
-           jd.setVectorAttribute(JobDescription.FILETRANSFER,
-                   new String[] { "job.out < job.out", "job.err < job.err"});
-           
-           // Create the job, run it, and wait for it.
-           Job job = js.createJob(jd);
-           job.addCallback(Job.JOB_STATE, me);
-           job.addCallback(Job.JOB_STATEDETAIL, me);
-           job.run();
-           job.waitFor();
-           if (job.getState() == State.FAILED) {
-               throw new Error("Job failed");
-           }
-       } catch (Throwable e) {
-           System.out.println("Got exception " + e);
-           e.printStackTrace();
-           e = e.getCause();
-           if (e != null) {
-               e.printStackTrace();
-           }
+   private final JobDescription jd;
+   
+   public JobRunner(String srvr, String command, String[] args)
+           throws Exception {
+       // Create a job description
+       jd = JobFactory.createJobDescription();
+       jd.setAttribute(JobDescription.EXECUTABLE, command);
+       jd.setAttribute(JobDescription.NUMBEROFPROCESSES, "1");
+       jd.setVectorAttribute(JobDescription.ARGUMENTS, args);
+       jd.setAttribute(JobDescription.OUTPUT, "job.out");
+       jd.setAttribute(JobDescription.ERROR, "job.err");
+       jd.setVectorAttribute(JobDescription.FILETRANSFER,
+               new String[] { "job.out < job.out", "job.err < job.err"});
+       // Create a job service
+       js = JobFactory.createJobService(URLFactory.createURL(srvr));
+
+       System.out.println("try to submit job " + command + " to: " + srvr);
+   }
+
+   public void runJob() throws Exception {
+       // Create the job, run it, and wait for it.
+       Job job = js.createJob(jd);
+       job.addCallback(Job.JOB_STATE, this);
+       job.addCallback(Job.JOB_STATEDETAIL, this);
+       job.run();
+       job.waitFor();
+       if (job.getState() == State.FAILED) {
+           throw new Error("Job failed");
        }
    }
 
