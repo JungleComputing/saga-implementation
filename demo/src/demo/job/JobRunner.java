@@ -38,7 +38,7 @@ public class JobRunner implements Callback {
        try {
            new JobRunner(serverUrlString, jobToRun, jobArgs).runJob();
         } catch(SagaException e) {
-            System.err.println(e.getMessage());
+            System.err.println(e.toString());
         }
    }
    
