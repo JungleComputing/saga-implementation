@@ -82,7 +82,7 @@ public class URLUtil {
      */
     public static boolean refersToLocalHost(URL u) {
         String host = u.getHost();
-        if (host == null) {
+        if (host == null || host.isEmpty()) {
             return true;
         }
 
