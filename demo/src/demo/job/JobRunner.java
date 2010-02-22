@@ -1,6 +1,7 @@
 package demo.job;
 
 import org.ogf.saga.context.Context;
+import org.ogf.saga.error.SagaException;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
@@ -34,7 +35,11 @@ public class JobRunner implements Callback {
            jobArgs = new String[args.length-2];
            System.arraycopy(args, 2, jobArgs, 0, args.length-2);
        }
-       new JobRunner(serverUrlString, jobToRun, jobArgs).runJob();
+       try {
+           new JobRunner(serverUrlString, jobToRun, jobArgs).runJob();
+        } catch(SagaException e) {
+            System.err.println(e.getMessage());
+        }
    }
    
    private final JobService js;
