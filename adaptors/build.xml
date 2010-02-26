@@ -15,6 +15,7 @@
 	<ant dir="Generic" />
    	<ant dir="Local" />
     <ant dir="Archive" />
+    <ant dir="Fuse" />
     </target>
 
     <target name="clean" description="clean up">
@@ -25,6 +26,7 @@
 	<ant dir="Generic" target="clean" />
    	<ant dir="Local" target="clean" />
     <ant dir="Archive" target="clean" />
+    <ant dir="Fuse" target="clean" />
     </target>
 
     <target name="gridsam" description="build Gridsam adaptors">
@@ -53,6 +55,10 @@
 
     <target name="archive" description="build Archive adaptors">
     <ant dir="Archive"/>
+    </target>
+
+    <target name="fuse" description="build FUSE adaptors">
+    <ant dir="Fuse"/>
     </target>
 
 </project>

@@ -1,0 +1,63 @@
+<project name="SAGA" default="build" basedir=".">
+
+    <description>
+		Build file for the Java SAGA Local adaptor
+    </description>
+
+    <!-- Global properties -->
+    <property name="tmp" location="tmp" />
+    <property name="adaptor" value="FuseAdaptor"/>
+    <property name="external" location="external"/>
+    <property name="lib" location="../../lib/adaptors/${adaptor}"/>
+
+    <target name="init" depends="clean">
+        <!-- Create the time stamp -->
+        <tstamp />
+
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${tmp}" />
+    </target>
+
+    <path id="external.jars">
+        <fileset dir="../../lib">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="compile" depends="init" description="compile the source ">
+        <!-- Compile the java code from src and the local adaptor into ${tmp} -->
+        <javac source="1.5" target="1.5" destdir="${tmp}" debug="on" >
+            <src path="src"/>
+            <classpath refid="external.jars" />
+            <compilerarg value="-Xlint:unchecked"/>
+        </javac>
+
+        <!-- Copy license, so that it will end up in the jar. -->
+        <copy file="../../LICENSE.txt" todir="${tmp}" />
+    </target>
+
+    <target name="build" depends="compile" description="build the JAR file">
+        <!-- Create the destination directory -->
+        <mkdir dir="${lib}" />
+
+        <!-- Create the adaptor jar. -->
+        <jar jarfile="${lib}/${adaptor}.jar" basedir="${tmp}">
+            <manifest>
+            	<attribute name="NSEntrySpi-class" value="org.ogf.saga.adaptors.fuse.namespace.FuseNSEntryAdaptor" />
+                <attribute name="NSDirectorySpi-class" value="org.ogf.saga.adaptors.fuse.namespace.FuseNSDirectoryAdaptor" />
+                <attribute name="FileSpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseFileAdaptor" />
+                <attribute name="DirectorySpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseDirectoryAdaptor" />
+                <attribute name="FileInputStreamSpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseInputStreamAdaptor" />
+                <attribute name="FileOutputStreamSpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseOutputStreamAdaptor" />
+            </manifest>
+        </jar>
+
+        <!-- And delete the build dir -->
+        <delete dir="${tmp}" />
+    </target>
+
+    <target name="clean" description="clean up">
+        <delete dir="${tmp}" />
+    </target>
+
+</project>

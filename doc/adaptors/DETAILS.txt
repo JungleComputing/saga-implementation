@@ -118,6 +118,13 @@ Package SAGA namespace
   * adaptor for NSDirectory
     There is no concept of links (yet) in Java, so all methods dealing with 
     links are not supported.
+    
+- Fuse
+  Executed commands to mount remote filesystems locally using FUSE (Filesystem
+  in Userspace). The locally mounted files are accessed via the Local adaptor.
+  Filesystems are automatically unmounted once the JVM exits. 
+  * adaptors for NSEntry and NSDirectory
+    Same limitations as the Local adaptor.
 
 Package SAGA file
 -----------------
@@ -157,6 +164,13 @@ Package SAGA file
     implements all operations, except for permissions.
   * adaptors for FileInputStream and FileOutputStream
     these adaptors are built on their counterparts in the TrueZip library.
+
+- Fuse
+  Executed commands to mount remote filesystems locally using FUSE (Filesystem
+  in Userspace). The locally mounted files are accessed via the Local adaptor.
+  Filesystems are automatically unmounted once the JVM exits. 
+  * adaptors for File, Directory, FileInputStream, and FileOutputStream
+    Same limitations as the Local adaptor.
 
 Package SAGA logicalfile
 ------------------------
