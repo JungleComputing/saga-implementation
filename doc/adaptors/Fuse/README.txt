@@ -12,15 +12,64 @@ filesystems are automatically unmounted when the JVM terminates.
   
 Available filesystems are configured via properties in a saga.properties
 file (see the documentation of org.ogf.saga.bootstrap.SagaProperties).
+The default saga.properties file defines access to:
+- SSH hosts via SSHFS (see http://fuse.sourceforge.net/sshfs.html)
+- FTP servers via CurlFtpFs (see http://curlftpfs.sourceforge.net/)
+- Samba shares via CIFS (see http://linux-cifs.samba.org/)
+- XtreemFS (see http://www.xtreemfs.com)
+
 
 Limitations  
 -----------
 Access to the mounted filesystems is done via the Local adaptor, and hence
 the FUSE adaptor inherits all limitations of the Local adaptor.
 
+
+Using the FUSE adaptor
+----------------------
+
+SSH hosts:
+  - accepted schemes: ssh, fusessh, any
+  - accepted context types: ssh
+      The context attributes 'UserID' and 'UserPass' are used as the SSH user 
+      and password. The context attribute 'UserKey' can be set to use a specific
+      SSH key instead of the default ones.
+  - example URLs:  
+      ssh://example.com/tmp/foo.txt
+      ssh://example.com:12345/dir/file.txt
+  
+FTP servers:
+  - accepted schemes: ftp, fuseftp, any
+  - accepted context types: ftp
+      The context attributes 'UserID' and 'UserPass' are used as the FTP user 
+      and password.
+  - example URL:
+      ftp://ftp.kernel.org/pub/
+      fuseftp://ftp.xs4all.nl/welcome.msg
+
+Samba shares:
+  - accepted schemes: cifs, samba, any
+  - accepted context types: cifs, smb
+      The context attributes 'UserID' and 'UserPass' are used as the Samba user 
+      and password.
+  - example URLs:
+      cifs://sharename@example.com/dir/file.txt
+      smb://sharename@example.com/
+      
+XtreemFS volumes:
+  - accepted schemes: xtreemfs, xtfs, any
+  - accepted context types: xtreemos
+      The context attributes 'UserKey', 'UserCert', and 'UserPass' can be used 
+      to indicate the user's private key, certificate, and passphrase, 
+      respectively, that should be used in the mount.
+  - example URLs:
+      xtreemfs://volume@example.com/dir/file.txt
+      xtfs://volume@example.com/
+    
+
 Configuration
 -------------
-Each FUSE filesystem recognized by this adaptor is defined by six properties:
+Each filesystem recognized by this adaptor is defined by six properties:
  
 - schemes: a comma-separated list of accepted URL schemes
 - contexts: a comma-separated list of recognized context types
@@ -31,18 +80,21 @@ Each FUSE filesystem recognized by this adaptor is defined by six properties:
 
 The command line elements of the mount.command and umount.command properties 
 are separated by spaces. During initialization, the adaptor tries to execute
-the mount and umount commands without any parameters. If once of the commands
-cannot be found, the accompanying filesystem is disabled.
+the mount and umount commands without any parameters. If one of the commands
+cannot be found, the related filesystem is disabled.
 
 The FUSE adaptor will try to mount all URLs with an accepted scheme that do not 
 refer to local files. URLs without a scheme are also considered to be local.
-The adaptor then tries to mount such a remote URL with each context of a
-recognized type. Finally, it also tries a mount without any context.
+The adaptor tries to mount a remote URL with each context of a recognized type. 
+Finally, the adaptor also tries a mount without any context.
   
 For each mount tried, the mount point, mount command, mount input and unmount
 command are determined at runtime. These properties can contain variables 
-that are substituted using the current URL and context. Each variable starts 
-with a '%'. The available variables are:
+that are substituted using the current URL and context. When the parsed mount 
+command has been executed before, the related mount point is reused. URLs that 
+refer to the same remote filesystem thereby reuse the same mount point.
+ 
+Each variable in a property starts with a '%'. The available variables are:
 
   %context_usercert = UserCert in an accepted context
   %context_userid = UserID in an accepted context
@@ -97,3 +149,4 @@ Besides variables, the properties can contain special syntax:
 
 When a parsed property still contains unbound variables, a BadParameter 
 exception is thrown. Neither the curly nor the square brackets can be nested.
+
