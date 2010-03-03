@@ -43,6 +43,7 @@
         <!-- Create the adaptor jar. -->
         <jar jarfile="${lib}/${adaptor}.jar" basedir="${tmp}">
             <manifest>
+	    	    <attribute name="ContextInitializerSpi-class" value="org.ogf.saga.adaptors.fuse.context.FuseContextInitializerAdaptor" />
             	<attribute name="NSEntrySpi-class" value="org.ogf.saga.adaptors.fuse.namespace.FuseNSEntryAdaptor" />
                 <attribute name="NSDirectorySpi-class" value="org.ogf.saga.adaptors.fuse.namespace.FuseNSDirectoryAdaptor" />
                 <attribute name="FileSpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseFileAdaptor" />
