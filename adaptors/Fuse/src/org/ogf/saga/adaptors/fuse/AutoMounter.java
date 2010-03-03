@@ -173,45 +173,50 @@ public class AutoMounter {
         Collections.addAll(contextList, s.listContexts());
         contextList.add(null);
         
-        // try a mount for each accepted context, including none 
+        // create the mount command for each context; if the mount command
+        // maps to an existing one we can return its mount point immediately
+        List<MountInfo> mountInfos = new ArrayList<MountInfo>(contextList.size());
         for (Context c: contextList) {
             if (fs.acceptContext(c)) {
-                if (logger.isDebugEnabled()) {
-					logger.debug("Trying to mount " + u + " with "
-							+ fs.getName() + " and context " + getType(c));
-                }
                 try {
                     MountInfo info = parseWithContext(fs, u, c);
-
-                    if (!mounted.containsKey(info.mountCommand)) {
-                    	createMountPoint(info.mountPoint);
-                    	
-                    	// mount the remote filesystem
-                        try {
-							RunSagaCommand.execute(info.mountCommand,
-									info.mountInput);
-                        	mounted.put(info.mountCommand, info);
-                        	activeMountPoints.add(info.mountPoint);
-                        } catch (SagaException e) {
-                            // mount went wrong; delete the created mount point
-                            // unless it's already used by another mount
-                            if (!activeMountPoints.contains(info.mountPoint)) {
-                                deleteDirectory(info.mountPoint);
-                            }
-                        	throw e;
-                        }
+                    if (mounted.containsKey(info.mountCommand)) {
+                        // remote file system is already mounted
+                        return info.mountCommand;
                     } else {
-                        // use existing mounted filesystem
-                        logger.debug("Using existing filesystem mounted at: {}", 
-                        		info.mountPoint); 
+                        mountInfos.add(info);
                     }
-                    
-                    return info.mountCommand;
                 } catch (SagaException e) {
-                    logger.debug("Failed to mount " + u 
-                            + " with context " + getType(c), e);
+                    logger.debug("Cannot mount " + u + " with context " 
+                            + getType(c), e);
                     errors.add(e);
                 }
+            }
+        }
+        
+        // no existing mount point found; try all parsed mount commands 
+        for (MountInfo info: mountInfos) {
+            logger.debug("Trying to mount {} with {}", u, fs.getName());
+            try {
+                createMountPoint(info.mountPoint);
+                    	
+                RunSagaCommand.execute(info.mountCommand, info.mountInput);
+
+                mounted.put(info.mountCommand, info);
+                activeMountPoints.add(info.mountPoint);
+                    
+                return info.mountCommand;
+            } catch (SagaException e) {
+                // mount went wrong; delete the created mount point
+                // unless it's already used by another mount
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Failed to mount " + u + " with " 
+                            + fs.getName(), e);
+                }
+                if (!activeMountPoints.contains(info.mountPoint)) {
+                    deleteDirectory(info.mountPoint);
+                }
+                errors.add(e);
             }
         }
         
