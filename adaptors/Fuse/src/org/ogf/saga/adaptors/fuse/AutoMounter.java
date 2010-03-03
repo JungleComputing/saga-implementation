@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,7 @@ public class AutoMounter {
 
     private final FuseAdaptorConfig config;
     private final Map<String, MountInfo> mounted;
+    private final Set<File> activeMountPoints;
 
     static Logger logger = LoggerFactory.getLogger(AutoMounter.class);
 
@@ -46,6 +49,7 @@ public class AutoMounter {
         Properties sagaProp = SagaProperties.getDefaultProperties();
         config = new FuseAdaptorConfig(sagaProp);
         mounted = new HashMap<String, MountInfo>();
+        activeMountPoints = new HashSet<File>();
         Runtime.getRuntime().addShutdownHook(new Unmounter());
     }
 
@@ -187,8 +191,13 @@ public class AutoMounter {
 							RunSagaCommand.execute(info.mountCommand,
 									info.mountInput);
                         	mounted.put(info.mountCommand, info);
+                        	activeMountPoints.add(info.mountPoint);
                         } catch (SagaException e) {
-                        	deleteDirectory(info.mountPoint);
+                            // mount went wrong; delete the created mount point
+                            // unless it's already used by another mount
+                            if (!activeMountPoints.contains(info.mountPoint)) {
+                                deleteDirectory(info.mountPoint);
+                            }
                         	throw e;
                         }
                     } else {
@@ -267,61 +276,6 @@ public class AutoMounter {
             throw new NoSuccessException("Cannot parse: " + s, e);
         }
     }
-
-    
-//            String mountpoint = null;
-//            try {
-//                mountpoint = fs.parseMountpoint(fs, u, s);
-//            } catch (PropertyParseException e) {
-//                String msg = fs + ": cannot parse mountpoint";
-//                logger.debug(msg, e);
-//                NoSuccessException x = new NoSuccessException(msg, e); 
-//                errors.add(x);
-//                continue;
-//            }
-//            
-//            File mountDir = new File(mountpoint);
-//                
-//            if (!mounted.containsKey(mountDir)) {
-//                // new remote volume, mount it
-//                logger.info(fs + " mounts " + u + " at " + mountDir);
-//                Context[] contexts = s.listContexts();
-//                try {
-//                    MountData data = fs.mount(u, mountDir, contexts);
-//                    mounted.put(mountDir, data);
-//                } catch (SagaException e) {
-//                    logger.debug(fs + ": mount failed", e);
-//                    errors.add(e);
-//                    continue;
-//                }
-//            }
-//    
-//            String remotePath = "/";
-//            try {
-//                String urlPath = u.getPath();
-//                if (!urlPath.isEmpty()) {
-//                    // use canonical path to remove all redundant /..
-//                    remotePath = new File(urlPath).getCanonicalPath();
-//                }
-//            } catch (IOException e) {
-//                logger.error("Cannot retrieve canonical path of "
-//                        + remotePath);
-//            }
-//                localPath = new File(mountDir, remotePath).getPath();
-//                break;
-//            }
-//        } else {
-//            // local url
-//            localPath = u.getPath();
-//        }
-//
-//        // use the internal scheme in the delegate URL to avoid an endless loop
-//        // in adaptor loading.
-//        URL localUrl = URLFactory.createURL(config.getDelegateScheme() 
-//                + "://localhost" + localPath);
-//
-//        return localUrl;
-//    }
 
     public synchronized URL resolveLocalURL(String mountId, URL url)
             throws NoSuccessException, BadParameterException {
@@ -443,158 +397,6 @@ public class AutoMounter {
         }
     }
 
-    /**
-     * Translates a local URL to a possible remote counterpart. If the entry is
-     * located in a mountpoint directory, the URL is translated to a remote
-     * URL. Otherwise, the scheme of the local URL is set to 'file' and 
-     * then returned.
-     * 
-     * @param remoteBase
-     *            the remote base URL to resolve rhs against
-     * @param rhs
-     *            a local URL that possibly refers to a remote but locally
-     *            mounted entry
-     * 
-     * @return an absolute URL that refers to an entry in a remote filesystem
-     * 
-     * @throws IncorrectURLException
-     * @throws BadParameterException
-     * @throws NotImplementedException
-     * @throws NoSuccessException
-     */
-//    public synchronized URL resolveRemoteURL(String mountId, URL remoteBase, 
-//            URL rhs) throws NoSuccessException, BadParameterException {
-//
-//        File rhsPath = new File(rhs.getPath());
-//        URL volumeUrl = AutoMounter.getInstance().getVolume(rhsPath);
-//
-//        if (volumeUrl == null) {
-//            // rhs points to a local file outside a mounted directory
-//
-//            if (Constants.INTERNAL_SCHEME.equals(rhs.getScheme())) {
-//                // change scheme of delegate URL to generic 'file' scheme
-//                URL result = URLFactory.createURL(rhs.getString());
-//                result.setScheme(Constants.FILE_SCHEME);
-//                return result;
-//            } else {
-//                return rhs;
-//            }
-//        }
-//
-//        File mountedDir = AutoMounter.getInstance().getMountPoint(volumeUrl);
-//        if (mountedDir == null) {
-//            throw new NoSuccessException("Unexpected error: mounted dir of "
-//                    + "volume " + volumeUrl + " is unknown");
-//        }
-//
-//        String mountedDirStr = mountedDir.getPath();
-//        String rhsPathStr = rhsPath.getPath();
-//
-//        if (rhsPathStr.length() < mountedDirStr.length()) {
-//            throw new NoSuccessException("Unexpected error: rhs path '"
-//                    + rhsPathStr + "' < mounted dir '" + mountedDirStr + "'");
-//        }
-//
-//        String remotePath = rhsPathStr.substring(mountedDirStr.length());
-//
-//        URL remoteUrl = volumeUrl;
-//        remoteUrl.setPath(remotePath);
-//        AutoMounter.getInstance().removeDefaultPort(remoteUrl);
-//
-//        logger.debug("resolved '" + rhs + "' to remote url '" + remoteUrl + "'");
-//
-//        return remoteUrl;
-//    }
-    
-//    public synchronized URL OLDmount(URL u, Session s)
-//            throws PermissionDeniedException, TimeoutException,
-//            NoSuccessException, BadParameterException {
-//        String scheme = u.getScheme();
-//        List<Filesystem> filesystems = config.getFilesystems(scheme);
-//        
-//        String localPath = null;
-//
-//        if (!filesystems.isEmpty()) {
-//            // remote url
-//            List<SagaException> errors = new LinkedList<SagaException>();
-//            
-//            for (Filesystem fs: filesystems) {
-//                String mountpoint = null;
-//                try {
-//                    mountpoint = parseMountpoint(fs, u, s);
-//                } catch (PropertyParseException e) {
-//                    String msg = fs + ": cannot parse mountpoint";
-//                    logger.debug(msg, e);
-//                    NoSuccessException x = new NoSuccessException(msg, e); 
-//                    errors.add(x);
-//                    continue;
-//                }
-//                
-//                File mountDir = new File(mountpoint);
-//                    
-//                if (!mounted.containsKey(mountDir)) {
-//                    // new remote volume, mount it
-//                    logger.info(fs + " mounts " + u + " at " + mountDir);
-//                    Context[] contexts = s.listContexts();
-//                    try {
-//                        MountData data = fs.mount(u, mountDir, contexts);
-//                        mounted.put(mountDir, data);
-//                    } catch (SagaException e) {
-//                        logger.debug(fs + ": mount failed", e);
-//                        errors.add(e);
-//                        continue;
-//                    }
-//                }
-//        
-//                String remotePath = "/";
-//                try {
-//                    String urlPath = u.getPath();
-//                    if (!urlPath.isEmpty()) {
-//                        // use canonical path to remove all redundant /..
-//                        remotePath = new File(urlPath).getCanonicalPath();
-//                    }
-//                } catch (IOException e) {
-//                    logger.error("Cannot retrieve canonical path of "
-//                            + remotePath);
-//                }
-//                localPath = new File(mountDir, remotePath).getPath();
-//                break;
-//            }
-//        } else {
-//            // local url
-//            localPath = u.getPath();
-//        }
-//
-//        // use the internal scheme in the delegate URL to avoid an endless loop
-//        // in adaptor loading.
-//        URL localUrl = URLFactory.createURL(config.getDelegateScheme() 
-//                + "://localhost" + localPath);
-//
-//        return localUrl;
-//    }
-
-//    public File getMountpoint(URL url, Session s) throws NoSuccessException {
-//        try {
-//            String mountpoint = parseMountpoint(fs, u, s);
-//            return new File(mountpoint);
-//        } catch (PropertyParseException e) {
-//            String msg = fs + ": cannot parse mountpoint";
-//            logger.debug(msg, e);
-//            NoSuccessException x = new NoSuccessException(msg, e); 
-//            errors.add(x);
-//            continue;
-//        }
-//        
-//    }
-//    
-    
-//    public void umount(URL url, Context c) throws NoSuccessException,
-//            PermissionDeniedException, TimeoutException {
-//
-//        String cmd = parseCommandWithContext(umountCommand, url, c);
-//        execute(cmd);
-//    }
-
     public synchronized void unmount(String mountId) {
         boolean unmounted = false;
         
@@ -617,6 +419,7 @@ public class AutoMounter {
         if (unmounted) {
             deleteDirectory(info.mountPoint);
             mounted.remove(mountId);
+            activeMountPoints.remove(info.mountPoint);
         }
     }
 
