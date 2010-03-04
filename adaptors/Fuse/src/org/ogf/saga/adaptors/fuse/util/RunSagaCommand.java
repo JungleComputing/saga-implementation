@@ -41,6 +41,14 @@ public class RunSagaCommand {
 
         if (exitStatus != 0) {
             logger.info("Execution failed with exit code: " + exitStatus);
+            
+            if (output != null && !output.isEmpty()) {
+                // try to guess the SAGA exception from the output
+                guessSagaException(output);
+            }
+            
+            // guessing failed; try examining the exit code
+            
             switch (exitStatus) {
             case 0: // EOK, do nothing
                 return;
@@ -91,6 +99,15 @@ public class RunSagaCommand {
         }
     }
 
+	private static void guessSagaException(String output) 
+	        throws PermissionDeniedException, NoSuccessException {
+	    if (output.contains("permission denied") ||
+	        output.contains("Permission denied") ||
+	        output.contains("Permission Denied")) {
+	        throw new PermissionDeniedException(output);
+	    }
+	}
+	
     private static String createErrorMessage(String msg, String output) {
         if (output != null && !output.isEmpty()) {
             return msg + ": " + output;
