@@ -42,7 +42,7 @@ public class FileWrapper extends NSEntryWrapper implements File {
         
         fileFlags = includeImpliedFlags(flags);
         
-        sanityCheck(flags);
+        sanityCheck(fileFlags);
 
         Object[] parameters = { this, session, name, fileFlags };
         try {
@@ -87,17 +87,17 @@ public class FileWrapper extends NSEntryWrapper implements File {
     }
 
 
-    private void sanityCheck(int flags) throws BadParameterException {
+    private static void sanityCheck(int flags) throws BadParameterException {
 
         // First, check for unrecognized flags.
-        if ((fileFlags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
+        if ((flags | Flags.ALLFILEFLAGS.getValue()) != Flags.ALLFILEFLAGS
                 .getValue()) {
             throw new BadParameterException(
                     "Illegal flags for File constructor: " + flags);
         }
 
         // Sanity check 1: append and truncate?
-        if (Flags.APPEND.isSet(fileFlags) && Flags.TRUNCATE.isSet(fileFlags)) {
+        if (Flags.APPEND.isSet(flags) && Flags.TRUNCATE.isSet(flags)) {
             throw new BadParameterException("TRUNCATE and APPEND?");
         }
         // Other sanity checks deleted: no longer applicable with new Saga specs.
