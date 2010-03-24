@@ -23,6 +23,7 @@ public class FuseAdaptorConfig {
     static final String PREFIX = "saga.adaptor.fuse.";
     static final String DELEGATE_SCHEME = PREFIX + "delegate.scheme"; 
     static final String MOUNT_DIR = PREFIX + "mount.dir";
+    static final String ABSORB_CONTEXTS = PREFIX + "contexts.absorb";
     static final String FILESYSTEMS = PREFIX + "fs";
     static final String FS_SCHEMES = "schemes";
     static final String FS_CONTEXTS = "contexts";
@@ -38,9 +39,10 @@ public class FuseAdaptorConfig {
     private static final String LIST_SEPARATOR = ",";
     
     private String delegateScheme;
-
+    
     private final Map<String, List<FsInfo>> fsMap;
     private final Set<String> acceptedContextTypes;
+    private final Set<String> absorbedContextTypes;
     
     public FuseAdaptorConfig(Properties p) {
         logger.debug("FUSE adaptor configuration:");
@@ -50,6 +52,13 @@ public class FuseAdaptorConfig {
         
         String mountDir = p.getProperty(MOUNT_DIR, DEFAULT_MOUNT_DIR);
         logger.debug("- mount dir syntax: " + mountDir);
+    
+        String absorb = p.getProperty(ABSORB_CONTEXTS, "");
+        logger.debug("- absorbed contexts: " + absorb);
+        absorbedContextTypes = new HashSet<String>();
+        for (String contextType: absorb.split(",")) {
+            absorbedContextTypes.add(contextType);
+        }
     
         String filesystems = p.getProperty(FILESYSTEMS);
         
@@ -107,14 +116,6 @@ public class FuseAdaptorConfig {
                 }
             }
         }
-        
-//        if (logger.isDebugEnabled()) {
-//            logger.debug("FUSE adaptor accepts these schemes:");
-//            for (String scheme: getAllAcceptedSchemes()) {
-//                List<FsInfo> l = getFilesystems(scheme);
-//                logger.debug("- '" + scheme + "' for " + l);
-//            }
-//        }
     }
     
     static String fsProperty(String fs, String prop) {
@@ -163,7 +164,11 @@ public class FuseAdaptorConfig {
     public boolean isAcceptedContextType(String type) {
     	return acceptedContextTypes.contains(type);
     }
-
+    
+    public boolean isAbsorbedContextType(String type) {
+        return absorbedContextTypes.contains(type);
+    }
+    
     public List<String> getAllAcceptedSchemes() {
         ArrayList<String> l = new ArrayList<String>(fsMap.keySet());
         Collections.sort(l);
@@ -174,6 +179,12 @@ public class FuseAdaptorConfig {
     	ArrayList<String> result = new ArrayList<String>(acceptedContextTypes);
     	Collections.sort(result);
     	return result;
+    }
+    
+    public List<String> getAllAbsorbedContextTypes() {
+        ArrayList<String> result = new ArrayList<String>(absorbedContextTypes);
+        Collections.sort(result);
+        return result;
     }
     
     public List<FsInfo> getFilesystems(String scheme) {

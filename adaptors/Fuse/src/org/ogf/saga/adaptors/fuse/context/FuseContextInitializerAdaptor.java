@@ -20,12 +20,12 @@ public class FuseContextInitializerAdaptor  extends AdaptorBase<Object>
         
         AutoMounter auto = AutoMounter.getInstance();
         
-        if (!auto.isAcceptedContextType(type)) {
-            List<String> acceptedTypes = auto.getAllAcceptedContextTypes();
+        if (!auto.isAbsorbedContextType(type)) {
+            List<String> absorbedTypes = auto.getAllAbsorbedContextTypes();
             
             throw new NotImplementedException("Unsupported context type: " 
-                    + type + ", the FUSE adaptor only supports "
-                    + acceptedTypes.toString());
+                    + type + ") the FUSE adaptor only initializes "
+                    + absorbedTypes.toString());
         }
     }
 }

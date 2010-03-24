@@ -75,16 +75,16 @@ public class AutoMounter {
         }
     }
     
-    public boolean isAcceptedContextType(String type) {
+    public boolean isAbsorbedContextType(String type) {
     	if (type == null) {
     		return false;
     	} else {
-    		return config.isAcceptedContextType(type);
+    		return config.isAbsorbedContextType(type);
     	}
     }
     
-    public List<String> getAllAcceptedContextTypes() {
-    	return config.getAllAcceptedContextTypes();
+    public List<String> getAllAbsorbedContextTypes() {
+    	return config.getAllAbsorbedContextTypes();
     }
 
     public synchronized String mount(URL u, Session s)
