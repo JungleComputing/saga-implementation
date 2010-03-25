@@ -1,14 +1,15 @@
 package org.ogf.saga.apps.shell;
 
-import java.net.URI;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
-import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.SagaException;
+import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
-import org.ogf.saga.namespace.NSFactory;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jline.Completor;
 
@@ -21,13 +22,14 @@ import jline.Completor;
 @SuppressWarnings("unchecked")
 public class SagaFileNameCompletor implements Completor {
 
-    private URL base;
+    private Logger logger = LoggerFactory.getLogger(SagaFileNameCompletor.class);
+    private NSDirectory base;
 
     public SagaFileNameCompletor() {
         base = null;
     }
 
-    public void setBase(URL base) {
+    public void setBase(NSDirectory base) {
         this.base = base;
     }
 
@@ -37,106 +39,70 @@ public class SagaFileNameCompletor implements Completor {
             return -1;
         }
 
+        if (buf != null && buf.endsWith("..")) {
+            candidates.add("/");
+            return buf.length();
+        }
+        
         String buffer = (buf == null) ? "" : buf;
-
-        String translated = buffer;
-
-        if (!(translated.startsWith("/"))) {
-            String basePath = base.getPath();
-            if (basePath.endsWith("/")) {
-                translated = base + translated;
-            } else {
-                translated = base + "/" + translated;
-            }
-        }
-
+        
         try {
-            URL translatedUrl = URLFactory.createURL(translated);
-
-            URL resolveUrl = URLFactory.createURL(translatedUrl.toString());
+            URL baseUrl = base.getURL();
+            String basePath = baseUrl.getPath();
+            if (!basePath.endsWith("/")) {
+                basePath += "/";
+                baseUrl.setPath(basePath);
+            }
+            
+            URL bufferUrl = URLFactory.createURL(buffer);
+            URL resolveUrl = baseUrl.resolve(bufferUrl);
+            
+            String pattern = "*";
             String resolvePath = resolveUrl.getPath();
+            
+            if (resolvePath.endsWith("..")) {
+                buffer += "/";
+            }
+            
             if (!resolvePath.endsWith("/")) {
-                java.io.File p = new java.io.File(resolvePath);
-                String parent = p.getParent();
-                if (parent == null || parent.equals("/")) {
-                    parent = "/";
+                // the name part will act as a pattern
+                java.io.File resolveFile = new java.io.File(resolvePath);
+                resolvePath = resolveFile.getParent();
+                if (resolvePath == null) {
+                    resolvePath = "/";
                 }
-                resolveUrl.setPath(parent);
+                resolveUrl.setPath(resolvePath);
+                pattern = resolveFile.getName() + "*";
             }
+            NSDirectory resolveDir = base.openDir(resolveUrl);
 
-            NSDirectory dir = NSFactory.createNSDirectory(resolveUrl);
-
-            return matchFiles(buffer, translatedUrl, dir, candidates);
-        } catch (SagaException e) {
-            e.printStackTrace();
-            return -1;
-        } finally {
-            // we want to output a sorted list of files
-            sortFileNames(candidates);
-        }
-    }
-
-    protected void sortFileNames(final List fileNames) {
-        Collections.sort(fileNames);
-    }
-
-    /**
-     *  Match the specified <i>buffer</i> to the array of <i>entries</i>
-     *  and enter the matches into the list of <i>candidates</i>. This method
-     *  can be overridden in a subclass that wants to do more
-     *  sophisticated file name completion.
-     *
-     *  @param        buffer                the untranslated buffer
-     *  @param        translated        the buffer with common characters replaced
-     *  @param        entries                the list of files to match
-     *  @param        candidates        the list of candidates to populate
-     *
-     *  @return  the offset of the match
-     */
-    public int matchFiles(String buffer, URL translatedUrl, NSDirectory dir,
-            List candidates) throws SagaException {
-
-        List<URL> entries = (dir == null) ? Collections.EMPTY_LIST : dir.list();
-
-        if (entries == null) {
-            return -1;
-        }
-
-        String lastName = null;
-        URL lastMatch = null;
-
-        for (URL entry : entries) {
-            try {
-                URL resolved = translatedUrl.resolve(entry);
-
-                if (resolved.toString().startsWith(translatedUrl.toString())) {
-                    URI uri = URI.create(resolved.getString());
-                    String encodedPath = uri.getRawPath();
-                    java.io.File f = new java.io.File(encodedPath);
-                    lastName = f.getName();
-                    candidates.add(lastName);
-                    lastMatch = resolved;
-                }
-            } catch (NoSuccessException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (candidates.size() == 1) {
-            try {
-                if (dir.isDir(lastMatch)) {
-                    lastName += "/";
+            logger.trace("Resolving in " + resolveUrl + " with pattern: " + pattern);
+            
+            List<URL> matches = resolveDir.find(pattern, Flags.NONE.getValue());
+            
+            if (matches.size() == 1) {
+                // add a trailing '/' is the sole match is a directory
+                URL match = matches.get(0);
+                if (resolveDir.isDir(match)) {
+                    candidates.add(match.toString() + "/");
                 } else {
-                    lastName += " ";
+                    candidates.add(match.toString());
                 }
-                candidates.set(0, lastName);
-            } catch (SagaException ignored) {
-                ignored.printStackTrace();
+            } else {
+                // add all matches as-is
+                for (URL match: matches) {
+                    candidates.add(match.toString());
+                }
             }
+            
+            Collections.sort(candidates);
+            
+            return buffer.lastIndexOf("/") + 1; 
+            
+        } catch (SagaException e) {
+            logger.debug("Error during file name completion", e);
+            return -1;
         }
-
-        int index = buffer.lastIndexOf("/");
-
-        return index + 1;
     }
+
 }

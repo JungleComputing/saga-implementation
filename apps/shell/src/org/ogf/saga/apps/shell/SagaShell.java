@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.ogf.saga.apps.shell.command.*;
 import org.ogf.saga.error.SagaException;
+import org.ogf.saga.file.Directory;
 import org.ogf.saga.url.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,17 +165,24 @@ public class SagaShell {
     }
 
     private void updateFileNameCompletor() {
-        try {
-            URL cwd = env.getCwd().getURL();
+        //try {
+            Directory cwd = env.getCwd();
             fileNameCompletor.setBase(cwd);
-        } catch (SagaException e) {
-            logger.warn("Cannot update file name completor", e);
-        }
+        //} catch (SagaException e) {
+        //    logger.warn("Cannot update file name completor", e);
+        //}
     }
 
-    public static void main(String[] argv) {
+    public static void main(String[] argv) throws SagaException {
         System.out.println("Starting the SAGA shell...");
 
+//        URL u = URLFactory.createURL("file://localhost/home/mathijs/tmp2/");
+//        NSDirectory d = NSFactory.createNSDirectory(u); 
+//        List<URL> l = d.find("*", Flags.NONE.getValue());
+//        for (URL e: l) {
+//            System.out.println(e);
+//        }
+        
         SagaShell shell;
         try {
             shell = new SagaShell();
