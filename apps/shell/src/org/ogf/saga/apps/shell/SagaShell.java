@@ -176,13 +176,6 @@ public class SagaShell {
     public static void main(String[] argv) throws SagaException {
         System.out.println("Starting the SAGA shell...");
 
-//        URL u = URLFactory.createURL("file://localhost/home/mathijs/tmp2/");
-//        NSDirectory d = NSFactory.createNSDirectory(u); 
-//        List<URL> l = d.find("*", Flags.NONE.getValue());
-//        for (URL e: l) {
-//            System.out.println(e);
-//        }
-        
         SagaShell shell;
         try {
             shell = new SagaShell();
