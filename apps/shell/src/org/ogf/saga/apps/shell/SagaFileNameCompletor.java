@@ -3,7 +3,13 @@ package org.ogf.saga.apps.shell;
 import java.util.Collections;
 import java.util.List;
 
+import org.ogf.saga.error.BadParameterException;
+import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.IncorrectStateException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.SagaException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.namespace.NSDirectory;
 import org.ogf.saga.url.URL;
@@ -33,27 +39,36 @@ public class SagaFileNameCompletor implements Completor {
         this.base = base;
     }
 
+    private URL getBaseURL() throws NotImplementedException,
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            BadParameterException {
+
+        URL baseUrl = base.getURL();
+        String basePath = baseUrl.getPath();
+        
+        if (!basePath.endsWith("/")) {
+            basePath += "/";
+            baseUrl.setPath(basePath);
+        }
+        
+        return baseUrl;
+    }
+    
     public int complete(final String buf, final int cursor,
             final List candidates) {
         if (base == null) {
             return -1;
         }
 
-        if (buf != null && buf.endsWith("..")) {
-            candidates.add("/");
-            return buf.length();
-        }
-        
         String buffer = (buf == null) ? "" : buf;
-        
+
         try {
-            URL baseUrl = base.getURL();
-            String basePath = baseUrl.getPath();
-            if (!basePath.endsWith("/")) {
-                basePath += "/";
-                baseUrl.setPath(basePath);
+            if (buffer.endsWith("..")) {
+                // add a '/' to complete the only candidate (a directory)
+                return completeDotDot(buffer, candidates);
             }
-            
+        
+            URL baseUrl = getBaseURL();
             URL bufferUrl = URLFactory.createURL(buffer);
             URL resolveUrl = baseUrl.resolve(bufferUrl);
             
@@ -61,7 +76,7 @@ public class SagaFileNameCompletor implements Completor {
             String resolvePath = resolveUrl.getPath();
             
             if (resolvePath.endsWith("..")) {
-                buffer += "/";
+                resolvePath += "/";
             }
             
             if (!resolvePath.endsWith("/")) {
@@ -96,13 +111,40 @@ public class SagaFileNameCompletor implements Completor {
             }
             
             Collections.sort(candidates);
-            
+
             return buffer.lastIndexOf("/") + 1; 
             
+        } catch (DoesNotExistException e) {
+            return -1;
         } catch (SagaException e) {
             logger.debug("Error during file name completion", e);
             return -1;
         }
+    }
+
+    private int completeDotDot(String buffer, final List candidates)
+            throws SagaException {
+        
+        if (onlyContainsDotDot(buffer)) {
+            // URL always refers to a directory
+            candidates.add("/");
+            return buffer.length();
+        }
+        
+        // check if URL refers to a directory
+        URL bufferUrl = URLFactory.createURL(buffer);
+        if (base.isDir(bufferUrl)) {
+            candidates.add("/");
+            return buffer.length();
+        } else {
+            // unknown directory; do not complete
+            return -1;
+        }
+    }
+    
+    private boolean onlyContainsDotDot(String s) {
+        String noDotDotSlash = s.replaceAll("\\.\\./", "");
+        return noDotDotSlash.isEmpty() || noDotDotSlash.equals("..");
     }
 
 }
