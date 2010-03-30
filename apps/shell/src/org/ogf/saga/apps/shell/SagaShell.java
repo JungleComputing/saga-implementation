@@ -3,6 +3,7 @@ package org.ogf.saga.apps.shell;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class SagaShell {
         commands.put("cat", new PrintFile(env));
         commands.put("prm", new PrintResourceManager(env));
         commands.put("crm", new ChangeResourceManager(env));
-        commands.put("run", new RunJob(env));
+        commands.put("run", new RunJob(env, Collections.<String>emptySet()));
         commands.put("jobs", new ListJobs(env));
         commands.put("kill", new KillJob(env));
     }
@@ -165,12 +166,8 @@ public class SagaShell {
     }
 
     private void updateFileNameCompletor() {
-        //try {
-            Directory cwd = env.getCwd();
-            fileNameCompletor.setBase(cwd);
-        //} catch (SagaException e) {
-        //    logger.warn("Cannot update file name completor", e);
-        //}
+    	Directory cwd = env.getCwd();
+    	fileNameCompletor.setBase(cwd);
     }
 
     public static void main(String[] argv) throws SagaException {

@@ -1,6 +1,7 @@
 package org.ogf.saga.apps.shell.command;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -34,11 +35,14 @@ public class RunJob extends EnvironmentCommand {
     private static final String[] ALL_FLAGS = { FLAG_OUT, FLAG_ERR };
     
     private Logger logger = LoggerFactory.getLogger(RunJob.class);
+    private Collection<String> schemesWithoutFileStaging;
     private ExecutorService executor;
 
-    public RunJob(Environment env) {
+    public RunJob(Environment env, Collection<String> schemesWithoutFileStaging) {
         super(env);
 
+        this.schemesWithoutFileStaging = schemesWithoutFileStaging;
+        
         ThreadFactory f = new StreamPrinterThreadFactory();
         executor = Executors.newCachedThreadPool(f);
     }
@@ -91,7 +95,14 @@ public class RunJob extends EnvironmentCommand {
         }
 
         boolean interactive = (output == null && error == null);
-
+        
+        URL rm = env.getResourceManager();
+        String rmScheme = rm.getScheme();
+        boolean fileStaging = schemesWithoutFileStaging.contains(rmScheme);
+        if (!fileStaging) {
+        	System.out.println("N.B. the output files will not be staged back");
+        }
+        
         try {
             JobDescription desc = JobFactory.createJobDescription();
             desc.setAttribute(JobDescription.EXECUTABLE, exec);
@@ -100,7 +111,7 @@ public class RunJob extends EnvironmentCommand {
             }
             if (interactive) {
                 desc.setAttribute(JobDescription.INTERACTIVE, "True");
-            } else {
+            } else if (fileStaging) {
                 List<String> fileTransfers = new LinkedList<String>();
 
                 if (output != null) {
