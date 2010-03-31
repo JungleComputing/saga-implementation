@@ -98,7 +98,7 @@ public class RunJob extends EnvironmentCommand {
         
         URL rm = env.getResourceManager();
         String rmScheme = rm.getScheme();
-        boolean fileStaging = schemesWithoutFileStaging.contains(rmScheme);
+        boolean fileStaging = !schemesWithoutFileStaging.contains(rmScheme);
         if (!fileStaging) {
         	System.out.println("N.B. the output files will not be staged back");
         }
