@@ -111,25 +111,34 @@ public class RunJob extends EnvironmentCommand {
             }
             if (interactive) {
                 desc.setAttribute(JobDescription.INTERACTIVE, "True");
-            } else if (fileStaging) {
-                List<String> fileTransfers = new LinkedList<String>();
-
+            } else {
+                String remoteOut = null;
+                String remoteErr = null;
+                
                 if (output != null) {
-                    String localOut = createLocalFile(output, "output");
-                    String remoteOut = createRemoteFile(output, "output");
+                    remoteOut = createRemoteFile(output, "output");
                     desc.setAttribute(JobDescription.OUTPUT, remoteOut);
-                    fileTransfers.add(localOut + " < " + remoteOut);
                 }
-
                 if (error != null) {
-                    String localErr = createLocalFile(error, "error");
-                    String remoteErr = createRemoteFile(error, "error");
+                    remoteErr = createRemoteFile(error, "error");
                     desc.setAttribute(JobDescription.ERROR, remoteErr);
-                    fileTransfers.add(localErr + " < " + remoteErr);
                 }
+                
+                if (fileStaging) {
+                    List<String> fileTransfers = new LinkedList<String>();
 
-                String[] s = fileTransfers.toArray(new String[0]);
-                desc.setVectorAttribute(JobDescription.FILETRANSFER, s);
+                    if (remoteOut != null) {
+                        String localOut = createLocalFile(output, "output");
+                        fileTransfers.add(localOut + " < " + remoteOut);
+                    }
+                    if (remoteErr != null) {
+                        String localErr = createLocalFile(error, "error");
+                        fileTransfers.add(localErr + " < " + remoteErr);
+                    }
+                    
+                    String[] s = fileTransfers.toArray(new String[0]);
+                    desc.setVectorAttribute(JobDescription.FILETRANSFER, s);
+                }
             }
 
             JobService js = env.getJobService();
