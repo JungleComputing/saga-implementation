@@ -111,33 +111,32 @@ public class RunJob extends EnvironmentCommand {
             }
             if (interactive) {
                 desc.setAttribute(JobDescription.INTERACTIVE, "True");
-            } else {
-                String remoteOut = null;
-                String remoteErr = null;
-                
+            } else if (fileStaging) {
+                List<String> fileTransfers = new LinkedList<String>();
+
                 if (output != null) {
-                    remoteOut = createRemoteFile(output, "output");
+                    String remoteOut = createRemoteFile(output, "output");
+                    String localOut = createLocalFile(output, "output");
+                    fileTransfers.add(localOut + " < " + remoteOut);
                     desc.setAttribute(JobDescription.OUTPUT, remoteOut);
                 }
                 if (error != null) {
-                    remoteErr = createRemoteFile(error, "error");
+                    String remoteErr = createRemoteFile(error, "error");
+                    String localErr = createLocalFile(error, "error");
                     desc.setAttribute(JobDescription.ERROR, remoteErr);
+                    fileTransfers.add(localErr + " < " + remoteErr);
                 }
                 
-                if (fileStaging) {
-                    List<String> fileTransfers = new LinkedList<String>();
-
-                    if (remoteOut != null) {
-                        String localOut = createLocalFile(output, "output");
-                        fileTransfers.add(localOut + " < " + remoteOut);
-                    }
-                    if (remoteErr != null) {
-                        String localErr = createLocalFile(error, "error");
-                        fileTransfers.add(localErr + " < " + remoteErr);
-                    }
-                    
-                    String[] s = fileTransfers.toArray(new String[0]);
-                    desc.setVectorAttribute(JobDescription.FILETRANSFER, s);
+                String[] s = fileTransfers.toArray(new String[0]);
+                desc.setVectorAttribute(JobDescription.FILETRANSFER, s);
+            } else {
+                // do not use file staging and use the full path of the output 
+                // and error files
+                if (output != null) {
+                    desc.setAttribute(JobDescription.OUTPUT, output);
+                }
+                if (error != null) {
+                    desc.setAttribute(JobDescription.ERROR, error);
                 }
             }
 
