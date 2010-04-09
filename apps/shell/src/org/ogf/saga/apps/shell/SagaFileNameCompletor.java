@@ -144,7 +144,7 @@ public class SagaFileNameCompletor implements Completor {
     
     private boolean onlyContainsDotDot(String s) {
         String noDotDotSlash = s.replaceAll("\\.\\./", "");
-        return noDotDotSlash.isEmpty() || noDotDotSlash.equals("..");
+        return noDotDotSlash.length() == 0 || noDotDotSlash.equals("..");
     }
 
 }

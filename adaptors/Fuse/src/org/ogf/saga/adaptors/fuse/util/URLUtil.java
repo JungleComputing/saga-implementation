@@ -96,7 +96,7 @@ public class URLUtil {
         if (s == null) {
             return false;
         } else {
-            return !s.trim().isEmpty();
+            return s.trim().length() > 0;
         }
     }
 

@@ -301,7 +301,6 @@ public class RunProcess {
             discard = true;
         }
 
-        @Override
         public void run() {
             boolean done = false;
 

@@ -299,7 +299,7 @@ public class AutoMounter {
             String pathInVolume = "/";
             String urlPath = url.getPath();
 
-            if (!urlPath.isEmpty()) {
+            if (urlPath.length() > 0) {
                 try {
                     // use canonical path to remove all redundant /..
                     pathInVolume = new File(urlPath).getCanonicalPath();

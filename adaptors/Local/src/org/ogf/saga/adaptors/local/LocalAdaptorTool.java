@@ -41,18 +41,15 @@ public class LocalAdaptorTool implements AdaptorTool {
         return uniqueInstance;
     }
      
-    @Override
     public void checkURL(URL u) throws IncorrectURLException {
         urlChecker.check(u);
     }
     
-    @Override
     public File createFile(String pathname) {
         logger.debug("Creating local file: {}", pathname);
         return new File(pathname);
     }
 
-    @Override
     public File createFile(File parent, String child) {
         if (logger.isDebugEnabled()) {
             logger.debug("Creating local file: {}/{}", 
@@ -61,25 +58,21 @@ public class LocalAdaptorTool implements AdaptorTool {
         return new File(parent, child);
     }
 
-    @Override
     public File createFile(String parent, String child) {
         logger.debug("Creating local file: {}/{}", parent, child); 
         return new File(parent, child);
     }
 
-    @Override
     public FileInputStream createFileInputStream(String pathname)
             throws FileNotFoundException {
         return new FileInputStream(pathname);
     }
 
-    @Override
     public FileOutputStream createFileOutputStream(String pathname)
             throws FileNotFoundException {
         return new FileOutputStream(pathname);
     }
     
-    @Override
     public void copyRecursively(File sourceDir, File targetDir)
             throws NoSuccessException {
 
@@ -104,7 +97,6 @@ public class LocalAdaptorTool implements AdaptorTool {
         }
     }
             
-    @Override
     public void copyBytes(File from, File to) throws NoSuccessException {
         logger.debug("Local copy from '{}' to '{}'", from, to);
         
@@ -163,22 +155,18 @@ public class LocalAdaptorTool implements AdaptorTool {
         }
     }
     
-    @Override
     public void close(File file) {
         // do nothing
     }
     
-    @Override
     public void close(InputStream in) throws IOException {
         in.close();
     }
 
-    @Override
     public void close(OutputStream out) throws IOException {
         out.close();
     }
 
-    @Override
     public AdaptorTool clone() {
         return this;
     }

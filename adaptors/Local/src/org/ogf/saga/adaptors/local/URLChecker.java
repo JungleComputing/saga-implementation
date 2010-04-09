@@ -157,7 +157,7 @@ public class URLChecker {
             }
 
             String path = u.getPath();
-            if (path == null || path.isEmpty()) {
+            if (path == null || path.length() == 0) {
                 throw new IncorrectURLException("Path is empty");
             }
         }

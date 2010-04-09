@@ -90,7 +90,7 @@ public class RemoveEntry extends EnvironmentCommand {
             
             if (answer == null) {
                 done = true;
-            } else if (!answer.isEmpty() && "yn".indexOf(answer.charAt(0)) < 0) {
+            } else if (answer.length() > 0 && "yn".indexOf(answer.charAt(0)) < 0) {
                 System.err.println("Please type 'y' or 'n'");
             } else {
                 done = true;

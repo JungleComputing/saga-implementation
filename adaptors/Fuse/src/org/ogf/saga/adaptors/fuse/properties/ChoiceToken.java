@@ -13,7 +13,6 @@ public class ChoiceToken implements FuseToken {
         this.right = right;
     }
 
-    @Override
     public String parse(URL url) throws PropertyParseException {
         StringBuilder result = parseTokens(url, left);
         

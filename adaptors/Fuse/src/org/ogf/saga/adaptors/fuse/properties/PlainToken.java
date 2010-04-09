@@ -10,12 +10,10 @@ public class PlainToken implements FuseToken {
         this.s = s;
     }
     
-    @Override
     public String parse(URL url) {
         return s;
     }
 
-    @Override
     public String toString() {
         return s;
     }

@@ -88,7 +88,6 @@ public class VariableToken implements FuseToken {
         }
     }
     
-    @Override
     public String parse(URL url) throws PropertyParseException {
     	if (value != null) {
             // static variable
@@ -132,7 +131,7 @@ public class VariableToken implements FuseToken {
     }
     
     private static String nullIfEmpty(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s == null || s.length() == 0) {
         	return null;
         } else {
         	return s;

@@ -75,7 +75,10 @@ public class RunJob extends EnvironmentCommand {
                     end--;
                 }
                 if (execIndex + 1 < end) {
-                    arguments = Arrays.copyOfRange(args, execIndex + 1, end);
+                	arguments = new String[end - execIndex - 1];
+                    for (int i = execIndex + 1; i < end; i++) {
+                        arguments[i - execIndex - 1] = args[i];
+                    }
                 }
             }
         }
@@ -202,7 +205,7 @@ public class RunJob extends EnvironmentCommand {
         URL remoteUrl = URLFactory.createURL(fileUrl);
         String remotePath = remoteUrl.getPath();
 
-        if (remotePath == null || remotePath.isEmpty()) {
+        if (remotePath == null || remotePath.length() == 0) {
             throw new BadParameterException("Illegal file name: '" + fileUrl
                     + "'");
         }

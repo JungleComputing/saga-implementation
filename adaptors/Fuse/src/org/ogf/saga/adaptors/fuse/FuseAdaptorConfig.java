@@ -65,7 +65,7 @@ public class FuseAdaptorConfig {
         fsMap = new HashMap<String, List<FsInfo>>();
         acceptedContextTypes = new HashSet<String>();
         
-        if (filesystems == null || filesystems.trim().isEmpty()) {
+        if (filesystems == null || filesystems.trim().length() == 0) {
             logger.warn("No FUSE filesystems specified");
         } else {
             for (String fs: filesystems.split(",")) {
@@ -131,7 +131,7 @@ public class FuseAdaptorConfig {
     }
     
     private boolean checkCommand(String fs, String cmd, String description) {
-    	if (cmd == null || cmd.trim().isEmpty()) {
+    	if (cmd == null || cmd.trim().length() == 0) {
     		logger.debug("- " + fs + ": IGNORED, missing " + description);
     		return false;
     	}

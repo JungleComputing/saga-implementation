@@ -135,7 +135,6 @@ public class Util {
     
     private static class URLComparator implements Comparator<URL> {
 
-        @Override
         public int compare(URL u1, URL u2) {
             String s1 = u1.toString();
             String s2 = u2.toString();

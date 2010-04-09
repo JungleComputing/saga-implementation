@@ -170,7 +170,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         tool.close(file);
     }
 
-    @Override
     public void copy(URL target, int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
@@ -210,7 +209,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         }
     }
 
-    @Override
     public void move(URL target, int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
@@ -320,7 +318,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         }
     }
 
-    @Override
     public boolean isDir() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
@@ -328,7 +325,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         return isDirectory;
     }
 
-    @Override
     public boolean isEntry() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
@@ -336,7 +332,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         return !isDirectory;
     }
 
-    @Override
     public boolean isLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
@@ -344,7 +339,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         throw new NotImplementedException("Links are not supported");
     }
 
-    @Override
     public void link(URL target, int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
@@ -353,7 +347,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         throw new NotImplementedException("Links are not supported");
     }
 
-    @Override
     public void permissionsAllow(String id, int permissions, int flags)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
@@ -362,7 +355,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         throw new NotImplementedException("Permissions are not supported");
     }
 
-    @Override
     public void permissionsDeny(String id, int permissions, int flags)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, IncorrectStateException,
@@ -371,7 +363,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         throw new NotImplementedException("Permissions are not supported");
     }
 
-    @Override
     public URL readLink() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
@@ -379,7 +370,6 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         throw new NotImplementedException("Links are not supported");
     }
 
-    @Override
     public void remove(int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
@@ -425,21 +415,18 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         return dir.delete();
     }
 
-    @Override
     public String getGroup() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("Permissions are not supported");
     }
 
-    @Override
     public String getOwner() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("Permissions are not supported");
     }
 
-    @Override
     public boolean permissionsCheck(String id, int permissions)
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,

@@ -20,7 +20,6 @@ public class StreamPrinter implements Runnable {
         stream = null;
     }
 
-    @Override
     public void run() {
         while (stream == null) {
             try {
