@@ -170,7 +170,7 @@ public class SagaShell {
     	fileNameCompletor.setBase(cwd);
     }
 
-    public static void main(String[] argv) throws SagaException {
+    public static void main(String[] argv) {
         System.out.println("Starting the SAGA shell...");
 
         SagaShell shell;
