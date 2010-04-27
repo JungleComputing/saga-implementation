@@ -446,30 +446,30 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
             try {
                 Long.parseLong(value);
             } catch (NumberFormatException e) {
-                throw new BadParameterException(
-                        "Int-typed attribute set to non-integer " + value);
+                throw new BadParameterException("Int-typed attribute " + key + 
+                        " set to non-integer " + value);
             }
             break;
         case FLOAT:
             try {
                 Double.parseDouble(value);
             } catch (NumberFormatException e) {
-                throw new BadParameterException(
-                        "Float-typed attribute set to non-float " + value);
+                throw new BadParameterException("Float-typed attribute " + 
+                        key + " set to non-float " + value);
             }
             break;
         case BOOL:
             if (!value.equals(TRUE) && !value.equals(FALSE)) {
-                throw new BadParameterException(
-                        "Bool-typed attribute set to non-bool " + value);
+                throw new BadParameterException("Bool-typed attribute " + key + 
+                        " set to non-bool " + value);
             }
             break;
         case TIME:
             ParsePosition p = new ParsePosition(0);
             dateFormatter.parse(value, p);
             if (p.getErrorIndex() >= 0 || p.getIndex() < value.length()) {
-                throw new BadParameterException(
-                        "Time-values attribute set to non-time " + value);
+                throw new BadParameterException("Time-values attribute " + key + 
+                        " set to non-time " + value);
             }
             break;
         }
