@@ -4,14 +4,18 @@ public interface Command {
 
     /**
      * Returns a concise description of the possible arguments of this command.
-     * A command without any arguments must return an empty string.
+     * A command without any arguments must return an empty string. Long 
+     * descriptions can be split over multiple lines by including '\n' 
+     * characters.
      *   
      * @return a description of the possible arguments of this command.
      */
     public String getHelpArguments();
 
     /**
-     * Returns a single english sentence that describes what this command does.
+     * Returns a simple explanation of what this command does, preferably in
+     * one sentence. Long explanations can be split over multiple lines by 
+     * including '\n' characters.
      * 
      * @return an english explanation of this command.
      */
