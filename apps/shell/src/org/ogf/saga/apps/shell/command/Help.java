@@ -66,11 +66,17 @@ public class Help implements Command {
                 ++cmdArgLen;
             }
 
-            for (int i = 0; i < LEFT_COL_WIDTH - cmdArgLen; i++) {
-                System.out.print(' ');
+            // print explanation; indent each new line
+            String explanation = cmd.getHelpExplanation();
+            String[] lines = explanation.split("\n");
+            for (int i = 0; i < lines.length; i++) {
+                if (i == 0) {
+                    printIndent(LEFT_COL_WIDTH - cmdArgLen);
+                } else {                    
+                    printIndent(LEFT_COL_WIDTH);
+                }
+                System.out.println(lines[i]);
             }
-
-            System.out.println(cmd.getHelpExplanation());
         }
     }
 
