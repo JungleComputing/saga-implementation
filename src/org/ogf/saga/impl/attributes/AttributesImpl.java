@@ -161,6 +161,22 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
                 notImplemented, removeable));
     }
 
+    protected void setDefaultValue(String name, String value) { 
+        try {
+            setValue(name, value);
+        } catch (Throwable ignored) {
+            // ignored
+        }
+    }
+
+    protected void setDefaultVectorValue(String name, String[] value) { 
+        try {
+            setVectorValue(name, value);
+        } catch (Throwable ignored) {
+            // ignored
+        }
+    }
+
     // split pattern up into key-part and value-part.
     private String[] splitPattern(String pattern) {
         int index = pattern.indexOf('=');

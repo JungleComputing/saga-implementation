@@ -4,7 +4,6 @@ import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.IncorrectStateException;
 import org.ogf.saga.error.NotImplementedException;
-import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.impl.attributes.AttributesImpl;
 
@@ -34,20 +33,17 @@ class ContextAttributes extends AttributesImpl {
                 false, false);
         addAttribute(ContextImpl.USERVO, AttributeType.STRING, false, false,
                 false, false);
+
         addAttribute(ContextImpl.LIFETIME, AttributeType.INT, false, false,
                 false, false);
+        setDefaultValue(ContextImpl.LIFETIME, "-1");
+        
         addAttribute(ContextImpl.REMOTEID, AttributeType.STRING, false, true,
                 false, false);
         addAttribute(ContextImpl.REMOTEHOST, AttributeType.STRING, false, true,
                 false, false);
         addAttribute(ContextImpl.REMOTEPORT, AttributeType.INT, false, true,
                 false, false);
-
-        try {
-            setValue(ContextImpl.LIFETIME, "-1");
-        } catch (Throwable e) {
-            throw new SagaRuntimeException("Internal error", e);
-        }
     }
 
     protected ContextAttributes(ContextAttributes orig) {
