@@ -58,7 +58,7 @@ import org.ogf.saga.url.URLFactory;
  */
 
 public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
-        MetricListener, Cloneable {
+        MetricListener {
 
     private static final Logger logger = LoggerFactory.getLogger(SagaJob.class);
 
@@ -433,8 +433,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         return hd;
     }
 
-    private URI getURI(String s) throws NoSuccessException,
-            BadParameterException {
+    private URI getURI(String s) throws BadParameterException {
         try {
             URL url = URLFactory.createURL(getV(s));
             return GatURIConverter.cvtToGatURI(url);
@@ -652,7 +651,14 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 notifyAll();
             }
             break;
+        case INITIAL:
+            setDetail("INITIAL");
+            break;
+        case UNKNOWN:
+            setDetail("UNKNOWN");
+            break;
         }
+        
     }
 
     @Override

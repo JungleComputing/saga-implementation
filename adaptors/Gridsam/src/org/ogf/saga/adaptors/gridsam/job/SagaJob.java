@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
-        JobInstanceChangeListener, Cloneable {
+        JobInstanceChangeListener {
 
     private static final Logger logger = LoggerFactory.getLogger(SagaJob.class);
     
@@ -472,7 +472,6 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
     }
 
     private static class PollingThread extends Thread {
-        private Logger logger = LoggerFactory.getLogger(PollingThread.class);
 
         private SagaJob parent;
 

@@ -40,7 +40,7 @@ public class ServiceDataAttributes extends AttributesImpl {
      *      boolean)
      */
     @Override
-    protected void addAttribute(String name, AttributeType type, boolean vector, boolean readOnly,
+    protected synchronized void addAttribute(String name, AttributeType type, boolean vector, boolean readOnly,
             boolean notImplemented, boolean removeable) {
         super.addAttribute(name, type, vector, readOnly, notImplemented, removeable);
     }

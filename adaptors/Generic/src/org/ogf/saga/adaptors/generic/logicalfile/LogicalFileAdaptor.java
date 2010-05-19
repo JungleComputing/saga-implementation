@@ -145,7 +145,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         }
     }
 
-    private boolean doRemove(URL name) throws DoesNotExistException {
+    private boolean doRemove(URL name) {
         name = name.normalize();
         if (!urls.contains(name)) {
             return false;
@@ -215,8 +215,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         write();
     }
 
-    private URL getClosestURL(URL location) throws IncorrectStateException,
-            NotImplementedException {
+    private URL getClosestURL(URL location) throws IncorrectStateException {
         if (urls == null || urls.size() == 0) {
             throw new IncorrectStateException("No files in logical file '"
                     + wrapper.getWrapperURL() + "' to compare with", wrapper);

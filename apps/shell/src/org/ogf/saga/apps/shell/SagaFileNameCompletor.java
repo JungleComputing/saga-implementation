@@ -136,10 +136,9 @@ public class SagaFileNameCompletor implements Completor {
         if (base.isDir(bufferUrl)) {
             candidates.add("/");
             return buffer.length();
-        } else {
-            // unknown directory; do not complete
-            return -1;
         }
+        // unknown directory; do not complete
+        return -1;
     }
     
     private boolean onlyContainsDotDot(String s) {

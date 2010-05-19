@@ -72,9 +72,8 @@ public class AdaptorTestResult {
         }
         if (i == 0) {
             return 0L;
-        } else {
-            return result / i;
         }
+        return result / i;
     }
 
     public String getAdaptor() {

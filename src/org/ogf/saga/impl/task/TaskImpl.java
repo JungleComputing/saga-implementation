@@ -35,7 +35,7 @@ import org.ogf.saga.task.TaskMode;
 // However, there is nothing against a default implementation that uses them.
 
 public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase implements
-        org.ogf.saga.task.Task<T, E>, Callable<E>, Cloneable {
+        org.ogf.saga.task.Task<T, E>, Callable<E> {
 
     private static Logger logger = LoggerFactory.getLogger(TaskImpl.class);
 

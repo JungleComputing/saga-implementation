@@ -235,7 +235,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             return false;
         } finally {
             try {
-                temp.remove(Flags.RECURSIVE.getValue());
+                if (temp != null) {
+                    temp.remove(Flags.RECURSIVE.getValue());
+                }
             } catch(Throwable ex) {
                 // ignored
             }
@@ -277,7 +279,9 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             return false;
         } finally {
             try {
-                temp.remove(Flags.RECURSIVE.getValue());
+                if (temp != null) {
+                    temp.remove(Flags.RECURSIVE.getValue());
+                }
             } catch(Throwable ex) {
                 // ignored
             }

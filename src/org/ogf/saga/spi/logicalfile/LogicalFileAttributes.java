@@ -15,7 +15,7 @@ class LogicalFileAttributes extends AsyncAttributesImpl<LogicalFile> {
         super(object, session, false);
     }
 
-    protected void addAttribute(String name, AttributeType type,
+    protected synchronized void addAttribute(String name, AttributeType type,
             boolean vector, boolean readOnly, boolean notImplemented,
             boolean removeable) {
         super.addAttribute(name, type, vector, readOnly, notImplemented,

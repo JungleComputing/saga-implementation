@@ -160,16 +160,20 @@ public class RunJob extends EnvironmentCommand {
             logger.debug("Running job");
             job.run();
 
-            if (interactive) {
+            if (stdoutPrinter != null) {
                 stdoutPrinter.setStream(job.getStdout());
+            }
+            if (stderrPrinter != null) {
                 stderrPrinter.setStream(job.getStderr());
             }
 
             if (mode.equals(TaskMode.SYNC)) {
                 logger.debug("Waiting for job");
                 job.waitFor();
-                if (interactive) {
+                if (stdoutPrinter != null) {
                     stdoutPrinter.waitUntilDone();
+                }
+                if (stderrPrinter != null) {
                     stderrPrinter.waitUntilDone();
                 }
                 logger.debug("Finished job");

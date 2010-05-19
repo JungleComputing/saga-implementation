@@ -55,10 +55,6 @@ public class MetricImpl extends SagaObjectBase implements
             this.context = context;
         }
 
-        public void setMonitorable(Monitorable monitorable) {
-            this.monitorable = monitorable;
-        }
-
         public void setContext(Context context) {
             this.context = context;
         }
@@ -117,7 +113,7 @@ public class MetricImpl extends SagaObjectBase implements
                 }
             }
         }
-    };
+    }
 
     private MetricAttributes attributes;
     private ArrayList<CallbackHandler> callBacks;

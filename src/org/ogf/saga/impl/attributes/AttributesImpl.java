@@ -454,6 +454,9 @@ public class AttributesImpl implements org.ogf.saga.attributes.Attributes,
             throw new BadParameterException("Attribute value set to null");
         }
         switch (type) {
+        case TRIGGER:
+            // nothing
+            break;
         case STRING:
         case ENUM:
             // Leave possible checks up to subclasses.

@@ -199,15 +199,13 @@ public class StreamAdaptorTest {
 
         long start = System.currentTimeMillis();
 
-        if (e1 == null) {
-            try {
-                stream.connect();
-            } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
-                        "Connect gave exception", e));
-            } finally {
-                server.stopServer();
-            }
+        try {
+            stream.connect();
+        } catch (Throwable e) {
+            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Connect gave exception", e));
+        } finally {
+            server.stopServer();
         }
 
         long stop = System.currentTimeMillis();
@@ -245,15 +243,14 @@ public class StreamAdaptorTest {
         }
 
         long start = System.currentTimeMillis();
-        if (e1 == null) {
-            try {
-                stream.connect();
-            } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
-                        "Connect failed: " + e, e));
-            } finally {
-                server.stopServer();
-            }
+
+        try {
+            stream.connect();
+        } catch (Throwable e) {
+            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Connect failed: " + e, e));
+        } finally {
+            server.stopServer();
         }
 
         if (e1 == null) {
@@ -318,13 +315,11 @@ public class StreamAdaptorTest {
 
         sThread.start();
 
-        if (e1 == null) {
-            try {
-                stream.getMetric(Stream.STREAM_READ).addCallback(readable);
-            } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
-                        "addCallback failed", e));
-            }
+        try {
+            stream.getMetric(Stream.STREAM_READ).addCallback(readable);
+        } catch (Throwable e) {
+            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "addCallback failed", e));
         }
 
         try {
@@ -410,15 +405,13 @@ public class StreamAdaptorTest {
             // ignored
         }
 
-        if (e1 == null) {
-            try {
-                stream.connect();
-            } catch (Throwable e) {
-                e1 = new AdaptorTestResultEntry(false, 0, new Exception(
-                        "Could not connect", e));
-            } finally {
-                server.stopServer();
-            }
+        try {
+            stream.connect();
+        } catch (Throwable e) {
+            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
+                    "Could not connect", e));
+        } finally {
+            server.stopServer();
         }
 
         long start = System.currentTimeMillis();

@@ -30,11 +30,10 @@ import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.spi.namespace.NSEntryAdaptorBase;
-import org.ogf.saga.spi.namespace.NSEntrySPI;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
-public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
+public class NSEntryAdaptor extends NSEntryAdaptorBase {
 
     private static Logger logger = LoggerFactory
             .getLogger(NSEntryAdaptor.class);
@@ -157,9 +156,8 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase implements NSEntrySPI {
                 File parentFile;
                 try {
                     parentFile = file.getParentFile();
-                    boolean parentExists = parentFile == null || parentFile.exists();
-                    if (! parentExists) {
-                        parentExists = parentFile.mkdirs();
+                    if (parentFile != null && ! parentFile.exists()) {
+                        parentFile.mkdirs();
                     }
                 } catch (GATInvocationException e) {
                     throw new NoSuccessException(e);

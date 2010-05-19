@@ -33,7 +33,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
 
     public JobServiceAdaptor(JobServiceWrapper wrapper,
             SessionImpl sessionImpl, URL rm) throws NoSuccessException,
-            NotImplementedException, IncorrectURLException, BadParameterException {
+            IncorrectURLException, BadParameterException {
         super(wrapper, sessionImpl, rm);
 
         if (rm.toString().equals("")) {

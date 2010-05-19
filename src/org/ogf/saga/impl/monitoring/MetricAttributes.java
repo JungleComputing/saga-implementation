@@ -31,7 +31,7 @@ class MetricAttributes extends AttributesImpl {
         return new MetricAttributes(this);
     }
 
-    protected void setValue(String key, String value)
+    protected synchronized void setValue(String key, String value)
             throws NotImplementedException, BadParameterException,
             DoesNotExistException, IncorrectStateException {
         super.setValue(key, value);
@@ -54,13 +54,13 @@ class MetricAttributes extends AttributesImpl {
         }
     }
 
-    protected void setVectorValue(String key, String[] values)
+    protected synchronized void setVectorValue(String key, String[] values)
             throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         super.setVectorValue(key, values);
     }
 
-    protected String getValue(String key) {
+    protected synchronized String getValue(String key) {
         return super.getValue(key);
     }
 }

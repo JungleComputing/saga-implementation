@@ -345,8 +345,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             IOException t = (IOException) e.getCause();
             if (t != null)
                 throw new SagaIOException(t);
-            else
-                throw new NoSuccessException(e);
+            throw new NoSuccessException(e);
         } catch (IOException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);

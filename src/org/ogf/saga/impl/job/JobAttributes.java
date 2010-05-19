@@ -28,13 +28,13 @@ public class JobAttributes extends AsyncAttributesImpl<org.ogf.saga.job.Job> {
         super(orig);
     }
 
-    protected void setValue(String key, String value)
+    protected synchronized void setValue(String key, String value)
             throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         super.setValue(key, value);
     }
 
-    protected void setVectorValue(String key, String[] values)
+    protected synchronized void setVectorValue(String key, String[] values)
             throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         super.setVectorValue(key, values);

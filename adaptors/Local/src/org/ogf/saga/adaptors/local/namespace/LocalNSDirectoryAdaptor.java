@@ -24,7 +24,7 @@ import org.ogf.saga.url.URL;
 
 public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
 
-    protected static enum OPERATION { COPY, MOVE };
+    protected static enum OPERATION { COPY, MOVE }
     
     protected LocalNSEntryAdaptor entry;
     
@@ -192,7 +192,9 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                 break;
             }
         } finally {
-            sourceEntry.close(0);
+            if (sourceEntry != null) {
+                sourceEntry.close(0);
+            }
             entry.tool.close(targetFile);
         }        
     }

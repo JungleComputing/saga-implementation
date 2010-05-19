@@ -266,7 +266,7 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         }
         
 
-        if (this.adaptors.size() == 0 && exception != null) {
+        if (this.adaptors.size() == 0 && exception != null && exceptions != null) {
             for (SagaException e : exceptions) {
                 if (e != exception) {
                     exception.addNestedException(e);
@@ -554,9 +554,11 @@ public class AdaptorInvocationHandler implements InvocationHandler {
             throw new NoSuccessException("no adaptor found for " + m.getName());
         }
 
-        for (SagaException e : exceptions) {
-            if (e != exception) {
-                exception.addNestedException(e);
+        if (exceptions != null) {
+            for (SagaException e : exceptions) {
+                if (e != exception) {
+                    exception.addNestedException(e);
+                }
             }
         }
  

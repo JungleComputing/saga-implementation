@@ -151,9 +151,8 @@ public class Session implements
                             c.addNote("adaptors", "globus,wsgt4new,gt42");
                         }
                         return c;
-                    } else {
-                        logger.info("read from proxy file gave " + len);
                     }
+                    logger.info("read from proxy file gave " + len);
                 } catch (FileNotFoundException e) {
                     logger.info("Could not open proxy file " + proxy, e);
                 } catch (IOException e) {

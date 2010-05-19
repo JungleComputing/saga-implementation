@@ -36,10 +36,9 @@ public class StreamPrinter implements Runnable {
                 int read = stream.read(buf);
                 if (read < 0) {
                     break;
-                } else {
-                    String s = new String(buf, 0, read);
-                    System.out.print(s);
                 }
+                String s = new String(buf, 0, read);
+                System.out.print(s);
             } catch (IOException e) {
                 break;
             }

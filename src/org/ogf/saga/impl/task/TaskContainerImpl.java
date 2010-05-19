@@ -66,7 +66,7 @@ public class TaskContainerImpl extends SagaObjectBase implements
             }
             return true;
         }
-    };
+    }
 
     ContainerCallback cb;
 
@@ -245,6 +245,7 @@ public class TaskContainerImpl extends SagaObjectBase implements
             State s = t.getState();
             switch (s) {
             case RUNNING:
+            case SUSPENDED:
                 running++;
                 continue;
             case CANCELED:
@@ -320,10 +321,9 @@ public class TaskContainerImpl extends SagaObjectBase implements
             NoSuccessException {
         if (TASKCONTAINER_STATE.equals(name)) {
             return taskContainerMetric;
-        } else {
-            throw new DoesNotExistException("metric " + name
-                    + " does not exist");
         }
+        throw new DoesNotExistException("metric " + name
+                + " does not exist");
     }
 
     public String[] listMetrics() throws NotImplementedException,

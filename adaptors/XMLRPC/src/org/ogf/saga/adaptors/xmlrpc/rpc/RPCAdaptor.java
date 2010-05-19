@@ -164,9 +164,8 @@ public class RPCAdaptor extends RPCAdaptorBase {
         for (int i = 0; i < parameters.length; i++) {
             if (i == outIndex && parameters[i].getIOMode() == IOMode.OUT) {
                 continue;
-            } else {
-                rpcParameters[index++] = parameters[i].getData();
             }
+            rpcParameters[index++] = parameters[i].getData();
         }
 
         try {

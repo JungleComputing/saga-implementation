@@ -19,7 +19,7 @@ import org.ogf.saga.session.Session;
  * 
  * @see org.ogf.saga.sd.ServiceData
  */
-public class ServiceDataImpl extends SagaObjectBase implements org.ogf.saga.sd.ServiceData, Cloneable {
+public class ServiceDataImpl extends SagaObjectBase implements org.ogf.saga.sd.ServiceData {
 
     /** The service data attributes */
     private ServiceDataAttributes m_attributes;

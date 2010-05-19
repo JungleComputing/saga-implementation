@@ -29,7 +29,6 @@ import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.file.FileWrapper;
 import org.ogf.saga.spi.file.FileAdaptorBase;
-import org.ogf.saga.spi.file.FileSPI;
 import org.ogf.saga.url.URL;
 
 // Aaarggghh, javagat only has a local RandomAccessFile adaptor!!!
@@ -39,7 +38,7 @@ import org.ogf.saga.url.URL;
 // create a file input stream. Forward seeks can then be implemented with skip().
 // Likewise, for output create a file output stream. No seeks in this case.
 
-public class FileAdaptor extends FileAdaptorBase implements FileSPI {
+public class FileAdaptor extends FileAdaptorBase {
 
     private static Logger logger = LoggerFactory.getLogger(FileAdaptor.class);
 
@@ -238,13 +237,12 @@ public class FileAdaptor extends FileAdaptorBase implements FileSPI {
                 } catch (IOException e) {
                     throw new SagaIOException(e, wrapper);
                 }
-            } else
-                throw new NotImplementedException(
-                        "Backwards seek not implemented", wrapper);
-        } else {
+            }
             throw new NotImplementedException(
-                    "Seek on output stream not implemented", wrapper);
+                    "Backwards seek not implemented", wrapper);
         }
+        throw new NotImplementedException(
+                "Seek on output stream not implemented", wrapper);
     }
 
     public int sizeE(String arg0, String arg1) throws NotImplementedException,

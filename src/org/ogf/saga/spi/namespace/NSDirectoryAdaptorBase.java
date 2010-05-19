@@ -67,10 +67,9 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
         public void remove() {
             throw new UnsupportedOperationException("Remove not supported");
         }
-
     }
 
-    protected static final Logger logger = LoggerFactory
+    private static final Logger logger = LoggerFactory
             .getLogger(NSDirectoryAdaptorBase.class);
 
     protected NSDirectoryWrapper wrapper;

@@ -27,14 +27,12 @@ import org.ogf.saga.impl.session.SessionImpl;
 import org.ogf.saga.namespace.Flags;
 import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.spi.namespace.NSDirectoryAdaptorBase;
-import org.ogf.saga.spi.namespace.NSDirectorySPI;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
-public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase implements
-        NSDirectorySPI {
+public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
 
-    static Logger logger = LoggerFactory.getLogger(NSDirectoryAdaptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(NSDirectoryAdaptor.class);
 
     static {
         Initialize.initialize();

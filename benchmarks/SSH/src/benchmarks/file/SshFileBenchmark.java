@@ -27,9 +27,7 @@ public class SshFileBenchmark implements Benchmark {
     private static byte[] writebuf = new byte[FileBenchmark.WRITE_BUF_SIZE];
     
     private static byte[] readbuf = new byte[FileBenchmark.READ_BUF_SIZE];
-    
-    private static byte[] copybuf = new byte[FileBenchmark.COPY_BUF_SIZE];
-    
+      
     static final int STDOUT = 0, STDERR = 1, EXIT_VALUE = 2;
     
     private final URI uri;

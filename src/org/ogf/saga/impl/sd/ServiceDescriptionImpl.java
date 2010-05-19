@@ -27,7 +27,7 @@ import org.ogf.saga.url.URLFactory;
  * 
  * @see org.ogf.saga.sd.ServiceDescription
  */
-public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.saga.sd.ServiceDescription, Cloneable {
+public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.saga.sd.ServiceDescription {
 
     /** The service description attributes */
     private ServiceDescriptionAttributes m_attributes;

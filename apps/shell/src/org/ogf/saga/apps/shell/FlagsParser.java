@@ -82,9 +82,8 @@ public class FlagsParser {
                     // parse a string argument
                     if (parsedStrings.containsKey(arg)) {
                         return i;
-                    } else {
-                        parsedStrings.put(arg, args[++i]);
                     }
+                    parsedStrings.put(arg, args[++i]);
                 } else {
                     // parse boolean argument(s)
                     for (int j = 0; j < arg.length(); j++) {

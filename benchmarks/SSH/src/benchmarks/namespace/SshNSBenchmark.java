@@ -78,9 +78,8 @@ public class SshNSBenchmark implements Benchmark {
             } catch (SFTPException x) {
                 if (x.getServerErrorCode() == ErrorCodes.SSH_FX_NO_SUCH_FILE) {
                     throw new Error(path + " does not exist");
-                } else {
-                    throw new Error(x);
                 }
+                throw new Error(x);
             }
             if (! attrs.isDirectory()) {
                 throw new Error(path + " is not a directory");
@@ -197,7 +196,9 @@ public class SshNSBenchmark implements Benchmark {
         } catch (Exception e) {
             throw new Error(e);
         } finally {
-            sftp.close();
+            if (sftp != null) {
+                sftp.close();
+            }
         }
     }
     

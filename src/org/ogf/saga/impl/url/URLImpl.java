@@ -13,7 +13,7 @@ import org.ogf.saga.impl.SagaObjectBase;
  * URL class as specified by SAGA. The java.net.URL class is not usable because
  * of all kinds of side-effects.
  */
-public class URLImpl extends SagaObjectBase implements URL, Cloneable {
+public class URLImpl extends SagaObjectBase implements URL {
     private URI u;
 
     /**

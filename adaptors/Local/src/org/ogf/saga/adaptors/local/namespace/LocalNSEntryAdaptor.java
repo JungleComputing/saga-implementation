@@ -96,17 +96,15 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
                                 + name.toString());
                     }
                     return;
-                } else { 
-                    // create the parent directory of this file and continue  
-                    File parentFile = file.getParentFile();
-                    boolean parentExists = parentFile == null || parentFile.exists();
-                    if (!parentExists) {
-                        logger.debug("Creating parent directories");
-                        if (!parentFile.mkdirs()) {
-                            throw new NoSuccessException(
-                                    "Failed to create parent directories of "
-                                    + name.toString());
-                        }
+                }
+                // create the parent directory of this file and continue  
+                File parentFile = file.getParentFile();
+                if (parentFile != null && ! parentFile.exists()) {
+                    logger.debug("Creating parent directories");
+                    if (!parentFile.mkdirs()) {
+                        throw new NoSuccessException(
+                                "Failed to create parent directories of "
+                                + name.toString());
                     }
                 }
             }

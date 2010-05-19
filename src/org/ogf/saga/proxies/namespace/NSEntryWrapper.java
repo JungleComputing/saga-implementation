@@ -308,7 +308,9 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             return false;
         } finally {
             try {
-                temp.remove(isDirectory ? Flags.RECURSIVE.getValue() : 0);
+                if (temp != null) {
+                    temp.remove(isDirectory ? Flags.RECURSIVE.getValue() : 0);
+                }
             } catch(Throwable ex) {
                 // ignored
             }

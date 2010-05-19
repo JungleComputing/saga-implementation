@@ -55,14 +55,14 @@ class ContextAttributes extends AttributesImpl {
     }
 
     // Makes setValue() available for this package.
-    protected void setValue(String key, String value)
+    protected synchronized void setValue(String key, String value)
             throws DoesNotExistException, NotImplementedException,
             IncorrectStateException, BadParameterException {
         super.setValue(key, value);
     }
 
     // Makes getValue() available for this package.
-    protected String getValue(String key) {
+    protected synchronized String getValue(String key) {
         return super.getValue(key);
     }
 
@@ -74,7 +74,7 @@ class ContextAttributes extends AttributesImpl {
     }
 
     // Makes addAttribute available for this package.
-    protected void addAttribute(String name, AttributeType type,
+    protected synchronized void addAttribute(String name, AttributeType type,
             boolean vector, boolean readOnly, boolean notImplemented,
             boolean removeable) {
         super.addAttribute(name, type, vector, readOnly, notImplemented,

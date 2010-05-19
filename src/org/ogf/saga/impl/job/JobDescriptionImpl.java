@@ -13,7 +13,7 @@ import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 
 public class JobDescriptionImpl extends SagaObjectBase implements
-        org.ogf.saga.job.JobDescription, Cloneable {
+        org.ogf.saga.job.JobDescription {
 
     JobDescriptionAttributes attributes;
 

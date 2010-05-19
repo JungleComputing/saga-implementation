@@ -27,6 +27,10 @@ public class SessionImpl extends SagaObjectBase implements
         super((org.ogf.saga.session.Session) null);
         isDefaultSession = defaults;
     }
+    
+    public boolean isDefaultSession() {
+        return isDefaultSession;
+    }
 
     public synchronized AdaptorSessionInterface getAdaptorSession(String name) {
         return adaptorSessions.get(name);

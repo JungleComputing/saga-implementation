@@ -99,11 +99,11 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
         return entry.find(pattern, flags);
     }
 
-    public URL getEntry(int entry) throws NotImplementedException,
+    public URL getEntry(int entryNo) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        return this.entry.getEntry(entry);
+        return this.entry.getEntry(entryNo);
     }
 
     public int getNumEntries() throws NotImplementedException,

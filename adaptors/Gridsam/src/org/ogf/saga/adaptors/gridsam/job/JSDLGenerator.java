@@ -27,7 +27,6 @@ import org.icenigrid.schema.jsdl.y2005.m11.ResourcesType;
 import org.icenigrid.schema.jsdl.y2005.m11.SourceTargetType;
 import org.ogf.saga.SagaObject;
 import org.ogf.saga.error.BadParameterException;
-import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.job.JobDescription;
 
@@ -41,8 +40,7 @@ class JSDLGenerator {
     private final JobDefinitionDocument jobDefinitionDocument;
 
     JSDLGenerator(JobDescription jd, SagaObject o)
-            throws BadParameterException, NotImplementedException,
-            NoSuccessException {
+            throws BadParameterException, NotImplementedException {
         this.jobDescription = jd;
 
         jobDefinitionDocument = JobDefinitionDocument.Factory.newInstance();
@@ -55,8 +53,7 @@ class JSDLGenerator {
     }
 
     private void createJSDLDescription(SagaObject o)
-            throws BadParameterException, NotImplementedException,
-            NoSuccessException {
+            throws BadParameterException, NotImplementedException {
 
         JobDefinitionType jobDef = jobDefinitionDocument.addNewJobDefinition();
         JobDescriptionType jobDescr = jobDef.addNewJobDescription();

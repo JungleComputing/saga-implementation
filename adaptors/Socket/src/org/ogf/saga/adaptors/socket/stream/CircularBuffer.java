@@ -50,8 +50,8 @@ class CircularBuffer extends java.io.InputStream {
             return 0;
         if (beg < end)
             return end - beg;
-        else
-            return buf.length - beg + end;
+
+        return buf.length - beg + end;
     }
 
     public synchronized int read(org.ogf.saga.buffer.Buffer b, int len)

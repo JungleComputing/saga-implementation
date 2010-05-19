@@ -16,7 +16,7 @@ import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.session.Session;
 
 public class ContextImpl extends SagaObjectBase implements
-        org.ogf.saga.context.Context, Cloneable {
+        org.ogf.saga.context.Context {
 
     private static ContextInitializerSPI proxy = null;
     private ContextAttributes attributes;

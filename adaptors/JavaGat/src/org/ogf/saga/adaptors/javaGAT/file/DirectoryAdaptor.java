@@ -96,12 +96,12 @@ public class DirectoryAdaptor extends
         dir.move(target, flags);
     }
 
-    public void changeDir(URL dir) throws NotImplementedException,
+    public void changeDir(URL d) throws NotImplementedException,
             IncorrectURLException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        this.dir.changeDir(dir);
+        this.dir.changeDir(d);
     }
 
     public void copy(URL source, URL target, int flags)
