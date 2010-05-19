@@ -467,7 +467,6 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
      * 
      * @param mode
      *            the task mode.
-     * @return the task.
      * @param pattern
      *            name or pattern to find.
      * @param flags

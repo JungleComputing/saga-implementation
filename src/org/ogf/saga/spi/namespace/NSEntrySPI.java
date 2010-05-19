@@ -122,7 +122,7 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
-            NoSuccessException, IncorrectURLException;
+            NoSuccessException, IncorrectURLException, DoesNotExistException;
 
     /**
      * Renames this entry to the target, or moves this entry to the target if it

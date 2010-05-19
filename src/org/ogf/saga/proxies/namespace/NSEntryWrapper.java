@@ -490,7 +490,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public void link(URL target, int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
+            PermissionDeniedException, BadParameterException, DoesNotExistException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException {
         checkNotClosed();
@@ -501,7 +501,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public void link(URL target) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
+            PermissionDeniedException, BadParameterException, DoesNotExistException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException {
         link(target, Flags.NONE.getValue());

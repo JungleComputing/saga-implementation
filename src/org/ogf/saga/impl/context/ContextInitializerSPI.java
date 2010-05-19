@@ -5,8 +5,7 @@ import org.ogf.saga.error.NotImplementedException;
 /**
  * An initializer interface, to be used by adaptors that require specific
  * default values for context attributes. The initializer method of this
- * interface is used to initialize a context (to implement the
- * {@link Context#setDefaults()} method).
+ * interface is used to initialize a context.
  */
 public interface ContextInitializerSPI {
     /**

@@ -211,7 +211,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
 
     public void link(URL target, int flags) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
-            PermissionDeniedException, BadParameterException,
+            PermissionDeniedException, BadParameterException, DoesNotExistException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException {
         entry.link(target, flags);

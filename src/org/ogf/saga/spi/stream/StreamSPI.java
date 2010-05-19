@@ -287,9 +287,6 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      *            the number of bytes of data in the buffer.
      * @param buffer
      *            the data to be sent.
-     * @return the number of bytes written.
-     * @exception SagaIOException
-     *                deviation from the SAGA specs: thrown in case of an error.
      * @return the task.
      * @exception NotImplementedException
      *                is thrown when the task version of this method is not
