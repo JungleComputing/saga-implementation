@@ -2,7 +2,7 @@ package org.ogf.saga.impl.monitoring;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +36,7 @@ public class MetricImpl extends SagaObjectBase implements
     /** A thread pool to execute callbacks. */
     private static ExecutorService executor = new ThreadPoolExecutor(0,
             Integer.MAX_VALUE, 3L, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>(true));
+            new LinkedBlockingQueue<Runnable>());
 
     private static class CallbackHandler implements Runnable {
         boolean busy = false;

@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +52,7 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase implements
 
     private static ExecutorService executor = new ThreadPoolExecutor(0,
             Integer.MAX_VALUE, 10L, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>());
+            new LinkedBlockingQueue<Runnable>());
 
     // Constructor used for Job.
     public TaskImpl(Session session, T object) throws BadParameterException {
