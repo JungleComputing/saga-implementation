@@ -284,10 +284,8 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase implements
             logger.debug("Starting task for method " + method.getName());
         }
         setState(State.RUNNING);
+        future = executor.submit(this);
         synchronized (this) {
-            synchronized (executor) {
-                future = executor.submit(this);
-            }
             notifyAll();
         }
     }

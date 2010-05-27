@@ -355,10 +355,8 @@ public class MetricImpl extends SagaObjectBase implements
             fireCount = cbhs.size();
         }
 
-        synchronized (executor) {
-            for (CallbackHandler cbh : cbhs) {
-                executor.submit(cbh);
-            }
+        for (CallbackHandler cbh : cbhs) {
+            executor.submit(cbh);
         }
 
         // Wait until all callbacks are done.
