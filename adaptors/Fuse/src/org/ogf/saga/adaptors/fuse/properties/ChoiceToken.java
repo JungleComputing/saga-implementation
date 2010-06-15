@@ -43,9 +43,8 @@ public class ChoiceToken implements FuseToken {
             String s = token.parse(url);
             if (s == null) {
                 return null;
-            } else {
-                result.append(s);
             }
+            result.append(s);
         }
 
         return result;

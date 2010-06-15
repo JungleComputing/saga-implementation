@@ -323,7 +323,7 @@ public class FuseDirectoryAdaptor extends DirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
-            NoSuccessException, IncorrectURLException {
+            NoSuccessException, IncorrectURLException, DoesNotExistException {
         dir.link(name, flags);
     }
 

@@ -119,10 +119,9 @@ public class VariableToken implements FuseToken {
         if (result == null) {
         	if (allowUnset) {
         		return null;
-        	} else {
-				throw new PropertyParseException(
-						"Cannot resolve required variable: " + var);
         	}
+        	throw new PropertyParseException(
+        	        "Cannot resolve required variable: " + var);
     	}
         if (blank) {
         	return "";
@@ -133,9 +132,8 @@ public class VariableToken implements FuseToken {
     private static String nullIfEmpty(String s) {
         if (s == null || s.length() == 0) {
         	return null;
-        } else {
-        	return s;
         }
+        return s;
     }
 
     private static String nullIfNegative(int i) 

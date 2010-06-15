@@ -125,9 +125,8 @@ public class FuseAdaptorConfig {
     private static String[] splitList(String list) {
         if (list == null) {
             return new String[0];
-        } else {
-            return list.split(LIST_SEPARATOR);
         }
+        return list.split(LIST_SEPARATOR);
     }
     
     private boolean checkCommand(String fs, String cmd, String description) {
@@ -146,11 +145,10 @@ public class FuseAdaptorConfig {
     	if (exitStatus >= 0) {
     		// the command can be executed
     		return true;
-    	} else {
-    		logger.debug("- " + fs + ": IGNORED, cannot execute " + description
-    				+ ": " + cleanCmd);
-    		return false;
     	}
+        logger.debug("- " + fs + ": IGNORED, cannot execute " + description
+        		+ ": " + cleanCmd);
+        return false;
     }
     
     public String getDelegateScheme() {

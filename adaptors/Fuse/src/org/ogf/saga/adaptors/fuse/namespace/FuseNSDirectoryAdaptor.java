@@ -430,7 +430,7 @@ public class FuseNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
-            NoSuccessException, IncorrectURLException {
+            NoSuccessException, IncorrectURLException, DoesNotExistException {
         URL entryUrl = getEntryURL();
         URLUtil.checkNotLocalToLocal(entryUrl, target);
 

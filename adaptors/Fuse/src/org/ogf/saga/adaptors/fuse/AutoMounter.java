@@ -78,9 +78,8 @@ public class AutoMounter {
     public boolean isAbsorbedContextType(String type) {
     	if (type == null) {
     		return false;
-    	} else {
-    		return config.isAbsorbedContextType(type);
     	}
+        return config.isAbsorbedContextType(type);
     }
     
     public List<String> getAllAbsorbedContextTypes() {
@@ -124,9 +123,8 @@ public class AutoMounter {
         if (errors.isEmpty()) {
             // no exceptions?
             throw new NoSuccessException("No filesystem could mount: " + u);
-        } else {
-            throwNestedException(errors);
         }
+        throwNestedException(errors);
 
         // never reached
         return null;
@@ -183,9 +181,8 @@ public class AutoMounter {
                     if (mounted.containsKey(info.mountCommand)) {
                         // remote file system is already mounted
                         return info.mountCommand;
-                    } else {
-                        mountInfos.add(info);
                     }
+                    mountInfos.add(info);
                 } catch (SagaException e) {
                     logger.debug("Cannot mount " + u + " with context " 
                             + getType(c), e);
@@ -335,10 +332,8 @@ public class AutoMounter {
      * 
      * @throws IncorrectURLException
      * @throws BadParameterException
-     * @throws NotImplementedException
      * @throws NoSuccessException
      * @throws TimeoutException
-     * @throws AlreadyExistsException
      * @throws PermissionDeniedException
      */
     public URL resolveLocalURL(URL base, URL rhs, String mountId, Session s)
@@ -407,11 +402,12 @@ public class AutoMounter {
         
         MountInfo info = mounted.get(mountId);
         
+        if (info == null) {
+            logger.debug("Unknown mount ID: " + mountId);
+            return;
+        }
+        
         try {
-            if (info == null) {
-                logger.debug("Unknown mount ID: " + mountId);
-                return;
-            }
 
             logger.info("Unmounting {}", info.mountPoint);
             RunSagaCommand.execute(info.umountCommand);

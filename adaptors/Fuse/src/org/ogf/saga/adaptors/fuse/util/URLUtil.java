@@ -66,9 +66,8 @@ public class URLUtil {
     public static boolean isLocal(URL base, URL rhs) {
         if (isRelative(rhs)) {
             return isLocal(base);
-        } else {
-            return isLocal(rhs);
         }
+        return isLocal(rhs);
     }
     
     public static boolean isLocal(URL u) {
@@ -95,9 +94,8 @@ public class URLUtil {
     public static boolean isSet(String s) {
         if (s == null) {
             return false;
-        } else {
-            return s.trim().length() > 0;
         }
+        return s.trim().length() > 0;
     }
 
     public static String getPathSafe(URL u) {
@@ -105,9 +103,8 @@ public class URLUtil {
     
         if (result == null) {
             return "";
-        } else {
-            return result;
         }
+        return result;
     }
 
     public static String normalizePath(String path) {

@@ -42,7 +42,7 @@ public class RunSagaCommand {
         if (exitStatus != 0) {
             logger.info("Execution failed with exit code: " + exitStatus);
             
-            if (output != null && output.length() > 0) {
+            if (output.length() > 0) {
                 // try to guess the SAGA exception from the output
                 guessSagaException(output);
             }
@@ -54,11 +54,10 @@ public class RunSagaCommand {
                 return;
             case -1: // creating process failed
             case 1: // EPERM, Operation not permitted
-                if (output != null && output.length() > 0) {
+                if (output.length() > 0) {
                     throw new NoSuccessException(output);
-                } else {
-                    throw new NoSuccessException("unknown reason");
                 }
+                throw new NoSuccessException("unknown reason");
             case 5: { // EIO, I/O error
                 String s = createErrorMessage("I/O error", output);
                 throw new NoSuccessException(s);
@@ -111,9 +110,8 @@ public class RunSagaCommand {
     private static String createErrorMessage(String msg, String output) {
         if (output != null && output.length() > 0) {
             return msg + ": " + output;
-        } else {
-            return msg;
         }
+        return msg;
     }
 
 }

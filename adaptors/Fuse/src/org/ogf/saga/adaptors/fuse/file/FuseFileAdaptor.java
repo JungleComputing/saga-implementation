@@ -106,7 +106,7 @@ public class FuseFileAdaptor extends FileAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
-            NoSuccessException, IncorrectURLException {
+            NoSuccessException, IncorrectURLException, DoesNotExistException {
         fileEntry.link(u, flags);
     }
 
