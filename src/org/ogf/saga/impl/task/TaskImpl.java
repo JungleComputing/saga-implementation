@@ -23,6 +23,7 @@ import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
+import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.monitoring.MetricImpl;
@@ -185,15 +186,20 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase implements
      * see org.ogf.saga.task.Task#getResult()
      */
     public E getResult() throws NotImplementedException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
+            IncorrectStateException, TimeoutException, NoSuccessException,
+            IncorrectURLException, AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException, AlreadyExistsException,
+            DoesNotExistException, SagaIOException {
         synchronized (this) {
-            if (state == State.NEW || state == State.CANCELED
-                    || state == State.FAILED) {
+            if (state == State.NEW || state == State.CANCELED) {
                 throw new IncorrectStateException("getResult called in state "
                         + state);
             }
         }
         waitFor();
+        if (state == State.FAILED) {
+            rethrow();
+        }
         return result;
     }
 
@@ -217,12 +223,15 @@ public class TaskImpl<T, E> extends org.ogf.saga.impl.SagaObjectBase implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
-            NoSuccessException {
+            NoSuccessException, SagaIOException {
         if (state == State.FAILED) {
             // otherwise we should do nothing
 
             if (exception instanceof NotImplementedException) {
                 throw (NotImplementedException) exception;
+            }
+            if (exception instanceof SagaIOException) {
+                throw (SagaIOException) exception;
             }
             if (exception instanceof IncorrectURLException) {
                 throw (IncorrectURLException) exception;
