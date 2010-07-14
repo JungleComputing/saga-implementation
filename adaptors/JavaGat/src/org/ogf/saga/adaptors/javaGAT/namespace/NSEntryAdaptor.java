@@ -472,7 +472,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
         // exception
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("copy: " + fileImpl.toGATURI().toString()
+                logger.debug("move: " + fileImpl.toGATURI().toString()
                         + " --> " + targetFile.toString());
             }
             file.move(targetFile);
