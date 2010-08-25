@@ -22,7 +22,7 @@ public class TestJobGT4 implements Callback {
         // JobService.
         System.setProperty("JobService.adaptor.name", "javaGAT");
 
-        String server = "https://fs0.das3.cs.vu.nl";
+        String server = "wsgt4new://fs0.das3.cs.vu.nl";
 
         if (args.length > 1) {
             System.err.println("Usage: java demo.job.TestJob [<serverURL>]");
@@ -40,8 +40,8 @@ public class TestJobGT4 implements Callback {
             // The "preferences" context is special: it is extensible.
             Context context = ContextFactory.createContext("preferences");
 
-            // Make sure that javaGAT picks the wsgt4 adaptor.
-            context.setAttribute("ResourceBroker.adaptor.name", "wsgt4new");
+            // Make sure that javaGAT picks SGE.
+            // TODO: Remove preferences context. How to do this then?
             context.setAttribute("wsgt4new.factory.type", "SGE");
             // context.setAttribute("File.adaptor.name", "Local,GridFTP");
             

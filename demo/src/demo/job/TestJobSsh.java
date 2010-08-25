@@ -1,7 +1,6 @@
 package demo.job;
 
 import org.ogf.saga.context.Context;
-import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
@@ -9,8 +8,6 @@ import org.ogf.saga.job.JobService;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
-import org.ogf.saga.session.Session;
-import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.url.URLFactory;
 
 public class TestJobSsh implements Callback {
@@ -31,21 +28,8 @@ public class TestJobSsh implements Callback {
        System.out.println("try to submit ssh job to: " + serverNode);
        
        try {
-           Session session = SessionFactory.createSession(true);
-          
-           // Create a preferences context for JavaGAT.
-           // The "preferences" context is special: it is extensible.
-           Context context = ContextFactory.createContext("preferences");
-         
-           // Make sure that javaGAT picks the ssh adaptor
-           context.setAttribute("ResourceBroker.adaptor.name", "commandlinessh");
-           // context.setAttribute("machine.node", serverNode);
-           context.setAttribute("File.adaptor.name", "Local,commandlinessh");
-         
-           session.addContext(context);
-                      
            // Create the JobService.
-           JobService js = JobFactory.createJobService(URLFactory.createURL("any://" + serverNode));
+           JobService js = JobFactory.createJobService(URLFactory.createURL("commandlinessh://" + serverNode));
 
            // Create a job: /bin/hostname executed on 1 node.
            JobDescription jd = JobFactory.createJobDescription();

@@ -1,7 +1,6 @@
 package demo.job;
 
 import org.ogf.saga.context.Context;
-import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
@@ -20,7 +19,7 @@ public class TestJobGT2 implements Callback {
        // Make sure that the SAGA engine picks the javagat adaptor for JobService.
        System.setProperty("JobService.adaptor.name", "javaGAT");
      
-       String server = "any://ngs.rl.ac.uk";
+       String server = "globus://ngs.rl.ac.uk";
 
        if (args.length > 1) {
            System.err.println("Usage: java demo.job.TestJob [<serverURL>]");
@@ -33,20 +32,7 @@ public class TestJobGT2 implements Callback {
        
        try {
            URL serverURL = URLFactory.createURL(server);
-          
-           // Create a preferences context for JavaGAT.
-           // The "preferences" context is special: it is extensible.
-           Context context = ContextFactory.createContext("preferences");
-         
-           // Make sure that javaGAT picks the globus adaptor
-           context.setAttribute("ResourceBroker.adaptor.name", "globus"); //wsgt4new
-           // context.setAttribute("machine.node", serverURL.getHost());
-           // context.setAttribute("resourcebroker.jobmanager", "lsf");          
-           // context.setAttribute(Context.USERPROXY, "/tmp/x509up_u13449");
-           // context.setAttribute("File.adaptor.name", "Local,GridFTP");
-         
-           // session.addContext(context);
-                      
+ 
            // Create the JobService.
            JobService js = JobFactory.createJobService(serverURL);
            // JobService js = JobFactory.createJobService(session);

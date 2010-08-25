@@ -1,7 +1,6 @@
 package demo.job;
 
 import org.ogf.saga.context.Context;
-import org.ogf.saga.context.ContextFactory;
 import org.ogf.saga.job.Job;
 import org.ogf.saga.job.JobDescription;
 import org.ogf.saga.job.JobFactory;
@@ -9,8 +8,6 @@ import org.ogf.saga.job.JobService;
 import org.ogf.saga.monitoring.Callback;
 import org.ogf.saga.monitoring.Metric;
 import org.ogf.saga.monitoring.Monitorable;
-import org.ogf.saga.session.Session;
-import org.ogf.saga.session.SessionFactory;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
@@ -22,7 +19,7 @@ public class TestJobGatGridsam implements Callback {
         // JobService.
         System.setProperty("JobService.adaptor.name", "javaGAT");
         
-        String server = "https://titan.cs.vu.nl:18443/gridsam/services/gridsam";
+        String server = "gridsam://titan.cs.vu.nl:18443/gridsam/services/gridsam";
 
         if (args.length > 1) {
             System.err.println("Usage: java demo.job.TestJobGatGridsam [<serverURL>]");
@@ -31,20 +28,7 @@ public class TestJobGatGridsam implements Callback {
             server = args[0];
         }
         
-        try {
-            Session session = SessionFactory.createSession(true);
-            
-            // Create a preferences context for JavaGAT.
-            // The "preferences" context is special: it is extensible.
-            Context context = ContextFactory.createContext("preferences");
-            // Make sure that javaGAT picks the gridsam adaptor.
-            context.setAttribute("ResourceBroker.adaptor.name", "gridsam");
-            // Sandbox root must be an absolute path for the javaGAT gridsam
-            // adaptor.
-            context.setAttribute("ResourceBroker.sandbox.root", "/tmp");
-            
-            session.addContext(context);
-            
+        try {           
             URL serverURL = URLFactory.createURL(server);
                         
             // Create the JobService.
