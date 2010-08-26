@@ -69,6 +69,14 @@ public abstract class StreamServerAdaptorBase extends
                 wrapper, sessionImpl, mode, "serve",
                 new Class[] { Float.TYPE }, timeoutInSeconds);
     }
+    
+
+    public Task<StreamServer, Stream> connect(TaskMode mode,
+            float timeoutInSeconds) throws NotImplementedException {
+        return new org.ogf.saga.impl.task.TaskImpl<StreamServer, Stream>(
+                wrapper, sessionImpl, mode, "connect",
+                new Class[] { Float.TYPE }, timeoutInSeconds);
+    }
 
     public Task<StreamServer, Integer> addCallback(TaskMode mode, String name,
             Callback cb) throws NotImplementedException {

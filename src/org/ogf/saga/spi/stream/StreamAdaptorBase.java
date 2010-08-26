@@ -97,10 +97,11 @@ public abstract class StreamAdaptorBase extends AdaptorBase<Stream> implements
                 timeoutInSeconds);
     }
 
-    public Task<Stream, Void> connect(TaskMode mode)
+    public Task<Stream, Void> connect(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(wrapper,
-                sessionImpl, mode, "connect", new Class[] {});
+                sessionImpl, mode, "connect", new Class[] { Float.TYPE },
+                timeoutInSeconds);
     }
 
     public Task<Stream, Context> getContext(TaskMode mode)

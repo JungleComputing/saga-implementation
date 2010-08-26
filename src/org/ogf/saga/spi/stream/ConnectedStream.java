@@ -243,6 +243,13 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
         return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this,
                 sessionImpl, mode, "connect", new Class[] {});
     }
+    
+    public Task<Stream, Void> connect(TaskMode mode, float timeoutInSeconds)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.TaskImpl<Stream, Void>(this,
+                    sessionImpl, mode, "connect", new Class[] { Float.TYPE },
+                    timeoutInSeconds);
+}
 
     public Task<Stream, Context> getContext(TaskMode mode)
             throws NotImplementedException {
@@ -395,6 +402,13 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
         return close(mode, 0.0F);
     }
 
+    public void connect(float timeoutInSeconds) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        throw new IncorrectStateException("Stream is already connected");
+    }
+    
     public void connect() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,

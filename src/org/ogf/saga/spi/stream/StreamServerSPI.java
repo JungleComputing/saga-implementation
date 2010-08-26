@@ -44,6 +44,33 @@ public interface StreamServerSPI extends AsyncMonitorable<StreamServer>,
             TimeoutException, NoSuccessException;
 
     /**
+     * Establishes a connection to the stream server.
+     * @param timeoutInSeconds
+     *      the timeout in seconds.
+     * @return
+     *      the resulting stream.
+     */
+    public Stream connect(float timeoutInSeconds) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException;
+
+    /**
+     * Returns a task that establishes a connection to the stream server.
+     * 
+     * @param mode
+     *            the task mode.
+     * @param timeoutInSeconds
+     *            the timeout in seconds.
+     * @return the task.
+     * @exception NotImplementedException
+     *                is thrown when the task version of this method is not
+     *                implemented.
+     */
+    public Task<StreamServer, Stream> connect(TaskMode mode, float timeoutInSeconds)
+            throws NotImplementedException;
+
+    /**
      * Closes a stream service.
      * 
      * @param timeoutInSeconds

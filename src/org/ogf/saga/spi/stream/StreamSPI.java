@@ -62,7 +62,8 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      * Establishes a connection to the target defined during the construction of
      * the stream.
      */
-    public void connect() throws NotImplementedException,
+    
+    public void connect(float timeoutInSeconds) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException;
@@ -192,19 +193,21 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
             throws NotImplementedException;
 
     // management methods
-
+  
     /**
      * Returns a task that establishes a connection to the target defined during
      * the construction of the stream.
      * 
      * @param mode
      *            the task mode.
+     * @param timeoutInSeconds
+     *            the timeout in seconds.
      * @return the task.
      * @exception NotImplementedException
      *                is thrown when the task version of this method is not
      *                implemented.
      */
-    public Task<Stream, Void> connect(TaskMode mode)
+    public Task<Stream, Void> connect(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException;
 
     /**
