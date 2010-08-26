@@ -120,7 +120,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         }
     }
 
-    public void connect() throws NotImplementedException,
+    public void connect(float timeoutInSeconds) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
@@ -152,7 +152,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             advService.importDataBase(db);
             Endpoint remoteEndPoint = (Endpoint) advService
                     .getAdvertisable(path);
-            pipe = remoteEndPoint.connect();
+            pipe = remoteEndPoint.connect();    // TODO: timeout
             StreamStateUtils.setStreamState(streamState, StreamState.OPEN);
             onStateChange(StreamState.OPEN);
             wasOpen = true;

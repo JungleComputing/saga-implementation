@@ -90,7 +90,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         }
     }
 
-    public void connect() throws NotImplementedException,
+    public void connect(float timeoutInSeconds) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
@@ -116,8 +116,8 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         try {
             socket = new Socket();
             setCurrentAttributes();
-            socket.connect(new InetSocketAddress(url.getHost(), url.getPort()));
-
+            socket.connect(new InetSocketAddress(url.getHost(), url.getPort()), (int) (timeoutInSeconds * 1000));
+            // TODO: deal with timeout better.
             StreamStateUtils.setStreamState(streamState, StreamState.OPEN);
             onStateChange(StreamState.OPEN);
             wasOpen = true;

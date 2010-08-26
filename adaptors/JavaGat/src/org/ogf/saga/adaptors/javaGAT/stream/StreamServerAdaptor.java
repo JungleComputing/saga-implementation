@@ -187,4 +187,13 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
         throw new NotImplementedException("permissionsDeny", wrapper);
     }
 
+    @Override
+    public Stream connect(float timeoutInSeconds)
+            throws NotImplementedException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
