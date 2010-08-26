@@ -28,7 +28,7 @@ public class URLImpl extends SagaObjectBase implements URL {
         try {
             u = new URI(url);
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in url", e);
+            throw new BadParameterException("syntax error in url \"" + url + "\"", e);
         }
     }
 
@@ -51,7 +51,7 @@ public class URLImpl extends SagaObjectBase implements URL {
         try {
             u = new URI(url);
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in url", e);
+            throw new BadParameterException("syntax error in url \"" + url + "\"", e);
         }
     }
     
@@ -106,7 +106,7 @@ public class URLImpl extends SagaObjectBase implements URL {
             u = new URI(u.getScheme(), u.getUserInfo(), u.getHost(), u
                     .getPort(), u.getPath(), u.getQuery(), fragment);
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in fragment", e);
+            throw new BadParameterException("syntax error in fragment \"" + fragment + "\"", e);
         }
     }
     
@@ -142,7 +142,7 @@ public class URLImpl extends SagaObjectBase implements URL {
             u = new URI(u.getScheme(), u.getUserInfo(), host, u.getPort(), u
                     .getPath(), u.getQuery(), u.getFragment());
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in host", e);
+            throw new BadParameterException("syntax error in host \"" + host + "\"", e);
         }
     }
     
@@ -178,7 +178,7 @@ public class URLImpl extends SagaObjectBase implements URL {
             u = new URI(u.getScheme(), u.getUserInfo(), u.getHost(), u
                     .getPort(), path, u.getQuery(), u.getFragment());
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in path", e);
+            throw new BadParameterException("syntax error in path \"" + path + "\"", e);
         }
     }
     
@@ -246,7 +246,7 @@ public class URLImpl extends SagaObjectBase implements URL {
             u = new URI(u.getScheme(), u.getUserInfo(), u.getHost(), u
                     .getPort(), u.getPath(), query, u.getFragment());
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in query", e);
+            throw new BadParameterException("syntax error in query \"" + query + "\"", e);
         }
     }
     
@@ -283,7 +283,7 @@ public class URLImpl extends SagaObjectBase implements URL {
             u = new URI(scheme, u.getUserInfo(), u.getHost(), u.getPort(), u
                     .getPath(), u.getQuery(), u.getFragment());
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in scheme", e);
+            throw new BadParameterException("syntax error in scheme \"" + scheme + "\"", e);
         }
     }
     
@@ -320,7 +320,7 @@ public class URLImpl extends SagaObjectBase implements URL {
             u = new URI(u.getScheme(), userInfo, u.getHost(), u.getPort(), u
                     .getPath(), u.getQuery(), u.getFragment());
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in query", e);
+            throw new BadParameterException("syntax error in userInfo \"" + userInfo + "\"", e);
         }
     }
     
@@ -348,7 +348,7 @@ public class URLImpl extends SagaObjectBase implements URL {
             // here ???
             return new URLImpl(url);
         } catch (URISyntaxException e) {
-            throw new BadParameterException("syntax error in scheme", e);
+            throw new BadParameterException("syntax error in scheme \"" + scheme + "\"", e);
         }
     }
     
@@ -393,8 +393,8 @@ public class URLImpl extends SagaObjectBase implements URL {
         try {
             uri = new URI(s);
         } catch (URISyntaxException e) {
-            throw new NoSuccessException("URL " + s
-                    + " not recognized as a URL", e);
+            throw new NoSuccessException("URL \"" + s
+                    + "\" not recognized as a URL", e);
         }
         uri = u.resolve(uri);
         if (uri.toString().equals(s)) {
