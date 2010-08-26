@@ -113,12 +113,25 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        proxy.connect();
+        connect(-1.0F);
+    }
+    
+    public void connect(float timeoutInSeconds) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        proxy.connect(timeoutInSeconds);
     }
 
     public Task<Stream, Void> connect(TaskMode mode)
             throws NotImplementedException {
-        return proxy.connect(mode);
+        return connect(mode, -1.0F);
+    }
+    
+
+    public Task<Stream, Void> connect(TaskMode mode, float timeoutInSeconds)
+            throws NotImplementedException {
+        return proxy.connect(mode, timeoutInSeconds);
     }
 
     public String[] findAttributes(String... patterns)

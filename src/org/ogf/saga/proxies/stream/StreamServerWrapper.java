@@ -216,6 +216,19 @@ public class StreamServerWrapper extends SagaObjectBase implements
             float timeoutInSeconds) throws NotImplementedException {
         return proxy.serve(mode, timeoutInSeconds);
     }
+    
+    public Stream connect(float timeoutInSeconds) throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return proxy.connect(timeoutInSeconds);
+    }
+
+    public Task<StreamServer, Stream> connect(TaskMode mode,
+            float timeoutInSeconds) throws NotImplementedException {
+        return proxy.connect(mode, timeoutInSeconds);
+    }
+
 
     public void close() throws NotImplementedException, NoSuccessException {
         close(0.0F);
@@ -237,5 +250,16 @@ public class StreamServerWrapper extends SagaObjectBase implements
             throws NotImplementedException {
         return serve(mode, -1.0F);
     }
+    
+    public Stream connect() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return connect(-1.0F);
+    }
 
+    public Task<StreamServer, Stream> connect(TaskMode mode)
+            throws NotImplementedException {
+        return connect(mode, -1.0F);
+    }
 }
