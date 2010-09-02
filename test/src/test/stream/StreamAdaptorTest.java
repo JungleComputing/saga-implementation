@@ -35,7 +35,7 @@ public class StreamAdaptorTest {
 
     public static void main(String[] args) {
         System.setProperty("Stream.adaptor.name", args[0]);
-        System.setProperty("StreamService.adaptor.name", args[0]);
+        System.setProperty("StreamServer.adaptor.name", args[0]);
         StreamAdaptorTest a = new StreamAdaptorTest(args[1]);
         a.test(args[0]).print();
     }
@@ -711,13 +711,9 @@ public class StreamAdaptorTest {
 
         try {
             stream.close();
-            e1 = new AdaptorTestResultEntry(false, 0, new Exception(
-                    "close on unconnected stream should give IncorrectState"));
-        } catch (IncorrectStateException e) {
-            logger.debug("OK, close on NEW stream threw IncorrectState");
         } catch (Throwable e) {
             e1 = new AdaptorTestResultEntry(false, 0, new Exception(
-                    "close on unconnected stream should give IncorrectState"));
+                    "close on unconnected stream should not give an exception"));
         }
 
         if (e1 == null) {
