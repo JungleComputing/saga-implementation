@@ -7,6 +7,9 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -17,12 +20,15 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.SessionImpl;
+import org.ogf.saga.impl.url.URLUtil;
 import org.ogf.saga.proxies.stream.StreamServerWrapper;
 import org.ogf.saga.spi.stream.StreamServerAdaptorBase;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.url.URL;
 
 public class StreamServerAdaptor extends StreamServerAdaptorBase {
+    
+    private static Logger logger = LoggerFactory.getLogger(StreamServerAdaptor.class);
 
     private boolean active = false;
     private static float MINIMAL_TIMEOUT = 0.001f;
@@ -44,12 +50,20 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
                     "Only tcp scheme is supported in socket implementation");
         }
 
-        try {
-            this.server = new ServerSocket();
-            server.bind(new InetSocketAddress(url.getHost(), url.getPort()));
-        } catch (IOException e) {
-            throw new NoSuccessException(
-                    "Caught an exception when doing bind...", e);
+        if (URLUtil.refersToLocalHost(url.getHost())) {
+            try {
+                this.server = new ServerSocket();
+                server.setReuseAddress(true);
+                server.bind(new InetSocketAddress(url.getHost(), url.getPort()));
+                logger.debug("ServerSocket bound");
+            } catch (IOException e) {
+                // Could not create server socket, or could not bind. But maybe this
+                // object is only used for connect().
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Got exception", e);
+                }
+                this.server = null;
+            }
         }
     }
 
@@ -61,10 +75,13 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
     public void close(float timeoutInSeconds) throws NotImplementedException,
             NoSuccessException {
         active = false;
-        try {
-            server.close();
-        } catch (IOException e) {
-            // ignored
+        if (server != null) {
+            try {
+                server.close();
+                logger.debug("Server closed");
+            } catch (IOException e) {
+                // ignored
+            }
         }
     }
 
@@ -84,6 +101,12 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
         if (!active)
             throw new IncorrectStateException("The service is not active",
                     wrapper);
+        if (server == null) {
+            if (! URLUtil.refersToLocalHost(url.getHost())) {
+                throw new NoSuccessException("serve() called on non-local URL " + url);
+            }
+            throw new NoSuccessException("could not create server on " + url);
+        }
         if (timeoutInSeconds == 0.0)
             timeoutInSeconds = MINIMAL_TIMEOUT;
 
@@ -101,11 +124,12 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
         } catch (SocketException e) {
             throw new NoSuccessException(e, wrapper);
         } catch (SocketTimeoutException e) {
+            // TODO: check semantics with Andre: this is not what a TimeoutException
+            // is to be used for.
             throw new TimeoutException(e, wrapper);
         } catch (IOException e) {
             throw new NoSuccessException(e, wrapper);
         }
-
     }
 
     public String getGroup() throws NotImplementedException,
@@ -139,15 +163,6 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsDeny", wrapper);
-    }
-
-    @Override
-    public Stream connect(float timeoutInSeconds)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

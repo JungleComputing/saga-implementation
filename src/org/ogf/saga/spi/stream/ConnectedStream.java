@@ -392,8 +392,7 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
                         String.class, Integer.TYPE }, id, permissions);
     }
 
-    public void close() throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+    public void close() throws NotImplementedException, NoSuccessException {
         close(0.0F);
     }
 

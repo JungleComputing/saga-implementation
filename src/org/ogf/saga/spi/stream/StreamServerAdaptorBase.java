@@ -49,7 +49,7 @@ public abstract class StreamServerAdaptorBase extends
         clone.clientConnectMetric = (MetricImpl) clientConnectMetric.clone();
         return clone;
     }
-
+    
     public Task<StreamServer, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<StreamServer, Void>(

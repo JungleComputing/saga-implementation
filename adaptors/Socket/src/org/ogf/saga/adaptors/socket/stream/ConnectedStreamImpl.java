@@ -64,13 +64,16 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
         return clone;
     }
 
-    public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
-        try {
-            listeningReaderThread.interrupt();
-            socket.close();
-        } catch (IOException e) {
-            throw new NoSuccessException("close", e);
+    public void close(float timeoutInSeconds) throws NotImplementedException,  NoSuccessException {
+        if (listeningReaderThread != null) {
+            try {
+                listeningReaderThread.interrupt();
+                socket.close();
+            } catch (IOException e) {
+                throw new NoSuccessException("close", e);
+            } finally {
+                listeningReaderThread = null;
+            }
         }
         if (!StreamStateUtils.isFinalState(streamState)) {
             StreamStateUtils.setStreamState(streamState, StreamState.CLOSED);

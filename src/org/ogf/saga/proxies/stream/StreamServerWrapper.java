@@ -1,5 +1,9 @@
 package org.ogf.saga.proxies.stream;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
+import org.ogf.saga.engine.AdaptorInvocationHandler;
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -26,6 +30,8 @@ public class StreamServerWrapper extends SagaObjectBase implements
         StreamServer {
 
     private StreamServerSPI proxy;
+    private URL url;
+    private boolean closed = false;
 
     public StreamServerWrapper(Session session, URL name)
             throws NotImplementedException, IncorrectURLException,
@@ -33,6 +39,7 @@ public class StreamServerWrapper extends SagaObjectBase implements
             AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, NoSuccessException {
         super(session);
+        this.url = name;
         Object[] parameters = { this, session, name };
         try {
             proxy = (StreamServerSPI) SAGAEngine.createAdaptorProxy(
@@ -88,10 +95,57 @@ public class StreamServerWrapper extends SagaObjectBase implements
             Callback cb) throws NotImplementedException {
         return proxy.addCallback(mode, name, cb);
     }
+    
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
             NoSuccessException {
-        proxy.close(timeoutInSeconds);
+        if (! isClosed()) {
+            // Close is special, in that it must be invoked on all adaptors
+            // of which the constructor is completed succesfully. This is needed
+            // to allow adaptors to clean up, close files, et cetera.
+            InvocationHandler h = Proxy.getInvocationHandler(proxy);
+            AdaptorInvocationHandler handler = (AdaptorInvocationHandler) h;
+            try {
+                handler.invokeOnAllAdaptors(StreamServerSPI.class, "close",
+                        new Class[] { Float.TYPE }, new Float[] {timeoutInSeconds} );
+            } catch(NotImplementedException e) {
+                throw e;
+            } catch(NoSuccessException e) {
+                throw e;
+            } catch(Error e) {
+                throw e;
+            } catch(RuntimeException e) {
+                throw e;
+            } catch(Exception e) {
+                throw new NoSuccessException(e);
+            } finally {
+                setClosed(true);
+            }
+        }
+    }
+    
+    private void checkNotClosed() throws IncorrectStateException {
+        if (isClosed()) {
+            throw new IncorrectStateException("Stream already closed", this);
+        }
+    }  
+    
+    public boolean isClosed() {
+        return closed;
+    }
+    
+    public void setClosed(boolean closed) {
+        this.closed = closed;
+    }
+    
+    protected void finalize() {
+        if (! isClosed()) {
+            try {
+                close(0.0F);
+            } catch (Throwable e) {
+                // ignored
+            }
+        }
     }
 
     public Task<StreamServer, Void> close(TaskMode mode, float timeoutInSeconds)
@@ -137,6 +191,7 @@ public class StreamServerWrapper extends SagaObjectBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.getUrl();
     }
 
@@ -209,6 +264,7 @@ public class StreamServerWrapper extends SagaObjectBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.serve(timeoutInSeconds);
     }
 
@@ -221,7 +277,24 @@ public class StreamServerWrapper extends SagaObjectBase implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        return proxy.connect(timeoutInSeconds);
+        // Should be equivalent to creating a stream and then connecting. However,
+        // it is not: exception signature is different because creating the stream
+        // can throw IncurrectURLException and/or BadParameterException.
+      
+        checkNotClosed();
+      
+        Stream s;
+        try {
+            s = new StreamWrapper(sessionImpl, url);
+        } catch (IncorrectURLException e) {
+            // should not happen.
+            throw new Error("Unexpected exception", e);
+        } catch (BadParameterException e) {
+            // should not happen.
+            throw new Error("Unexpected exception", e);
+        }
+        s.connect(timeoutInSeconds);
+        return s;
     }
 
     public Task<StreamServer, Stream> connect(TaskMode mode,

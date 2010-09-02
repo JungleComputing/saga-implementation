@@ -68,14 +68,16 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
         return clone;
     }
 
-    public void close(float timeout) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
-
+    public void close(float timeout) throws NotImplementedException, NoSuccessException {
         try {
-            listeningReaderThread.interrupt();
-            pipe.close();
+            if (listeningReaderThread != null) {
+                listeningReaderThread.interrupt();
+                pipe.close();
+            }
         } catch (GATInvocationException e) {
             throw new NoSuccessException("close", e);
+        } finally {
+            listeningReaderThread = null;
         }
 
         if (!StreamStateUtils.isFinalState(streamState)) {

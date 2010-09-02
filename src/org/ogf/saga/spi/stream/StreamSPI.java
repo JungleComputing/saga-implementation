@@ -92,7 +92,7 @@ public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
      *            the timeout in seconds.
      */
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException;
+            NoSuccessException;
 
     // I/O methods
 

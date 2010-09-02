@@ -25,6 +25,7 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.session.SessionImpl;
+import org.ogf.saga.impl.url.URLUtil;
 import org.ogf.saga.proxies.stream.StreamServerWrapper;
 import org.ogf.saga.spi.stream.StreamServerAdaptorBase;
 import org.ogf.saga.stream.Stream;
@@ -91,6 +92,11 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
         if (!active)
             throw new IncorrectStateException("The service is not active",
                     wrapper);
+        
+        if (! URLUtil.refersToLocalHost(url.getHost())) {
+            throw new NoSuccessException("serve() called on non-local URL " + url);
+        }
+        
         if (timeoutInSeconds == 0.0)
             timeoutInSeconds = MINIMAL_TIMEOUT;
 
@@ -107,6 +113,7 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
             advertService = GAT.createAdvertService(gatContext);
             Endpoint serverSide = GAT.createEndpoint(gatContext);
             advertService.add(serverSide, new MetaData(), url.getString());
+            logger.debug("Advertising URL " + url.getString());
             advertService.exportDataBase(db);
             Pipe pipe = serverSide.listen(invocationTimeout);
             clientConnectMetric.internalFire();
@@ -119,7 +126,6 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
             // this is really a hack because
             // it depends on one of the GAT adaptor implementation
             // in other cases it just can't detect timeout
-
             logger.debug("Detecting timeout..." + e);
             for (Throwable t : e.getExceptions()) {
                 if (t instanceof GATInvocationException) {
@@ -127,6 +133,7 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
                     for (Throwable t2 : gatNestedEx.getExceptions()) {
                         logger.debug("Another exception: " + t2.getClass());
                         if (t2 instanceof SocketTimeoutException) {
+                            // TODO: check semantics with Andre.
                             logger.debug("Timeout exception");
                             throw new TimeoutException(e, wrapper);
                         }
@@ -185,15 +192,6 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("permissionsDeny", wrapper);
-    }
-
-    @Override
-    public Stream connect(float timeoutInSeconds)
-            throws NotImplementedException, AuthenticationFailedException,
-            AuthorizationFailedException, PermissionDeniedException,
-            IncorrectStateException, TimeoutException, NoSuccessException {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

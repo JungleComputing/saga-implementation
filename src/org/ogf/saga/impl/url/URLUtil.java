@@ -89,7 +89,24 @@ public class URLUtil {
         if (u.getPort() != -1) {
             return false;
         }
-
+        
+        return refersToLocalHost(host);
+    }
+    
+    /**
+     * Extensive check whether a hostname refers to the local machine. This method
+     * checks for the hostname "localhost", the short hostname, the full
+     * hostname and the ip address.
+     * @param host the hostname to check.
+     * 
+     * @return true if the host name refers to the localhost, false otherwise.
+     */    
+    public static boolean refersToLocalHost(String host) { 
+        
+        if (host == null || host.length() == 0) {
+            return true;
+        }
+        
         if (host.equals("localhost")) {
             return true;
         }

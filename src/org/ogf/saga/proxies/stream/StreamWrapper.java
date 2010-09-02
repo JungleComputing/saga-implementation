@@ -1,7 +1,11 @@
 package org.ogf.saga.proxies.stream;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
 import org.ogf.saga.buffer.Buffer;
 import org.ogf.saga.context.Context;
+import org.ogf.saga.engine.AdaptorInvocationHandler;
 import org.ogf.saga.engine.SAGAEngine;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
@@ -29,6 +33,7 @@ import org.ogf.saga.url.URL;
 public class StreamWrapper extends SagaObjectBase implements Stream {
 
     private StreamSPI proxy;
+    private boolean closed = false;
 
     public StreamWrapper(Session session, URL name)
             throws NotImplementedException, IncorrectURLException,
@@ -70,14 +75,6 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             throw new NoSuccessException("Constructor failed", e);
         }
     }
-    
-    protected void finalize() {
-        try {
-            close(0.0f);
-        } catch (Throwable e) {
-            // ignored
-        }
-    }
 
     public Object clone() throws CloneNotSupportedException {
         StreamWrapper clone = (StreamWrapper) super.clone();
@@ -100,10 +97,56 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
-        proxy.close(timeoutInSeconds);
+            NoSuccessException {
+        if (! isClosed()) {
+            // Close is special, in that it must be invoked on all adaptors
+            // of which the constructor is completed succesfully. This is needed
+            // to allow adaptors to clean up, close files, et cetera.
+            InvocationHandler h = Proxy.getInvocationHandler(proxy);
+            AdaptorInvocationHandler handler = (AdaptorInvocationHandler) h;
+            try {
+                handler.invokeOnAllAdaptors(StreamSPI.class, "close",
+                        new Class[] { Float.TYPE }, new Float[] {timeoutInSeconds} );
+            } catch(NotImplementedException e) {
+                throw e;
+            } catch(NoSuccessException e) {
+                throw e;
+            } catch(Error e) {
+                throw e;
+            } catch(RuntimeException e) {
+                throw e;
+            } catch(Exception e) {
+                throw new NoSuccessException(e);
+            } finally {
+                setClosed(true);
+            }
+        }
     }
-
+    
+    private void checkNotClosed() throws IncorrectStateException {
+        if (isClosed()) {
+            throw new IncorrectStateException("Stream already closed", this);
+        }
+    }  
+    
+    public boolean isClosed() {
+        return closed;
+    }
+    
+    public void setClosed(boolean closed) {
+        this.closed = closed;
+    }
+    
+    protected void finalize() {
+        if (! isClosed()) {
+            try {
+                close(0.0F);
+            } catch (Throwable e) {
+                // ignored
+            }
+        }
+    }
+    
     public Task<Stream, Void> close(TaskMode mode, float timeoutInSeconds)
             throws NotImplementedException {
         return proxy.close(mode, timeoutInSeconds);
@@ -120,6 +163,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         proxy.connect(timeoutInSeconds);
     }
 
@@ -162,6 +206,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.getContext();
     }
 
@@ -208,6 +253,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+        checkNotClosed();
         return proxy.getUrl();
     }
 
@@ -351,6 +397,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
+        checkNotClosed();
         return proxy.read(buffer, len);
     }
 
@@ -414,6 +461,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             IncorrectStateException, NoSuccessException {
+        checkNotClosed();
         return proxy.waitFor(what, timeoutInSeconds);
     }
 
@@ -427,6 +475,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException,
             SagaIOException {
+        checkNotClosed();
         return proxy.write(buffer, len);
     }
 
@@ -435,8 +484,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
         return proxy.write(mode, buffer, len);
     }
 
-    public void close() throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
+    public void close() throws NotImplementedException,  NoSuccessException {
         close(0.0F);
     }
 

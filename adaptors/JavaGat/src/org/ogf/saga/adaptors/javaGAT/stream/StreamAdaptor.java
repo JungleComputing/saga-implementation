@@ -99,11 +99,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
-
-        if (StreamStateUtils.equalsStreamState(streamState, StreamState.NEW)) {
-            throw new IncorrectStateException("close() called on new stream");
-        }
+            NoSuccessException {
 
         try {
             if (listeningReader != null) {
@@ -143,35 +139,30 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             onStateChange(StreamState.ERROR);
             throw e;
         }
+        
+        long deadline = 0;
+        
+        if (timeoutInSeconds < 0.0)
+            deadline = -1;
+        else if (timeoutInSeconds > 0.0) {
+            deadline = Math.round(timeoutInSeconds * 1000) + System.currentTimeMillis();
+        }
 
-        String path = url.getString();
+        // Obtain advert service.
+        AdvertService advService;
         try {
-            URI db = GatURIConverter.cvtToGatURI(URLFactory
-                    .createURL(getAdvertName(gatContext)));
-            AdvertService advService = GAT.createAdvertService(gatContext);
-            advService.importDataBase(db);
-            Endpoint remoteEndPoint = (Endpoint) advService
-                    .getAdvertisable(path);
-            pipe = remoteEndPoint.connect();    // TODO: timeout
-            StreamStateUtils.setStreamState(streamState, StreamState.OPEN);
-            onStateChange(StreamState.OPEN);
-            wasOpen = true;
-            this.listeningReader = new StreamListener(pipe, streamRead, 1024,
-                    this);
-            this.listeningReaderThread = new Thread(this.listeningReader);
-            this.listeningReaderThread.start();
+            advService = GAT.createAdvertService(gatContext);
         } catch (GATObjectCreationException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
             throw new NoSuccessException(e);
-        } catch (GATInvocationException e) {
-            StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
-            onStateChange(StreamState.ERROR);
-            throw new NoSuccessException("GAT error", e);
-        } catch (NoSuchElementException e) {
-            StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
-            onStateChange(StreamState.ERROR);
-            throw new NoSuccessException("Incorrect entry information", e);
+        }
+        
+        // Convert URL to advertName.
+        URI db;
+        try {
+            db = GatURIConverter.cvtToGatURI(URLFactory
+                    .createURL(getAdvertName(gatContext)));
         } catch (BadParameterException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
@@ -182,6 +173,50 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             onStateChange(StreamState.ERROR);
             throw new NoSuccessException(
                     "Incorrect URL for javagat advert service?", e);
+        }
+
+        long startTime = System.currentTimeMillis();
+        
+        String path = url.getString();
+               
+        for (;;) {
+            try {
+                logger.debug("Importing database ...");
+                advService.importDataBase(db);
+                logger.debug("Obtaining remote endpoint ...");
+                Endpoint remoteEndPoint =
+                    (Endpoint) advService.getAdvertisable(path);
+                pipe = remoteEndPoint.connect();
+                StreamStateUtils.setStreamState(streamState, StreamState.OPEN);
+                onStateChange(StreamState.OPEN);
+                wasOpen = true;
+                this.listeningReader = new StreamListener(pipe, streamRead, 1024,
+                        this);
+                this.listeningReaderThread = new Thread(this.listeningReader);
+                this.listeningReaderThread.start();
+            } catch (GATInvocationException e) {
+                StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
+                onStateChange(StreamState.ERROR);
+                throw new NoSuccessException("GAT error", e);
+            } catch (NoSuchElementException e) {
+                // No, not correct, the server socket should at least exist and
+                // be accepting. The timeout is only for setting up the connection.
+                // Unfortunately, JavaGAT does not support that.
+                /*
+                long time = System.currentTimeMillis();
+                if (deadline < 0 || deadline > time) {
+                    try {
+                        Thread.sleep(1000L);
+                    } catch(Throwable e1) {
+                        // ignored
+                    }
+                    continue;
+                }
+                */
+                StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
+                onStateChange(StreamState.ERROR);
+                throw new NoSuccessException("Incorrect entry information", e);
+            }
         }
     }
 

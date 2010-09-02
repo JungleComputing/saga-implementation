@@ -3,6 +3,7 @@ package org.ogf.saga.adaptors.socket.stream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
@@ -70,11 +71,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
-            IncorrectStateException, NoSuccessException {
-        if (StreamStateUtils.equalsStreamState(streamState, StreamState.NEW)) {
-            throw new IncorrectStateException("close() called on new stream",
-                    wrapper);
-        }
+            NoSuccessException {
         try {
             if (listeningReader != null) {
                 listeningReaderThread.interrupt();
@@ -87,6 +84,8 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             }
         } catch (IOException e) {
             throw new NoSuccessException("close", e, wrapper);
+        } finally {
+            listeningReader = null;
         }
     }
 
@@ -113,11 +112,21 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             throw e;
         }
 
+        if (timeoutInSeconds == 0.0)
+            timeoutInSeconds = MINIMAL_TIMEOUT;
+
+        int invocationTimeout = -1;
+        
+        if (timeoutInSeconds < 0.0)
+            invocationTimeout = 0;
+        else if (timeoutInSeconds > 0.0)
+            invocationTimeout = (int) (timeoutInSeconds * 1000);
+
         try {
             socket = new Socket();
             setCurrentAttributes();
-            socket.connect(new InetSocketAddress(url.getHost(), url.getPort()), (int) (timeoutInSeconds * 1000));
-            // TODO: deal with timeout better.
+            socket.connect(new InetSocketAddress(url.getHost(), url.getPort()), invocationTimeout);
+
             StreamStateUtils.setStreamState(streamState, StreamState.OPEN);
             onStateChange(StreamState.OPEN);
             wasOpen = true;
@@ -126,6 +135,10 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             this.listeningReaderThread = new Thread(this.listeningReader,
                     "clientListener");
             this.listeningReaderThread.start();
+        } catch(SocketTimeoutException e) {
+            // TODO: check semantics with Andre.
+            StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
+            onStateChange(StreamState.ERROR);
         } catch (IOException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
