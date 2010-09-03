@@ -140,13 +140,15 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             throw e;
         }
         
-        long deadline = 0;
+        /*
+         * long deadline = 0;
         
         if (timeoutInSeconds < 0.0)
             deadline = -1;
         else if (timeoutInSeconds > 0.0) {
             deadline = Math.round(timeoutInSeconds * 1000) + System.currentTimeMillis();
         }
+        */
 
         // Obtain advert service.
         AdvertService advService;
@@ -175,9 +177,10 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
                     "Incorrect URL for javagat advert service?", e);
         }
 
-        long startTime = System.currentTimeMillis();
+        // long startTime = System.currentTimeMillis();
         
         String path = url.getString();
+        logger.debug("URL = " + url + ", path = " + path);
                
         for (;;) {
             try {
@@ -194,6 +197,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
                         this);
                 this.listeningReaderThread = new Thread(this.listeningReader);
                 this.listeningReaderThread.start();
+                return;
             } catch (GATInvocationException e) {
                 StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
                 onStateChange(StreamState.ERROR);
