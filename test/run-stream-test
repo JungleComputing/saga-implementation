@@ -9,7 +9,6 @@ HOST=localhost
 export JAVA_SAGA_LOCATION=`cd .. && pwd`
 
 echo "Running SAGA streams test for the socket adaptor ..."
-
 $JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
      test.stream.StreamAdaptorTest socket tcp://$HOST:$PORT
 

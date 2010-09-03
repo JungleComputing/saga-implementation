@@ -54,7 +54,6 @@ public class StreamAdaptorTest {
     public AdaptorTestResult test(String adaptor) {
         AdaptorTestResult adaptorTestResult = new AdaptorTestResult(adaptor,
                 serverUrl.getString());
-
         adaptorTestResult.put("connect   [1]", testConnect1());
         adaptorTestResult.put("connect   [2]", testConnect2());
         adaptorTestResult.put("connect   [3]", testConnect3());
@@ -134,6 +133,7 @@ public class StreamAdaptorTest {
         AdaptorTestResultEntry e2 = null;
         try {
             stream.close();
+            logger.debug("Closed stream");
         } catch (Throwable e) {
             e2 = new AdaptorTestResultEntry(false, 0, new Exception(
                     "Close gave exception", e));
@@ -408,6 +408,7 @@ public class StreamAdaptorTest {
         try {
             stream.connect();
         } catch (Throwable e) {
+            logger.debug("Connect failed", e);
             e1 = new AdaptorTestResultEntry(false, 0, new Exception(
                     "Could not connect", e));
         } finally {
@@ -424,7 +425,9 @@ public class StreamAdaptorTest {
 
                 stream.write(buffer);
                 stream.write(buffer);
+                logger.debug("Writes done");
             } catch (Throwable e) {
+                logger.debug("Got exception", e);
                 e1 = new AdaptorTestResultEntry(false, 0, new Exception(
                         "Write failed", e));
             }
