@@ -32,11 +32,11 @@ class Sequence {
      * filename1 should be visible) filename1 gets removed by dir
      */
     
-    private static String getPassphrase() {
+    private static String getPassphrase(String s) {
         JPasswordField pwd = new JPasswordField();
-        Object[] message = { "grid-proxy-init\nPlease enter your passphrase.",
+        Object[] message = { s + "\nPlease enter your passphrase.",
                 pwd };
-        JOptionPane.showMessageDialog(null, message, "Grid-Proxy-Init",
+        JOptionPane.showMessageDialog(null, message, "Context-Init",
                 JOptionPane.QUESTION_MESSAGE);
         return new String(pwd.getPassword());
     }
@@ -63,7 +63,12 @@ class Sequence {
             if ("gsiftp".equals(scheme)) {
                 // Gridftp context.
                 Context context = ContextFactory.createContext("gridftp");
-                context.setAttribute(Context.USERPASS, getPassphrase());
+                context.setAttribute(Context.USERPASS, getPassphrase("grid-proxy-init"));
+                session.addContext(context);
+            } else if ("ssh".equals(scheme)) {
+                // Ssh context
+                Context context = ContextFactory.createContext("ssh");
+                context.setAttribute(Context.USERPASS, getPassphrase("ssh-init"));
                 session.addContext(context);
             }
 
