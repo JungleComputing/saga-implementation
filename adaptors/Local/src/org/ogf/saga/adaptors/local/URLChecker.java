@@ -2,30 +2,12 @@ package org.ogf.saga.adaptors.local;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Collection;
 
 import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.url.URL;
 
 public class URLChecker {
-
-    private Collection<String> validSchemes;
-    private String adaptorName;
-    
-    /**
-     * Creates a new URL checker.
-     * 
-     * @param validSchemes
-     *            the URL schemes that are considered valid
-     * @param adaptorName
-     *            the name of the adaptor that uses this URL checker (used in
-     *            the exception messages)
-     */
-    public URLChecker(Collection<String> validSchemes, String adaptorName) {
-        this.validSchemes = validSchemes;
-        this.adaptorName = adaptorName;
-    }
-    
+  
     private static String getLocalHostName() {
         try {
             InetAddress a = InetAddress.getLocalHost();
@@ -142,15 +124,8 @@ public class URLChecker {
      * @throws IncorrectURLException
      *             if the URL is not acceptable
      */
-    public void check(URL u) throws IncorrectURLException {
+    public static void check(URL u) throws IncorrectURLException {
         if (u.isAbsolute()) {
-            String scheme = u.getScheme();
-            if (!validSchemes.contains(scheme)) {
-                throw new IncorrectURLException("Unknown scheme: '" + scheme
-                        + "', the " + adaptorName + " adaptor only accepts "
-                        + validSchemes);
-            }
-
             if (!refersToLocalHost(u)) {
                 throw new IncorrectURLException(
                         "URL does not refer to local host");

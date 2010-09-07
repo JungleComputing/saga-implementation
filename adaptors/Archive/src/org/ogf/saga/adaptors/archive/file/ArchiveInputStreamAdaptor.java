@@ -17,6 +17,10 @@ import org.ogf.saga.proxies.file.FileInputStreamWrapper;
 import org.ogf.saga.url.URL;
 
 public class ArchiveInputStreamAdaptor extends LocalInputStreamAdaptor {
+    
+    public static String[] getSupportedSchemes() {
+        return ArchiveAdaptorTool.getSupportedSchemes();
+    }
 
     public ArchiveInputStreamAdaptor(FileInputStreamWrapper wrapper,
             SessionImpl session, URL source) throws NotImplementedException,

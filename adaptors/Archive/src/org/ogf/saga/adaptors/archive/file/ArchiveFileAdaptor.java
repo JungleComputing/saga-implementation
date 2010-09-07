@@ -33,6 +33,10 @@ import de.schlichtherle.io.FileInputStream;
 import de.schlichtherle.io.FileOutputStream;
 
 public class ArchiveFileAdaptor extends FileAdaptorBase {
+    
+    public static String[] getSupportedSchemes() {
+        return ArchiveAdaptorTool.getSupportedSchemes();
+    }
 
     private LocalNSEntryAdaptor entry;
     private FileInputStream in;

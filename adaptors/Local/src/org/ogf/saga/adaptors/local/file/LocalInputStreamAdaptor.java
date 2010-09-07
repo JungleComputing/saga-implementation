@@ -22,6 +22,10 @@ import org.ogf.saga.spi.file.FileInputStreamAdaptorBase;
 import org.ogf.saga.url.URL;
 
 public class LocalInputStreamAdaptor extends FileInputStreamAdaptorBase {
+    
+    public static String[] getSupportedSchemes() {
+        return LocalAdaptorTool.getSupportedSchemes();
+    }
 
     private InputStream in;
     private AdaptorTool tool;

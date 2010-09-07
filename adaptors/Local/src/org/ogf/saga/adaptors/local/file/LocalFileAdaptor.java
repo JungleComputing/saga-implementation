@@ -43,6 +43,10 @@ public class LocalFileAdaptor extends FileAdaptorBase {
     private LocalNSEntryAdaptor entry;
     private FileChannel channel;
     private WeakReference<ByteBuffer> cachedByteBuffer;
+        
+    public static String[] getSupportedSchemes() {
+        return LocalAdaptorTool.getSupportedSchemes();
+    }
     
     public LocalFileAdaptor(FileWrapper wrapper, SessionImpl session, URL name,
             int flags) throws NotImplementedException, IncorrectURLException,

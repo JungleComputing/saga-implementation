@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.ogf.saga.adaptors.local.AdaptorTool;
 import org.ogf.saga.adaptors.local.URLChecker;
@@ -26,16 +24,12 @@ public class ArchiveAdaptorTool implements AdaptorTool {
     private static ArchiveAdaptorTool uniqueInstance = null;
     private static Logger logger = LoggerFactory.getLogger(ArchiveAdaptorTool.class); 
     private static final DefaultArchiveDetector ARCHIVE_DETECTOR = ArchiveDetector.ALL;
-    
-    private URLChecker urlChecker;
+        
+    public static String[] getSupportedSchemes() {
+        return new String[] { "archive", "file", ""};
+    }
     
     protected ArchiveAdaptorTool() {
-        Collection<String> archiveSchemes = new ArrayList<String>(3);
-        archiveSchemes.add("file");
-        archiveSchemes.add("archive");
-        archiveSchemes.add("any");
-        
-        urlChecker = new URLChecker(archiveSchemes, "archive");
     }
     
     public static synchronized ArchiveAdaptorTool getInstance() {
@@ -48,7 +42,7 @@ public class ArchiveAdaptorTool implements AdaptorTool {
     }
         
     public void checkURL(URL u) throws IncorrectURLException {
-        urlChecker.check(u);
+        URLChecker.check(u);
     }
 
     public File createFile(String pathname) {

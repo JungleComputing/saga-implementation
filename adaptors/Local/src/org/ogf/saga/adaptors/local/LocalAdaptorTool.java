@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.ogf.saga.error.IncorrectURLException;
 import org.ogf.saga.error.NoSuccessException;
@@ -22,16 +20,12 @@ public class LocalAdaptorTool implements AdaptorTool {
 
     private static LocalAdaptorTool uniqueInstance = null;
     private static Logger logger = LoggerFactory.getLogger(LocalAdaptorTool.class); 
-    
-    private URLChecker urlChecker;    
-    
+       
+    public static String[] getSupportedSchemes() {
+        return new String[] { "local", "file", ""};
+    }
+
     protected LocalAdaptorTool() {
-        Collection<String> localSchemes = new ArrayList<String>(3);
-        localSchemes.add("file");
-        localSchemes.add("local");
-        localSchemes.add("any");
-        
-        urlChecker = new URLChecker(localSchemes, "local");
     }
     
     public static synchronized LocalAdaptorTool getInstance() {
@@ -42,7 +36,7 @@ public class LocalAdaptorTool implements AdaptorTool {
     }
      
     public void checkURL(URL u) throws IncorrectURLException {
-        urlChecker.check(u);
+        URLChecker.check(u);
     }
     
     public File createFile(String pathname) {

@@ -18,6 +18,10 @@ import org.ogf.saga.proxies.namespace.NSEntryWrapper;
 import org.ogf.saga.url.URL;
 
 public class ArchiveNSEntryAdaptor extends LocalNSEntryAdaptor {
+    
+    public static String[] getSupportedSchemes() {
+        return ArchiveAdaptorTool.getSupportedSchemes();
+    }
 
     public ArchiveNSEntryAdaptor(NSEntryWrapper wrapper,
             SessionImpl sessionImpl, URL name, int flags)

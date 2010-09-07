@@ -19,6 +19,10 @@ import org.ogf.saga.proxies.namespace.NSDirectoryWrapper;
 import org.ogf.saga.url.URL;
 
 public class ArchiveNSDirectoryAdaptor extends LocalNSDirectoryAdaptor {
+    
+    public static String[] getSupportedSchemes() {
+        return ArchiveAdaptorTool.getSupportedSchemes();
+    }
 
     public ArchiveNSDirectoryAdaptor(NSDirectoryWrapper wrapper, SessionImpl session,
             URL name, int flags) throws NotImplementedException,

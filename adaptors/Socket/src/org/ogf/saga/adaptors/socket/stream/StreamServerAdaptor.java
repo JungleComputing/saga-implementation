@@ -27,6 +27,10 @@ import org.ogf.saga.stream.Stream;
 import org.ogf.saga.url.URL;
 
 public class StreamServerAdaptor extends StreamServerAdaptorBase {
+        
+    public static String[] getSupportedSchemes() {
+        return new String[] { "tcp", ""};
+    }
     
     private static Logger logger = LoggerFactory.getLogger(StreamServerAdaptor.class);
 
@@ -45,10 +49,6 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
         // check URL
 
         String scheme = url.getScheme().toLowerCase();
-        if (!scheme.equals("any") && !scheme.equals("tcp")) {
-            throw new IncorrectURLException(
-                    "Only tcp scheme is supported in socket implementation");
-        }
 
         if (URLUtil.refersToLocalHost(url.getHost())) {
             try {

@@ -28,6 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
+    
+    public static String[] getSupportedSchemes() {
+        return LocalAdaptorTool.getSupportedSchemes();
+    }
 
     private static final Logger logger = LoggerFactory
             .getLogger(LocalNSEntryAdaptor.class);

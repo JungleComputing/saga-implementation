@@ -23,6 +23,10 @@ import org.ogf.saga.spi.namespace.NSDirectoryAdaptorBase;
 import org.ogf.saga.url.URL;
 
 public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
+    
+    public static String[] getSupportedSchemes() {
+        return LocalAdaptorTool.getSupportedSchemes();
+    }
 
     protected static enum OPERATION { COPY, MOVE }
     

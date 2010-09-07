@@ -36,6 +36,10 @@ import org.ogf.saga.stream.StreamState;
 import org.ogf.saga.url.URL;
 
 public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
+    
+    public static String[] getSupportedSchemes() {
+        return new String[] { "tcp", ""};
+    }
 
     private Socket socket = null;
     private boolean wasOpen = false;
@@ -52,13 +56,6 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             throws NotImplementedException, BadParameterException,
             IncorrectURLException {
         super(wrapper, sessionImpl, url);
-
-        // check URL
-
-        String scheme = url.getScheme().toLowerCase();
-        if (!scheme.equals("any") && !scheme.equals("tcp"))
-            throw new IncorrectURLException(
-                    "Only tcp scheme is supported in socket implementation");
     }
 
     public Object clone() throws CloneNotSupportedException {

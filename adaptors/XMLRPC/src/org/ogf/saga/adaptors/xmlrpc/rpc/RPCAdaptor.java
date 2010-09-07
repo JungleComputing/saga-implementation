@@ -25,6 +25,11 @@ import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
 public class RPCAdaptor extends RPCAdaptorBase {
+    
+    public static String[] getSupportedSchemes() {
+        return new String[] { "xmprpc", ""};
+    }
+    
 
     private final String func;
 
@@ -38,14 +43,6 @@ public class RPCAdaptor extends RPCAdaptorBase {
             throws NotImplementedException, BadParameterException,
             NoSuccessException, DoesNotExistException, IncorrectURLException {
         super(sessionImpl, wrapper, funcName);
-        String scheme = funcName.getScheme();
-        if ("any".equals(scheme)) {
-            scheme = "xmlrpc";
-        } else if ("xmlrpc".equals(scheme)) {
-            // OK
-        } else {
-            throw new IncorrectURLException("Unrecognized scheme: " + scheme);
-        }
 
         URL url = URLFactory.createURL(funcName.toString());
         url.setScheme("http");

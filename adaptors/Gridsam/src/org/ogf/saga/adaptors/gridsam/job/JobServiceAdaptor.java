@@ -24,6 +24,10 @@ import org.ogf.saga.spi.job.JobServiceAdaptorBase;
 import org.ogf.saga.url.URL;
 
 public class JobServiceAdaptor extends JobServiceAdaptorBase {
+    
+    public static String[] getSupportedSchemes() {
+        return new String[] { "gridsam", "https", "http", ""};
+    }    
 
     private HashMap<String, SagaJob> jobs = new HashMap<String, SagaJob>();
 
@@ -50,12 +54,7 @@ public class JobServiceAdaptor extends JobServiceAdaptorBase {
                 throw new NoSuccessException("Should not happen", e, wrapper);
             }
         }
-        if ("http".equals(scheme) || "https".equals(scheme)) {
-            // this is OK.
-        } else {
-            throw new IncorrectURLException("Wrong scheme for gridsam adaptor",
-                    wrapper);
-        }
+
         url = this.rm.toString();
         try {
             jobManager = new ClientSideJobManager(new String[] { "-s", url },
