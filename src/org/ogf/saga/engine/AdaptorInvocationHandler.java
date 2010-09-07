@@ -25,6 +25,7 @@ import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.SagaIOException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.AdaptorBase;
+import org.ogf.saga.url.URL;
 
 /**
  * This class takes care of forwarding method invocations to the adaptors. It
@@ -208,27 +209,41 @@ public class AdaptorInvocationHandler implements InvocationHandler {
         SagaException exception = null;
         ArrayList<SagaException> exceptions = null;
         
+        URL param = null;
+        if (params != null) {
+            for (Object p : params) {
+                if (p instanceof URL) {
+                    param = (URL) p;
+                    break;
+                }
+            }
+        }
+        
         for (Adaptor adaptor : adaptors) {
             String adaptorname = adaptor.getAdaptorName();
 
             try {
-                // instantiate the adaptor.
-                if (logger.isDebugEnabled()) {
-                    logger.debug("initAdaptor: trying to instantiate "
-                            + adaptor.getShortAdaptorClassName() + " for type "
-                            + adaptors.getSpiName());
-                }
+                if (adaptor.matchScheme(param)) {
+                    // instantiate the adaptor.
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("initAdaptor: trying to instantiate "
+                                + adaptor.getShortAdaptorClassName() + " for type "
+                                + adaptors.getSpiName());
+                    }
 
-                AdaptorBase<?> object = adaptor.instantiate(types, params);
+                    AdaptorBase<?> object = adaptor.instantiate(types, params);
 
-                if (logger.isInfoEnabled()) {
-                    logger.info("initAdaptor: instantiated "
-                            + adaptor.getShortAdaptorClassName() + " for type "
-                            + adaptors.getSpiName());
+                    if (logger.isInfoEnabled()) {
+                        logger.info("initAdaptor: instantiated "
+                                + adaptor.getShortAdaptorClassName() + " for type "
+                                + adaptors.getSpiName());
+                    }
+                    this.adaptorInstantiations.put(adaptorname, object);
+                    this.adaptors.put(adaptorname, adaptor);
+                    adaptorSorter.add(adaptorname);
+                } else {
+                    throw new IncorrectURLException(adaptorname + " cannot handle URL " + param);
                 }
-                this.adaptorInstantiations.put(adaptorname, object);
-                this.adaptors.put(adaptorname, adaptor);
-                adaptorSorter.add(adaptorname);
             } catch (Throwable t) {
                 logger.debug("Instantiation of " + adaptorname + " failed", t);
 

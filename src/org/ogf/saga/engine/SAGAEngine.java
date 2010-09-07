@@ -91,6 +91,29 @@ public class SAGAEngine {
             return n1.compareTo(n2);
         }
     }
+    
+    
+    private static String[] callGetSupportedSchemes(Class<?> clazz) {
+        Method m;
+        try {
+            m = clazz.getMethod("getSupportedSchemes", (Class[]) null);
+        } catch(Throwable e) {
+            return null;
+        }
+        try {
+            String[] result = (String[]) m.invoke((Object) null, (Object[]) null);
+            if (logger.isInfoEnabled()) {
+                logger.info("Supported schemes of class " + clazz.getName() + ": " + result);
+            }
+            return result;
+        } catch (Throwable t) {
+            if (logger.isInfoEnabled()) {
+                logger.info("getSupportedSchemes of " + clazz + " failed: " + t);
+            }
+            return null;
+        }
+    }
+
 
     /** Constructs a default SAGAEngine instance. */
     private SAGAEngine() {
@@ -424,8 +447,11 @@ public class SAGAEngine {
                                 adaptorLoader);
 
                         Class<?> clazz = adaptorLoader.loadClass(adaptorClass);
-
-                        Adaptor a = new Adaptor(clazz);
+                       
+                        String[] schemes = callGetSupportedSchemes(clazz);                        
+                        
+                        Adaptor a = new Adaptor(clazz, schemes);
+                        
                         AdaptorList s = adaptors.get(spiName);
 
                         if (s == null) {

@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.ogf.saga.impl.AdaptorBase;
+import org.ogf.saga.url.URL;
 
 /**
  * Information container for a specific adaptor.
@@ -12,6 +13,9 @@ class Adaptor {
 
     /** The actual class of this adaptor, must be an implementation of spiClass. */
     final Class<?> adaptorClass;
+    
+    /** The schemes recognized by this adaptor. */
+    private String[] schemes;
 
     /**
      * Constructs an information container for a specific adaptor.
@@ -20,8 +24,9 @@ class Adaptor {
      *            The actual class of this adaptor, must be an implementation of
      *            spiClass.
      */
-    Adaptor(Class<?> adaptorClass) {
+    Adaptor(Class<?> adaptorClass, String[] schemes) {
         this.adaptorClass = adaptorClass;
+        this.schemes = schemes;
     }
 
     /**
@@ -96,5 +101,35 @@ class Adaptor {
      */
     synchronized String getShortAdaptorClassName() {
         return adaptorClass.getSimpleName();
+    }
+    
+    /**
+     * Match the specified URI with the recognized schemes of this adaptor.
+     * Quite liberal: if the specified URI is null, or the adaptor does not
+     * explicitly specify its recognized schemes, return <code>true</code>.
+     * 
+     * @param param the URL to match against the recognized schemes.
+     * @return whether there is a match.
+     */
+    public boolean matchScheme(URL param) {
+        if (param == null) {
+            return true;
+        }
+        if (schemes == null) {
+            return true;
+        }
+        String scheme = param.getScheme();
+        if (scheme == null) {
+            scheme = "";
+        }
+        if (scheme.equalsIgnoreCase("any")) {
+            return true;
+        }
+        for (String s : schemes) {
+            if (s.equalsIgnoreCase(scheme)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
