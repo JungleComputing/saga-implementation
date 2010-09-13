@@ -48,8 +48,6 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
 
         // check URL
 
-        String scheme = url.getScheme().toLowerCase();
-
         if (URLUtil.refersToLocalHost(url.getHost())) {
             try {
                 this.server = new ServerSocket();
