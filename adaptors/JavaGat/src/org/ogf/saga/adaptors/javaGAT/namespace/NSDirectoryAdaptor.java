@@ -651,4 +651,34 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             BadParameterException, TimeoutException, NoSuccessException {
         return entry.permissionsCheck(id, permissions);
     }
+
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return entry.getMTime();
+    }
+
+    public long getMTime(URL name) throws NotImplementedException,
+            IncorrectURLException, DoesNotExistException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
+
+        URL target1 = resolveToDir(name);
+        boolean isDir = isDir(name);
+        
+        NSEntryAdaptor targetEntry = null;
+        try {
+            targetEntry = new NSEntryAdaptor(null, sessionImpl, target1,
+                    Flags.READ.getValue(), isDir);
+        } catch (AlreadyExistsException e) {
+            // cannot happen because create flag is not allowed for this method
+            throw new NoSuccessException("Should not happen!: " + e, wrapper);
+        }
+
+        long retval = targetEntry.getMTime();
+        targetEntry.close(0);
+        return retval;
+    }
 }

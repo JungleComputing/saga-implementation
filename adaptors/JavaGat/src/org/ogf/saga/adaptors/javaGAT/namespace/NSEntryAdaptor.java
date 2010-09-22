@@ -573,4 +573,11 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
             PermissionDeniedException, TimeoutException, NoSuccessException {
         throw new NotImplementedException("getOwner", wrapper);
     }
+
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return fileImpl.lastModified() / 1000;
+    }
 }

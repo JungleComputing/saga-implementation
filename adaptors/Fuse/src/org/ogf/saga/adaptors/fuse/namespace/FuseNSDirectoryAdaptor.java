@@ -24,7 +24,7 @@ import org.ogf.saga.url.URL;
 
 public class FuseNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
 	
-	private NSDirectory delegate;
+    private NSDirectory delegate;
     private String mountId;
     
     public FuseNSDirectoryAdaptor(NSDirectoryWrapper wrapper, SessionImpl session,
@@ -511,6 +511,21 @@ public class FuseNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             BadParameterException, TimeoutException, NoSuccessException {
         URLUtil.checkNotLocal(getEntryURL());
         return delegate.permissionsCheck(id, perms);
+    }
+
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return delegate.getMTime();
+    }
+
+    public long getMTime(URL name) throws NotImplementedException,
+            IncorrectURLException, DoesNotExistException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
+        return delegate.getMTime(name);
     }
 
 }

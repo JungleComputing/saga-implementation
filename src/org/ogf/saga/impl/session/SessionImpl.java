@@ -57,7 +57,6 @@ public class SessionImpl extends SagaObjectBase implements
         
         ContextImpl context = (ContextImpl) ctxt;
         context = new ContextImpl(context);
-        context.setDefaults();
         for (AdaptorSessionInterface session : adaptorSessions.values()) {
             try {
                 session.addContext(context);

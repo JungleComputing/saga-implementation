@@ -1,7 +1,8 @@
 package org.ogf.saga.impl.session;
 
 import org.ogf.saga.error.DoesNotExistException;
-import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.error.NoSuccessException;
+import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.context.ContextImpl;
 
 /**
@@ -17,14 +18,13 @@ public interface AdaptorSessionInterface {
      * @param contextImpl
      *            the context to be added.
      */
-    public void addContext(ContextImpl contextImpl)
-            throws NotImplementedException;
+    public void addContext(ContextImpl contextImpl) throws NoSuccessException, TimeoutException;
 
     /**
      * Closes an adaptor session. Middleware may for instance have threads which
      * may need to be terminated, or the application will hang.
      */
-    public void close() throws NotImplementedException;
+    public void close();
 
     /**
      * Copies the adaptor session.
@@ -40,10 +40,7 @@ public interface AdaptorSessionInterface {
      * 
      * @param contextImpl
      *            the context to be removed.
-     * @exception DoesNotExistException
-     *                is thrown when the session does not contain the specified
-     *                context.
      */
     public void removeContext(ContextImpl contextImpl)
-            throws NotImplementedException, DoesNotExistException;
+            throws DoesNotExistException;
 }

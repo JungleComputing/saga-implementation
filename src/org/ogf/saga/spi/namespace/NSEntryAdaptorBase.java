@@ -302,4 +302,10 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         return new org.ogf.saga.impl.task.TaskImpl<NSEntry, String>(wrapper,
                 sessionImpl, mode, "getOwner", new Class[] {});
     }
+    
+    public Task<NSEntry, Long> getMTime(TaskMode mode)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.TaskImpl<NSEntry, Long>(wrapper,
+                sessionImpl, mode, "getMTime", new Class[] {});
+    }
 }

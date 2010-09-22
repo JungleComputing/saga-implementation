@@ -436,4 +436,11 @@ public class LocalNSEntryAdaptor extends NSEntryAdaptorBase {
         throw new NotImplementedException("Permissions are not supported");
     }
 
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return file.lastModified() / 1000;
+    }
+
 }

@@ -577,4 +577,20 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         return entry.permissionsCheck(id, permissions);
     }
 
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return entry.getMTime();
+    }
+
+    public long getMTime(URL name) throws NotImplementedException,
+            IncorrectURLException, DoesNotExistException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
+        File f = createExistingRelativeEntryFile(name);
+        return f.lastModified() / 1000;
+    }
+
 }

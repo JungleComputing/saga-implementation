@@ -420,4 +420,54 @@ public interface NSEntrySPI extends Async, Permissions<NSEntry> {
     public Task<NSEntry, Void> permissionsDeny(TaskMode mode, String id,
             int permissions, int flags) throws NotImplementedException;
 
+    /**
+     * Returns the time of the last modification in seconds since epoch
+     * (01.01.1970).
+     * 
+     * @return
+     *      the last modification time.
+     * @exception NotImplementedException
+     *      is thrown if the implementation does not provide an
+     *      implementation of this method.
+     * @exception PermissionDeniedException
+     *      is thrown when the method failed because the identity used did
+     *      not have sufficient permissions to perform the operation
+     *      successfully.
+     * @exception AuthorizationFailedException
+     *      is thrown when none of the available contexts of the
+     *      used session could be used for successful authorization.
+     *      This error indicates that the resource could not be accessed
+     *      at all, and not that an operation was not available due to
+     *      restricted permissions.
+     * @exception AuthenticationFailedException
+     *      is thrown when operation failed because none of the available
+     *      session contexts could successfully be used for authentication.
+     * @exception TimeoutException
+     *      is thrown when a remote operation did not complete successfully
+     *      because the network communication or the remote service timed
+     *      out.
+     * @exception IncorrectStateException
+     *      is thrown when the NSEntry is already closed.
+     * @exception NoSuccessException
+     *      is thrown when the operation was not successfully performed,
+     *      and none of the other exceptions apply.
+     */
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException;
+ 
+    /**
+     * Creates a task that returns the last modification time of this entry.
+     * 
+     * @param mode
+     *            the task mode.
+     * @return the task.
+     * @exception NotImplementedException
+     *                is thrown when the task version of this method is not
+     *                implemented.
+     */
+    public Task<NSEntry, Long> getMTime(TaskMode mode)
+            throws NotImplementedException;
+
 }

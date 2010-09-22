@@ -362,4 +362,11 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             BadParameterException, TimeoutException, NoSuccessException {
         return entry.permissionsCheck(id, permissions);
     }
+
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return entry.getMTime();
+    }
 }

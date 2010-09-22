@@ -211,4 +211,12 @@ public class FuseNSEntryAdaptor extends NSEntryAdaptorBase {
         delegate.close(timeoutInSeconds);
     }
 
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        URLUtil.checkNotLocal(getEntryURL());
+        return delegate.getMTime();
+    }
+
 }

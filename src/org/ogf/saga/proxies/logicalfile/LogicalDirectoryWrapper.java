@@ -317,7 +317,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
 
     public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(
             TaskMode mode, URL name) throws NotImplementedException {
-        return openLogicalDir(mode, name, Flags.NONE.getValue());
+        return openLogicalDir(mode, name, Flags.READ.getValue());
     }
 
     public LogicalDirectory openLogicalDir(URL name, int flags)
@@ -342,7 +342,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        return openLogicalDir(name, Flags.NONE.getValue());
+        return openLogicalDir(name, Flags.READ.getValue());
     }
 
     public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode,
@@ -352,7 +352,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
 
     public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode,
             URL name) throws NotImplementedException {
-        return openLogicalFile(mode, name, Flags.NONE.getValue());
+        return openLogicalFile(mode, name, Flags.READ.getValue());
     }
 
     public LogicalFile openLogicalFile(URL name, int flags)
@@ -377,7 +377,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        return openLogicalFile(name, Flags.NONE.getValue());
+        return openLogicalFile(name, Flags.READ.getValue());
     }
 
     public void removeAttribute(String key) throws NotImplementedException,

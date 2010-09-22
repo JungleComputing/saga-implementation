@@ -413,4 +413,11 @@ public class FileAdaptor extends FileAdaptorBase {
             BadParameterException, TimeoutException, NoSuccessException {
         return entry.permissionsCheck(id, permissions);
     }
+
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return entry.getMTime();
+    }
 }

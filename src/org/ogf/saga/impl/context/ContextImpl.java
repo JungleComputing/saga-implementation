@@ -11,7 +11,6 @@ import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.impl.SagaObjectBase;
-import org.ogf.saga.impl.SagaRuntimeException;
 import org.ogf.saga.impl.attributes.AttributeType;
 import org.ogf.saga.session.Session;
 
@@ -51,6 +50,19 @@ public class ContextImpl extends SagaObjectBase implements
                         "Oops, could not set TYPE attribute", e);
             }
         }
+
+        if ("Unknown".equals(type) || "".equals(type)) {
+            // nothing.
+        } else if ("preferences".equals(type)) {
+            // Special context, no defaults.
+        } else {
+            try {
+                proxy.setDefaults(this, type);
+            } catch (Throwable e) {
+                throw new NoSuccessException(
+                        "Unrecognized TYPE attribute value: " + type);
+            }
+        }
     }
 
     public ContextImpl(ContextImpl orig) {
@@ -74,31 +86,6 @@ public class ContextImpl extends SagaObjectBase implements
         ContextImpl o = (ContextImpl) super.clone();
         o.attributes = new ContextAttributes(attributes);
         return o;
-    }
-
-    public void setDefaults() throws NoSuccessException {
-        String type;
-        try {
-            type = attributes.getAttribute(TYPE);
-        } catch (DoesNotExistException e1) {
-            return;
-        } catch (Throwable e) {
-            // Should not happen.
-            throw new SagaRuntimeException("could not get TYPE attribute", e);
-        }
-
-        if ("Unknown".equals(type) || "".equals(type)) {
-            // nothing.
-        } else if ("preferences".equals(type)) {
-            // Special context, no defaults.
-        } else {
-            try {
-                proxy.setDefaults(this, type);
-            } catch (Throwable e) {
-                throw new NoSuccessException(
-                        "Unrecognized TYPE attribute value: " + type);
-            }
-        }
     }
 
     public String[] findAttributes(String... patterns)

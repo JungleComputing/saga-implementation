@@ -581,4 +581,10 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
                 sessionImpl, mode, "remove", new Class[] { String.class,
                         Integer.TYPE }, name, flags);
     }
+    
+    public Task<NSDirectory, Long> getMTime(TaskMode mode, URL name)
+            throws NotImplementedException {
+        return new org.ogf.saga.impl.task.TaskImpl<NSDirectory, Long>(wrapper,
+                sessionImpl, mode, "getMTime", new Class[] { URL.class }, name);
+    }
 }

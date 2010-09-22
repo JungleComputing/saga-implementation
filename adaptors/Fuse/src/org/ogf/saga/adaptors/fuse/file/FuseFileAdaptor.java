@@ -237,4 +237,11 @@ public class FuseFileAdaptor extends FileAdaptorBase {
         return delegate.writeE(emode, spec, buffer);
     }
 
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return delegate.getMTime();
+    }
+
 }

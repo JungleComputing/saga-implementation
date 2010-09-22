@@ -294,6 +294,54 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
             NoSuccessException;
 
     /**
+     * Returns the time of the last modification in seconds since epoch
+     * (01.01.1970) of the specified name.
+     * 
+     * @param name
+     *      the name of which the last modification time must be returned.
+     * @return
+     *      the last modification time.
+     * @exception NotImplementedException
+     *      is thrown if the implementation does not provide an
+     *      implementation of this method.
+     * @exception PermissionDeniedException
+     *      is thrown when the method failed because the identity used did
+     *      not have sufficient permissions to perform the operation
+     *      successfully.
+     * @exception AuthorizationFailedException
+     *      is thrown when none of the available contexts of the
+     *      used session could be used for successful authorization.
+     *      This error indicates that the resource could not be accessed
+     *      at all, and not that an operation was not available due to
+     *      restricted permissions.
+     * @exception AuthenticationFailedException
+     *      is thrown when operation failed because none of the available
+     *      session contexts could successfully be used for authentication.
+     * @exception TimeoutException
+     *      is thrown when a remote operation did not complete successfully
+     *      because the network communication or the remote service timed
+     *      out.
+     * @exception BadParameterException
+     *      is thrown when the specified URL contains an invalid entry name.
+     * @exception IncorrectStateException
+     *      is thrown when the NSDirectory is already closed.
+     * @exception IncorrectURLException
+     *      is thrown when an implementation cannot handle the specified
+     *      protocol, or that access to the specified entity via the
+     *      given protocol is impossible.
+     * @exception DoesNotExistException
+     *      is thrown if the specified name does not exist.
+     * @exception NoSuccessException
+     *      is thrown when the operation was not successfully performed,
+     *      and none of the other exceptions apply.
+     */
+    public long getMTime(URL name) throws NotImplementedException,
+            IncorrectURLException, DoesNotExistException, AuthenticationFailedException,
+            AuthorizationFailedException, PermissionDeniedException,
+            BadParameterException, IncorrectStateException, TimeoutException,
+            NoSuccessException;
+ 
+    /**
      * Creates a new directory.
      * 
      * @param target
@@ -882,4 +930,21 @@ public interface NSDirectorySPI extends NSEntrySPI, Iterable<URL> {
     public Task<NSDirectory, Void> permissionsDeny(TaskMode mode,
             String target, String id, int permissions, int flags)
             throws NotImplementedException;
+    
+    /**
+     * Creates a task that determines the last modification time of
+     * the specified name.
+     * 
+     * @param mode
+     *            the task mode.
+     * @param name
+     *            of which the last modification time must be determined.
+     * @return the task.
+     * @exception NotImplementedException
+     *                is thrown when the task version of this method is not
+     *                implemented.
+     */
+    public Task<NSDirectory, Long> getMTime(TaskMode mode, URL name)
+            throws NotImplementedException;
+
 }

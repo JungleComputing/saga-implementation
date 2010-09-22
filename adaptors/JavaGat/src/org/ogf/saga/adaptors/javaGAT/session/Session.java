@@ -51,8 +51,7 @@ public class Session implements
         return gatContext;
     }
 
-    public synchronized void addContext(ContextImpl contextImpl)
-            throws NotImplementedException {
+    public synchronized void addContext(ContextImpl contextImpl) {
 
         try {
             if ("preferences"
@@ -83,7 +82,7 @@ public class Session implements
         }
     }
 
-    public synchronized void close() throws NotImplementedException {
+    public synchronized void close() {
         if (gatContext != null) {
             gatContext = null;
             synchronized (Session.class) {
@@ -110,7 +109,7 @@ public class Session implements
     }
 
     public synchronized void removeContext(ContextImpl contextImpl)
-            throws NotImplementedException, DoesNotExistException {
+            throws DoesNotExistException {
 
         SecurityContext c = contextImpls.remove(contextImpl);
 

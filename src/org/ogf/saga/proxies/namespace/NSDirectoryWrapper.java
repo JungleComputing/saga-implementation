@@ -673,7 +673,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, NSEntry> open(TaskMode mode, URL name)
             throws NotImplementedException {
-        return open(mode, name, Flags.NONE.getValue());
+        return open(mode, name, Flags.READ.getValue());
     }
 
     public NSEntry open(URL name, int flags) throws NotImplementedException,
@@ -693,7 +693,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        return open(name, Flags.NONE.getValue());
+        return open(name, Flags.READ.getValue());
     }
     
     /**
@@ -736,7 +736,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, NSDirectory> openDir(TaskMode mode, URL name)
             throws NotImplementedException {
-        return openDir(mode, name, Flags.NONE.getValue());
+        return openDir(mode, name, Flags.READ.getValue());
     }
 
     public NSDirectory openDir(URL name, int flags)
@@ -756,7 +756,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
-        return openDir(name, Flags.NONE.getValue());
+        return openDir(name, Flags.READ.getValue());
     }
 
     public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL target,
@@ -1130,6 +1130,19 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Iterator<URL> iterator() {
         return proxy.iterator();
+    }
+
+    public long getMTime(URL name) throws NotImplementedException,
+            IncorrectURLException, DoesNotExistException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
+        return proxy.getMTime(name);
+    }
+
+    public Task<NSDirectory, Long> getMTime(TaskMode mode, URL name)
+            throws NotImplementedException {
+        return proxy.getMTime(mode, name);
     }
 
 }

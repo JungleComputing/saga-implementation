@@ -171,7 +171,7 @@ public class TaskContainerImpl extends SagaObjectBase implements
         return tasks.values().toArray(new Task[tasks.size()]);
     }
 
-    public synchronized Task<?, ?> remove(Task<?,?> task)
+    public synchronized void remove(Task<?,?> task)
             throws NotImplementedException, DoesNotExistException,
             TimeoutException, NoSuccessException {
         String id = task.getId();
@@ -190,7 +190,6 @@ public class TaskContainerImpl extends SagaObjectBase implements
                 // ignored
             }
         }
-        return task;
     }
 
     public void run() throws NotImplementedException, IncorrectStateException,
@@ -252,7 +251,8 @@ public class TaskContainerImpl extends SagaObjectBase implements
             case FAILED:
             case DONE:
                 if (mode == WaitMode.ANY) {
-                    return remove(t);
+                    remove(t);
+                    return t;
                 }
                 break;
             case NEW:
@@ -262,7 +262,8 @@ public class TaskContainerImpl extends SagaObjectBase implements
         }
 
         if (running == 0) {
-            return remove(list[0]);
+            remove(list[0]);
+            return list[0];
         }
 
         return null;

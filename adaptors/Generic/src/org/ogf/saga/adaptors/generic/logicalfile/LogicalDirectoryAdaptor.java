@@ -327,4 +327,19 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
         return entry.list(".", flags);
     }
 
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return entry.getMTime();
+    }
+
+    public long getMTime(URL name) throws NotImplementedException,
+            IncorrectURLException, DoesNotExistException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
+        return entry.getMTime(name);
+    }
+
 }

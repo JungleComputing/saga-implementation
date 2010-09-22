@@ -370,4 +370,19 @@ public class LocalDirectoryAdaptor extends DirectoryAdaptorBase {
         return dir.permissionsCheck(id, permissions);
     }
 
+    public long getMTime() throws NotImplementedException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, IncorrectStateException,
+            TimeoutException, NoSuccessException {
+        return dir.getMTime();
+    }
+
+    public long getMTime(URL name) throws NotImplementedException,
+            IncorrectURLException, DoesNotExistException,
+            AuthenticationFailedException, AuthorizationFailedException,
+            PermissionDeniedException, BadParameterException,
+            IncorrectStateException, TimeoutException, NoSuccessException {
+        return dir.getMTime(name);
+    }
+
 }
