@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ogf.saga.context.Context;
-import org.ogf.saga.error.AlreadyExistsException;
 import org.ogf.saga.error.AuthenticationFailedException;
 import org.ogf.saga.error.AuthorizationFailedException;
 import org.ogf.saga.error.BadParameterException;
@@ -96,10 +95,11 @@ public class TaskContainerImpl extends SagaObjectBase implements
 
     public synchronized void add(Task<?, ?> task)
             throws NotImplementedException, TimeoutException,
-            AlreadyExistsException, NoSuccessException {
+            NoSuccessException {
         String id = task.getId();
         if (tasks.containsKey(id)) {
-            throw new AlreadyExistsException("Task " + id + " is already present");
+            // New semantics: just return.
+            return;
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Add task " + id);
