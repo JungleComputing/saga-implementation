@@ -133,7 +133,6 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
                     for (Throwable t2 : gatNestedEx.getExceptions()) {
                         logger.debug("Another exception: " + t2.getClass());
                         if (t2 instanceof SocketTimeoutException) {
-                            // TODO: check semantics with Andre.
                             logger.debug("Timeout exception");
                             throw new TimeoutException(e, wrapper);
                         }

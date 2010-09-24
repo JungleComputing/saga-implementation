@@ -122,8 +122,6 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
         } catch (SocketException e) {
             throw new NoSuccessException(e, wrapper);
         } catch (SocketTimeoutException e) {
-            // TODO: check semantics with Andre: this is not what a TimeoutException
-            // is to be used for.
             throw new TimeoutException(e, wrapper);
         } catch (IOException e) {
             throw new NoSuccessException(e, wrapper);
