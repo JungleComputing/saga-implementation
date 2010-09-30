@@ -22,8 +22,7 @@ public class ContextInitializerAdaptor extends AdaptorBase<Object> implements
             if ("ftp".equals(type)) {
                 // Default is anonymous
                 context.setValueIfEmpty(Context.USERID, "anonymous");
-                context
-                        .setValueIfEmpty(Context.USERPASS,
+                context.setValueIfEmpty(Context.USERPASS,
                                 "anonymous@localhost");
             } else if ("ssh".equals(type) || "sftp".equals(type)) {
                 // setValue(Context.USERID, "");
@@ -40,9 +39,9 @@ public class ContextInitializerAdaptor extends AdaptorBase<Object> implements
                 } else {
                     String home = System.getProperty("user.home");
                     String key = home + File.separator
-                    + ".globus" + File.separator + "userkey.pem";
+                            + ".globus" + File.separator + "userkey.pem";
                     String cert = home + File.separator
-                    + ".globus" + File.separator + "usercert.pem";
+                            + ".globus" + File.separator + "usercert.pem";
                     if (new File(key).exists()) {
                         context.setValueIfEmpty(Context.USERKEY, key);
                     }

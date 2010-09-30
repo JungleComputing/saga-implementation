@@ -15,6 +15,7 @@ import org.gridlab.gat.security.PasswordSecurityContext;
 import org.gridlab.gat.security.SecurityContext;
 import org.ogf.saga.adaptors.javaGAT.util.GatURIConverter;
 import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
 import org.ogf.saga.impl.context.ContextImpl;
 import org.ogf.saga.url.URL;
@@ -51,7 +52,7 @@ public class Session implements
         return gatContext;
     }
 
-    public synchronized void addContext(ContextImpl contextImpl) {
+    public synchronized void addContext(ContextImpl contextImpl) throws NoSuccessException {
 
         try {
             if ("preferences"
@@ -118,7 +119,7 @@ public class Session implements
         }
     }
 
-    private static SecurityContext cvt2GATSecurityContext(ContextImpl ctxt) {
+    private SecurityContext cvt2GATSecurityContext(ContextImpl ctxt) throws NoSuccessException {
         String type = ctxt.getValue(ContextImpl.TYPE);
         String userId = ctxt.getValue(ContextImpl.USERID);
         if (userId == null || userId.equals("")) {
@@ -131,6 +132,42 @@ public class Session implements
             c.addNote("adaptors", "ftp");
             return c;
         } else if ("globus".equals(type) || "gridftp".equals(type) || "glite".equals(type)) {
+            if ("glite".equals(type)) {
+                String userVO = ctxt.getValue(ContextImpl.USERVO);
+                if (userVO != null) {
+                    gatContext.addPreference("VirtualOrganisation", userVO);
+                }
+                String server = ctxt.getValue(ContextImpl.SERVER);
+                // Format of SERVER context:
+                // voms://voms.grid.sara.nl:30014/O=dutchgrid/O=hosts/OU=sara.nl/CN=voms.grid.sara.nl
+                if (server != null) {
+                    try {
+                        URL serverURL = URLFactory.createURL(server);
+                        String scheme = serverURL.getScheme();
+                        String host = serverURL.getHost();
+                        int port = serverURL.getPort();
+                        String hostDN = serverURL.getPath();
+                        if (! "voms".equals(scheme)) {
+                            throw new NoSuccessException("SERVER attribute has unrecognized scheme");
+                        }
+                        if (host == null) {
+                            throw new NoSuccessException("SERVER attribute has no host");
+                        }
+                        if (hostDN == null) {
+                            throw new NoSuccessException("SERVER attribute has no path");
+                        }
+                        gatContext.addPreference("vomsServerURL", host);
+                        gatContext.addPreference("vomsServerPort", "" + port);
+                        gatContext.addPreference("vomsHostDN", hostDN);
+                    } catch(NoSuccessException e) {
+                        throw e;
+                    } catch (Throwable e) {
+                        // Just continue.
+                        logger.info("Error in SERVER attribute", e);
+                        throw new NoSuccessException("Error in SERVER attribute", e);
+                    }
+                }
+            }
             String proxy = ctxt.getValue(ContextImpl.USERPROXY);
             if (proxy != null) {
                 // JavaGAT does not have a security context that refers to
