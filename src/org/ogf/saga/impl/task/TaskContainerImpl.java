@@ -166,11 +166,6 @@ public class TaskContainerImpl extends SagaObjectBase implements
         return tasks.values().toArray(new Task[tasks.size()]);
     }
 
-    public synchronized Task<?,?>[] listTasks() throws NotImplementedException,
-            TimeoutException, NoSuccessException {
-        return tasks.values().toArray(new Task[tasks.size()]);
-    }
-
     public synchronized void remove(Task<?,?> task)
             throws NotImplementedException, DoesNotExistException,
             TimeoutException, NoSuccessException {
