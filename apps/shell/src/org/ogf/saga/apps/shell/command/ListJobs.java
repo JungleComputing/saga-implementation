@@ -32,7 +32,7 @@ public class ListJobs extends EnvironmentCommand {
         TaskContainer bg = env.getBackgroundJobs();
 
         try {
-            Task<?,?>[] tasks = bg.listTasks();
+            Task<?,?>[] tasks = bg.getTasks();
             // Arrays.sort(tasks);
 
             for (Task<?,?> t : tasks) {
