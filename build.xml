@@ -6,7 +6,7 @@
 
     <!-- Global properties -->
 
-    <property name="version" value="-1.0.1" />
+    <property name="version" value="-1.1" />
     <property name="tmp" location="tmp" />
     <property name="lib" location="lib" />
     <property name="jar" location="${lib}/saga-impl${version}.jar" />
@@ -114,11 +114,14 @@
 
 	<zip destfile="sources/${sources-filename}.zip">
             <zipfileset dir="src" includes="**/*.java" prefix="${sources-filename}" />
+	    <zipfileset dir="adaptors/Archive/src" includes="**/*.java" prefix="${sources-filename}" />
+	    <zipfileset dir="adaptors/Fuse/src" includes="**/*.java" prefix="${sources-filename}" />
+	    <zipfileset dir="adaptors/Generic/src" includes="**/*.java" prefix="${sources-filename}" />
 	    <zipfileset dir="adaptors/Gridsam/src" includes="**/*.java" prefix="${sources-filename}" />
 	    <zipfileset dir="adaptors/JavaGat/src" includes="**/*.java" prefix="${sources-filename}" />
+	    <zipfileset dir="adaptors/Local/src" includes="**/*.java" prefix="${sources-filename}" />
 	    <zipfileset dir="adaptors/Socket/src" includes="**/*.java" prefix="${sources-filename}" />
 	    <zipfileset dir="adaptors/XMLRPC/src" includes="**/*.java" prefix="${sources-filename}" />
-	    <zipfileset dir="adaptors/Generic/src" includes="**/*.java" prefix="${sources-filename}" />
             <zipfileset dir="." includes="LICENSE.txt" prefix="${sources-filename}" />
         </zip>
 

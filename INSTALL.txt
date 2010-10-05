@@ -1,4 +1,6 @@
 Saga Implementation INSTALL
 ---------------------------
-  To install, you need a Java 1.5 and you need "ant".
-  Just call "ant" to install.
+  To install, you need a Java 6 and you need "ant".
+  Make sure that the environment variable JAVA_HOME refers
+  to the proper Java installation.
+  Then call "ant" to install.
