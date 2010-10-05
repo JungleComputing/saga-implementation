@@ -697,7 +697,6 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return remove(mode, Flags.NONE.getValue());
     }
 
-    @Override
     public long getMTime() throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
@@ -705,8 +704,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
         return proxy.getMTime();
     }
 
-    @Override
-    public Task<NSEntry, Long> getMTime(TaskMode mode)
+     public Task<NSEntry, Long> getMTime(TaskMode mode)
             throws NotImplementedException {
         return proxy.getMTime(mode);
     }
