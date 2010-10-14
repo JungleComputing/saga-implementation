@@ -23,7 +23,9 @@ Using a GridSAM service.
   the GridSAM service. The adaptor recognizes the following schemes:
   "https", "gridsam", and "any". The "gridsam" and "any" scheme are
   translated into a "https" scheme. The URL usually looks like:
-  https://<host>:18443/gridsam/services/gridsam.
+  gridsam://<host>:18443/gridsam/services/gridsam. The preferred scheme
+  to use is "gridsam", as otherwise other adaptors may apply as well.
+
   You need, of course, a certificate for the Gridsam service. Also, you
   need a file crypto.properties on your classpath. An example is included
   in this directory. You will probably need to adapt some values there,

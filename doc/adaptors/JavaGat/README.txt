@@ -26,6 +26,7 @@ Not implemented.
     The StreamService adaptor is complete, except for permissions.
     The Stream adaptor does not support the STREAM_WRITE metric and
     waitFor(Activity.WRITE). Also, Stream attributes are not supported yet.
+
   Jobs:
     The JavaGAT adaptor for the job package is built on JavaGAT Resources,
     for which various adaptors are available: ssh, globus, gridsam, glite,
@@ -36,10 +37,12 @@ Not implemented.
     SPMDVARIATION, THREADSPERPROCESS, JOBCONTACT, JOBSTARTTIME.
     Also, post-stage append and pre-stage append is not supported.
     The following Job attributes are not supported: TERMSIG.
+
   Namespace:
     the SAGA namespace package is built on JavaGAT File, for which various
     adaptors are available: ssh, globus, sftp, glite, to name a few.
     Links are not supported.
+
   File:
     the File methods modesE(), readE(), writeE(), sizeE() are not implemented.
     In addition, readP and writeP only have the implementation inherited
@@ -66,61 +69,137 @@ JavaGAT Preferences.
   It is also possible to use preferences to select specific javagat adaptors.
   Below is a list of preference names and possible values:
 
-  resourcebroker.adaptor.name: local, globus, wsgt4new, sshtrilead, glite,
+  resourcebroker.adaptor.name: local, globus, wsgt4new, gt42, sshtrilead, glite,
     gridsam, sge, localq, commandlinessh, unicore
   file.adaptor.name: local, gridftp, sftptrilead, commandlinessh, sshtrilead,
-    gliteguid, glitesrm, glitelfn, streaming, ftp, gt4gridftp, rftgt4,
-    srctolocaltodestcopy
-  fileinputstream.adaptor.name: local, gridftp, sftptrilead, ftp, http, https,
-    copying
+    gliteguid, glitesrm, glitelfn, ftp, gt4gridftp, rftgt4, gt42, rftgt42
+  fileinputstream.adaptor.name: local, gridftp, sftptrilead, ftp, http, https
   fileoutputstream.adaptor.name: local, gridftp, sftptrilead, ftp, http, https
 
 JavaGAT schemes.
   It is also possible to use URI schemes to trigger specific javagat adaptors:
   below is a list of schemes and matching adaptors:
-  Resourcebroker:
-      any: local, globus, wsgt4new, sshtrilead, glite, gridsam, sge, localq,
+  Resourcebroker (Jobs):
+      any: local, globus, wsgt4new, gt42, sshtrilead, glite, gridsam, sge, localq,
            commandlinessh, unicore
       ssh: commandlinessh, sshtrilead
+      globus: globus
+      gram: globus
+      commandlinessh: commandlinessh
+      sshtrilead: sshtrilead
       ldap: glite
       ldaps: glite
       http: glite, globus
-      https: glite, globus, wsgt4new, gridsam
+      https: glite, globus, wsgt4new, gt42, gridsam
+      glite: glite
+      gt42: gt42
+      wsgt4new: wsgt4new
       local: local
       localq: localq
       sge: sge
       unicore6: unicore
+      gridsam: gridsam
+
   File:
       (Note: most file adaptors deal with the file: scheme combined with
       no host or local host, because they must be able to copy them
       to remote locations from their own scheme).
       any: local, gridftp, sftptrilead, commandlinessh, sshtrilead,
-	   gliteguid, glitesrm, glitelfn, streaming, ftp, gt4gridftp, rftgt4,
-           srctolocaltodestcopy
+	   gliteguid, glitesrm, glitelfn, ftp, gt4gridftp, rftgt4, gt42, rftgt42
       ssh: commandlinessh, sshtrilead
-      file: commandlinessh, gliteguid, glitelfn, glitesrm, ftp, gridftp,
-            gt4gridftp, rftgt4, sftptrilead, sshtrilead, local
+      commandlinessh: commandlinessh
+      sshtrilead: sshtrilead
+      file: commandlinessh, gliteguid, glitelfn, glitesrm, ftp, gridftp, gt42,
+            gt4gridftp, rftgt4, rftgt42, sftptrilead, sshtrilead, local
       guid: gliteguid
+      gliteguid: gliteguid
       lfn: glitelfn
+      glitelfn: glitelfn
       srm: glitesrm
+      glitesrm: glitesrm
       ftp: ftp
       sftp: sftptrilead
-      gsiftp: gridftp, rftgt4
-      gridftp: gt4gridftp, rftgt4
+      sftptrilead: sftptrilead
+      gsiftp: gridftp, rftgt4, gt42
+      gridftp: gt4gridftp, rftgt4, gt42
+      gt4gridftp: gt4gridftp
+      gt42: gt42
+      rftgt4: rftgt4
+      rftgt42: rftgt42
+
   FileInputStream:
-      any: local, frp, gridftp, http, https, sftptrilead
+      any: local, ftp, gridftp, http, https, sftptrilead, sshtrilead
       ftp: ftp
       gsiftp: gridftp
+      gridftp: gridftp
       http: http
       https: https
-      file: local
+      file: local, http, https, gridftp, ftp, sftptrilead, sshtrilead
       sftp: sftptrilead
+      sftptrilead: sftptrilead
+      sshtrilead: sshtrilead
+      ssh: sshtrilead
+
   FileOutputStream:
-      any: local, frp, gridftp, http, https, sftptrilead
+      any: local, ftp, gridftp, http, https, sftptrilead, sshtrilead
       ftp: ftp
       gsiftp: gridftp
+      gridftp: gridftp
       http: http
       https: https
-      file: local
+      file: local, http, https, gridftp, ftp, sftptrilead, sshtrilead
       sftp: sftptrilead
+      sftptrilead: sftptrilead
+      ssh: sshtrilead
       
+Security contexts
+  The JavaGAT recognizes the following context types:
+    ftp
+	with attributes
+	  USERID (default: "anonymous")
+	  USERPASS (default: "anonymous@localhost")
+    ssh
+        with attributes
+	  USERID
+	  USERPASS
+	  USERKEY
+    sftp
+        with attributes
+	  USERID
+	  USERPASS
+	  USERKEY
+    globus
+	with attributes
+	  USERPROXY (default: if the environment variable X509_USER_PROXY is set,
+	     then the value of that, else if the System property x509.user.proxy
+	     is set, then the value of that, otherwise "")
+	  USERKEY (default: if USERPROXY is not set, userkey.pem inside the user's
+	     .globus directory, if that file exists)
+	  USERCERT (default: if USERPROXY is not set, userkey.cert inside the user's
+	     .globus directory, if that file exists)
+	  USERPASS
+    gridftp
+	with attributes
+	  USERPROXY (default: if the environment variable X509_USER_PROXY is set,
+	     then the value of that, else if the System property x509.user.proxy
+	     is set, then the value of that)
+	  USERKEY (default: if USERPROXY is not set, userkey.pem inside the user's
+	     .globus directory, if that file exists)
+	  USERCERT (default: if USERPROXY is not set, userkey.cert inside the user's
+	     .globus directory, if that file exists)
+	  USERPASS
+    glite
+	with attributes
+	  USERPROXY (default: if the environment variable X509_USER_PROXY is set,
+	     then the value of that, else if the System property x509.user.proxy
+	     is set, then the value of that, otherwise "")
+	  USERKEY (default: if USERPROXY is not set, userkey.pem inside the user's
+	     .globus directory, if that file exists)
+	  USERCERT (default: if USERPROXY is not set, userkey.cert inside the user's
+	     .globus directory, if that file exists)
+	  USERPASS
+	  USERVO
+	  SERVER
+	     Note: format of SERVER value is an URL, for instance
+	           "voms://voms.grid.sara.nl:30000/O=dutchgrid/O=hosts/OU=sara.nl/CN=voms.grid.sara.nl"
+

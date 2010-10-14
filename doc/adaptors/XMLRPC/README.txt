@@ -6,7 +6,7 @@ Introduction.
   It is built on top of the Apache XMLRPC client libraries.
 
 Not implemented.
-  The XMLRPC adaptor is complete, exept for permissions.
+  The XMLRPC adaptor is complete, except for permissions.
   It, however, supports at most one OUT parameter.
 
 Using the XMLRPC adaptor.

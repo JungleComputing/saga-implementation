@@ -7,4 +7,4 @@ Introduction.
 
 Using the Generic adaptor.
   The adaptor recognizes any scheme that is recognized by the file and namespace
-  packages.
+  packages. Sessions/contexts are passed on to the namespace and file packages.

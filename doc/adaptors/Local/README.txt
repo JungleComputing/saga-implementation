@@ -16,4 +16,6 @@ Using the Local adaptor.
   - local://localhost/usr/bin
   - any://localhost/tmp
   - dir/foo.txt
+
+  No specific contexts are required.
   

@@ -1,4 +1,4 @@
-Release 1.1 (?? October 2010)
+Release 1.1 (14 October 2010)
   This release incorporates the changes required  by the changes in the Saga
   specification (and the Java language bindings):
   - Buffer factory method no longer throws NotImplementedException.
@@ -47,6 +47,10 @@ Release 1.1 (?? October 2010)
   - attributes of type Time used milliseconds instead of seconds.
   - updated JavaGAT with fixed FTP file adaptor.
   - sort adaptor directory list for deterministic behaviour.
+  
+  In addition, this release includes a Fuse adaptor, with configurations
+  for sshfs, cifs (samba), xtreemfs, curlftp. There also is an archive
+  adaptor, which allows the user to open an archive as if it is a directory.
 
 Release 1.0.1 (24 April 2009)
   This release fixes various problems in release 1.0:

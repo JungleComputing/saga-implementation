@@ -32,4 +32,5 @@ Using the Archive adaptor.
   - any://localhost/tmp/test.zip
   - file://localhost/home/you/file.jar/src/Test.java
   - archive://localhost/tmp/file.tar.gz/dir/foo.jar/META-INF/LICENSE.txt
-  
+
+  The archive adaptor does not require any specific security contexts.

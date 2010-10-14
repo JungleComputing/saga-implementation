@@ -76,17 +76,17 @@
 	<ant inheritAll="false" dir="apps" target="build"/>
     </target>
 
-	<target name="install-engine" depends="build-engine">
-		<copy todir="${prefix}/share/doc/saga/engine-java" file="LICENSE.txt" />
-		<copy todir="${prefix}/share/doc/saga/engine-java" file="README.txt" />
-		<copy todir="${prefix}/share/doc/saga/engine-java" file="HISTORY.txt" />
-		<copy todir="${prefix}/etc/saga/java" file="log4j.properties" />
-		<copy todir="${prefix}/etc/saga/java" file="saga.properties" />
-		<copy todir="${prefix}/lib" >
-			<fileset dir="${lib}/" includes="saga-impl*.jar, log4j*.jar, slf4j*.jar" />
-		</copy>
-		<mkdir dir="${prefix}/lib/adaptors" />
-	</target>
+    <target name="install-engine" depends="build-engine">
+	<copy todir="${prefix}/share/doc/saga/engine-java" file="LICENSE.txt" />
+	<copy todir="${prefix}/share/doc/saga/engine-java" file="README.txt" />
+	<copy todir="${prefix}/share/doc/saga/engine-java" file="HISTORY.txt" />
+	<copy todir="${prefix}/etc/saga/java" file="log4j.properties" />
+	<copy todir="${prefix}/etc/saga/java" file="saga.properties" />
+	<copy todir="${prefix}/lib" >
+	    <fileset dir="${lib}/" includes="saga-impl*.jar, log4j*.jar, slf4j*.jar" />
+	</copy>
+	<mkdir dir="${prefix}/lib/adaptors" />
+    </target>
 
     <target name="doc" description="Create manuals">
         <ant dir="doc" inheritAll="false" />

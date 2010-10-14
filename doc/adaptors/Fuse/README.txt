@@ -48,7 +48,7 @@ FTP servers:
       fuseftp://ftp.xs4all.nl/welcome.msg
 
 Samba shares:
-  - accepted schemes: cifs, samba, any
+  - accepted schemes: cifs, smb, any
   - accepted context types: cifs, smb
       The context attributes 'UserID' and 'UserPass' are used as the Samba user 
       and password.

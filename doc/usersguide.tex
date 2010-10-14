@@ -289,14 +289,25 @@ The \texttt{ftp} context has the following default attributes:
 value \texttt{anonymous@localhost}.
 
 \item[\texttt{ssh} and \texttt{sftp}]
-The \texttt{ssh} and \texttt{sftp} know about the default SSH keys.
+The \texttt{ssh} and \texttt{sftp} contexts know about the default SSH keys.
 
 \item[\texttt{globus} and \texttt{gridftp}]
-The \texttt{globus} and \texttt{gridftp} obtain the default user key
+The \texttt{globus} and \texttt{gridftp} contexts obtain the default user key
+and certificate from a \texttt{.globus} sub-directory of the users' home
+directory, so set the \texttt{USERKEY} attribute to \texttt{userkey.pem}
+in that directory, and the \texttt{USERCERT} attribute to
+\texttt{usercert.pem} in that directory.
+
+\item[\texttt{glite}]
+The \texttt{glite} context obtains the default user key
 and certificate from a \texttt{.globus} sub-directory of the users' home
 directory, so it sets the \texttt{USERKEY} attribute to \texttt{userkey.pem}
 in that directory, and sets the \texttt{USERCERT} attribute to
-\texttt{usercert.pem} in that directory.
+\texttt{usercert.pem} in that directory. In addition, it requires
+that the \texttt{USERVO} attribute is set to the name of the virtual
+organization to which the user belongs, and that the \texttt{SERVER}
+attribute is set to an URL that describes the voms server, port,
+and distinguished name, for instance \texttt{"voms://voms.grid.sara.nl:30000/O=dutchgrid/O=hosts/OU=sara.nl/CN=voms.grid.sara.nl"}.
 
 \end{description}
 
@@ -418,6 +429,20 @@ The following adaptors can be selected:
 Note that property names are case-sensitive, so
 \texttt{File.adaptor.name} is recognized, while \texttt{file.adaptor.name} is
 not.
+
+Another way of selecting a specific adaptor is by means of the scheme of
+the URL. For instance, specifying the URL of a JobService as
+\texttt{"glite://wms3.grid.sara.nl:7443/glite\_wms\_wmproxy\_server"}
+instead of
+\texttt{"https://wms3.grid.sara.nl:7443/glite\_wms\_wmproxy\_server"}
+makes sure that only the gLite adaptor is selected. Being specific about
+which adaptors are to be used is very important for performance, because it
+prevents SAGA from trying other adaptors. Trying adaptors that are not
+applicable may take a lot of time, because they may for instance try
+to set up a connection, which may only fail due to a timeout. A \texttt{https}
+scheme may select the gLite, globus, web-services globus, and gridsam adaptors
+(and maybe others as well), whereas for instance a \texttt{gridsam} scheme will
+only select the Gridsam adaptor.
 
 \section{Further reading}
 
