@@ -15,7 +15,7 @@ Package SAGA stream
   advertService. Unfortunately, at the moment only a local advertService
   is available for JavaGAT, which means that this streams adaptor only
   works locally.
-  * adaptor for StreamService:
+  * adaptor for StreamServer:
     except for the permissions, this adaptor is complete.
   * adaptor for Stream:
     STREAM_WRITE metric is not supported. Reason: there is no support for it
@@ -27,7 +27,7 @@ Package SAGA stream
 
 - TCP
   The TCP adaptor for the stream package is built on java.net.socket.
-  * adaptor for StreamService:
+  * adaptor for StreamServer:
     accepts URLs with scheme "tcp" and scheme "any";
     complete except for permissions.
   * adaptor for Stream:
