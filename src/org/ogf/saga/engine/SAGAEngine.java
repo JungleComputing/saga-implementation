@@ -279,7 +279,7 @@ public class SAGAEngine {
      * with ".path", any occurrence of the string <code>SAGA_LOCATION</code>
      * is replaced by the actual value of the environment variable with the same
      * name, occurrences of a '/' are replaced by a file separator, and
-     * occurrences of a ':' are replaced by a ';', unless they are followed by a
+     * occurrences of a ':' are replaced by a path separator, unless they are followed by a
      * '\' (in this case they are assumed to separate a drive indicator from the
      * rest of the path).
      * 
