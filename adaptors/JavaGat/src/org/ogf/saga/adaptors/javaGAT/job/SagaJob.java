@@ -210,8 +210,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             // ignored
         }
         try {
-            // TODO: queue attribute does not exist in JavaGAT???
-            sd.addAttribute("queue", getV(JobDescriptionImpl.QUEUE));
+            sd.addAttribute(SoftwareDescription.JOB_QUEUE, getV(JobDescriptionImpl.QUEUE));
         } catch (Throwable e) {
             // ignored
         }
