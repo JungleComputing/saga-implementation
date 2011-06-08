@@ -1,3 +1,16 @@
+Release 1.1.1 (?? June 2011)
+  This release includes a new JavaGAT release (2.1.1). Also:
+  - the language bindings have been extended to allow an application to use
+    more than one Java Saga implementation simultaneously. This release
+    reflects those changes.
+  - the JavaGAT adaptor has been fixed to implement the "Queue" attribute
+    properly (at least for its adaptors that implement the JOB_QUEUE
+    SoftwareDescription attribute).
+  - combine jar-files in Gridsam adaptor to reduce number of sinultaneous
+    open files (this has also been done for various JavaGAT adaptors).
+  - fixed a couple of typo's in comments.
+  - the binary release now also contains the saga-shell sources.
+
 Release 1.1 (14 October 2010)
   This release incorporates the changes required  by the changes in the Saga
   specification (and the Java language bindings):
