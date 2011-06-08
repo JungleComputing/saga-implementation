@@ -44,7 +44,7 @@ public class RPCAdaptor extends RPCAdaptorBase {
             NoSuccessException, DoesNotExistException, IncorrectURLException {
         super(sessionImpl, wrapper, funcName);
 
-        URL url = URLFactory.createURL(funcName.toString());
+        URL url = URLFactory.createURL(MY_FACTORY, funcName.toString());
         url.setScheme("http");
         url.setHost(getHost());
         url.setPort(getPort());

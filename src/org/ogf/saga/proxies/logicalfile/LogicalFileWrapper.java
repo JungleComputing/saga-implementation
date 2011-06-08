@@ -36,6 +36,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         super(session, name, false);
+        checkURLType(name);
         checkFlags(flags);
         logicalFlags = includeImpliedFlags(flags);
         Object[] parameters = { this, session, name, logicalFlags };
@@ -91,6 +92,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
 
     public Task<LogicalFile, Void> addLocation(TaskMode mode, URL name)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.addLocation(mode, name);
     }
 
@@ -99,6 +101,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         if (!Flags.WRITE.isSet(logicalFlags)) {
             throw new PermissionDeniedException(
@@ -256,6 +259,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
 
     public Task<LogicalFile, Void> removeLocation(TaskMode mode, URL name)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.removeLocation(mode, name);
     }
 
@@ -264,6 +268,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         if (!Flags.WRITE.isSet(logicalFlags)) {
             throw new PermissionDeniedException(
@@ -276,6 +281,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
 
     public Task<LogicalFile, Void> replicate(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.replicate(mode, name, flags);
     }
 
@@ -290,6 +296,7 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         if (!Flags.WRITE.isSet(logicalFlags)
                 || !Flags.READ.isSet(logicalFlags)) {
@@ -341,6 +348,8 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
 
     public Task<LogicalFile, Void> updateLocation(TaskMode mode, URL nameOld,
             URL nameNew) throws NotImplementedException {
+	checkURLType(nameOld);
+	checkURLType(nameNew);
         return proxy.updateLocation(mode, nameOld, nameNew);
     }
 
@@ -350,6 +359,8 @@ public final class LogicalFileWrapper extends NSEntryWrapper implements
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(nameOld);
+	checkURLType(nameNew);
         checkNotClosed();
         if (!Flags.WRITE.isSet(logicalFlags)
                 || !Flags.READ.isSet(logicalFlags)) {

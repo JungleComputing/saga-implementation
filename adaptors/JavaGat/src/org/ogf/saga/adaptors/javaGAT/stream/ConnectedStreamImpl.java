@@ -90,7 +90,7 @@ public final class ConnectedStreamImpl extends ConnectedStream implements
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        return ContextFactory.createContext("Unknown");
+        return ContextFactory.createContext(MY_FACTORY, "Unknown");
     }
 
     public URL getUrl() throws NotImplementedException,

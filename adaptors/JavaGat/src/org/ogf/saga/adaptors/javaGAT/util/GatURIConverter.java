@@ -6,6 +6,7 @@ import org.gridlab.gat.URI;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ public class GatURIConverter {
 
     public static URL cvtToSagaURL(URI uri) throws NotImplementedException,
             BadParameterException, NoSuccessException {
-        return URLFactory.createURL(uri.toString()).normalize();
+        return URLFactory.createURL(SagaObjectBase.MY_FACTORY, uri.toString()).normalize();
     }
 
 }

@@ -4,9 +4,13 @@ import java.util.UUID;
 
 import org.ogf.saga.SagaObject;
 import org.ogf.saga.error.DoesNotExistException;
+import org.ogf.saga.impl.bootstrap.MetaFactory;
 import org.ogf.saga.session.Session;
+import org.ogf.saga.url.URL;
 
 public class SagaObjectBase implements SagaObject {
+    
+    public static final String MY_FACTORY = MetaFactory.class.getName();
 
     protected org.ogf.saga.impl.session.SessionImpl sessionImpl;
     private UUID uuid = UUID.randomUUID();
@@ -14,13 +18,25 @@ public class SagaObjectBase implements SagaObject {
     public SagaObjectBase() {
         this((Session) null);
     }
-
-    public SagaObjectBase(Session session) {
+    
+    public void checkSessionType(Session session) {
         if (session != null
                 && !(session instanceof org.ogf.saga.impl.session.SessionImpl)) {
             throw new SagaRuntimeException("Wrong session type: "
                     + session.getClass().getName());
         }
+    }
+        
+    public void checkURLType(URL url) {
+        if (url != null
+                && !(url instanceof org.ogf.saga.impl.url.URLImpl)) {
+            throw new SagaRuntimeException("Wrong URL type: "
+                    + url.getClass().getName());
+        }
+    }
+
+    public SagaObjectBase(Session session) {
+	checkSessionType(session);
         this.sessionImpl = (org.ogf.saga.impl.session.SessionImpl) session;
     }
 

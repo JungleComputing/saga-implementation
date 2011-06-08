@@ -53,7 +53,7 @@ public class FuseNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         if (createDelegate) {
             URL localUrl = auto.resolveLocalURL(mountId, entryUrl);
             try {
-                NSDirectory delegate = NSFactory.createNSDirectory(session,
+                NSDirectory delegate = NSFactory.createNSDirectory(MY_FACTORY, session,
                         localUrl, flags);
                 setNSDirectoryDelegate(delegate);
             } catch (DoesNotExistException e) {

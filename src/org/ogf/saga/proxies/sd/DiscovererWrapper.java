@@ -76,6 +76,7 @@ public class DiscovererWrapper extends SagaObjectBase implements Discoverer {
             AuthorizationFailedException, DoesNotExistException, IncorrectURLException, NoSuccessException,
             NotImplementedException, TimeoutException {
         super(session);
+        checkURLType(infoSystemUrl);
         m_infoSystemUrl = infoSystemUrl;
         Object[] parameters = { this, session, m_infoSystemUrl };
         createProxy(parameters);

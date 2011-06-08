@@ -381,7 +381,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
         }
         URL newURL = null;
         try {
-            newURL = URLFactory.createURL(getEntryURL().toString());
+            newURL = URLFactory.createURL(MY_FACTORY, getEntryURL().toString());
             newURL.setPath(path);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e, wrapper);
@@ -398,7 +398,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
         String[] s = path.split("/");
 
         try {
-            return URLFactory.createURL(s[s.length - 1]);
+            return URLFactory.createURL(MY_FACTORY, s[s.length - 1]);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e, wrapper);
         }
@@ -410,7 +410,7 @@ public class NSEntryAdaptor extends NSEntryAdaptorBase {
             throw new IncorrectStateException("NSEntry already closed", wrapper);
         }
         try {
-            return URLFactory.createURL(wrapper.getWrapperURL().normalize().toString());
+            return URLFactory.createURL(MY_FACTORY, wrapper.getWrapperURL().normalize().toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e, wrapper);
         }

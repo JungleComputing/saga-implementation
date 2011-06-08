@@ -7,6 +7,7 @@ import org.ogf.saga.adaptors.fuse.AutoMounter;
 import org.ogf.saga.error.BadParameterException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
 
@@ -142,7 +143,7 @@ public class URLUtil {
         	path = path.substring(basePath.length());
         }
         
-        URL result = URLFactory.createURL(rhs.toString());
+        URL result = URLFactory.createURL(SagaObjectBase.MY_FACTORY, rhs.toString());
         result.setPath(path);
         
         return result;

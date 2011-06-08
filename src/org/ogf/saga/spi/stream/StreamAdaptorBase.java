@@ -69,7 +69,7 @@ public abstract class StreamAdaptorBase extends AdaptorBase<Stream> implements
     public Object clone() throws CloneNotSupportedException {
         StreamAdaptorBase clone = (StreamAdaptorBase) super.clone();
         try {
-            clone.url = URLFactory.createURL(url.toString());
+            clone.url = URLFactory.createURL(MY_FACTORY, url.toString());
         } catch (Throwable e) {
             // Should not happen.
             throw new CloneNotSupportedException("Oops");

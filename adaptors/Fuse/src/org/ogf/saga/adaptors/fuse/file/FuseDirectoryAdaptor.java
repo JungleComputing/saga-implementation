@@ -44,7 +44,7 @@ public class FuseDirectoryAdaptor extends DirectoryAdaptorBase {
         AutoMounter auto = AutoMounter.getInstance();
         String mountId = dir.getMountId();
         URL localUrl = auto.resolveLocalURL(mountId, getEntryURL());
-        delegate = FileFactory.createDirectory(session, localUrl, flags);
+        delegate = FileFactory.createDirectory(MY_FACTORY, session, localUrl, flags);
 
         dir.setNSDirectoryDelegate(delegate);
     }

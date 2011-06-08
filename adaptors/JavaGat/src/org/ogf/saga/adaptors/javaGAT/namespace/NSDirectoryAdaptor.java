@@ -212,7 +212,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             throw new DoesNotExistException("Invalid index: " + entryNo);
         }
         try {
-            return URLFactory.createURL(resultFiles[entryNo].toGATURI()
+            return URLFactory.createURL(MY_FACTORY, resultFiles[entryNo].toGATURI()
                     .toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException(e, wrapper);

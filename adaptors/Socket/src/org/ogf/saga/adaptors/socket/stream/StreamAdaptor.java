@@ -213,7 +213,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             throw new IncorrectStateException("This stream was never opened",
                     wrapper);
 
-        return ContextFactory.createContext("Unknown");
+        return ContextFactory.createContext(MY_FACTORY, "Unknown");
     }
 
     public URL getUrl() throws NotImplementedException,

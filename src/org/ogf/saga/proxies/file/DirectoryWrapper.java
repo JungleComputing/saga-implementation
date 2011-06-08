@@ -94,6 +94,8 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
     AuthorizationFailedException, PermissionDeniedException,
     BadParameterException, IncorrectStateException,
     DoesNotExistException, TimeoutException, NoSuccessException {
+	
+	checkURLType(dir);
         
         checkNotClosed();
         
@@ -103,7 +105,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             String path = url.getPath();
 
             if (dir == url) {
-                url = URLFactory.createURL(dir.toString());
+                url = URLFactory.createURL(MY_FACTORY, dir.toString());
             }
 
             if (! path.equals("/") && path.endsWith("/")) {
@@ -160,6 +162,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         if ((GET_SIZE_FLAGS | flags) != GET_SIZE_FLAGS) {
             String msg = "Flags not allowed for getSize: " + flags;
@@ -178,6 +181,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
     public Task<Directory, Long> getSize(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.getSize(mode, name, flags);
     }
 
@@ -199,17 +203,20 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         return proxy.isFile(name);
     }
 
     public Task<Directory, Boolean> isFile(TaskMode mode, URL name)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.isFile(mode, name);
     }
 
     public Task<Directory, Directory> openDirectory(TaskMode mode, URL name,
             int flags) throws NotImplementedException {
+	checkURLType(name);
         return proxy.openDirectory(mode, name, flags);
     }
 
@@ -224,6 +231,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(directoryFlags)) {
             throw new PermissionDeniedException(
@@ -245,6 +253,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
     public Task<Directory, File> openFile(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.openFile(mode, name, flags);
     }
 
@@ -259,6 +268,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
+	checkURLType(name);
         if (Flags.CREATE.isSet(flags)) {
             // GFD.90 erratum: CREATE implies WRITE
             flags |= Flags.WRITE.getValue();
@@ -278,6 +288,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
 
     public Task<Directory, FileInputStream> openFileInputStream(TaskMode mode,
             URL name) throws NotImplementedException {
+	checkURLType(name);
         return proxy.openFileInputStream(mode, name);
     }
 
@@ -287,12 +298,14 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         return proxy.openFileInputStream(name);
     }
 
     public Task<Directory, FileOutputStream> openFileOutputStream(
             TaskMode mode, URL name, boolean append)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.openFileOutputStream(mode, name, append);
     }
 
@@ -307,6 +320,7 @@ public class DirectoryWrapper extends NSDirectoryWrapper implements Directory {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         if (!Flags.WRITE.isSet(directoryFlags)) {
             throw new PermissionDeniedException(
                     "openFileOutputStream "

@@ -20,7 +20,7 @@ public abstract class RPCAdaptorBase extends AdaptorBase<RPC> implements RPCSPI 
             throws NotImplementedException, BadParameterException,
             NoSuccessException {
         super(sessionImpl, wrapper);
-        this.funcName = URLFactory.createURL(funcName.toString());
+        this.funcName = URLFactory.createURL(MY_FACTORY, funcName.toString());
     }
 
     public Task<RPC, Void> call(TaskMode mode, Parameter... parameters)

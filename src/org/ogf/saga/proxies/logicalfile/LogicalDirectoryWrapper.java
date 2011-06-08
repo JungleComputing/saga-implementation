@@ -98,6 +98,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
     AuthorizationFailedException, PermissionDeniedException,
     BadParameterException, IncorrectStateException,
     DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(dir);
         checkNotClosed();
         if (dir.isAbsolute()) {
 
@@ -105,7 +106,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             String path = url.getPath();
 
             if (dir == url) {
-                url = URLFactory.createURL(dir.toString());
+                url = URLFactory.createURL(MY_FACTORY, dir.toString());
             }
 
             if (! path.equals("/") && path.endsWith("/")) {
@@ -312,6 +313,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
 
     public Task<LogicalDirectory, LogicalDirectory> openLogicalDir(
             TaskMode mode, URL name, int flags) throws NotImplementedException {
+	checkURLType(name);
         return proxy.openLogicalDir(mode, name, flags);
     }
 
@@ -326,6 +328,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(logicalFlags)) {
             throw new PermissionDeniedException(
@@ -347,6 +350,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
 
     public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode,
             URL name, int flags) throws NotImplementedException {
+	checkURLType(name);
         return proxy.openLogicalFile(mode, name, flags);
     }
 
@@ -361,6 +365,7 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         if (Flags.CREATE.isSet(flags) && !Flags.WRITE.isSet(logicalFlags)) {
             throw new PermissionDeniedException(
@@ -423,12 +428,14 @@ public final class LogicalDirectoryWrapper extends NSDirectoryWrapper implements
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, DoesNotExistException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         return proxy.isFile(name);
     }
 
     public Task<NSDirectory, Boolean> isFile(TaskMode mode, URL name)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.isFile(mode, name);
     }
 

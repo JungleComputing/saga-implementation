@@ -359,6 +359,9 @@ public class URLImpl extends SagaObjectBase implements URL {
      */
     public URL translate(Session session, String scheme)
             throws BadParameterException, NoSuccessException {
+	
+	checkSessionType(session);
+	
         return translate(scheme);
     }
 
@@ -388,6 +391,9 @@ public class URLImpl extends SagaObjectBase implements URL {
      */
     public org.ogf.saga.url.URL resolve(URL url)
             throws NoSuccessException {
+	
+	checkURLType(url);
+	
         String s = url.toString();
         URI uri;
         try {

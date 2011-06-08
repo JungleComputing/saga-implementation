@@ -129,7 +129,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         }
         URL newURL = null;
         try {
-            newURL = URLFactory.createURL(url.toString());
+            newURL = URLFactory.createURL(MY_FACTORY, url.toString());
             newURL.setPath(path);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
@@ -149,7 +149,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
         String[] s = path.split("/");
 
         try {
-            return URLFactory.createURL(s[s.length - 1]);
+            return URLFactory.createURL(MY_FACTORY, s[s.length - 1]);
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
         }
@@ -164,7 +164,7 @@ public abstract class NSEntryAdaptorBase extends AdaptorBase<NSEntryWrapper>
     public URL getURL() throws NotImplementedException,
             IncorrectStateException, TimeoutException, NoSuccessException {
         try {
-            return URLFactory.createURL(getEntryURL().normalize().toString());
+            return URLFactory.createURL(MY_FACTORY, getEntryURL().normalize().toString());
         } catch (BadParameterException e) {
             throw new NoSuccessException("Unexpected error", e);
         }

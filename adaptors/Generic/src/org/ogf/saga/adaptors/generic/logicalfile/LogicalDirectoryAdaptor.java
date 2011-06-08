@@ -33,7 +33,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags);
-        entry = NSFactory.createNSDirectory(sessionImpl, name, flags
+        entry = NSFactory.createNSDirectory(MY_FACTORY, sessionImpl, name, flags
                 & Flags.ALLNAMESPACEFLAGS.getValue());
     }
 

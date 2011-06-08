@@ -30,6 +30,7 @@ public class RPCWrapper extends SagaObjectBase implements RPC {
             PermissionDeniedException, BadParameterException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         super(session);
+        checkURLType(funcName);
         Object[] parameters = { this, session, funcName };
         try {
             proxy = (RPCSPI) SAGAEngine.createAdaptorProxy(RPCSPI.class,

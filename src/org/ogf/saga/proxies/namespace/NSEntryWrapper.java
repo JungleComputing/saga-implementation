@@ -105,12 +105,13 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
     protected NSEntryWrapper(Session session, URL name, boolean isDir)
             throws BadParameterException, NoSuccessException, NotImplementedException {
         super(session);
+        checkURLType(name);
         
         url = name.normalize();
         String path = url.getPath();
 
         if (name == url) {
-            url = URLFactory.createURL(name.toString());
+            url = URLFactory.createURL(MY_FACTORY, name.toString());
         }
         
         if (! path.equals("/") && path.endsWith("/")) {
@@ -260,6 +261,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public Task<NSEntry, Void> copy(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
+	checkURLType(target);
         return proxy.copy(mode, target, flags);
     }
 
@@ -294,7 +296,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
                     throw new NoSuccessException("Could not create temporary", e);
                 }
                 tmp.delete();
-                URL url = URLFactory.createURL(tmp.toURI().toString());                              
+                URL url = URLFactory.createURL(MY_FACTORY, tmp.toURI().toString());                              
                 // Copy through the proxy, to prevent recursion here.
                 proxy.copy(url, flags);
 
@@ -324,6 +326,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException,
             IncorrectURLException {
+	checkURLType(target);
         checkNotClosed();
         checkCopyFlags(flags);
         checkDirectoryFlags(flags, isDirectory);
@@ -482,6 +485,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public Task<NSEntry, Void> link(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
+	checkURLType(target);
         return proxy.link(mode, target, flags);
     }
 
@@ -495,6 +499,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             PermissionDeniedException, BadParameterException, DoesNotExistException,
             IncorrectStateException, AlreadyExistsException, TimeoutException,
             NoSuccessException, IncorrectURLException {
+	checkURLType(target);
         checkNotClosed();
         checkCopyFlags(flags);
         checkDirectoryFlags(flags, isDirectory);
@@ -511,6 +516,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
 
     public Task<NSEntry, Void> move(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
+	checkURLType(target);
         return proxy.move(mode, target, flags);
     }
 
@@ -525,6 +531,7 @@ public class NSEntryWrapper extends SagaObjectBase implements NSEntry {
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException,
             IncorrectURLException {
+	checkURLType(target);
         checkNotClosed();
         checkCopyFlags(flags);
         checkDirectoryFlags(flags, isDirectory);

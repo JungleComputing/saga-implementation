@@ -32,11 +32,15 @@ public class JobServiceWrapper extends SagaObjectBase implements JobService {
             PermissionDeniedException, AuthorizationFailedException,
             AuthenticationFailedException, BadParameterException, IncorrectURLException,
             NotImplementedException {
+	
         super(session);
+        
+        checkURLType(rm);
         
         if (rm == null) {
             throw new BadParameterException("Specified URL is null");
         }
+        
         Object[] parameters = { this, session, rm };
         try {
             proxy = (JobServiceSPI) SAGAEngine.createAdaptorProxy(

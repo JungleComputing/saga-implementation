@@ -42,7 +42,7 @@ public abstract class StreamServerAdaptorBase extends
         StreamServerAdaptorBase clone = (StreamServerAdaptorBase) super
                 .clone();
         try {
-            clone.url = URLFactory.createURL(url.toString());
+            clone.url = URLFactory.createURL(MY_FACTORY, url.toString());
         } catch (Throwable e) {
             throw new SagaRuntimeException("Should not happen", e);
         }

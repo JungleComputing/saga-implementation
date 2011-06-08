@@ -301,9 +301,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
                 URI s2 = null;
                 try {
                     s1 = GatURIConverter.cvtToGatURI(URLFactory
-                            .createURL(parts[0]));
+                            .createURL(MY_FACTORY, parts[0]));
                     s2 = GatURIConverter.cvtToGatURI(URLFactory
-                            .createURL(parts[1]));
+                            .createURL(MY_FACTORY, parts[1]));
                 } catch (URISyntaxException e) {
                     throw new BadParameterException(e, this);
                 }
@@ -434,7 +434,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
 
     private URI getURI(String s) throws BadParameterException {
         try {
-            URL url = URLFactory.createURL(getV(s));
+            URL url = URLFactory.createURL(MY_FACTORY, getV(s));
             return GatURIConverter.cvtToGatURI(url);
         } catch (BadParameterException e) {
             throw new BadParameterException(e.getMessage(), e.getCause(), this);

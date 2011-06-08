@@ -27,6 +27,7 @@ import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.SagaException;
 import org.ogf.saga.error.TimeoutException;
+import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.session.Session;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
@@ -310,7 +311,7 @@ public class AutoMounter {
 
         // use the internal scheme in the delegate URL to avoid an endless loop
         // in adaptor loading.
-        URL localUrl = URLFactory.createURL(config.getDelegateScheme() 
+        URL localUrl = URLFactory.createURL(SagaObjectBase.MY_FACTORY, config.getDelegateScheme() 
                 + "://" + LOCAL_HOST + localPath);
 
         return localUrl;   
@@ -382,7 +383,7 @@ public class AutoMounter {
             File localPath = new File(info.mountPoint, normPath);
             logger.debug("localPath=" + localPath);
 
-            URL result = URLFactory.createURL(config.getDelegateScheme() + "://" 
+            URL result = URLFactory.createURL(SagaObjectBase.MY_FACTORY, config.getDelegateScheme() + "://" 
                     + LOCAL_HOST);
             result.setPath(localPath.getPath());
             

@@ -118,7 +118,7 @@ public abstract class JobServiceAdaptorBase extends
             throws NotImplementedException, AuthenticationFailedException,
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        JobDescription jd = JobFactory.createJobDescription();
+        JobDescription jd = JobFactory.createJobDescription(MY_FACTORY);
         List<String> elts = getCommandLineElements(commandLine);
         if (elts.size() == 0) {
             throw new BadParameterException("Empty command line");

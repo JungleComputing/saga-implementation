@@ -164,7 +164,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         URI db;
         try {
             db = GatURIConverter.cvtToGatURI(URLFactory
-                    .createURL(getAdvertName(gatContext)));
+                    .createURL(MY_FACTORY, getAdvertName(gatContext)));
         } catch (BadParameterException e) {
             StreamStateUtils.setStreamState(streamState, StreamState.ERROR);
             onStateChange(StreamState.ERROR);
@@ -231,7 +231,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
         if (!wasOpen)
             throw new IncorrectStateException("This stream was never opened");
 
-        return ContextFactory.createContext("Unknown");
+        return ContextFactory.createContext(MY_FACTORY, "Unknown");
     }
 
     public URL getUrl() throws NotImplementedException,

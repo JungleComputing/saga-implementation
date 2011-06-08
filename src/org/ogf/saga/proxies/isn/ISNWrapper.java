@@ -50,6 +50,7 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
     protected ISNWrapper(String model, String entityName, String filter, Session session, URL infoSystemUrl)
             throws BadParameterException, DoesNotExistException, NoSuccessException {
         super(session);
+        checkURLType(infoSystemUrl);
         if (model == null || model.equals("")) {
             throw new BadParameterException("Invalid information model name: " + model);
         }
@@ -79,6 +80,7 @@ public class ISNWrapper extends SagaObjectBase implements EntityDataSet {
     private ISNWrapper(String model, String currentEntity, String filter, Session session, URL infoSystemUrl,
             Set<EntityData> entityData, String nextEntity) throws BadParameterException, NoSuccessException {
         super(session);
+        checkURLType(infoSystemUrl);
         m_entityName = nextEntity;
         m_model = model;
         Object[] parameters = { this, session, infoSystemUrl, model, currentEntity, filter, entityData, nextEntity };

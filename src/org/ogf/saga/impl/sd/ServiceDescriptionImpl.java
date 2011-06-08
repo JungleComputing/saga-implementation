@@ -103,14 +103,14 @@ public class ServiceDescriptionImpl extends SagaObjectBase implements org.ogf.sa
         String filter = sb.toString();
         URL informationServiceUrl = null;
         try {
-            informationServiceUrl = URLFactory.createURL(m_attributes
+            informationServiceUrl = URLFactory.createURL(MY_FACTORY, m_attributes
                     .getAttribute(ServiceDescription.INFORMATION_SERVICE_URL));
         } catch (SagaException e) {
             throw new Error("Internal error, got exception while creating URL: " + e.getMessage());
         }
         Discoverer discoverer = null;
         try {
-            discoverer = SDFactory.createDiscoverer(getSession(), informationServiceUrl);
+            discoverer = SDFactory.createDiscoverer(MY_FACTORY, getSession(), informationServiceUrl);
         } catch (SagaException e) {
             throw new Error("Internal error, unable to get related services: " + e.getMessage());
         }

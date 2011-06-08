@@ -43,7 +43,7 @@ private Logger logger = LoggerFactory.getLogger(FuseFileOutputStreamAdaptor.clas
 
         URL localURL = auto.resolveLocalURL(mountId, source);
         logger.debug("Creating local delegate with URL " + localURL);
-        delegate = FileFactory.createFileOutputStream(session, localURL);
+        delegate = FileFactory.createFileOutputStream(MY_FACTORY, session, localURL);
     }
     
     public void close() throws IOException {

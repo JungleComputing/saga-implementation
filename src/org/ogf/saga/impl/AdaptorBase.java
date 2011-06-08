@@ -11,6 +11,8 @@ import org.ogf.saga.impl.session.SessionImpl;
  * wrapper class is specified as a generic parameter.
  */
 public abstract class AdaptorBase<T> implements Cloneable {
+    
+    public static final String MY_FACTORY = SagaObjectBase.MY_FACTORY;
 
     /** The wrapper object. */
     protected T wrapper;

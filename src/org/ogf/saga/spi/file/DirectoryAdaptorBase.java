@@ -69,7 +69,7 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         name = resolveToDir(name);
-        return FileFactory.createDirectory(sessionImpl, name, flags);
+        return FileFactory.createDirectory(MY_FACTORY, sessionImpl, name, flags);
     }
 
     public Task<Directory, Directory> openDirectory(TaskMode mode, URL name,
@@ -86,7 +86,7 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         name = resolveToDir(name);
-        return FileFactory.createFile(sessionImpl, name, flags);
+        return FileFactory.createFile(MY_FACTORY, sessionImpl, name, flags);
     }
 
     public Task<Directory, File> openFile(TaskMode mode, URL name, int flags)
@@ -103,7 +103,7 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         name = resolveToDir(name);
-        return FileFactory.createFileInputStream(sessionImpl, name);
+        return FileFactory.createFileInputStream(MY_FACTORY, sessionImpl, name);
     }
 
     public FileOutputStream openFileOutputStream(URL name, boolean append)
@@ -113,7 +113,7 @@ public abstract class DirectoryAdaptorBase extends NSDirectoryAdaptorBase
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         name = resolveToDir(name);
-        return FileFactory.createFileOutputStream(sessionImpl, name, append);
+        return FileFactory.createFileOutputStream(MY_FACTORY, sessionImpl, name, append);
     }
 
     public Task<Directory, FileInputStream> openFileInputStream(TaskMode mode,

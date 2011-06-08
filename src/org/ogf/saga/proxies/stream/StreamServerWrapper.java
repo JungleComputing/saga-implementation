@@ -39,6 +39,7 @@ public class StreamServerWrapper extends SagaObjectBase implements
             AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, NoSuccessException {
         super(session);
+        checkURLType(name);
         this.url = name;
         Object[] parameters = { this, session, name };
         try {

@@ -43,7 +43,7 @@ public class FuseFileInputStreamAdaptor extends FileInputStreamAdaptorBase {
 
         URL localURL = auto.resolveLocalURL(mountId, source);
         logger.debug("Creating local delegate with URL " + localURL);
-        delegate = FileFactory.createFileInputStream(session, localURL);
+        delegate = FileFactory.createFileInputStream(MY_FACTORY, session, localURL);
     }
     
     public int available() throws IOException {

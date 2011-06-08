@@ -41,6 +41,7 @@ public class StreamWrapper extends SagaObjectBase implements Stream {
             AuthorizationFailedException, PermissionDeniedException,
             TimeoutException, NoSuccessException {
         super(session);
+        checkURLType(name);
         Object[] parameters = { this, session, name };
         try {
             proxy = (StreamSPI) SAGAEngine.createAdaptorProxy(StreamSPI.class,

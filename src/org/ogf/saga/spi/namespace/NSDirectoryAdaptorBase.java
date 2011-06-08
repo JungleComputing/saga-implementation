@@ -173,7 +173,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             return u;
         }
 
-        URL u = URLFactory.createURL(myURL.toString());
+        URL u = URLFactory.createURL(MY_FACTORY, myURL.toString());
         path = u.getPath();
         
         // If there is no path, and the URL has a host part, the path
@@ -212,7 +212,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
                 }
             }
         } else {
-            URL url = URLFactory.createURL(pattern);
+            URL url = URLFactory.createURL(MY_FACTORY, pattern);
             if (exists(url)) {
                 resultList.add(url);
             }
@@ -400,7 +400,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             if (resultList.size() == 1 && isDir(resultList.get(0))) {
                 // Pattern indicates a single directory. In this case, list the
                 // contents of the directory (like "ls").
-                NSDirectory dir = NSFactory.createNSDirectory(sessionImpl,
+                NSDirectory dir = NSFactory.createNSDirectory(MY_FACTORY, sessionImpl,
                         resolveToDir(resultList.get(0)), Flags.NONE
                                 .getValue());
                 return dir.list(".", flags);
@@ -448,7 +448,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
         // set the path.
         // Also, this does not work if the first section of the path
         // contains a ':' (Bug in java.net.URI?). So more trickery ...
-        URL url = URLFactory.createURL("");
+        URL url = URLFactory.createURL(MY_FACTORY, "");
 
         if (entry.contains(":")) {
             url.setPath("./" + entry);
@@ -466,7 +466,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         target = resolveToDir(target);
-        NSDirectory dir = NSFactory.createNSDirectory(sessionImpl, target, flags
+        NSDirectory dir = NSFactory.createNSDirectory(MY_FACTORY, sessionImpl, target, flags
                 | Flags.CREATE.getValue());
         dir.close();
     }
@@ -499,7 +499,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
         name = resolveToDir(name);
-        return NSFactory.createNSEntry(sessionImpl, name, flags);
+        return NSFactory.createNSEntry(MY_FACTORY, sessionImpl, name, flags);
     }
 
     public Task<NSDirectory, NSEntry> open(TaskMode mode, URL name, int flags)
@@ -516,7 +516,7 @@ public abstract class NSDirectoryAdaptorBase extends NSEntryAdaptorBase
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         name = resolveToDir(name);
-        return NSFactory.createNSDirectory(sessionImpl, name, flags);
+        return NSFactory.createNSDirectory(MY_FACTORY, sessionImpl, name, flags);
     }
 
     public Task<NSDirectory, org.ogf.saga.namespace.NSDirectory> openDir(

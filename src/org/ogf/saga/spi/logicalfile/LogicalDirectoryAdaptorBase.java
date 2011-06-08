@@ -108,7 +108,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
             DoesNotExistException, TimeoutException, NoSuccessException {
 
         name = resolveToDir(name);
-        return LogicalFileFactory.createLogicalDirectory(sessionImpl, name,
+        return LogicalFileFactory.createLogicalDirectory(MY_FACTORY, sessionImpl, name,
                 flags);
     }
 
@@ -127,7 +127,7 @@ public abstract class LogicalDirectoryAdaptorBase extends
             DoesNotExistException, TimeoutException, NoSuccessException {
 
         name = resolveToDir(name);
-        return LogicalFileFactory.createLogicalFile(sessionImpl, name, flags);
+        return LogicalFileFactory.createLogicalFile(MY_FACTORY, sessionImpl, name, flags);
     }
 
     public Task<LogicalDirectory, LogicalFile> openLogicalFile(TaskMode mode,

@@ -55,7 +55,7 @@ public class FuseNSEntryAdaptor extends NSEntryAdaptorBase {
         if (createDelegate) {
             URL localURL = auto.resolveLocalURL(mountId, entryUrl);
             logger.debug("Creating local delegate with URL " + localURL);
-            delegate = NSFactory.createNSEntry(session, localURL, flags);
+            delegate = NSFactory.createNSEntry(MY_FACTORY, session, localURL, flags);
         }
     }
 

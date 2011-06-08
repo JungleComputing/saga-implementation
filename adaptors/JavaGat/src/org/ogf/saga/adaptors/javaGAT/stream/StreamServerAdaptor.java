@@ -108,8 +108,8 @@ public class StreamServerAdaptor extends StreamServerAdaptorBase {
         AdvertService advertService = null;
         URI db = null;
         try {
-            db = GatURIConverter.cvtToGatURI(URLFactory.createURL(StreamAdaptor
-                    .getAdvertName(gatContext)));
+            db = GatURIConverter.cvtToGatURI(URLFactory.createURL(MY_FACTORY, 
+        	    StreamAdaptor.getAdvertName(gatContext)));
             advertService = GAT.createAdvertService(gatContext);
             Endpoint serverSide = GAT.createEndpoint(gatContext);
             advertService.add(serverSide, new MetaData(), url.getString());

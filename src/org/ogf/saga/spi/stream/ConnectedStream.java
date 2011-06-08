@@ -222,7 +222,7 @@ public abstract class ConnectedStream extends SagaObjectBase implements Stream {
     public Object clone() throws CloneNotSupportedException {
         StreamAdaptorBase clone = (StreamAdaptorBase) super.clone();
         try {
-            clone.url = URLFactory.createURL(url.toString());
+            clone.url = URLFactory.createURL(MY_FACTORY, url.toString());
         } catch (Throwable e) {
             // Should not happen.
             throw new CloneNotSupportedException("Oops");

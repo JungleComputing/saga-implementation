@@ -17,6 +17,7 @@ import org.ogf.saga.adaptors.javaGAT.util.GatURIConverter;
 import org.ogf.saga.error.DoesNotExistException;
 import org.ogf.saga.error.NoSuccessException;
 import org.ogf.saga.error.NotImplementedException;
+import org.ogf.saga.impl.SagaObjectBase;
 import org.ogf.saga.impl.context.ContextImpl;
 import org.ogf.saga.url.URL;
 import org.ogf.saga.url.URLFactory;
@@ -142,7 +143,7 @@ public class Session implements
                 // voms://voms.grid.sara.nl:30014/O=dutchgrid/O=hosts/OU=sara.nl/CN=voms.grid.sara.nl
                 if (server != null) {
                     try {
-                        URL serverURL = URLFactory.createURL(server);
+                        URL serverURL = URLFactory.createURL(SagaObjectBase.MY_FACTORY, server);
                         String scheme = serverURL.getScheme();
                         String host = serverURL.getHost();
                         int port = serverURL.getPort();
@@ -196,9 +197,9 @@ public class Session implements
                 }
             }
             try {
-                URL key = URLFactory.createURL(ctxt.getValue(ContextImpl.USERKEY));
+                URL key = URLFactory.createURL(SagaObjectBase.MY_FACTORY, ctxt.getValue(ContextImpl.USERKEY));
                 URI keyURI = GatURIConverter.cvtToGatURI(key);
-                URL cert = URLFactory.createURL(ctxt.getValue(ContextImpl.USERCERT));
+                URL cert = URLFactory.createURL(SagaObjectBase.MY_FACTORY, ctxt.getValue(ContextImpl.USERCERT));
                 URI certURI = GatURIConverter.cvtToGatURI(cert);
                 SecurityContext c = new CertificateSecurityContext(keyURI,
                         certURI, userId, ctxt.getValue(ContextImpl.USERPASS));
@@ -214,7 +215,7 @@ public class Session implements
         } else if ("ssh".equals(type) || "sftp".equals(type)) {
             if (!ctxt.getValue(ContextImpl.USERKEY).equals("")) {
                 try {
-                    URL key = URLFactory.createURL(ctxt.getValue(ContextImpl.USERKEY));
+                    URL key = URLFactory.createURL(SagaObjectBase.MY_FACTORY, ctxt.getValue(ContextImpl.USERKEY));
                     URI keyURI = GatURIConverter.cvtToGatURI(key);
                     SecurityContext c = new CertificateSecurityContext(
                             keyURI, null, userId, ctxt.getValue(ContextImpl.USERPASS));

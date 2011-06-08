@@ -52,12 +52,12 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
         super(wrapper, sessionImpl, url, flags);
 
-        entry = NSFactory.createNSEntry(sessionImpl, url, flags
+        entry = NSFactory.createNSEntry(MY_FACTORY, sessionImpl, url, flags
                 & Flags.ALLNAMESPACEFLAGS.getValue());
 
         if (Flags.READ.isSet(flags)) {
             BufferedReader in = new BufferedReader(new InputStreamReader(
-                    FileFactory.createFileInputStream(sessionImpl, url)));
+                    FileFactory.createFileInputStream(MY_FACTORY, sessionImpl, url)));
             try {
                 for (;;) {
                     String s = in.readLine();
@@ -65,7 +65,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
                         break;
                     }
                     try {
-                        URL u = URLFactory.createURL(s);
+                        URL u = URLFactory.createURL(MY_FACTORY, s);
                         urls.add(u);
                     } catch (Throwable e) {
                         try {
@@ -171,7 +171,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         URL url = getClosestURL(name);
         // Create entry so that we can copy.
         try {
-            NSEntry e = NSFactory.createNSEntry(sessionImpl, url, Flags.NONE
+            NSEntry e = NSFactory.createNSEntry(MY_FACTORY, sessionImpl, url, Flags.NONE
                     .getValue());
 
             // Pick the first location. Exceptions passed on to user.
@@ -257,7 +257,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                    FileFactory.createFileOutputStream(sessionImpl, wrapper.getWrapperURL())));
+                    FileFactory.createFileOutputStream(MY_FACTORY, sessionImpl, wrapper.getWrapperURL())));
             for (URL u : urls) {
                 out.write(u.toString());
                 out.newLine();

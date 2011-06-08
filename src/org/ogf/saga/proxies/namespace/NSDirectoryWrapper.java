@@ -114,6 +114,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, Void> changeDir(TaskMode mode, URL dir)
             throws NotImplementedException {
+	checkURLType(dir);
         return proxy.changeDir(mode, dir);
     }
 
@@ -122,6 +123,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(dir);
         checkNotClosed();
         if (dir.isAbsolute()) {
             
@@ -129,7 +131,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             String path = url.getPath();
 
             if (dir == url) {
-                url = URLFactory.createURL(dir.toString());
+                url = URLFactory.createURL(MY_FACTORY, dir.toString());
             }
             
             if (! path.equals("/") && path.endsWith("/")) {
@@ -193,6 +195,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, Void> copy(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException {
+	checkURLType(source);
+	checkURLType(target);
         return proxy.copy(mode, source, target, flags);
     }
 
@@ -223,13 +227,13 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             if (! tmp.mkdir()) {
                 return false;
             }
-            URL url = URLFactory.createURL(tmp.toURI().toString());                              
+            URL url = URLFactory.createURL(MY_FACTORY, tmp.toURI().toString());                              
             // copy through the proxy to prevent recursion here.
             proxy.copy(source, url, flags);
 
             temp = new NSDirectoryWrapper(sessionImpl, url, 0);
             java.io.File tmp1 = new java.io.File(source.getPath());
-            temp.proxy.copy(URLFactory.createURL(tmp1.getName()), target, flags);
+            temp.proxy.copy(URLFactory.createURL(MY_FACTORY, tmp1.getName()), target, flags);
             return true;
         } catch(Throwable e) {
             return false;
@@ -269,7 +273,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             if (! tmp.mkdir()) {
                 return false;
             }
-            URL url = URLFactory.createURL(tmp.toURI().toString());                              
+            URL url = URLFactory.createURL(MY_FACTORY, tmp.toURI().toString());                              
             // Copy through the proxy, to prevent recursion.
             proxy.copy(source, url, flags);
             temp = new NSDirectoryWrapper(sessionImpl, url, 0);
@@ -297,6 +301,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(source);
+	checkURLType(target);
         checkNotClosed();
         checkCopyFlags(flags);
         // checkDirectoryFlags(flags, isDir(source));
@@ -358,6 +364,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, Boolean> exists(TaskMode mode, URL name)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.exists(mode, name);
     }
 
@@ -366,6 +373,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         return proxy.exists(name);
     }
@@ -437,12 +445,14 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         return proxy.isDir(name);
     }
 
     public Task<NSDirectory, Boolean> isEntry(TaskMode mode, URL name)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.isEntry(mode, name);
     }
 
@@ -451,12 +461,14 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         return proxy.isEntry(name);
     }
 
     public Task<NSDirectory, Boolean> isLink(TaskMode mode, URL name)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.isLink(mode, name);
     }
 
@@ -465,12 +477,15 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         return proxy.isLink(name);
     }
 
     public Task<NSDirectory, Void> link(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException {
+	checkURLType(source);
+	checkURLType(target);
         return proxy.link(mode, source, target, flags);
     }
 
@@ -485,6 +500,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(source);
+	checkURLType(target);
         checkNotClosed();
         checkCopyFlags(flags);
         // checkDirectoryFlags(flags, isDir(source));
@@ -560,6 +577,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, Void> makeDir(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
+	checkURLType(target);
         return proxy.makeDir(mode, target, flags);
     }
 
@@ -574,6 +592,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
+	checkURLType(target);
         checkNotClosed();
         int allowedFlags = Flags.CREATEPARENTS.or(Flags.EXCL);
         if ((allowedFlags | flags) != allowedFlags) {
@@ -594,6 +613,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, Void> move(TaskMode mode, URL source, URL target,
             int flags) throws NotImplementedException {
+	checkURLType(source);
+	checkURLType(target);
         return proxy.move(mode, source, target, flags);
     }
 
@@ -608,6 +629,8 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(source);
+	checkURLType(target);
         checkNotClosed();
         checkCopyFlags(flags);
         // checkDirectoryFlags(flags, isDir(source));
@@ -668,6 +691,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, NSEntry> open(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.open(mode, name, flags);
     }
 
@@ -682,9 +706,10 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             BadParameterException, IncorrectStateException,
             AlreadyExistsException, DoesNotExistException, TimeoutException,
             NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         name = resolveToDir(name);
-        return NSFactory.createNSEntry(sessionImpl, name, flags);
+        return NSFactory.createNSEntry(MY_FACTORY, sessionImpl, name, flags);
     }
 
     public NSEntry open(URL name) throws NotImplementedException,
@@ -712,7 +737,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             return u;
         }
 
-        URL u = URLFactory.createURL(myURL.toString());
+        URL u = URLFactory.createURL(MY_FACTORY, myURL.toString());
         path = u.getPath();
 
         // If there is no path, and the URL has a host part, the path
@@ -731,6 +756,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, NSDirectory> openDir(TaskMode mode, URL name,
             int flags) throws NotImplementedException {
+	checkURLType(name);
         return proxy.openDir(mode, name, flags);
     }
 
@@ -745,9 +771,10 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         checkNotClosed();
         name = resolveToDir(name);
-        return NSFactory.createNSDirectory(sessionImpl, name, flags);
+        return NSFactory.createNSDirectory(MY_FACTORY, sessionImpl, name, flags);
     }
 
     public NSDirectory openDir(URL name) throws NotImplementedException,
@@ -762,6 +789,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     public Task<NSDirectory, Void> permissionsAllow(TaskMode mode, URL target,
             String id, int permissions, int flags)
             throws NotImplementedException {
+	checkURLType(target);
         return proxy.permissionsAllow(mode, target, id, permissions, flags);
     }
 
@@ -777,6 +805,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             PermissionDeniedException, IncorrectStateException,
             BadParameterException, TimeoutException, NoSuccessException,
             IncorrectURLException {
+	checkURLType(target);
         checkNotClosed();
         proxy.permissionsAllow(target, id, permissions, flags);
     }
@@ -792,6 +821,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
     public Task<NSDirectory, Void> permissionsDeny(TaskMode mode, URL target,
             String id, int permissions, int flags)
             throws NotImplementedException {
+	checkURLType(target);
         return proxy.permissionsDeny(mode, target, id, permissions, flags);
     }
 
@@ -806,6 +836,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
             NoSuccessException, IncorrectURLException, IncorrectStateException {
+	checkURLType(target);
         checkNotClosed();
         proxy.permissionsDeny(target, id, permissions, flags);
     }
@@ -820,6 +851,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, URL> readLink(TaskMode mode, URL name)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.readLink(mode, name);
     }
 
@@ -834,6 +866,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, Void> remove(TaskMode mode, URL target, int flags)
             throws NotImplementedException {
+	checkURLType(target);
         return proxy.remove(mode, target, flags);
     }
 
@@ -847,6 +880,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             PermissionDeniedException, IncorrectURLException,
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(target);
         checkNotClosed();
         checkRemoveFlags(flags);
         // checkDirectoryFlags(flags, isDir(target));
@@ -867,6 +901,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(target);
         checkNotClosed();
         checkCopyFlags(flags);
         try {
@@ -918,6 +953,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, Void> copy(TaskMode mode, String source,
             URL target, int flags) throws NotImplementedException {
+	checkURLType(target);
         return proxy.copy(mode, source, target, flags);
     }
 
@@ -927,11 +963,13 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(target);
         proxy.link(source, target, flags);
     }
 
     public Task<NSDirectory, Void> link(TaskMode mode, String source,
             URL target, int flags) throws NotImplementedException {
+	checkURLType(target);
         return proxy.link(mode, source, target, flags);
     }
 
@@ -941,6 +979,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
+	checkURLType(target);
         checkNotClosed();
         checkCopyFlags(flags);
         try {
@@ -991,6 +1030,7 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
 
     public Task<NSDirectory, Void> move(TaskMode mode, String source,
             URL target, int flags) throws NotImplementedException {
+	checkURLType(target);
         return proxy.move(mode, source, target, flags);
     }
 
@@ -1137,11 +1177,13 @@ public class NSDirectoryWrapper extends NSEntryWrapper implements NSDirectory {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
+	checkURLType(name);
         return proxy.getMTime(name);
     }
 
     public Task<NSDirectory, Long> getMTime(TaskMode mode, URL name)
             throws NotImplementedException {
+	checkURLType(name);
         return proxy.getMTime(mode, name);
     }
 

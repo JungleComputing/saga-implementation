@@ -46,7 +46,7 @@ public class FuseFileAdaptor extends FileAdaptorBase {
         AutoMounter auto = AutoMounter.getInstance();
         String mountId = fileEntry.getMountId();
         URL localUrl = auto.resolveLocalURL(mountId, getEntryURL());
-        delegate = FileFactory.createFile(localUrl, flags);
+        delegate = FileFactory.createFile(MY_FACTORY, localUrl, flags);
 
         fileEntry.setNSEntryDelegate(delegate);
     }
