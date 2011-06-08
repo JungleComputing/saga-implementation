@@ -1,13 +1,15 @@
 <project name="SagaShell" default="build" basedir=".">
 
     <description>Build file for the SAGA shell</description>
+    <property environment="env" />
+    <property name="env.JAVA_SAGA_LOCATION" location="../.." />
 
     <!-- Global properties -->
     <property name="tmp" location="tmp" />
     <property name="external" location="external" />
     <property name="lib" location="lib" />
     <property name="jar" location="${lib}/saga-shell.jar" />
-    <property name="java_saga_location" location="../.." />
+    <property name="java_saga_location" location="${env.JAVA_SAGA_LOCATION}" />
 	
     <target name="init">
         <path id="external.jars">
