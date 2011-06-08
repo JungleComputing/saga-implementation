@@ -24,4 +24,4 @@ add_to_gat_classpath () {
 
 add_to_gat_classpath "${GAT_ADAPTOR_LOCATION}/shared"
 
-java  -classpath "${GAT_ADAPTOR_LOCATION}"/GlobusAdaptor/cog-jglobus.jar:"${GAT_CLASSPATH}" org.globus.tools.ProxyInit "$@"
+java  -classpath "${GAT_ADAPTOR_LOCATION}"/GlobusAdaptor/GlobusAdaptor.jar:"${GAT_CLASSPATH}" org.globus.tools.ProxyInit "$@"

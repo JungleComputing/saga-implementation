@@ -8,4 +8,4 @@ set SAGA_CLASSPATH=
 
 FOR %%i IN ("%JAVA_SAGA_LOCATION%\lib\adaptors\JavaGatAdaptor\adaptors\shared\*.jar") DO CALL "%JAVA_SAGA_LOCATION%\bin\AppendToClassPath.bat" %%i
 
-java -DUID="%USERNAME%" -classpath "%JAVA_SAGA_LOCATION%\lib\adaptors\JavaGatAdaptor\adaptors\GlobusAdaptor\cog-jglobus.jar;%SAGA_CLASSPATH%" org.globus.tools.ProxyDestroy %*
+java -DUID="%USERNAME%" -classpath "%JAVA_SAGA_LOCATION%\lib\adaptors\JavaGatAdaptor\adaptors\GlobusAdaptor\GlobusAdaptor.jar;%SAGA_CLASSPATH%" org.globus.tools.ProxyDestroy %*
