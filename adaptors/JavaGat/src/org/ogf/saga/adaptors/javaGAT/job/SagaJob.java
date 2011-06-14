@@ -205,6 +205,10 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             String v = getV(JobDescriptionImpl.WORKINGDIRECTORY);
             if (! ".".equals(v)) {
                 sd.addAttribute(SoftwareDescription.DIRECTORY, v);
+                // ... but, apparently, none of the javagat adaptors look at this attribute, so
+                // explicitly added sandbox attributes. --Ceriel
+                sd.addAttribute(SoftwareDescription.SANDBOX_USEROOT, "true");
+                sd.addAttribute(SoftwareDescription.SANDBOX_ROOT, v);
             }
         } catch (Throwable e) {
             // ignored
