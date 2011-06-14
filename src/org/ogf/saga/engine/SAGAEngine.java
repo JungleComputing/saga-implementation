@@ -277,6 +277,7 @@ public class SAGAEngine {
     /**
      * Obtains the value of the specified property. If the property name ends
      * with ".path", any occurrence of the string <code>SAGA_LOCATION</code>
+     * or <code>JAVA_SAGA_LOCATION</code>
      * is replaced by the actual value of the environment variable with the same
      * name, occurrences of a '/' are replaced by a file separator, and
      * occurrences of a ':' are replaced by a path separator, unless they are followed by a
@@ -291,6 +292,7 @@ public class SAGAEngine {
         String result = properties.getProperty(s);
         if (s.endsWith(".path")) {
             if (result != null && sagaLocation != null) {
+                result = result.replace("JAVA_SAGA_LOCATION", sagaLocation);
                 result = result.replace("SAGA_LOCATION", sagaLocation);
             }
             if (result != null) {
