@@ -234,6 +234,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             String v = getV(JobDescriptionImpl.CLEANUP);
             if ("False".equals(v)) {
                 sd.addAttribute(SoftwareDescription.SAVE_STATE, "false");
+                sd.addAttribute(SoftwareDescription.SANDBOX_DELETE, "false");
             }
             // Default behaviour of javagat is to cleanup.
         } catch (Throwable e) {
