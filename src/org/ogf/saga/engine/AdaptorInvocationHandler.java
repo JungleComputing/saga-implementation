@@ -313,7 +313,8 @@ public class AdaptorInvocationHandler implements InvocationHandler {
 
         for (String s : orig.adaptorInstantiations.keySet()) {
             try {
-                AdaptorBase cp = (AdaptorBase) orig.adaptorInstantiations
+                @SuppressWarnings("rawtypes")
+		AdaptorBase cp = (AdaptorBase) orig.adaptorInstantiations
                         .get(s).clone();
                 // This next invocation gives a compiler warning if warnings are
                 // not suppressed, and rightly so.

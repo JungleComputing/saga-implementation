@@ -41,8 +41,7 @@ class Adaptor {
      *                anything that the constructor throws, or an error
      *                indicating that no suitable constructor was found.
      */
-    @SuppressWarnings("unchecked")
-    AdaptorBase instantiate(Class<?>[] types, Object[] parameters)
+    AdaptorBase<?> instantiate(Class<?>[] types, Object[] parameters)
             throws Throwable {
         // Set context classloader before calling constructor.
         // Some adaptors may need this because some libraries explicitly
@@ -58,7 +57,7 @@ class Adaptor {
                 throw new Error("No correct contructor exists in adaptor"
                         + adaptorClass.getName());
             }
-            return (AdaptorBase) ctor.newInstance(parameters);
+            return (AdaptorBase<?>) ctor.newInstance(parameters);
         } catch (InvocationTargetException e) {
             // rethrow original exception
             throw e.getTargetException();
