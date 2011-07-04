@@ -55,7 +55,7 @@ public class SagaFileNameCompletor implements Completor {
     }
     
     public int complete(final String buf, final int cursor,
-            final List candidates) {
+            @SuppressWarnings("rawtypes") final List candidates) {
         if (base == null) {
             return -1;
         }
@@ -122,7 +122,7 @@ public class SagaFileNameCompletor implements Completor {
         }
     }
 
-    private int completeDotDot(String buffer, final List candidates)
+    private int completeDotDot(String buffer, final List<String> candidates)
             throws SagaException {
         
         if (onlyContainsDotDot(buffer)) {
