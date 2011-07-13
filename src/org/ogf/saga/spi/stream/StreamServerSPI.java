@@ -11,13 +11,12 @@ import org.ogf.saga.monitoring.AsyncMonitorable;
 import org.ogf.saga.permissions.Permissions;
 import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamServer;
-import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.url.URL;
 
 public interface StreamServerSPI extends AsyncMonitorable<StreamServer>,
-        Permissions<StreamServer>, Async {
+        Permissions<StreamServer> {
 
     /**
      * Obtains the URL to be used to connect to this server.

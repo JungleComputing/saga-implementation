@@ -18,12 +18,11 @@ import org.ogf.saga.stream.Stream;
 import org.ogf.saga.stream.StreamInputStream;
 import org.ogf.saga.stream.StreamOutputStream;
 import org.ogf.saga.stream.StreamServer;
-import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.url.URL;
 
-public interface StreamSPI extends Async, AsyncMonitorable<Stream>,
+public interface StreamSPI extends AsyncMonitorable<Stream>,
         AsyncAttributes<Stream>, Permissions<Stream> {
 
     /**

@@ -13,11 +13,10 @@ import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.permissions.Permissions;
 import org.ogf.saga.rpc.Parameter;
 import org.ogf.saga.rpc.RPC;
-import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 
-public interface RPCSPI extends Async, Permissions<RPC> {
+public interface RPCSPI extends Permissions<RPC> {
 
     /**
      * Calls the remote procedure.

@@ -34,7 +34,7 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
 
     protected int fileFlags;
     protected final HashMap<String, Falls> fallsCache = new HashMap<String, Falls>();
-    protected FileWrapper wrapper;
+    protected FileWrapper fileWrapper;
 
     public FileAdaptorBase(FileWrapper wrapper, SessionImpl sessionImpl,
             URL name, int flags) throws NotImplementedException,
@@ -44,7 +44,7 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
             TimeoutException, NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags
                 & Flags.ALLNAMESPACEFLAGS.getValue());
-        this.wrapper = wrapper;
+        this.fileWrapper = wrapper;
         fileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
     }
 
@@ -239,88 +239,88 @@ public abstract class FileAdaptorBase extends NSEntryAdaptorBase implements
 
     public Task<File, Long> getSize(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Long>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Long>(fileWrapper,
                 sessionImpl, mode, "getSize", new Class[] {});
     }
 
     public Task<File, Integer> read(TaskMode mode, Buffer buffer, int offset,
             int len) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(fileWrapper,
                 sessionImpl, mode, "read", new Class[] { Buffer.class,
                         Integer.TYPE, Integer.TYPE }, buffer, offset, len);
     }
 
     public Task<File, Integer> write(TaskMode mode, Buffer buffer, int offset,
             int len) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(fileWrapper,
                 sessionImpl, mode, "write", new Class[] { Buffer.class,
                         Integer.TYPE, Integer.TYPE }, buffer, offset, len);
     }
 
     public Task<File, Long> seek(TaskMode mode, long arg1, SeekMode arg2)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Long>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Long>(fileWrapper,
                 sessionImpl, mode, "seek", new Class[] { Long.TYPE,
                         SeekMode.class }, arg1, arg2);
     }
 
     public Task<File, List<String>> modesE(TaskMode mode)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, List<String>>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, List<String>>(fileWrapper,
                 sessionImpl, mode, "modesE", new Class[] {});
     }
 
     public Task<File, Integer> sizeE(TaskMode mode, String arg1, String arg2)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(fileWrapper,
                 sessionImpl, mode, "sizeE", new Class[] { String.class,
                         String.class }, arg1, arg2);
     }
 
     public Task<File, Integer> readE(TaskMode mode, String arg1, String arg2,
             Buffer arg3) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(fileWrapper,
                 sessionImpl, mode, "readE", new Class[] { String.class,
                         String.class, Buffer.class }, arg1, arg2, arg3);
     }
 
     public Task<File, Integer> writeE(TaskMode mode, String arg1, String arg2,
             Buffer arg3) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(fileWrapper,
                 sessionImpl, mode, "writeE", new Class[] { String.class,
                         String.class, Buffer.class }, arg1, arg2, arg3);
     }
 
     public Task<File, Integer> sizeP(TaskMode mode, String arg1)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(fileWrapper,
                 sessionImpl, mode, "sizeP", new Class[] { String.class }, arg1);
     }
 
     public Task<File, Integer> readP(TaskMode mode, String arg1, Buffer arg2)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(fileWrapper,
                 sessionImpl, mode, "readP", new Class[] { String.class,
                         Buffer.class }, arg1, arg2);
     }
 
     public Task<File, Integer> writeP(TaskMode mode, String arg1, Buffer arg2)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Integer>(fileWrapper,
                 sessionImpl, mode, "writeP", new Class[] { String.class,
                         Buffer.class }, arg1, arg2);
     }
 
     public Task<File, Void> readV(TaskMode mode, IOVec[] arg1)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Void>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Void>(fileWrapper,
                 sessionImpl, mode, "readV", new Class[] { IOVec[].class },
                 (Object) arg1);
     }
 
     public Task<File, Void> writeV(TaskMode mode, IOVec[] arg1)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<File, Void>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<File, Void>(fileWrapper,
                 sessionImpl, mode, "writeV", new Class[] { IOVec[].class },
                 (Object) arg1);
     }

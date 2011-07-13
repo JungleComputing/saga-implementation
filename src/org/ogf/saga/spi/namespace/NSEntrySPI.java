@@ -13,7 +13,6 @@ import org.ogf.saga.error.PermissionDeniedException;
 import org.ogf.saga.error.TimeoutException;
 import org.ogf.saga.namespace.NSEntry;
 import org.ogf.saga.permissions.Permissions;
-import org.ogf.saga.task.Async;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
 import org.ogf.saga.url.URL;
@@ -21,7 +20,7 @@ import org.ogf.saga.url.URL;
 /**
  * Part of the SAGA NSEntry interface that has to be implemented by the SPI's.
  */
-public interface NSEntrySPI extends Async, Permissions<NSEntry> {
+public interface NSEntrySPI extends Permissions<NSEntry> {
 
     /**
      * Returns a clone.

@@ -28,7 +28,7 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
 
     protected LogicalFileAttributes attributes;
     protected int logicalFileFlags;
-    protected LogicalFileWrapper wrapper;
+    protected LogicalFileWrapper logicalFileWrapper;
 
 
     public LogicalFileAdaptorBase(LogicalFileWrapper wrapper,
@@ -39,7 +39,7 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
             AuthenticationFailedException, TimeoutException,
             NoSuccessException, AlreadyExistsException {
         super(wrapper, sessionImpl, name, flags & Flags.ALLNAMESPACEFLAGS.getValue());
-        this.wrapper = wrapper;
+        this.logicalFileWrapper = wrapper;
         logicalFileFlags = flags & ~Flags.ALLNAMESPACEFLAGS.getValue();
         attributes = new LogicalFileAttributes(wrapper, sessionImpl, true);
     }
@@ -203,7 +203,7 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
 
     public Task<LogicalFile, Void> addLocation(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, Void>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, Void>(logicalFileWrapper,
                 sessionImpl, mode, "addLocation", new Class[] { URL.class },
                 name);
     }
@@ -211,26 +211,26 @@ public abstract class LogicalFileAdaptorBase extends NSEntryAdaptorBase
     public Task<LogicalFile, List<URL>> listLocations(TaskMode mode)
             throws NotImplementedException {
         return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, List<URL>>(
-                wrapper, sessionImpl, mode, "listLocations", new Class[] {});
+                logicalFileWrapper, sessionImpl, mode, "listLocations", new Class[] {});
     }
 
     public Task<LogicalFile, Void> removeLocation(TaskMode mode, URL name)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, Void>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, Void>(logicalFileWrapper,
                 sessionImpl, mode, "removeLocation", new Class[] { URL.class },
                 name);
     }
 
     public Task<LogicalFile, Void> replicate(TaskMode mode, URL name, int flags)
             throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, Void>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, Void>(logicalFileWrapper,
                 sessionImpl, mode, "replicate", new Class[] { URL.class,
                         Integer.TYPE }, name, flags);
     }
 
     public Task<LogicalFile, Void> updateLocation(TaskMode mode, URL nameOld,
             URL nameNew) throws NotImplementedException {
-        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, Void>(wrapper,
+        return new org.ogf.saga.impl.task.TaskImpl<LogicalFile, Void>(logicalFileWrapper,
                 sessionImpl, mode, "updateLocation", new Class[] { URL.class,
                         URL.class }, nameOld, nameNew);
     }
