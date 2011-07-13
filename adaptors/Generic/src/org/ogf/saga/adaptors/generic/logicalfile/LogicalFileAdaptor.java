@@ -141,7 +141,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             write();
         } else {
             throw new DoesNotExistException("url " + name + " not found",
-                    wrapper);
+                    logicalFileWrapper);
         }
     }
 
@@ -163,7 +163,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
         if (!name.isAbsolute()) {
             throw new BadParameterException(
-                    "replicate() call with relative URL " + name, wrapper);
+                    "replicate() call with relative URL " + name, logicalFileWrapper);
         }
 
         name = name.normalize();
@@ -179,7 +179,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
             e.copy(name, flags);
             e.close();
         } catch (Throwable e) {
-            throw new NoSuccessException("Copy failed", e, wrapper);
+            throw new NoSuccessException("Copy failed", e, logicalFileWrapper);
         }
 
         if (doAdd(name)) {
@@ -197,18 +197,18 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
         if (!nameNew.isAbsolute()) {
             throw new BadParameterException(
                     "updateLocation() call with relative URL " + nameNew,
-                    wrapper);
+                    logicalFileWrapper);
         }
 
         nameNew = nameNew.normalize();
 
         if (urls.contains(nameNew)) {
             throw new AlreadyExistsException("URL " + nameNew
-                    + " already exists in LogicalFile", wrapper);
+                    + " already exists in LogicalFile", logicalFileWrapper);
         }
         if (!doRemove(nameOld)) {
             throw new DoesNotExistException("url " + nameOld + " not found",
-                    wrapper);
+                    logicalFileWrapper);
         }
 
         doAdd(nameNew);
@@ -218,7 +218,7 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
     private URL getClosestURL(URL location) throws IncorrectStateException {
         if (urls == null || urls.size() == 0) {
             throw new IncorrectStateException("No files in logical file '"
-                    + wrapper.getWrapperURL() + "' to compare with", wrapper);
+                    + logicalFileWrapper.getWrapperURL() + "' to compare with", logicalFileWrapper);
         }
         // first check: same hostname
         for (URL file : urls) {
@@ -257,15 +257,15 @@ public class LogicalFileAdaptor extends LogicalFileAdaptorBase {
 
         try {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-                    FileFactory.createFileOutputStream(MY_FACTORY, sessionImpl, wrapper.getWrapperURL())));
+                    FileFactory.createFileOutputStream(MY_FACTORY, sessionImpl, logicalFileWrapper.getWrapperURL())));
             for (URL u : urls) {
                 out.write(u.toString());
                 out.newLine();
             }
             out.close();
         } catch (Throwable e) {
-            throw new NoSuccessException("Exception while writing " + wrapper.getWrapperURL(),
-                    e, wrapper);
+            throw new NoSuccessException("Exception while writing " + logicalFileWrapper.getWrapperURL(),
+                    e, logicalFileWrapper);
         }
     }
 

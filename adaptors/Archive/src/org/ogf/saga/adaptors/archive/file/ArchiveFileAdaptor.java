@@ -85,7 +85,7 @@ public class ArchiveFileAdaptor extends FileAdaptorBase {
     public Object clone() throws CloneNotSupportedException {
         ArchiveFileAdaptor clone = (ArchiveFileAdaptor) super.clone();
         clone.entry = (LocalNSEntryAdaptor) entry.clone();
-        clone.entry.setWrapper(clone.wrapper);
+        clone.entry.setWrapper(clone.fileWrapper);
         return clone;
     }
     
@@ -239,7 +239,7 @@ public class ArchiveFileAdaptor extends FileAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
-        throw new NotImplementedException("readE()", wrapper);
+        throw new NotImplementedException("readE()", fileWrapper);
     }
 
     public int sizeE(String emode, String spec) throws NotImplementedException,

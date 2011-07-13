@@ -71,7 +71,7 @@ public class LogicalDirectoryAdaptor extends LogicalDirectoryAdaptorBase {
             BadParameterException, IncorrectStateException,
             DoesNotExistException, TimeoutException, NoSuccessException {
         entry.changeDir(dir);
-        wrapper.setWrapperURL(entry.getURL());
+        nsDirectoryWrapper.setWrapperURL(entry.getURL());
     }
 
     public void copy(URL source, URL target, int flags)

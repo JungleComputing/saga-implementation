@@ -104,7 +104,7 @@ public class LocalFileAdaptor extends FileAdaptorBase {
     public Object clone() throws CloneNotSupportedException {
         LocalFileAdaptor clone = (LocalFileAdaptor) super.clone();
         clone.entry = (LocalNSEntryAdaptor) entry.clone();
-        clone.entry.setWrapper(clone.wrapper);
+        clone.entry.setWrapper(clone.fileWrapper);
         return clone;
     }
     
@@ -303,7 +303,7 @@ public class LocalFileAdaptor extends FileAdaptorBase {
         try {
             bytesWritten = channel.write(byteBuf);
         } catch (IOException e) {
-            throw new SagaIOException(e, wrapper);
+            throw new SagaIOException(e, fileWrapper);
         }
 
         return bytesWritten;

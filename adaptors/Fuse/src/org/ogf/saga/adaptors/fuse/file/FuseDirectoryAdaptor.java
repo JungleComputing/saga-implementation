@@ -53,7 +53,7 @@ public class FuseDirectoryAdaptor extends DirectoryAdaptorBase {
     public Object clone() throws CloneNotSupportedException {
         FuseDirectoryAdaptor clone = (FuseDirectoryAdaptor) super.clone();
         clone.dir = (FuseNSDirectoryAdaptor) dir.clone();
-        clone.dir.setWrapper(clone.wrapper);
+        clone.dir.setWrapper(clone.nsDirectoryWrapper);
         clone.delegate = (Directory)delegate.clone();
         return clone;
     }

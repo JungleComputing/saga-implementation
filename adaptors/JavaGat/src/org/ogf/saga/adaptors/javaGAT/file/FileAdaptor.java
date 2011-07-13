@@ -117,7 +117,7 @@ public class FileAdaptor extends FileAdaptorBase {
     public Object clone() throws CloneNotSupportedException {
         FileAdaptor clone = (FileAdaptor) super.clone();
         clone.entry = (FileEntry) entry.clone();
-        clone.entry.setWrapper(clone.wrapper);
+        clone.entry.setWrapper(clone.fileWrapper);
         return clone;
     }
 
@@ -133,7 +133,7 @@ public class FileAdaptor extends FileAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        throw new NotImplementedException("modesE", wrapper);
+        throw new NotImplementedException("modesE", fileWrapper);
     }
 
     public int read(Buffer buffer, int off, int len)
@@ -148,14 +148,14 @@ public class FileAdaptor extends FileAdaptorBase {
         } catch (DoesNotExistException e) {
             if (len < 0) {
                 throw new BadParameterException(
-                        "read: len < 0 and buffer not allocated yet", wrapper);
+                        "read: len < 0 and buffer not allocated yet", fileWrapper);
             }
             buffer.setSize(off + len);
             try {
                 b = buffer.getData();
             } catch (DoesNotExistException e2) {
                 // This should not happen after setSize() with size >= 0.
-                throw new NoSuccessException("Internal error", e2, wrapper);
+                throw new NoSuccessException("Internal error", e2, fileWrapper);
             }
         }
 
@@ -163,11 +163,11 @@ public class FileAdaptor extends FileAdaptorBase {
 
         if (off > sz) {
             throw new BadParameterException("read: offset > buffer size",
-                    wrapper);
+                    fileWrapper);
         }
         if (off + len > sz) {
             throw new BadParameterException(
-                    "read: specified len > buffer size", wrapper);
+                    "read: specified len > buffer size", fileWrapper);
         } else if (len < 0) {
             len = sz - off;
         }
@@ -181,7 +181,7 @@ public class FileAdaptor extends FileAdaptorBase {
                 result = in.read(b, off, len);
             }
         } catch (IOException e) {
-            throw new SagaIOException(e, wrapper);
+            throw new SagaIOException(e, fileWrapper);
         }
         if (result < 0) {
             // EOF
@@ -196,7 +196,7 @@ public class FileAdaptor extends FileAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
-        throw new NotImplementedException("readE", wrapper);
+        throw new NotImplementedException("readE", fileWrapper);
     }
 
     public long seek(long offset, SeekMode whence)
@@ -224,7 +224,7 @@ public class FileAdaptor extends FileAdaptorBase {
                 rf.seek(offset);
                 this.offset = rf.getFilePointer();
             } catch (IOException e) {
-                throw new SagaIOException(e, wrapper);
+                throw new SagaIOException(e, fileWrapper);
             }
             return this.offset;
         }
@@ -235,21 +235,21 @@ public class FileAdaptor extends FileAdaptorBase {
                     this.offset += skipped;
                     return offset;
                 } catch (IOException e) {
-                    throw new SagaIOException(e, wrapper);
+                    throw new SagaIOException(e, fileWrapper);
                 }
             }
             throw new NotImplementedException(
-                    "Backwards seek not implemented", wrapper);
+                    "Backwards seek not implemented", fileWrapper);
         }
         throw new NotImplementedException(
-                "Seek on output stream not implemented", wrapper);
+                "Seek on output stream not implemented", fileWrapper);
     }
 
     public int sizeE(String arg0, String arg1) throws NotImplementedException,
             AuthenticationFailedException, AuthorizationFailedException,
             IncorrectStateException, PermissionDeniedException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("sizeE", wrapper);
+        throw new NotImplementedException("sizeE", fileWrapper);
     }
 
     public int write(Buffer buffer, int off, int len)
@@ -263,14 +263,14 @@ public class FileAdaptor extends FileAdaptorBase {
             b = buffer.getData();
         } catch (DoesNotExistException e) {
             throw new BadParameterException("write: buffer not allocated yet",
-                    wrapper);
+                    fileWrapper);
         }
 
         if (len + off > buffer.getSize() || len < 0) {
             len = buffer.getSize() - off;
         }
         if (len < 0) {
-            throw new BadParameterException("write: offset too large", wrapper);
+            throw new BadParameterException("write: offset too large", fileWrapper);
         }
 
         try {
@@ -280,7 +280,7 @@ public class FileAdaptor extends FileAdaptorBase {
                 out.write(b, off, len);
             }
         } catch (IOException e) {
-            throw new SagaIOException(e, wrapper);
+            throw new SagaIOException(e, fileWrapper);
         }
         offset += len;
         return len;
@@ -291,7 +291,7 @@ public class FileAdaptor extends FileAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException, SagaIOException {
-        throw new NotImplementedException("writeE", wrapper);
+        throw new NotImplementedException("writeE", fileWrapper);
     }
 
     public void close(float timeoutInSeconds) throws NotImplementedException,
@@ -315,7 +315,7 @@ public class FileAdaptor extends FileAdaptorBase {
                 out = null;
             }
         } catch (IOException e) {
-            throw new NoSuccessException("close() failed", e, wrapper);
+            throw new NoSuccessException("close() failed", e, fileWrapper);
         }
     }
 

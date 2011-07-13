@@ -54,7 +54,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
     public Object clone() throws CloneNotSupportedException {
         NSDirectoryAdaptor clone = (NSDirectoryAdaptor) super.clone();
         clone.entry = (NSEntryAdaptor) entry.clone();
-        clone.entry.setWrapper(clone.wrapper);
+        clone.entry.setWrapper(clone.nsDirectoryWrapper);
         return clone;
     }
 
@@ -79,25 +79,25 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                     .cvtToGatURI(dir));
             toDirFileInterface = toDir.getFileInterface();
         } catch (GATObjectCreationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         } catch (URISyntaxException e) {
-            throw new BadParameterException(e, wrapper);
+            throw new BadParameterException(e, nsDirectoryWrapper);
         }
         try {
             if (!toDirFileInterface.exists()) {
                 throw new DoesNotExistException("Directory does not exist: "
-                        + dir.toString(), wrapper);
+                        + dir.toString(), nsDirectoryWrapper);
             }
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
         try {
             if (!toDirFileInterface.isDirectory()) {
                 throw new DoesNotExistException(dir.toString()
-                        + " is not a directory", wrapper);
+                        + " is not a directory", nsDirectoryWrapper);
             }
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
         
         dir = dir.normalize();
@@ -148,16 +148,16 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                 if (!targetFile.isDirectory()) {
                     throw new BadParameterException(
                             "Source expands to more than one file and "
-                                    + "target is not a directory", wrapper);
+                                    + "target is not a directory", nsDirectoryWrapper);
                 }
             } catch (GATObjectCreationException e) {
-                throw new NoSuccessException(e, wrapper);
+                throw new NoSuccessException(e, nsDirectoryWrapper);
             } catch (URISyntaxException e) {
-                throw new BadParameterException(e, wrapper);
+                throw new BadParameterException(e, nsDirectoryWrapper);
             }
         } else if (sources.size() < 1) {
             throw new DoesNotExistException("Source " + source
-                    + " does not exist", wrapper);
+                    + " does not exist", nsDirectoryWrapper);
         }
 
         for (URL s : sources) {
@@ -182,14 +182,14 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             existsFile = GAT.createFile(entry.gatContext, GatURIConverter
                     .cvtToGatURI(name));
         } catch (GATObjectCreationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         } catch (URISyntaxException e) {
-            throw new BadParameterException(e, wrapper);
+            throw new BadParameterException(e, nsDirectoryWrapper);
         }
         try {
             return existsFile.getFileInterface().exists();
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
     }
 
@@ -206,7 +206,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         try {
             resultFiles = entry.file.listFiles();
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
         if (entryNo >= resultFiles.length) {
             throw new DoesNotExistException("Invalid index: " + entryNo);
@@ -215,7 +215,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             return URLFactory.createURL(MY_FACTORY, resultFiles[entryNo].toGATURI()
                     .toString());
         } catch (BadParameterException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
     }
 
@@ -228,7 +228,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         try {
             resultFiles = entry.file.listFiles();
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
         return resultFiles.length;
     }
@@ -248,17 +248,17 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             isDirFile = GAT.createFile(entry.gatContext, GatURIConverter
                     .cvtToGatURI(name));
         } catch (GATObjectCreationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         } catch (URISyntaxException e) {
-            throw new BadParameterException(e, wrapper);
+            throw new BadParameterException(e, nsDirectoryWrapper);
         }
         try {
             if (!isDirFile.getFileInterface().exists()) {
                 throw new DoesNotExistException("Does not exist: "
-                        + name.toString(), wrapper);
+                        + name.toString(), nsDirectoryWrapper);
             }
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
         try {
             return isDirFile.getFileInterface().isDirectory();
@@ -282,22 +282,22 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             isDirFile = GAT.createFile(entry.gatContext, GatURIConverter
                     .cvtToGatURI(name));
         } catch (GATObjectCreationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         } catch (URISyntaxException e) {
-            throw new BadParameterException(e, wrapper);
+            throw new BadParameterException(e, nsDirectoryWrapper);
         }
         try {
             if (!entry.file.exists()) {
                 throw new DoesNotExistException("Does not exist: "
-                        + name.toString(), wrapper);
+                        + name.toString(), nsDirectoryWrapper);
             }
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
         try {
             return isDirFile.getFileInterface().isFile();
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
     }
 
@@ -306,7 +306,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException,
             IncorrectStateException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("isLink", wrapper);
+        throw new NotImplementedException("isLink", nsDirectoryWrapper);
     }
 
     public void link(URL source, URL target, int flags)
@@ -317,7 +317,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             DoesNotExistException, TimeoutException, NoSuccessException {
         boolean isDir = isDir(source);
         checkDirectoryFlags(flags, isDir);
-        throw new NotImplementedException("link", wrapper);
+        throw new NotImplementedException("link", nsDirectoryWrapper);
     }
 
     public void link(String source, URL target, int flags)
@@ -326,7 +326,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             IncorrectURLException, BadParameterException,
             IncorrectStateException, AlreadyExistsException,
             DoesNotExistException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("link", wrapper);
+        throw new NotImplementedException("link", nsDirectoryWrapper);
     }
 
     public List<URL> listCurrentDir(int flags) throws NotImplementedException,
@@ -345,7 +345,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
         try {
             resultFiles = entry.file.list();
         } catch (GATInvocationException e) {
-            throw new NoSuccessException(e, wrapper);
+            throw new NoSuccessException(e, nsDirectoryWrapper);
         }
         
         return convertToRelativeURLs(resultFiles);
@@ -381,7 +381,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                 logger.debug("Directory already closed!");
             }
             throw new IncorrectStateException(
-                    "move(): directory already closed", wrapper);
+                    "move(): directory already closed", nsDirectoryWrapper);
         }
         int allowedFlags = Flags.RECURSIVE.or(Flags.DEREFERENCE
                 .or(Flags.OVERWRITE));
@@ -390,7 +390,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                 logger.debug("Wrong flags used!");
             }
             throw new BadParameterException(
-                    "Flags not allowed for move method: " + flags, wrapper);
+                    "Flags not allowed for move method: " + flags, nsDirectoryWrapper);
         }
 
         target = resolveToDir(target);
@@ -415,7 +415,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                 logger.debug("Directory already closed!");
             }
             throw new IncorrectStateException(
-                    "move(): directory already closed", wrapper);
+                    "move(): directory already closed", nsDirectoryWrapper);
         }
         int allowedFlags = Flags.RECURSIVE.or(Flags.DEREFERENCE
                 .or(Flags.OVERWRITE));
@@ -424,7 +424,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                 logger.debug("Wrong flags used!");
             }
             throw new BadParameterException(
-                    "Flags not allowed for move method: " + flags, wrapper);
+                    "Flags not allowed for move method: " + flags, nsDirectoryWrapper);
         }
 
         List<URL> sources = expandWildCards(source);
@@ -438,19 +438,19 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                     if (!targetFile.getFileInterface().isDirectory()) {
                         throw new BadParameterException(
                                 "source expands to more than one file and "
-                                        + "target is not a directory", wrapper);
+                                        + "target is not a directory", nsDirectoryWrapper);
                     }
                 } catch (GATInvocationException e) {
-                    throw new NoSuccessException(e, wrapper);
+                    throw new NoSuccessException(e, nsDirectoryWrapper);
                 }
             } catch (GATObjectCreationException e) {
-                throw new NoSuccessException(e, wrapper);
+                throw new NoSuccessException(e, nsDirectoryWrapper);
             } catch (URISyntaxException e) {
-                throw new BadParameterException(e, wrapper);
+                throw new BadParameterException(e, nsDirectoryWrapper);
             }
         } else if (sources.size() < 1) {
             throw new DoesNotExistException("source " + source
-                    + " does not exist", wrapper);
+                    + " does not exist", nsDirectoryWrapper);
         }
 
         for (URL s : sources) {
@@ -468,7 +468,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsAllow", wrapper);
+        throw new NotImplementedException("permissionsAllow", nsDirectoryWrapper);
     }
 
     public void permissionsAllow(String target, String id, int permissions,
@@ -476,7 +476,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             BadParameterException, TimeoutException, NoSuccessException {
-        throw new NotImplementedException("permissionsAllow", wrapper);
+        throw new NotImplementedException("permissionsAllow", nsDirectoryWrapper);
     }
 
     public void permissionsDeny(URL target, String id, int permissions,
@@ -484,7 +484,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
             NoSuccessException {
-        throw new NotImplementedException("permissionsDeny", wrapper);
+        throw new NotImplementedException("permissionsDeny", nsDirectoryWrapper);
     }
 
     public void permissionsDeny(String target, String id, int permissions,
@@ -492,7 +492,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, BadParameterException, TimeoutException,
             NoSuccessException {
-        throw new NotImplementedException("permissionsDeny", wrapper);
+        throw new NotImplementedException("permissionsDeny", nsDirectoryWrapper);
     }
 
     public URL readLink(URL name) throws NotImplementedException,
@@ -500,7 +500,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthorizationFailedException, PermissionDeniedException,
             BadParameterException, IncorrectStateException, TimeoutException,
             NoSuccessException {
-        throw new NotImplementedException("readLink", wrapper);
+        throw new NotImplementedException("readLink", nsDirectoryWrapper);
     }
 
     public void remove(URL target, int flags) throws NotImplementedException,
@@ -519,7 +519,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                     Flags.NONE.getValue(), isDir);
         } catch (AlreadyExistsException e) {
             // cannot happen because create flag is not allowed for this method
-            throw new NoSuccessException("Should not happen!: " + e, wrapper);
+            throw new NoSuccessException("Should not happen!: " + e, nsDirectoryWrapper);
         }
 
         targetEntry.remove(flags);
@@ -550,7 +550,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                 // cannot happen because create flag is not allowed for this
                 // method
                 throw new NoSuccessException("Should not happen!: " + e,
-                        wrapper);
+                        nsDirectoryWrapper);
             }
 
             targetEntry.remove(flags);
@@ -592,7 +592,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
             AuthenticationFailedException, AuthorizationFailedException,
             PermissionDeniedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
-        throw new NotImplementedException("isLink", wrapper);
+        throw new NotImplementedException("isLink", nsDirectoryWrapper);
     }
 
     public void link(URL target, int flags) throws NotImplementedException,
@@ -674,7 +674,7 @@ public class NSDirectoryAdaptor extends NSDirectoryAdaptorBase {
                     Flags.READ.getValue(), isDir);
         } catch (AlreadyExistsException e) {
             // cannot happen because create flag is not allowed for this method
-            throw new NoSuccessException("Should not happen!: " + e, wrapper);
+            throw new NoSuccessException("Should not happen!: " + e, nsDirectoryWrapper);
         }
 
         long retval = targetEntry.getMTime();

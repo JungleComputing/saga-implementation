@@ -55,7 +55,7 @@ public class FuseFileAdaptor extends FileAdaptorBase {
     public Object clone() throws CloneNotSupportedException {
         FuseFileAdaptor clone = (FuseFileAdaptor) super.clone();
         clone.fileEntry = (FuseNSEntryAdaptor) fileEntry.clone();
-        clone.fileEntry.setWrapper(clone.wrapper);
+        clone.fileEntry.setWrapper(clone.fileWrapper);
         clone.delegate = (File)delegate.clone();
         return clone;
     }

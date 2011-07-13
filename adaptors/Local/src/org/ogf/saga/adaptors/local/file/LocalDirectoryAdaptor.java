@@ -51,7 +51,7 @@ public class LocalDirectoryAdaptor extends DirectoryAdaptorBase {
     public Object clone() throws CloneNotSupportedException {
         LocalDirectoryAdaptor clone = (LocalDirectoryAdaptor) super.clone();
         clone.dir = (LocalNSDirectoryAdaptor) dir.clone();
-        clone.dir.setWrapper(clone.wrapper);
+        clone.dir.setWrapper(clone.nsDirectoryWrapper);
         return clone;
     }
     

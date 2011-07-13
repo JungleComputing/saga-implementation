@@ -70,7 +70,7 @@ public class LocalNSDirectoryAdaptor extends NSDirectoryAdaptorBase {
     public Object clone() throws CloneNotSupportedException {
         LocalNSDirectoryAdaptor clone = (LocalNSDirectoryAdaptor) super.clone();
         clone.entry = (LocalNSEntryAdaptor) entry.clone();
-        clone.entry.setWrapper(clone.wrapper);
+        clone.entry.setWrapper(clone.nsDirectoryWrapper);
         return clone;
     }
 
