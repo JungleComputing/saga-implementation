@@ -1,3 +1,7 @@
+Pre-release 1.1.2-pre (21 October 2011)
+  This release includes trunk version 3221 of the JavaGAT. Also:
+  - there have been a few fixes to the language bindings.
+  
 Release 1.1.1 (14 June 2011)
   This release includes a new JavaGAT release (2.1.1). Also:
   - the language bindings have been extended to allow an application to use
