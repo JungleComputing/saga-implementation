@@ -13,5 +13,5 @@ esac
 
 export JAVA_SAGA_LOCATION=`cd .. && pwd`
 
-$JAVA_SAGA_LOCATION/bin/run-saga-app -Xmx256M \
+$JAVA_SAGA_LOCATION/scripts/run-saga-app -Xmx256M \
     test.file.FileInputStreamAdaptorTest javagat $JAVAGAT_SERVER

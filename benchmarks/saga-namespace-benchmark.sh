@@ -2,4 +2,4 @@
 
 export JAVA_SAGA_LOCATION=$(dirname $0)/..
 
-${JAVA_SAGA_LOCATION}/bin/run-saga-app benchmarks.namespace.SagaNSBenchmark $@
+${JAVA_SAGA_LOCATION}/scripts/run-saga-app benchmarks.namespace.SagaNSBenchmark $@
