@@ -1,5 +1,6 @@
-Pre-release 1.1.2-pre (21 October 2011)
-  This release includes trunk version 3221 of the JavaGAT. Also:
+Release 1.1.2 (?? September 2012)
+  This release includes release 2.1.2 of the JavaGAT, which features,
+  a.o., SshPbs and SshSge adaptors. Also:
   - there have been a few fixes to the language bindings.
   
 Release 1.1.1 (14 June 2011)
