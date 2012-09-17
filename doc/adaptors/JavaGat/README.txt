@@ -4,7 +4,7 @@ JavaGAT adaptor README
 Introduction.
   The JavaGAT adaptor actually consists of several adaptors:
   it has implementations for streams, namespace, file, job.
-  The JavaGAT version supplied is version 2.0.5.
+  The JavaGAT version supplied is version 2.1.2.
 
 Not implemented.
   Permissions are not implemented, there is no support for it in JavaGAT.
@@ -32,7 +32,7 @@ Not implemented.
     for which various adaptors are available: ssh, globus, gridsam, glite,
     unicore, to name a few.
     The following methods are not implemented: getSelf(),  signal(),
-    checkpoint(), migrate().
+    checkpoint(), migrate(). These will throw a NotImplementedException.
     The following JobDescription attributes are not implemented:
     SPMDVARIATION, THREADSPERPROCESS, JOBCONTACT, JOBSTARTTIME.
     Also, post-stage append and pre-stage append is not supported.
@@ -49,7 +49,7 @@ Not implemented.
     from the base implementation, which translates the patterns into
     seeks and contiguous reads/writes, which probably is very slow.
     The File adaptor is built on the JavaGAT RandomAccessFile. Unfortunately,
-    currently only a local adaptor is available for that. If a RandomAccessFile
+    JavaGAT currently only a has a few adaptors available for that. If a RandomAccessFile
     cannot be used, the adaptor creates a FileInputStream or FileOutputStream
     and uses their methods to implement its own. BUT: FileInputStream only
     supports forward seeks, and FileOutputStream does not support seeks at all.
@@ -70,7 +70,7 @@ JavaGAT Preferences.
   Below is a list of preference names and possible values:
 
   resourcebroker.adaptor.name: local, globus, wsgt4new, gt42, sshtrilead, glite,
-    gridsam, sge, localq, commandlinessh, unicore
+    gridsam, sge, localq, commandlinessh, unicore, sshsge, sshpbs
   file.adaptor.name: local, gridftp, sftptrilead, commandlinessh, sshtrilead,
     gliteguid, glitesrm, glitelfn, ftp, gt4gridftp, rftgt4, gt42, rftgt42
   fileinputstream.adaptor.name: local, gridftp, sftptrilead, ftp, http, https
@@ -81,7 +81,7 @@ JavaGAT schemes.
   below is a list of schemes and matching adaptors:
   Resourcebroker (Jobs):
       any: local, globus, wsgt4new, gt42, sshtrilead, glite, gridsam, sge, localq,
-           commandlinessh, unicore
+           commandlinessh, unicore, sshsge, sshpbs
       ssh: commandlinessh, sshtrilead
       globus: globus
       gram: globus
@@ -99,6 +99,8 @@ JavaGAT schemes.
       sge: sge
       unicore6: unicore
       gridsam: gridsam
+      sshsge: sshsge
+      sshpbs: sshpbs
 
   File:
       (Note: most file adaptors deal with the file: scheme combined with
