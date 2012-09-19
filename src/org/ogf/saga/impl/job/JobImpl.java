@@ -22,6 +22,8 @@ import org.ogf.saga.session.Session;
 import org.ogf.saga.task.State;
 import org.ogf.saga.task.Task;
 import org.ogf.saga.task.TaskMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * Jobs are not created by SAGA applications, so there is no SPI for it.
@@ -31,6 +33,8 @@ import org.ogf.saga.task.TaskMode;
 public abstract class JobImpl extends
         org.ogf.saga.impl.task.TaskImpl<Void, Void> implements
         org.ogf.saga.job.Job {
+    
+    private static Logger logger = LoggerFactory.getLogger(JobImpl.class);
 
     private JobAttributes attributes;
     protected JobDescriptionImpl jobDescriptionImpl;
@@ -102,6 +106,9 @@ public abstract class JobImpl extends
         synchronized(this) {
             setStateValue(value);
             notifyAll();
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("setState to " + value + ", trace: ", new Throwable());
         }
         try {
             if (value == State.DONE || value == State.FAILED
