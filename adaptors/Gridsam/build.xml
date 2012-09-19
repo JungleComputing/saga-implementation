@@ -49,7 +49,7 @@
 
 	<!-- Create the gridsam adaptor jar. -->
 	<jar jarfile="${lib}/${adaptor}.jar" basedir="${tmp}" includes="**/gridsam/**/*.class,LICENSE.txt">
-	    <zipgroupfileset dir="external" includes="*.jar" excludes="activation.jar,xalan.jar, mail.jar" />
+	    <zipgroupfileset dir="external" includes="*.jar" excludes="activation.jar,xalan.jar,mail.jar,jce-jdk13-131.jar" />
 	    <manifest>
 		<attribute name="JobServiceSpi-class" value="org.ogf.saga.adaptors.gridsam.job.JobServiceAdaptor" />
 	    </manifest>
@@ -60,6 +60,7 @@
 		<include name="activation.jar"/>
 		<include name="xalan.jar"/>
 		<include name="mail.jar"/>
+		<include name="jce-jdk13-131.jar"/>
 	    </fileset>
 	</copy>
 
