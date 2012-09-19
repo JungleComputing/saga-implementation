@@ -406,20 +406,21 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         HardwareResourceDescription hd = new HardwareResourceDescription();
         try {
             String s = getV(JobDescriptionImpl.TOTALCPUCOUNT);
-            hd.addResourceAttribute("cpu.count", s);
+            Integer v = Integer.parseInt(s);
+            hd.addResourceAttribute(HardwareResourceDescription.CPU_COUNT, v);
         } catch (Throwable e) {
             // ignored
         }
 
         try {
             String[] hosts = getVec(JobDescriptionImpl.CANDIDATEHOSTS);
-            hd.addResourceAttribute("machine.node", hosts);
+            hd.addResourceAttribute(HardwareResourceDescription.MACHINE_NODE, hosts);
         } catch (Throwable e) {
             // ignored
         }
 
         try {
-            hd.addResourceAttribute("cpu.type",
+            hd.addResourceAttribute(HardwareResourceDescription.CPU_TYPE,
                     getV(JobDescriptionImpl.CPUARCHITECTURE));
         } catch (Throwable e) {
             // ignored
@@ -428,7 +429,7 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
         try {
             String s = getV(JobDescriptionImpl.OPERATINGSYSTEMTYPE);
             SoftwareResourceDescription sd = new SoftwareResourceDescription();
-            sd.addResourceAttribute("os.type", s);
+            sd.addResourceAttribute(SoftwareResourceDescription.OS_TYPE, s);
             hd.addResourceDescription(sd);
         } catch (Throwable e) {
             // ignored
@@ -662,6 +663,11 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
             setDetail("UNKNOWN");
             break;
         }
+        if (logger.isDebugEnabled()) {
+            synchronized(this) {
+        	logger.debug("after processMetricEvent(): state = " + state);
+            }
+        }
         
     }
 
@@ -669,6 +675,9 @@ public final class SagaJob extends org.ogf.saga.impl.job.JobImpl implements
     public synchronized boolean waitFor(float timeoutInSeconds)
             throws NotImplementedException, IncorrectStateException,
             TimeoutException, NoSuccessException {
+	if (logger.isDebugEnabled()) {
+	    logger.debug("waitFor(" + timeoutInSeconds + "): state = " + state);
+	}
         switch (state) {
         case NEW:
             throw new IncorrectStateException("waitFor called on new job", this);
