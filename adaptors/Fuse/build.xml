@@ -48,8 +48,8 @@
                 <attribute name="NSDirectorySpi-class" value="org.ogf.saga.adaptors.fuse.namespace.FuseNSDirectoryAdaptor" />
                 <attribute name="FileSpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseFileAdaptor" />
                 <attribute name="DirectorySpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseDirectoryAdaptor" />
-                <attribute name="FileInputStreamSpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseInputStreamAdaptor" />
-                <attribute name="FileOutputStreamSpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseOutputStreamAdaptor" />
+                <attribute name="FileInputStreamSpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseFileInputStreamAdaptor" />
+                <attribute name="FileOutputStreamSpi-class" value="org.ogf.saga.adaptors.fuse.file.FuseFileOutputStreamAdaptor" />
             </manifest>
         </jar>
 
