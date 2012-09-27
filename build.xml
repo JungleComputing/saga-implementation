@@ -138,7 +138,7 @@
             <zipfileset dir="."
                         prefix="saga-impl${version}"
 			filemode="755"
-			includes="bin/**" />
+			includes="scripts/**" />
             <zipfileset dir="."
                         prefix="saga-impl${version}"
 			filemode="755"
