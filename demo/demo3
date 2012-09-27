@@ -4,4 +4,4 @@
 
 export JAVA_SAGA_LOCATION=`cd .. && pwd`
 
-$JAVA_SAGA_LOCATION/scripts/run-saga-app -Xmx256M demo.namespace.Sequence file1 file2 gsiftp://fs0.das2.cs.vu.nl/home/ceriel/testDirectory "Hello world"
+$JAVA_SAGA_LOCATION/scripts/run-saga-app -Xmx256M demo.namespace.Sequence file1 file2 gsiftp://fs0.das3.cs.vu.nl/home/ceriel/testDirectory "Hello world"
