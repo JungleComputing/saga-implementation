@@ -10,6 +10,9 @@
     <property name="adaptor" value="XMLRPCAdaptor"/>
     <property name="lib" location="../../lib/adaptors/${adaptor}"/>
 
+    <!-- prevent ant warning -->
+    <property name="build.sysclasspath" value="ignore"/>
+
     <target name="init" depends="clean">
 	<!-- Create the time stamp -->
 	<tstamp />
@@ -31,7 +34,7 @@
     <target name="compile" depends="init" description="compile the source ">
 	<!-- Compile the java code from src into ${tmp} -->
 
-    	<javac source="1.5" target="1.5" srcdir="src" destdir="${tmp}" debug="on" >
+    	<javac srcdir="src" destdir="${tmp}" debug="on" >
                 <classpath refid="external.jars" />
     	    <compilerarg value="-Xlint:unchecked"/>
     	</javac>

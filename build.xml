@@ -34,7 +34,7 @@
     <target name="compile" depends="init" description="compile the source ">
 	<!-- Compile the java code from src into ${tmp} -->
 
-    	<javac source="1.5" target="1.5" srcdir="src" destdir="${tmp}" debug="on" >
+    	<javac srcdir="src" destdir="${tmp}" debug="on" >
 	    <classpath refid="external.jars" />
     	    <compilerarg value="-Xlint:unchecked"/>
     	</javac>
@@ -103,6 +103,8 @@
 	<ant inheritAll="false" dir="adaptors" target="clean"/>
 	<!-- Clean demo. -->
 	<ant inheritAll="false" dir="demo" target="clean"/>
+	<!-- Clean benchmarks. -->
+	<ant inheritAll="false" dir="benchmarks" target="clean"/>
 	<!-- Clean tests. -->
 	<ant inheritAll="false" dir="test" target="clean"/>
 	<!-- Clean apps. -->
@@ -132,7 +134,7 @@
             <zipfileset dir="."
                         prefix="saga-impl${version}"
 			includes="apps/**,doc/**,lib/**,demo/**,test/**,licenses/**,LICENSE.txt,README.txt,HISTORY.txt,log4j.properties,saga.properties,sources/**"
-			excludes="doc/build.xml,doc/usersguide.tex,demo/demo?,test/run*"/>
+			excludes="lib/saga-benchmarks.jar,doc/build.xml,doc/usersguide.tex,demo/demo?,test/run*"/>
             <zipfileset dir="."
                         prefix="saga-impl${version}"
 			filemode="755"

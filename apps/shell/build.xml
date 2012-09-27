@@ -10,7 +10,10 @@
     <property name="lib" location="lib" />
     <property name="jar" location="${lib}/saga-shell.jar" />
     <property name="java_saga_location" location="${env.JAVA_SAGA_LOCATION}" />
-	
+
+    <!-- prevent ant warning -->
+    <property name="build.sysclasspath" value="ignore"/>
+
     <target name="init">
         <path id="external.jars">
             <fileset dir="${java_saga_location}/lib">
@@ -25,7 +28,7 @@
     <target name="compile" depends="init,clean" description="compile the source">
         <mkdir dir="${tmp}" />
         
-        <javac source="1.5" target="1.5" srcdir="src" destdir="${tmp}" debug="on">
+        <javac srcdir="src" destdir="${tmp}" debug="on">
             <classpath refid="external.jars" />
             <compilerarg value="-Xlint:unchecked" />
         </javac>

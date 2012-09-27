@@ -11,6 +11,9 @@
     <property name="localadaptor.src" location="../Local/src"/>
     <property name="lib" location="../../lib/adaptors/${adaptor}"/>
 
+    <!-- prevent ant warning -->
+    <property name="build.sysclasspath" value="ignore"/>
+
     <target name="init" depends="clean">
         <!-- Create the time stamp -->
         <tstamp />
@@ -30,7 +33,7 @@
 
     <target name="compile" depends="init" description="compile the source ">
         <!-- Compile the java code from src and the local adaptor into ${tmp} -->
-        <javac source="1.5" target="1.5" destdir="${tmp}" debug="on" >
+        <javac destdir="${tmp}" debug="on" >
             <src path="src"/>
             <src path="${localadaptor.src}"/>
             <classpath refid="external.jars" />
