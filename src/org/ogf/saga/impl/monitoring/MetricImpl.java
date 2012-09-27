@@ -2,7 +2,7 @@ package org.ogf.saga.impl.monitoring;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +36,7 @@ public class MetricImpl extends SagaObjectBase implements
     /** A thread pool to execute callbacks. */
     private static ExecutorService executor = new ThreadPoolExecutor(0,
             Integer.MAX_VALUE, 3L, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<Runnable>());
+            new SynchronousQueue<Runnable>(true));
 
     private static class CallbackHandler implements Runnable {
         boolean busy = false;
@@ -93,6 +93,9 @@ public class MetricImpl extends SagaObjectBase implements
             } finally {
                 synchronized (metricImpl) {
                     metricImpl.fireCount--;
+                    if (logger.isDebugEnabled()) {
+                	logger.debug("Firecount = " + metricImpl.fireCount);
+                    }
                     if (metricImpl.fireCount == 0) {
                         metricImpl.notifyAll();
                     }
@@ -353,6 +356,9 @@ public class MetricImpl extends SagaObjectBase implements
                 }
             }
             fireCount = cbhs.size();
+            if (logger.isDebugEnabled()) {
+        	logger.debug("Setting fireCount to " + fireCount);
+            }
         }
 
         for (CallbackHandler cbh : cbhs) {
