@@ -71,6 +71,7 @@ public class StreamAdaptor extends StreamAdaptorBase implements ErrorInterface {
             NoSuccessException {
         try {
             if (listeningReader != null) {
+                listeningReader.setClosed();
                 listeningReaderThread.interrupt();
                 socket.close();
             }

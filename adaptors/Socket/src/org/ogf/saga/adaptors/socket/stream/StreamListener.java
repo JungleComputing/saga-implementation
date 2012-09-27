@@ -32,6 +32,10 @@ public class StreamListener implements Runnable {
         this.err = err;
     }
 
+    public synchronized void setClosed() {
+        closed = true;
+    }
+
     public void run() {
         logger.debug("Stream Listener: Start");
         StreamExceptionalSituation error = new StreamExceptionalSituation();
@@ -70,7 +74,13 @@ public class StreamListener implements Runnable {
         } catch (IOException e) {
             // There is a problem: we cannot tell if the read
             // was unsuccessful because of closing socket or other error
-
+            
+            synchronized(this) {
+                if (closed) {
+                    logger.debug("Listener Exit");
+                    return;
+                }
+            }
             logger.debug("IO exception", e);
             buf.onError(CircularBuffer.REASON_ERROR);
             error.setCause(e);
